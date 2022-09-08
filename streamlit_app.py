@@ -77,7 +77,8 @@ if check_password():
     plot2_subheader = 'Diagram of employee activity last 30 days'
     info_maxap = 'The minimum of the daily employee activity was on '
     info_maxapat = 'at'
-    check_maxap = 'Show maximum days?'
+    info_maxapatemp = 'employees.'
+    check_maxap = 'Show minimum days?'
     check_maxapsubheader = 'Days with the lowest number of staff'
     use_databank = 'Use local databank?'
     day_event = 'On which day was the event?'
@@ -230,7 +231,7 @@ if check_password():
     max_ap_data_index = pd.Index(range(1, 11, 1))
     max_ap_data = max_ap_data.set_index(max_ap_data_index)
     # Show Lowest 10
-    st.write(str(info_maxap), str(max_ap[0][1]), ' ', str(info_maxapat), ' ', str(max_ap[0][0]), '.')
+    st.write(str(info_maxap), str(max_ap[0][1]), ' ', str(info_maxapat), ' ', str(max_ap[0][0]), str(info_maxapatemp))
     if st.checkbox(str(check_maxap)):
       st.subheader(check_maxapsubheader)
       st.write(max_ap_data)
