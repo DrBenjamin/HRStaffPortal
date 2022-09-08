@@ -75,7 +75,7 @@ if check_password():
     check1sub = 'Raw data'
     plot1_subheader = 'Diagram of today`s employee activity'
     plot2_subheader = 'Diagram of employee activity last 30 days'
-    info_maxap = 'The maximum of the daily employee activity was on '
+    info_maxap = 'The minimum of the daily employee activity was on '
     info_maxapat = 'at'
     check_maxap = 'Show maximum days?'
     check_maxapsubheader = 'Days with the lowest number of staff'
