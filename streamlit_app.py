@@ -78,7 +78,7 @@ if check_password():
     info_maxap = 'The maximum of the daily employee activity was on '
     info_maxapat = 'at'
     check_maxap = 'Show maximum days?'
-    check_maxapsubheader = 'Top 10'
+    check_maxapsubheader = 'Days with the lowest number of staff'
     use_databank = 'Use local databank?'
     day_event = 'On which day was the event?'
     text_input = 'What happened on this day?'
@@ -220,16 +220,16 @@ if check_password():
     st.subheader(plot2_subheader)
     st.line_chart(data_plot)
 
-    ## Show 10 maximum ap days
-    # Reverse order (highest first)
-    list.sort(max_ap, reverse = True)
+    ## Show 10 lowest employee days
+    # Reverse 'False' -> order with lowest first
+    list.sort(max_ap, reverse = False)
     # Create data frame
     max_ap_data = pd.DataFrame()
     max_ap_data['Date'] = [sublist[1] for sublist in max_ap]
     max_ap_data['Employees'] = [sublist[0] for sublist in max_ap]
     max_ap_data_index = pd.Index(range(1, 11, 1))
     max_ap_data = max_ap_data.set_index(max_ap_data_index)
-    # Show Top 10
+    # Show Lowest 10
     st.write(str(info_maxap), str(max_ap[0][1]), ' ', str(info_maxapat), ' ', str(max_ap[0][0]), '.')
     if st.checkbox(str(check_maxap)):
       st.subheader(check_maxapsubheader)
