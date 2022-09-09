@@ -9,7 +9,7 @@ import deepl
 import sys
 
 ### KCH HR Staff Portal Prototype
-## Streamlit initial setup
+## Streamlit initial configuration
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
   page_icon = "thumbnail.png",
@@ -18,7 +18,7 @@ st.set_page_config(
   menu_items = { 
          'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
          'Report a bug': "http://www.health.gov.mw/index.php/contact-moh/head-office",
-         'About': "This is the KCH HR Staff Portal. Version 0.0.1a"
+         'About': "This is the KCH HR Staff Portal. Version 0.0.1"
         }
 )
 
@@ -46,7 +46,7 @@ def check_password():
     if "password_correct" not in st.session_state:
         # First run, show inputs for username + password.
         # Show Header Text
-        st.title('Welcome to the KCH HR Staff Portal')
+        st.title('You are welcome to the KCH HR Staff Portal')
         st.subheader('Please enter username and password')
         st.text_input("Username", on_change=password_entered, key="username")
         st.text_input(
