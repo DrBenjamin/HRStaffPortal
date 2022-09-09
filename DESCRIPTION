@@ -1,0 +1,10 @@
+Package: HRStaffPortal
+Type: Package
+Title: KCH HR Staff Portal
+Version: 0.0.1a
+Author: Benjamin Groß
+Maintainer: Benjamin Groß <benjamin.gross@giz.de>
+Description: Prototype for the KCH HR Staff Portal
+License: Freeware
+Encoding: UTF-8
+LazyData: true
