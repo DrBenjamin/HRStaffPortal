@@ -21,13 +21,11 @@ st.set_page_config(
          'About': "This is the KCH HR Staff Portal. Version 0.0.1a"
         }
 )
-## Header Image
-st.image('MoH.png')
 
 ## Password check
+
 def check_password():
     """Returns `True` if the user had a correct password."""
-
     def password_entered():
         """Checks whether a password entered by the user is correct."""
         if (
@@ -40,13 +38,21 @@ def check_password():
             del st.session_state["username"]
         else:
             st.session_state["password_correct"] = False
+            
+    ## Header
+    # Header Image
+    st.image('MoH.png')
 
     if "password_correct" not in st.session_state:
         # First run, show inputs for username + password.
+        # Show Header Text
+        st.title('Welcome to the KCH HR Staff Portal')
+        st.subheader('Please enter username and password')
         st.text_input("Username", on_change=password_entered, key="username")
         st.text_input(
             "Password", type="password", on_change=password_entered, key="password"
         )
+        show_title = True
         return False
     elif not st.session_state["password_correct"]:
         # Password not correct, show input + error.
@@ -55,9 +61,11 @@ def check_password():
             "Password", type="password", on_change=password_entered, key="password"
         )
         st.error("User not known or password incorrect!")
+        show_title = True
         return False
     else:
         # Password correct.
+        show_title = False
         return True
 
 if check_password():
