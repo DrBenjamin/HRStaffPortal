@@ -1,28 +1,4 @@
-# PURPOSE: This file distributes the Kp index and ap index (one line per three-hour interval)
-# LICENSE: CC BY 4.0
-# SOURCE: Geomagnetic Observatory Niemegk, GFZ German Research Centre for Geosciences
-# PLEASE CITE: Matzka, J., Stolle, C., Yamazaki, Y., Bronkalla, O. and Morschhauser, A., 2021. The geomagnetic Kp index 
-# and derived indices of geomagnetic activity. Space Weather, https://doi.org/10.1029/2020SW002641
-#
-# Kp, ap and Ap
-# The three-hourly equivalent planetary amplitude ap is derived from Kp and the daily equivalent planetary amplitude Ap is the daily mean of ap.
-# Kp is unitless. Ap and ap are unitless and can be multiplied by 2 nT to yield the average geomagnetic disturbance at 50 degree geomagnetic latitude.
-# Kp, ap and Ap were introduced by Bartels (1949, 1957) and are produced by Geomagnetic Observatory Niemegk, GFZ German Research Centre for Geosciences.
-# Described in: Matzka et al. (2021), see reference above.
-# Data publication: Matzka, J., Bronkalla, O., Tornow, K., Elger, K. and Stolle, C., 2021. Geomagnetic Kp index. V. 1.0. GFZ Data Services, 
-# https://doi.org/10.5880/Kp.0001
-#
-# Short file description (for a detailed file description, see Kp_ap_Ap_SN_F107_format.txt):
-# 30 header lines, all starting with #
-# ASCII, blank separated and fixed length, missing data indicated by -1.000 for Kp and -1 for ap
-# YYYY MM DD is date of UT day, hh.h is starting time in hours of interval for which Kp and ap are given
-# hh._m is mid time in hours of interval for which Kp and ap are given 
-# days is days since 1932-01-01 00:00 UT to start of interval, days_m is days since 1932-01-01 00:00 UT to mid of interval
-# Kp, ap
-# D indicates if the Kp and ap values are definitive (D = 1) or preliminary (D=0)
-#
-#
-#
+# PURPOSE: This file distributes the KCH Employee data 
 #
 # The format for each line is (i stands for integer, f for float):
 #iii ii ii ff.f ff.ff fffff.fffff fffff.fffff ff.fff iiii i
