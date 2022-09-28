@@ -22,7 +22,7 @@ st.set_page_config(
         }
 )
 
-## Password checking
+## Password / User checking
 def check_password():
     """Returns `True` if the user had a correct password."""
     def password_entered():
