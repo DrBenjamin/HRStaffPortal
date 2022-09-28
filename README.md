@@ -1,4 +1,4 @@
 # HRStaffPortal
 KCH HR Staff Portal
 
-All information are confidential
+All these information are confidential.
