@@ -1,7 +1,7 @@
 Package: HRStaffPortal
 Type: Package
 Title: KCH HR Staff Portal
-Version: 0.0.1a
+Version: 0.0.2a
 Author: Benjamin Groß
 Maintainer: Benjamin Groß <benjamin.gross@giz.de>
 Description: Prototype for the KCH HR Staff Portal
