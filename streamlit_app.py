@@ -9,7 +9,7 @@ import deepl
 import sys
 
 ### KCH HR Staff Portal Prototype
-## Streamlit initial configuration
+## Streamlit initial setup
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
   page_icon = "thumbnail.png",
