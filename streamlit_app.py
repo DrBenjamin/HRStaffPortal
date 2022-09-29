@@ -8,7 +8,7 @@ import mysql.connector
 import deepl
 import sys
 
-### Kamazu Central Hospital HR Staff Portal Prototype
+### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ## Streamlit initial setup
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
