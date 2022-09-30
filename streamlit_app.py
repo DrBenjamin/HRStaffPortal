@@ -67,32 +67,6 @@ def check_password():
         return True
 
 if check_password():
-    # All text stuff
-    title = 'KCH HR Staff Portal'
-    subheader = 'Kamuzu Central Hospital employee data.'
-    info1 = 'All the employee data is stored in a local MySQL databank on a Raspberry Pi.'
-    info2 = 'The HR Portal is running on Streamlit, an Open Source Python framework for visualisation.'
-    data_load_text = 'Loading data...'
-    data_down_text = 'Download completed'
-    check1 = 'Show raw data?'
-    check1sub = 'Raw data'
-    plot1_subheader = 'Diagram of today`s employee activity'
-    plot2_subheader = 'Diagram of employee activity last 30 days'
-    info_maxap = 'The minimum of the daily employee activity was on '
-    info_maxapat = 'at'
-    info_maxapatemp = 'employees.'
-    check_maxap = 'Show minimum days?'
-    check_maxapsubheader = 'Days with the lowest number of staff'
-    use_databank = 'Use local databank?'
-    day_event = 'On which day was the event?'
-    forename_input = 'Forename?'
-    surname_input = 'Surname?'
-    job_input = 'Job?'
-    stored_data = 'Store in databank?'
-    stored_datasuccess = 'stored to databank!'
-    show_data = 'Show databank data?'
-    show_datasubheader = 'Databank data'
-
     ## Sidebar configuration
     # 
     contact = st.sidebar.selectbox(
@@ -111,10 +85,10 @@ if check_password():
         return cur.fetchall()
     
     # Show information
-    st.title(title)
-    st.subheader(subheader)
-    st.write(str(info1))
-    st.write(str(info2))
+    st.title('KCH HR Staff Portal')
+    st.subheader('Kamuzu Central Hospital employee data.')
+    st.write('All the employee data is stored in a local MySQL databank on a Raspberry Pi.')
+    st.write('The HR Portal is running on Streamlit, an Open Source Python framework for visualisation.')
 
     ## Download links
     # Data comes from Helmholtz-Zentrum Potsdam
@@ -130,13 +104,13 @@ if check_password():
       data = pd.read_table(DATA_URL, sep = " ", header = None, names = colnames, skiprows = 31, skipinitialspace = True)
       return data
     # Show loading message
-    data_load_state = st.text(data_load_text)
+    data_load_state = st.text('Loading data...')
     data = load_data()
-    data_load_state.text(str(data_down_text) + ' (' + str(round(sys.getsizeof(data)/1048576, 2)) + 'MB)!')
+    data_load_state.text(str('Download completed') + ' (' + str(round(sys.getsizeof(data)/1048576, 2)) + 'MB)!')
 
     ## Checkbox for option to see raw data
-    if st.checkbox(str(check1)):
-      st.subheader(check1sub)
+    if st.checkbox(str('Show raw data?')):
+      st.subheader('Raw data')
       st.write(data)
   
     ## Create data frames
@@ -181,10 +155,10 @@ if check_password():
     data_plot_today = data_plot_today.set_index('Time')
     data_plot = data_plot.set_index('Date')
     # Daily activity
-    st. subheader(plot1_subheader)
+    st. subheader('Diagram of today`s employee activity')
     st.bar_chart(data_plot_today)
     # All data plot
-    st.subheader(plot2_subheader)
+    st.subheader('Diagram of employee activity last 30 days')
     st.line_chart(data_plot)
 
     ## Show 10 lowest employee days
@@ -197,26 +171,26 @@ if check_password():
     max_ap_data_index = pd.Index(range(1, 11, 1))
     max_ap_data = max_ap_data.set_index(max_ap_data_index)
     # Show Lowest 10
-    st.write(str(info_maxap), str(max_ap[0][1]), ' ', str(info_maxapat), ' ', str(max_ap[0][0]), str(info_maxapatemp))
-    if st.checkbox(str(check_maxap)):
-      st.subheader(check_maxapsubheader)
+    st.write('The minimum of the daily employee activity was on ', str(max_ap[0][1]), ' at ', str(max_ap[0][0]), 'employees')
+    if st.checkbox('Show minimum days?'):
+      st.subheader('Days with the lowest number of staff')
       st.write(max_ap_data)
 
     ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
-    if st.checkbox(str(use_databank)):
+    if st.checkbox('Use local databank?'):
       conn = init_connection()
       # Ask for Forename
       layout = '1'
-      forename = st.text_input(str(forename_input), placeholder = forename_input, key = forename_input)
-      surname = st.text_input(str(surname_input), placeholder = surname_input, key = surname_input)
-      job = st.text_input(str(job_input), placeholder = job_input, key = job_input)
+      forename = st.text_input('Forename', placeholder = 'Forename?', key = 'forename_input')
+      surname = st.text_input('Surname', placeholder = 'Surname?', key = 'surname_input')
+      job = st.text_input('Job', placeholder = 'Job?', key = 'job_input')
       exp = '2023-12-31 00:00:00'
-      eno = st.text_input(str('Employee Number?'), placeholder = 'Employee Number?', key = 'eno_input')
+      eno = st.text_input(str('Employee Number'), placeholder = 'Employee Number?', key = 'eno_input')
       capri = '0'
       imada = '2022-09-30 12:30:00'
       image = 'DATA'
       # Write data to databank
-      if st.button(str(stored_data)):
+      if st.button('Store in databank?'):
       # Check for ID number
         id = 0
         query = "SELECT ID from `idcard`.`IMAGEBASE`;"
@@ -230,10 +204,10 @@ if check_password():
         query = "INSERT INTO `idcard`.`IMAGEBASE` VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, layout, forename, surname, job, exp, eno, capri, imada, image)
         run_query(query)
         conn.commit()
-        st.write(stored_datasuccess)
+        st.write('stored to databank!')
       # Checkbox for option to see databank data
-      if st.checkbox(str(show_data)):
-        st.subheader(show_datasubheader)
+      if st.checkbox('Show databank data?'):
+        st.subheader('Databank data')
         query = "SELECT * from `idcard`.`IMAGEBASE`;"
         rows = run_query(query)
         databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE_DATE', 'IMAGE'])
