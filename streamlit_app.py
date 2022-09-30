@@ -201,43 +201,7 @@ if check_password():
     if st.checkbox(str(check_maxap)):
       st.subheader(check_maxapsubheader)
       st.write(max_ap_data)
-  
-    ## Use local databank idcard Table usage
-    #if st.checkbox(str(use_databank)):
-      #conn = init_connection()
-      # Ask for events
-      #date = st.selectbox(str(day_event), max_ap_data, key = 'date')
-      #st.write(str(text_output), date)
-      #event = st.text_input(str(text_input), placeholder = text_placeholder, key = 'event')
-      # Write data to databank
-      #if st.button(str(stored_data)):
-      # Check for ID number
-        #id = 0
-        #query = "SELECT ID from `idcard`.`usage`;"
-        #rows = run_query(query)
-        #row = [0]
-        #for row in rows:
-          # Checking for ID
-          #print(row[0])
-          #id = int(row[0]) + 1
-        # Writing to databank
-        #query = "INSERT INTO `idcard`.`usage` VALUES ('%s', '%s', '%s');" %(id, date, event)
-        #run_query(query)
-        #conn.commit()
-        #st.write(date, event, ' ', stored_datasuccess)
-      # Checkbox for option to see databank data
-      #if st.checkbox(str(show_data)):
-        #st.subheader(show_datasubheader)
-        #query = "SELECT * from `idcard`.`usage`;"
-        #rows = run_query(query)
-        #databank = pd.DataFrame(columns = ['ID', 'Date', 'Event'])
-        #for row in rows:
-          #df = pd.DataFrame([[row[0], row[1], row[2]]], columns = ['ID', 'Date', 'Event'])
-          #databank = databank.append(df)
-        # Print databank in dataframe table
-        #databank = databank.set_index('ID')
-        #st.table(databank)
-        
+
     ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
     if st.checkbox(str(use_databank)):
       conn = init_connection()
