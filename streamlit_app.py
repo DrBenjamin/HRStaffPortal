@@ -212,17 +212,10 @@ if check_password():
         query = "SELECT FORENAME, SURNAME from `idcard`.`IMAGEBASE`;"
         rows = run_query(query)
         row = [0]
-        names = ['Choose a Name', 'of the list']
+        names = []
         for row in rows:
-          # Concenate Forename and Surname
-          a = row[0]
-          b = row[1]
-          st.write(a + ' ' + b)
-          name = a + ' ' + b
-          st.write(type(name))
-          st.write(type(names))
-          st.write(names)
-          names = names.append(name)
+          # Concenate Forename and Surname for Sidebar Selectbox
+          names.append(row[0] + ' ' + row[1])
 
         # Sidebar Selectbox
         employee = st.sidebar.selectbox(
