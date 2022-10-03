@@ -67,13 +67,6 @@ def check_password():
         return True
 
 if check_password():
-    ## Sidebar configuration
-    # 
-    contact = st.sidebar.selectbox(
-      "How would you like to be contacted?",
-      ("Email", "Fixed Line", "Mobile Phone")
-    )
-
     ## SQL Connection
     # Initialize connection
     def init_connection():
@@ -205,6 +198,7 @@ if check_password():
         run_query(query)
         conn.commit()
         st.write('stored to databank!')
+        
       # Checkbox for option to see databank data
       if st.checkbox('Show databank data?'):
         st.subheader('Databank data')
@@ -214,6 +208,11 @@ if check_password():
         for row in rows:
           df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE_DATE', 'IMAGE'])
           databank = databank.append(df)
+        # Sidebar Selectbox
+        employe = st.sidebar.selectbox(
+          "Which user do you want to select?",
+          databank['FORENAME']
+        )
         # Print databank in dataframe table
         databank = databank.set_index('ID')
         st.table(databank)
