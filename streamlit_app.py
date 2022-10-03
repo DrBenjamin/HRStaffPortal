@@ -221,6 +221,7 @@ if check_password():
           name = a + ' ' + b
           st.write(type(name))
           st.write(type(names))
+          st.write(names)
           names = names.append(name)
 
         # Sidebar Selectbox
