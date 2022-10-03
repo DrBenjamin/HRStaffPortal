@@ -224,10 +224,10 @@ if check_password():
           names = names.append(name)
 
         # Sidebar Selectbox
-        #employee = st.sidebar.selectbox(
-        #  "Which user do you want to select?",
-        #  names
-        #)
+        employee = st.sidebar.selectbox(
+          "Which user do you want to select?",
+          names
+        )
         
         # Print databank in dataframe table
         databank = databank.set_index('ID')
