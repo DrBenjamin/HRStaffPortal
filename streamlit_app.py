@@ -170,21 +170,34 @@ if check_password():
       st.write(max_ap_data)
 
     ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
-    if st.checkbox('Use local databank?'):
-      conn = init_connection()
-      # Ask for Forename
-      layout = '1'
-      forename = st.text_input('Forename', placeholder = 'Forename?', key = 'forename_input')
-      surname = st.text_input('Surname', placeholder = 'Surname?', key = 'surname_input')
-      job = st.text_input('Job', placeholder = 'Job?', key = 'job_input')
-      exp = '2023-12-31 00:00:00'
-      eno = st.text_input(str('Employee Number'), placeholder = 'Employee Number?', key = 'eno_input')
-      capri = '0'
-      imada = '2022-09-30 12:30:00'
-      image = 'DATA'
-      # Write data to databank
-      if st.button('Store in databank?'):
-      # Check for ID number
+
+    # open Databak Connection
+    conn = init_connection()
+
+    # Checkbox for option to see databank data
+    st.subheader('Databank data')
+    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE`;"
+    rows = run_query(query)
+    databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE'])
+    for row in rows:
+      df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE'])
+      databank = databank.append(df)
+    
+    # Combine Forename and Surname for Sidebar Selectbox
+    query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
+    rows = run_query(query)
+    row = [0]
+    names = ['New Employee']
+    for row in rows:
+      # Concenate Forename and Surname for Sidebar Selectbox
+      names.append(str(row[0]) + ' - ' + row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4])
+
+    # Employee Selectbox
+    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x])
+
+    if (index == 0):
+      with st.form("new", clear_on_submit = True):
+        # Check for ID number
         id = 0
         query = "SELECT ID from `idcard`.`IMAGEBASE`;"
         rows = run_query(query)
@@ -192,37 +205,50 @@ if check_password():
         for row in rows:
           # Checking for ID
           id = int(row[0]) + 1
-        # Writing to databank
-        query = "INSERT INTO `idcard`.`IMAGEBASE` VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, layout, forename, surname, job, exp, eno, capri, imada, image)
-        run_query(query)
-        conn.commit()
-        st.write('stored to databank!')
+        st.write('Employee ID #' + str(id))
+          
+        layout = '1'
+        forename = st.text_input(label = 'Forename', placeholder = 'Forename?', key = 'forename_input')
+        surname = st.text_input(label = 'Surname', placeholder = 'Surname?', key = 'surname_input')
+        job = st.text_input(label = 'Job', placeholder = 'Job?', key = 'job_input')
+        exp = '2023-12-31 00:00:00'
+        eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?', key = 'eno_input')
+        capri = '0'
+        image = 'DATA'
         
-      # Checkbox for option to see databank data
-      if st.checkbox('Show databank data?'):
-        st.subheader('Databank data')
-        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE_DATE, IMAGE from `idcard`.`IMAGEBASE`;"
-        rows = run_query(query)
-        databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE_DATE', 'IMAGE'])
-        for row in rows:
-          df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE_DATE', 'IMAGE'])
-          databank = databank.append(df)
-        
-        # Combine Forename and Surname for Sidebar Selectbox
-        query = "SELECT FORENAME, SURNAME from `idcard`.`IMAGEBASE`;"
-        rows = run_query(query)
-        row = [0]
-        names = []
-        for row in rows:
-          # Concenate Forename and Surname for Sidebar Selectbox
-          names.append(row[0] + ' ' + row[1])
-
-        # Sidebar Selectbox
-        employee = st.sidebar.selectbox(
-          "Which user do you want to select?",
-          names
-        )
-        
-        # Print databank in dataframe table
-        databank = databank.set_index('ID')
-        st.table(databank)
+        submitted = st.form_submit_button("Create New Employee")
+        if submitted:
+          # Writing to databank
+          query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s');" %(id, layout, forename, surname, job, exp, eno, capri, image)
+          run_query(query)
+          conn.commit()
+          st.experimental_rerun()
+    else:
+      with st.form("edit", clear_on_submit = True):
+        # Get information of selected Employee
+        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = '%s';" %(index)
+        employee = run_query(query)
+        layout = '1'
+        forename = st.text_input(label = 'Forename', value = employee[0][2], key = 'forename_input')
+        surname = st.text_input(label = 'Surname', value = employee[0][3], key = 'surname_input')
+        job = st.text_input('Job', value = employee[0][4], key = 'job_input')
+        exp = st.text_input(label = 'Expirity Date', value = employee[0][5], key = 'expdate_input')
+        eno = st.text_input(label = 'Employee Number', value = employee[0][6], key = 'eno_input')
+        capri = st.text_input(label = 'Cards Printed', value = employee[0][7], key = 'capri_input')
+        uploaded_file = st.file_uploader("Choose a file")
+        image = 'DATA'
+        if uploaded_file is not None:
+          image = bytes_data = uploaded_file.getvalue()
+          
+        submitted = st.form_submit_button("Edit Employee")
+        if submitted:
+          # Writing to databank
+          query = "  UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = '%s', FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = '%s', IMAGE = %s WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, image, index)
+          run_query(query)
+          conn.commit()
+          st.experimental_rerun()
+      
+    # Print databank in dataframe table
+    if st.checkbox('Show full databank data?', value = False):
+      databank = databank.set_index('ID')
+      st.table(databank)
