@@ -80,10 +80,12 @@ if check_password():
         return cur.fetchall()
     
     # Show information
-    st.title('KCH HR Staff Portal')
-    st.subheader('Kamuzu Central Hospital employee data.')
-    st.write('All the employee data is stored in a local MySQL databank on a Raspberry Pi.')
-    st.write('The HR Portal is running on Streamlit, an Open Source Python framework for visualisation.')
+    with st.expander("Header", expanded = True):
+      st.title('KCH HR Staff Portal')
+      st.image('MoH.png')
+      st.subheader('Kamuzu Central Hospital employee data.')
+      st.write('All the employee data is stored in a local MySQL databank on a Raspberry Pi.')
+      st.write('The HR Portal is running on Streamlit, an Open Source Python framework for visualisation.')
 
     ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
     # open Databak Connection
@@ -98,6 +100,11 @@ if check_password():
       df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE'])
       databank = databank.append(df)
     
+    # Print databank in dataframe table
+    with st.expander("See all Databank entries", expanded = False):
+      databank = databank.set_index('ID')
+      st.dataframe(databank, use_container_width = True)
+      
     # Combine Forename and Surname for Sidebar Selectbox
     query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
@@ -110,7 +117,8 @@ if check_password():
     # Employee Selectbox
     index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x])
     if (index != 0):
-      checkbox_val = st.checkbox(label = 'Edit Employee', value = False)
+      checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
+      checkbox_training = st.checkbox(label = 'Add Training', value = False)
     if (index == 0):
       with st.form("new", clear_on_submit = True):
         # Check for ID number
@@ -121,14 +129,15 @@ if check_password():
         for row in rows:
           # Checking for ID
           id = int(row[0]) + 1
-        id = st.text_input(label = 'ID', value = id, key = 'id_input', disabled = True)
-        layout = st.text_input(label = 'Layout', value = 1, key = 'layout_input')  
-        forename = st.text_input(label = 'Forename', placeholder = 'Forename?', key = 'forename_input')
-        surname = st.text_input(label = 'Surname', placeholder = 'Surname?', key = 'surname_input')
-        job = st.text_input(label = 'Job', placeholder = 'Job?', key = 'job_input')
-        exp = '2023-12-31 00:00:00'
-        eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?', key = 'eno_input')
-        capri = st.text_input(label = 'Cards Printed', value = 0, key = 'capri_input')
+        id = st.text_input(label = 'ID', value = id, disabled = True)
+        layout = st.text_input(label = 'Layout', value = 1)  
+        forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+        surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+        job = st.text_input(label = 'Job', placeholder = 'Job?')
+        exp = st.text_input(label = 'Layout', value = '2023-12-31 00:00:00')
+        eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
+        capri = st.text_input(label = 'Cards Printed', value = 0)
+        st.image('portrait-placeholder.png')
         uploaded_file = st.file_uploader("Upload a picture (256×360)")
         image = 'DATA'
         if uploaded_file is not None:
@@ -146,31 +155,92 @@ if check_password():
         # Get information of selected Employee
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
         employee = run_query(query)
-        id = st.text_input(label = 'ID', value = employee[0][0], key = 'id_input', disabled = True)
-        layout = st.text_input(label = 'Layout', value = employee[0][1], key = 'layout_input', disabled = True)
-        forename = st.text_input(label = 'Forename', value = employee[0][2], key = 'forename_input', disabled = not checkbox_val)
-        surname = st.text_input(label = 'Surname', value = employee[0][3], key = 'surname_input', disabled = not checkbox_val)
-        job = st.text_input('Job', value = employee[0][4], key = 'job_input', disabled = not checkbox_val)
-        exp = st.text_input(label = 'Expirity Date', value = employee[0][5], key = 'expdate_input', disabled = not checkbox_val)
-        eno = st.text_input(label = 'Employee Number', value = employee[0][6], key = 'eno_input', disabled = not checkbox_val)
-        capri = st.text_input(label = 'Cards Printed', value = employee[0][7], key = 'capri_input', disabled = not checkbox_val)
+        id = st.text_input(label = 'ID', value = employee[0][0], disabled = True)
+        layout = st.text_input(label = 'Layout', value = employee[0][1], disabled = True)
+        forename = st.text_input(label = 'Forename', value = employee[0][2], disabled = not checkbox_val)
+        surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
+        job = st.text_input(label = 'Job', value = employee[0][4], disabled = not checkbox_val)
+        exp = st.text_input(label = 'Expirity Date', value = employee[0][5], disabled = not checkbox_val)
+        eno = st.text_input(label = 'Employee Number', value = employee[0][6], disabled = not checkbox_val)
+        capri = st.text_input(label = 'Cards Printed', value = employee[0][7], disabled = not checkbox_val)
+        st.image('portrait-placeholder.png')
         uploaded_file = st.file_uploader("Upload a picture (256×360)")
         image = 'DATA'
         if uploaded_file is not None:
           image = bytes_data = uploaded_file.getvalue()
+        
+        with st.expander("Training Data", expanded = False):
+          ## Get information of selected Employee regarding Training
+          # Check for ID number in TrainingData
+          idT = 0
+          query = "SELECT ID from `idcard`.`TrainingData`;"
+          rows = run_query(query)
+          row = [0]
+          for row in rows:
+            idT = int(row[0]) + 1
+          # Get Training Data
+          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS FROM `idcard`.`ImageBase` AS ima LEFT JOIN `idcard`.`TrainingData` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
+          trainingData = run_query(query)
+          training = []
+          institute = []
+          date = []
+          days = []
+          insert = False
+          update = False
+          insertnew = False
+          if (trainingData[0][0] != None):
+            update = True
+            for i in range(len(trainingData)):
+              x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], disabled = not checkbox_val)
+              training.append(x)
+              x = st.text_input(label = 'Institute', value = trainingData[i][1], disabled = not checkbox_val)
+              institute.append(x)
+              x = st.text_input(label = 'Date', value = trainingData[i][2], disabled = not checkbox_val)
+              date.append(x)
+              x = st.text_input(label = 'Days', value = trainingData[i][3], disabled = not checkbox_val)
+              days.append(x)
+          else:
+              insert = True
+              x = st.text_input(label = 'Training #1', value = trainingData[0][0], disabled = not checkbox_val)
+              training.append(x)
+              x = st.text_input(label = 'Institute', value = trainingData[0][1], disabled = not checkbox_val)
+              institute.append(x)
+              x = st.text_input(label = 'Date', value = trainingData[0][2], disabled = not checkbox_val)
+              date.append(x)
+              x = st.text_input(label = 'Days', value = trainingData[0][3], disabled = not checkbox_val)
+              days.append(x)
+          if checkbox_training:
+            insertnew = True
+            x = st.text_input(label = 'Training #' + str(len(trainingData) + 1), placeholder = 'Training?', disabled = not checkbox_val)
+            training.append(x)
+            x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
+            institute.append(x)
+            x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
+            date.append(x)
+            x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
+            days.append(x)
           
         submitted = st.form_submit_button("Save Changes")
         if submitted:
-          # Writing to databank
-          query = "  UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, image, index)
+          # Writing to databank idcard Table ImageBase
+          query = "UPDATE `idcard`.`ImageBase` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, image, index)
           run_query(query)
           conn.commit()
+          # Writing to databank idcard Table TrainingData
+          if (insert == True):
+            query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+            run_query(query)
+            conn.commit()
+          if (update == True):
+            for i in range(len(trainingData)):
+              query = "UPDATE `idcard`.`TrainingData` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], i + 1)
+              run_query(query)
+              conn.commit()
+          if (insertnew == True):
+            query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
+            run_query(query)
+            conn.commit()
           st.experimental_rerun()
-      
-    # Print databank in dataframe table
-    if st.checkbox('Show full databank data?', value = False):
-      databank = databank.set_index('ID')
-      st.table(databank)
   
 else :
   ## Landing Page
@@ -212,7 +282,7 @@ else :
     max_ap = [ [0, ''], [0, ''], [0, ''], [0, ''], [0, ''], [0, ''], [0, ''], [0, ''], [0, ''], [0, ''] ]
     test_str = ""
     x = 0
-    for i in range(1, len(ap)) : 
+    for i in range(1, len(ap)): 
       if date[i] == test_str or i == 1:
         x = x + ap[i]
         test_str = date[i]
