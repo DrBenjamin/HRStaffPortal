@@ -116,9 +116,13 @@ if check_password():
 
     # Employee Selectbox
     index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x])
+    
+    # Checkboxes for Editing and Adding
     if (index != 0):
       checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
-      checkbox_training = st.checkbox(label = 'Add Training', value = False)
+      checkbox_training = st.checkbox(label = 'Add Training', value = False, disabled = not checkbox_val)
+      
+    # If new Employee just show empty form
     if (index == 0):
       with st.form("new", clear_on_submit = True):
         # Check for ID number
@@ -171,7 +175,7 @@ if check_password():
         
         with st.expander("Training Data", expanded = False):
           ## Get information of selected Employee regarding Training
-          # Check for ID number in TrainingData
+          # Check for last ID number in TrainingData (to add data after)
           idT = 0
           query = "SELECT ID from `idcard`.`TrainingData`;"
           rows = run_query(query)
@@ -181,66 +185,76 @@ if check_password():
           # Get Training Data
           query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS FROM `idcard`.`ImageBase` AS ima LEFT JOIN `idcard`.`TrainingData` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
           trainingData = run_query(query)
+          
+          # Variables for Text Input
           training = []
           institute = []
           date = []
           days = []
+          
+          # Boolean for flow control
           insert = False
           update = False
           insertnew = False
+          
+          # Check if Training Data is already there for an Employee
           if (trainingData[0][0] != None):
             update = True
             for i in range(len(trainingData)):
-              x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], disabled = not checkbox_val)
+              x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], key = 'training' + str(i), disabled = not checkbox_val)
               training.append(x)
-              x = st.text_input(label = 'Institute', value = trainingData[i][1], disabled = not checkbox_val)
+              x = st.text_input(label = 'Institute', value = trainingData[i][1], key = 'institute' + str(i), disabled = not checkbox_val)
               institute.append(x)
-              x = st.text_input(label = 'Date', value = trainingData[i][2], disabled = not checkbox_val)
+              x = st.text_input(label = 'Date', value = trainingData[i][2], key = 'date' + str(i), disabled = not checkbox_val)
               date.append(x)
-              x = st.text_input(label = 'Days', value = trainingData[i][3], disabled = not checkbox_val)
+              x = st.text_input(label = 'Days', value = trainingData[i][3], key = 'days' + str(i), disabled = not checkbox_val)
               days.append(x)
           else:
+            if checkbox_training:
               insert = True
-              x = st.text_input(label = 'Training #1', value = trainingData[0][0], disabled = not checkbox_val)
+              x = st.text_input(label = 'Training #1', placeholder = 'Training?', disabled = not checkbox_val)
               training.append(x)
-              x = st.text_input(label = 'Institute', value = trainingData[0][1], disabled = not checkbox_val)
+              x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
               institute.append(x)
-              x = st.text_input(label = 'Date', value = trainingData[0][2], disabled = not checkbox_val)
+              x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
               date.append(x)
-              x = st.text_input(label = 'Days', value = trainingData[0][3], disabled = not checkbox_val)
+              x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
               days.append(x)
-          if checkbox_training:
-            insertnew = True
-            x = st.text_input(label = 'Training #' + str(len(trainingData) + 1), placeholder = 'Training?', disabled = not checkbox_val)
-            training.append(x)
-            x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
-            institute.append(x)
-            x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
-            date.append(x)
-            x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
-            days.append(x)
+            else:
+              st.info('No Training Data available', icon="ℹ️")
           
         submitted = st.form_submit_button("Save Changes")
         if submitted:
+          ## ImageBase
           # Writing to databank idcard Table ImageBase
           query = "UPDATE `idcard`.`ImageBase` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, image, index)
           run_query(query)
           conn.commit()
-          # Writing to databank idcard Table TrainingData
+          
+          ## TrainingData
+          # Writing to databank idcard Table TrainingData - new first Entry
           if (insert == True):
-            query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
-            run_query(query)
-            conn.commit()
+            if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
+              query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+              run_query(query)
+              conn.commit()
+            else:
+              st.warning('Not sumitted as Data is missing', icon="⚠️")
+          # Writing to databank idcard Table TrainingData - new Entries (not first)
+          if (insertnew == True):
+            if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
+              query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
+              run_query(query)
+              conn.commit()
+            else:
+              st.warning('Not sumitted as Data is missing', icon="⚠️")
+          # Writing to databank idcard Table TrainingData - Updates to all existing entries
           if (update == True):
             for i in range(len(trainingData)):
               query = "UPDATE `idcard`.`TrainingData` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], i + 1)
               run_query(query)
               conn.commit()
-          if (insertnew == True):
-            query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
-            run_query(query)
-            conn.commit()
-          st.experimental_rerun()
+          #st.experimental_rerun()
   
 else :
   ## Landing Page
