@@ -21,6 +21,14 @@ st.set_page_config(
         }
 )
 
+## Initialization of Session States
+# First Run State
+if ('success' not in st.session_state):
+  st.session_state['run'] = True
+# Database Transmition Success State
+if ('success' not in st.session_state):
+  st.session_state['success'] = False
+
 ## Password / User checking
 def check_password():
     """Returns `True` if the user had a correct password."""
@@ -92,7 +100,6 @@ if check_password():
     conn = init_connection()
 
     # Checkbox for option to see databank data
-    st.subheader('Databank data')
     query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
     databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE'])
@@ -114,18 +121,23 @@ if check_password():
       # Concenate Forename and Surname for Sidebar Selectbox
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
-    # Employee Selectbox
-    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x])
+    # Employee Selectbox (on change sets first start session state)
+    def onChange():
+      st.session_state.run = True
+    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange)
     
     # Checkboxes for Editing and Adding
     if (index != 0):
       checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
       checkbox_training = st.checkbox(label = 'Add Training', value = False, disabled = not checkbox_val)
+    
+    ## Form for showing Employee input fields 
+    with st.form("Employee", clear_on_submit = True):
+      st.title('Employee Master Data')
       
-    # If new Employee just show empty form
-    if (index == 0):
-      with st.form("new", clear_on_submit = True):
-        # Check for ID number
+      # If new Employee just show empty form
+      if (index == 0):
+        # Check for ID number count of Employee
         id = 0
         query = "SELECT ID from `idcard`.`IMAGEBASE`;"
         rows = run_query(query)
@@ -133,12 +145,14 @@ if check_password():
         for row in rows:
           # Checking for ID
           id = int(row[0]) + 1
+        if (id == 0):
+          id = 1
         id = st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)  
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
         surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
         job = st.text_input(label = 'Job', placeholder = 'Job?')
-        exp = st.text_input(label = 'Layout', value = '2023-12-31 00:00:00')
+        exp = st.text_input(label = 'Expirity Date', value = '2023-12-31 00:00:00')
         eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
         capri = st.text_input(label = 'Cards Printed', value = 0)
         st.image('portrait-placeholder.png')
@@ -154,8 +168,9 @@ if check_password():
           run_query(query)
           conn.commit()
           st.experimental_rerun()
-    else:
-      with st.form("edit", clear_on_submit = True):
+      
+      # If data is already existent, show filled form  
+      else:
         # Get information of selected Employee
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
         employee = run_query(query)
@@ -175,6 +190,7 @@ if check_password():
         
         with st.expander("Training Data", expanded = False):
           ## Get information of selected Employee regarding Training
+          st.title('Employee Training Data')
           # Check for last ID number in TrainingData (to add data after)
           idT = 0
           query = "SELECT ID from `idcard`.`TrainingData`;"
@@ -195,34 +211,57 @@ if check_password():
           # Boolean for flow control
           insert = False
           update = False
-          insertnew = False
           
           # Check if Training Data is already there for an Employee
           if (trainingData[0][0] != None):
-            update = True
+            update = False
             for i in range(len(trainingData)):
+              # Show (Multiple) Input(s)
               x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], key = 'training' + str(i), disabled = not checkbox_val)
-              training.append(x)
+              if (trainingData[i][0] != x):
+                training.append(x)
+                update = True
               x = st.text_input(label = 'Institute', value = trainingData[i][1], key = 'institute' + str(i), disabled = not checkbox_val)
-              institute.append(x)
+              if (trainingData[i][1] != x):
+                institute.append(x)
+                update = True
               x = st.text_input(label = 'Date', value = trainingData[i][2], key = 'date' + str(i), disabled = not checkbox_val)
-              date.append(x)
+              if (trainingData[i][2] != x):
+                date.append(x)
+                update = True
               x = st.text_input(label = 'Days', value = trainingData[i][3], key = 'days' + str(i), disabled = not checkbox_val)
-              days.append(x)
-          else:
-            if checkbox_training:
-              insert = True
-              x = st.text_input(label = 'Training #1', placeholder = 'Training?', disabled = not checkbox_val)
-              training.append(x)
-              x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
-              institute.append(x)
-              x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
-              date.append(x)
-              x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
-              days.append(x)
-            else:
+              if (trainingData[i][3] != x):
+                days.append(x)
+                update = True
+              
+          # Show new entry input fields if Checkbox 'Add Training' is checked
+          if not checkbox_training:
+            if (trainingData[0][0] == None):
               st.info('No Training Data available', icon="ℹ️")
-          
+          else:
+            insert = True
+            # Calculating number of training
+            if (trainingData[0][0] != None):
+              counter = 'Training #' + str(len(trainingData) + 1) 
+            else:
+              counter = 'Training #' + str(len(trainingData)) 
+            # Inputs for new Training
+            x = st.text_input(label = counter, placeholder = 'Training?', disabled = not checkbox_val)
+            training.append(x)
+            x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
+            institute.append(x)
+            x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
+            date.append(x)
+            x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
+            days.append(x)
+            
+        # Warning or Success messages after reloading
+        if (st.session_state.run != True and st.session_state.success == True):
+          st.success('Data submitted to Databank.', icon="✅")
+        else:
+          if (st.session_state.run != True):
+            st.warning('Not sumitted, as no new Data was entered!', icon="⚠️")
+        
         submitted = st.form_submit_button("Save Changes")
         if submitted:
           ## ImageBase
@@ -231,33 +270,44 @@ if check_password():
           run_query(query)
           conn.commit()
           
-          ## TrainingData
+          ## Transmit Training Data to Databank idcard Table TrainingData
           # Writing to databank idcard Table TrainingData - new first Entry
-          if (insert == True):
+          if (insert == True and update == False):
+            st.write(training[0], institute[0], date[0], days[0])
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
               query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
               run_query(query)
               conn.commit()
+              st.session_state.success = True
             else:
-              st.warning('Not sumitted as Data is missing', icon="⚠️")
+              st.session_state.success = False
+              
           # Writing to databank idcard Table TrainingData - new Entries (not first)
-          if (insertnew == True):
+          if (insert == True and update == True):
+            st.write(training[0], institute[0], date[0], days[0])
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
               query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)
               conn.commit()
+              st.session_state.success = True
             else:
-              st.warning('Not sumitted as Data is missing', icon="⚠️")
+              st.session_state.success = False
+              
           # Writing to databank idcard Table TrainingData - Updates to all existing entries
           if (update == True):
             for i in range(len(trainingData)):
+              st.write(training[i], institute[i], date[i], days[i])
               query = "UPDATE `idcard`.`TrainingData` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], i + 1)
               run_query(query)
               conn.commit()
-          #st.experimental_rerun()
-  
+            st.session_state.success = True
+          
+          # Set Session State to 2nd run and reloading to get actual data
+          st.session_state.run = False
+          st.experimental_rerun()
+          
+## Landing Page
 else :
-  ## Landing Page
   st.title('Kamuzu Central Hospital (KCH) HR Staff Portal Landing Page')
 
   ## Download links
