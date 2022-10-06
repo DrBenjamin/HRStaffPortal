@@ -5,7 +5,14 @@
 
 Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended (RStudio project file is included). Install [git](https://git-scm.com/download/win) to use version control.
 
-#### [Streamlit Configuration]
+#### [Streamlit Setup]
+
+Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally.
+
+```
+streamlit run streamlit_app.py
+```
+
 ##### Some extra configuration.
 
 In the `./streamlit/config.toml` you define the theming and some Server behaviour flags.
