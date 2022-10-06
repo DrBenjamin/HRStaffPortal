@@ -16,6 +16,6 @@ BuildType: Package
 PackageUseDevtools: Yes
 PackageInstallArgs: --no-multiarch --with-keep.source
 
-PythonType: conda
-PythonVersion: 3.9.12
-PythonPath: ~/opt/miniconda3/bin/python3.9
+PythonType: system
+PythonVersion: 3.10.7
+PythonPath: C:/Program Files/Python310/python.exe
