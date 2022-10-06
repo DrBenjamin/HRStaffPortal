@@ -7,6 +7,7 @@ from datetime import datetime
 import mysql.connector
 import sys
 
+
 ### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ## Streamlit initial setup
 st.set_page_config(
@@ -21,6 +22,10 @@ st.set_page_config(
         }
 )
 
+
+## Get query parameter `EMPLOYE_NO`
+eno = st.experimental_get_query_params()
+
 ## Initialization of Session States
 # First Run State
 if ('success' not in st.session_state):
@@ -29,8 +34,8 @@ if ('success' not in st.session_state):
 if ('success' not in st.session_state):
   st.session_state['success'] = False
 # Selected Employee Session State
-if ('employee' not in st.session_state):
-  st.session_state['employee'] = 0
+if ('index' not in st.session_state):
+  st.session_state['index'] = 0
 
 
 ## Password / User checking
@@ -80,6 +85,7 @@ def check_password():
         show_title = False
         return True
 
+## Logged in state
 if check_password():
     ## SQL Connection
     # Initialize connection
@@ -116,20 +122,25 @@ if check_password():
       databank = databank.set_index('ID')
       st.dataframe(databank, use_container_width = True)
       
-    # Combine Forename and Surname for Sidebar Selectbox
+    # Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee Selectbox
     query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
+    # Building `ID` / `EMPLOYEE` pair and
+    # combine Forename and Surname for employee selectbox
     row = [0]
     names = ['New Employee']
     for row in rows:
+      # Find pair and set sessoin state `index` to `ID` if not empty
+      if (eno['eno'][0].strip()):
+        if (eno['eno'][0] == row[3]):
+          st.session_state.index = row[0]
       # Concenate Forename and Surname for Sidebar Selectbox
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
     # Employee Selectbox (on change sets first start session state)
     def onChange():
       st.session_state.run = True
-    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.employee)
-    st.session_state.employee = index
+    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.index)
     
     # Checkboxes for Editing and Adding
     if (index != 0):
@@ -142,6 +153,10 @@ if check_password():
       
       # If new Employee just show empty form
       if (index == 0):
+        # Set query parameter
+        st.experimental_set_query_params(
+        eno="xxxxxx")
+        
         # Check for ID number count of Employee
         id = 0
         query = "SELECT ID from `idcard`.`IMAGEBASE`;"
@@ -168,10 +183,18 @@ if check_password():
         
         submitted = st.form_submit_button("Create New Employee")
         if submitted:
+          # Set query parameter
+          st.experimental_set_query_params(
+          eno=eno)
+          
           # Writing to databank
           query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s, '%s');" %(id, layout, forename, surname, job, exp, eno, capri, image)
           run_query(query)
           conn.commit()
+          
+          # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
+          st.session_state.index = int(id)
+          
           st.experimental_rerun()
       
       # If data is already existent, show filled form  
@@ -179,6 +202,7 @@ if check_password():
         # Get information of selected Employee
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
         employee = run_query(query)
+        
         id = st.text_input(label = 'ID', value = employee[0][0], disabled = True)
         layout = st.text_input(label = 'Layout', value = employee[0][1], disabled = True)
         forename = st.text_input(label = 'Forename', value = employee[0][2], disabled = not checkbox_val)
@@ -193,6 +217,10 @@ if check_password():
         if uploaded_file is not None:
           image = bytes_data = uploaded_file.getvalue()
         
+        # Set query parameter
+        st.experimental_set_query_params(
+        eno=eno)
+          
         with st.expander("Training Data", expanded = False):
           ## Get information of selected Employee regarding Training
           st.title('Employee Training Data')
@@ -269,14 +297,15 @@ if check_password():
         
         submitted = st.form_submit_button("Save Changes")
         if submitted:
-          ## ImageBase
-          # Writing to databank idcard Table ImageBase
+          # Set session state `index`
+          st.session_state.index = index
+          
+          # Writing to databank idcard Table IMAGEBASE
           query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, image, index)
           run_query(query)
           conn.commit()
           
-          ## Transmit Training Data to Databank idcard Table TrainingData
-          # Writing to databank idcard Table TrainingData - new first Entry
+          # Writing to databank idcard Table TRAININGDATA - new first Entry
           if (insert == True and update == False):
             st.write(training[0], institute[0], date[0], days[0])
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
@@ -287,7 +316,7 @@ if check_password():
             else:
               st.session_state.success = False
               
-          # Writing to databank idcard Table TrainingData - new Entries (not first)
+          # Writing to databank idcard Table TRAININGDATA - new Entries (not first)
           if (insert == True and update == True):
             st.write(training[0], institute[0], date[0], days[0])
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
@@ -298,7 +327,7 @@ if check_password():
             else:
               st.session_state.success = False
               
-          # Writing to databank idcard Table TrainingData - Updates to all existing entries
+          # Writing to databank idcard Table TRAININGDATA - Updates to all existing entries
           if (update == True):
             for i in range(len(trainingData)):
               st.write(training[i], institute[i], date[i], days[i])
@@ -311,7 +340,8 @@ if check_password():
           st.session_state.run = False
           st.experimental_rerun()
           
-## Landing Page
+          
+## Not logged in - Landing Page
 else :
   st.title('Kamuzu Central Hospital (KCH) HR Staff Portal Landing Page')
 
