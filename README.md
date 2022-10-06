@@ -3,6 +3,8 @@
 
 ### This Software is based on Streamlit, a Python framework to build web apps.
 
+Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended (RStudio project file is included). Install [git](https://git-scm.com/download/win) to use version control.
+
 #### [Streamlit Configuration]
 ##### Some extra configuration.
 
@@ -18,6 +20,15 @@ font = "sans serif"
 
 [server]
 headless = true
+```
+
+In the `./streamlit/secrets.toml` you define the user / password combinations.
+
+```
+[passwords]
+# Follow the rule: username = "password"
+xyz = "xyz"
+
 ```
 
 #### [MySQL Server Configuration]
