@@ -1,11 +1,15 @@
-# HRStaffPortal
-KCH HR Staff Portal
+#### HRStaffPortal
+### KCH HR Staff Portal Prototype
 
-This Software is based on Streamlit, a Python framework to build web apps.
+## This Software is based on Streamlit, a Python framework to build web apps.
 
+# [MySQL Server Configuration]
 For proper usage a local MySQL Server is needed. Config:
 
-In the secrets.toml you define the user/password combination of the MySQL Server.
+In the ./streamlit/secrets.toml you define the user/password combination of the MySQL Server.
+
+Create Schema / Database with the name 'idcard'. To configure the database to work with the 
+Prototype, run the following SQL commands:
 
 CREATE TABLE `idcard`.`ImageBase` (
   `ID` INT NOT NULL,
