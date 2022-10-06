@@ -28,6 +28,10 @@ if ('success' not in st.session_state):
 # Database Transmition Success State
 if ('success' not in st.session_state):
   st.session_state['success'] = False
+# Selected Employee Session State
+if ('employee' not in st.session_state):
+  st.session_state['employee'] = 0
+
 
 ## Password / User checking
 def check_password():
@@ -124,7 +128,7 @@ if check_password():
     # Employee Selectbox (on change sets first start session state)
     def onChange():
       st.session_state.run = True
-    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange)
+    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.employee)
     
     # Checkboxes for Editing and Adding
     if (index != 0):
@@ -209,8 +213,8 @@ if check_password():
           days = []
           
           # Boolean for flow control
-          insert = False
-          update = False
+          insert = False # Will be set to `True` if a new entry is entered
+          update = False # Will be set to `True` if existing data is altered
           
           # Check if Training Data is already there for an Employee
           if (trainingData[0][0] != None):
