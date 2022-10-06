@@ -135,9 +135,10 @@ if check_password():
     names = ['New Employee']
     for row in rows:
       # Find pair and set sessoin state `index` to `ID` if not empty
-      if (eno['eno'][0].strip()):
-        if (eno['eno'][0] == row[3]):
-          st.session_state.index = row[0]
+      if eno:
+        if (eno['eno'][0].strip()):
+          if (eno['eno'][0] == row[3]):
+            st.session_state.index = row[0]
       # Concenate Forename and Surname for Sidebar Selectbox
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
