@@ -1,8 +1,11 @@
 # HRStaffPortal
 ## KCH HR Staff Portal Prototype
 
+<<<<<<< HEAD
 This Prototype handles employee data of KCH Staff which is created through the process of printing ID Cards with the EasyBadge ID Card Printer Software. All data is stored in a MySQL Databank.
 
+=======
+>>>>>>> 9466b98b203658c8ab58d69cecec431af03e1508
 ### This Software is based on Streamlit, a Python framework to build web apps.
 
 Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended (RStudio project file is included). Install [git](https://git-scm.com/download/win) to use version control.
