@@ -1,12 +1,7 @@
 # HRStaffPortal
 ## KCH HR Staff Portal Prototype
 
-<<<<<<< HEAD
 This Prototype handles employee data of KCH Staff which is created through the process of printing ID Cards with the EasyBadge ID Card Printer Software. All data is stored in a MySQL Databank.
-
-=======
->>>>>>> 9466b98b203658c8ab58d69cecec431af03e1508
-### This Software is based on Streamlit, a Python framework to build web apps.
 
 Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended (RStudio project file is included). Install [git](https://git-scm.com/download/win) to use version control.
 
@@ -60,7 +55,7 @@ password = "xyz"
 Create Schema / Database with the name 'idcard'. To configure the database to work with the Prototype, run the following SQL commands:
 
 ```
-  CREATE TABLE `idcard`.`ImageBase` (
+  CREATE TABLE `idcard`.`IMAGEBASE` (
   `ID` INT NOT NULL,
   `LAYOUT` INT NOT NULL,
   `FORENAME` VARCHAR(45) NULL,
@@ -72,7 +67,7 @@ Create Schema / Database with the name 'idcard'. To configure the database to wo
   `IMAGE` BLOB NULL,
   PRIMARY KEY (`ID`));
   
-  CREATE TABLE `idcard`.`TrainingData` (
+  CREATE TABLE `idcard`.`TRAININGDATA` (
   `ID` INT NOT NULL,
   `EMPLOYEE_NO` VARCHAR(45) NULL,
   `TRAINING` VARCHAR(45) NULL,

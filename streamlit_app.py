@@ -199,7 +199,7 @@ if check_password():
           for row in rows:
             idT = int(row[0]) + 1
           # Get Training Data
-          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS FROM `idcard`.`ImageBase` AS ima LEFT JOIN `idcard`.`TrainingData` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
+          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
           trainingData = run_query(query)
           
           # Variables for Text Input
@@ -266,7 +266,7 @@ if check_password():
         if submitted:
           ## ImageBase
           # Writing to databank idcard Table ImageBase
-          query = "UPDATE `idcard`.`ImageBase` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, image, index)
+          query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, image, index)
           run_query(query)
           conn.commit()
           
@@ -275,7 +275,7 @@ if check_password():
           if (insert == True and update == False):
             st.write(training[0], institute[0], date[0], days[0])
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
-              query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
               run_query(query)
               conn.commit()
               st.session_state.success = True
@@ -286,7 +286,7 @@ if check_password():
           if (insert == True and update == True):
             st.write(training[0], institute[0], date[0], days[0])
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
-              query = "INSERT INTO `idcard`.`TrainingData`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
+              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)
               conn.commit()
               st.session_state.success = True
@@ -297,7 +297,7 @@ if check_password():
           if (update == True):
             for i in range(len(trainingData)):
               st.write(training[i], institute[i], date[i], days[i])
-              query = "UPDATE `idcard`.`TrainingData` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], i + 1)
+              query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], i + 1)
               run_query(query)
               conn.commit()
             st.session_state.success = True
