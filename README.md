@@ -3,13 +3,36 @@
 
 ### This Software is based on Streamlit, a Python framework to build web apps.
 
+#### [Streamlit Configuration]
+##### Some extra configuration.
+
+In the `./streamlit/config.toml` you define the theming and some Server behaviour flags.
+
+````
+[theme]
+primaryColor = "#F63366"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+font = "sans serif"
+
+[server]
+headless = true
+```
 #### [MySQL Server Configuration]
 ##### For proper usage a local MySQL Server is needed.
 
 In the `./streamlit/secrets.toml` you define the user/password combination of the MySQL Server.
+```
+[mysql]
+host = "127.0.0.1"
+port = 3306
+database = "idcard"
+user = "xyz"
+password = "xyz"
+```
 
-###### Create Schema / Database with the name 'idcard'. To configure the database to work with the 
-###### Prototype, run the following SQL commands:
+Create Schema / Database with the name 'idcard'. To configure the database to work with the Prototype, run the following SQL commands:
 
 ```
   CREATE TABLE `idcard`.`ImageBase` (
