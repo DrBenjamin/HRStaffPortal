@@ -1,3 +1,8 @@
+### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
+### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
+
+
+## Loading neded Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
 import pandas as pd
@@ -8,7 +13,6 @@ import mysql.connector
 import sys
 
 
-### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ## Streamlit initial setup
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
