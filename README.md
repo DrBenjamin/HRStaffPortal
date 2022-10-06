@@ -8,7 +8,7 @@
 
 In the `./streamlit/config.toml` you define the theming and some Server behaviour flags.
 
-````
+```
 [theme]
 primaryColor = "#F63366"
 backgroundColor = "#FFFFFF"
@@ -19,10 +19,12 @@ font = "sans serif"
 [server]
 headless = true
 ```
+
 #### [MySQL Server Configuration]
 ##### For proper usage a local MySQL Server is needed.
 
 In the `./streamlit/secrets.toml` you define the user/password combination of the MySQL Server.
+
 ```
 [mysql]
 host = "127.0.0.1"
