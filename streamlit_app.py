@@ -129,6 +129,7 @@ if check_password():
     def onChange():
       st.session_state.run = True
     index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.employee)
+    st.session_state.employee = index
     
     # Checkboxes for Editing and Adding
     if (index != 0):
