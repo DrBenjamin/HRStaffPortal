@@ -1,7 +1,7 @@
 # My stuff to be ignored
 .Rdata
 .Rbuildignore
-HRStaffPortal.Rproj
+HRStaffPortal.*
 .Rhistory
 secrets.toml
 .streamlit/
