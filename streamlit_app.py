@@ -193,7 +193,7 @@ if check_password():
           st.title('Employee Training Data')
           # Check for last ID number in TrainingData (to add data after)
           idT = 0
-          query = "SELECT ID from `idcard`.`TrainingData`;"
+          query = "SELECT ID from `idcard`.`TRAININGDATA`;"
           rows = run_query(query)
           row = [0]
           for row in rows:
