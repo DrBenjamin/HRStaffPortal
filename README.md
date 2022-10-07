@@ -5,6 +5,12 @@ This Prototype handles employee data of KCH Staff which is created through the p
 
 Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended (RStudio project file is included). Install [git](https://git-scm.com/download/win) to use version control.
 
+Clone the repository of `HRStaffPortal` with following command:
+
+```
+git clone https://github.com/DrBenjamin/HRStaffPortal.git
+```
+
 #### [Streamlit Setup]
 ##### Installation of Python, Streamlit and dependencies plus some configuration
 
