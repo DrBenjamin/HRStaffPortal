@@ -11,6 +11,7 @@ Clone the **repository** of `HRStaffPortal` with following command:
 git clone https://github.com/DrBenjamin/HRStaffPortal.git
 ```
 
+
 #### [Streamlit Setup]
 ##### Installation of Python, Streamlit and dependencies plus some configuration
 
@@ -48,8 +49,9 @@ xyz = "xyz"
 
 ```
 
+
 #### [MySQL Server Configuration]
-##### For proper usage a local MySQL Server is needed.
+##### For proper usage a local MySQL Server is needed
 
 In the `./streamlit/secrets.toml` you define the **user/password** combination for the MySQL Server:
 
@@ -88,6 +90,7 @@ To configure the database to work with the Prototype and run the following **SQL
   `DAYS` VARCHAR(45) NULL,
   PRIMARY KEY (`ID`));
 ```
+
 
 #### [Open the project in RStudio]
 ##### Access all the files of the cloned repository
