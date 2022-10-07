@@ -6,6 +6,7 @@ This Prototype handles employee data of KCH Staff which is created through the p
 Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended (RStudio project file is included). Install [git](https://git-scm.com/download/win) to use version control.
 
 #### [Streamlit Setup]
+##### Installation of Python, Streamlit and dependencies plus some configuration
 
 Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally.
 
@@ -16,7 +17,7 @@ pip install mysql-connector-python-rf
 pip install mysql-connector-python==8.0.29
 ```
 
-##### Some extra configuration.
+##### Configuration
 
 In the `./streamlit/config.toml` you define the theming and some Server behaviour flags:
 
@@ -78,8 +79,10 @@ Create Schema / Database with the name 'idcard'. To configure the database to wo
   `DATE` VARCHAR(45) NULL,
   `DAYS` VARCHAR(45) NULL,
   PRIMARY KEY (`ID`));
-  
+```
+
 #### [Run the App]
+##### Streamlit will open the web app on your IP address on port 8501
 
 If you installed all dependencies, configured the MySQL Server and configured the streamlit app (`config.toml` / `secrets.toml`) you can run the app locally with this command:
 
