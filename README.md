@@ -9,13 +9,16 @@ Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#do
 
 Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally.
 
+After that you need to install some Python libraries:
+
 ```
-streamlit run streamlit_app.py
+pip install mysql-connector-python-rf
+pip install mysql-connector-python==8.0.29
 ```
 
 ##### Some extra configuration.
 
-In the `./streamlit/config.toml` you define the theming and some Server behaviour flags.
+In the `./streamlit/config.toml` you define the theming and some Server behaviour flags:
 
 ```
 [theme]
@@ -29,7 +32,7 @@ font = "sans serif"
 headless = true
 ```
 
-In the `./streamlit/secrets.toml` you define the user / password combinations.
+In the `./streamlit/secrets.toml` you define the user / password combinations:
 
 ```
 [passwords]
@@ -41,7 +44,7 @@ xyz = "xyz"
 #### [MySQL Server Configuration]
 ##### For proper usage a local MySQL Server is needed.
 
-In the `./streamlit/secrets.toml` you define the user/password combination of the MySQL Server.
+In the `./streamlit/secrets.toml` you define the user/password combination of the MySQL Server:
 
 ```
 [mysql]
@@ -52,7 +55,7 @@ user = "xyz"
 password = "xyz"
 ```
 
-Create Schema / Database with the name 'idcard'. To configure the database to work with the Prototype, run the following SQL commands:
+Create Schema / Database with the name 'idcard'. To configure the database to work with the Prototype and run the following SQL commands:
 
 ```
   CREATE TABLE `idcard`.`IMAGEBASE` (
@@ -75,4 +78,11 @@ Create Schema / Database with the name 'idcard'. To configure the database to wo
   `DATE` VARCHAR(45) NULL,
   `DAYS` VARCHAR(45) NULL,
   PRIMARY KEY (`ID`));
+  
+#### [Run the App]
+
+If you installed all dependencies, configured the MySQL Server and configured the streamlit app (`config.toml` / `secrets.toml`) you can run the app locally with this command:
+
+```
+streamlit run streamlit_app.py
 ```
