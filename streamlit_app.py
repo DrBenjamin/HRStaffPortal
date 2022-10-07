@@ -365,7 +365,7 @@ if check_password():
           st.experimental_rerun()
           
           
-## Not logged in - Landing Page
+## Not logged in -> Landing Page
 else :
   st.title('Kamuzu Central Hospital (KCH) HR Staff Portal Landing Page')
 
