@@ -333,6 +333,7 @@ if check_password():
               st.session_state.success = False
               
           # Writing to databank idcard Table TRAININGDATA - Updates to all existing entries
+          # !!!still buggy as `i` is used for setting `ID`, which overwrites the wrong rows in the table!!!
           if (update == True):
             for i in range(len(trainingData)):
               st.write(training[i], institute[i], date[i], days[i])
