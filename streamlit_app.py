@@ -147,7 +147,7 @@ if check_password():
       st.session_state.run = True
     index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.index)
     
-    # Checkboxes for Editing and Adding
+    # Checkboxes for editing and adding Training data
     if (index != 0):
       checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
       checkbox_training = st.checkbox(label = 'Add Training', value = False, disabled = not checkbox_val)
@@ -170,8 +170,11 @@ if check_password():
         for row in rows:
           # Checking for ID
           id = int(row[0]) + 1
+        # If first entry in database start with `ID` `1`
         if (id == 0):
           id = 1
+        
+        # Text Input for employee data
         id = st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)  
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
@@ -208,6 +211,7 @@ if check_password():
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
         employee = run_query(query)
         
+        # Text Input for employee data
         id = st.text_input(label = 'ID', value = employee[0][0], disabled = True)
         layout = st.text_input(label = 'Layout', value = employee[0][1], disabled = True)
         forename = st.text_input(label = 'Forename', value = employee[0][2], disabled = not checkbox_val)
@@ -226,9 +230,10 @@ if check_password():
         st.experimental_set_query_params(
         eno=eno)
           
-        with st.expander("Training Data", expanded = False):
+        with st.expander("Training Data", expanded = checkbox_training):
           ## Get information of selected Employee regarding Training
           st.title('Employee Training Data')
+          
           # Check for last ID number in TrainingData (to add data after)
           idT = 0
           query = "SELECT ID from `idcard`.`TRAININGDATA`;"
@@ -236,8 +241,12 @@ if check_password():
           row = [0]
           for row in rows:
             idT = int(row[0]) + 1
+          # If first entry in database start with `ID` `1` 
+          if (idT == 0):
+            idT = 1
+          
           # Get Training Data
-          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
+          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
           trainingData = run_query(query)
           
           # Variables for Text Input
@@ -250,48 +259,56 @@ if check_password():
           insert = False # Will be set to `True` if a new entry is entered
           update = False # Will be set to `True` if existing data is altered
           
-          # Check if Training Data is already there for an Employee
+          # Check if Training Data is already there for an Employee and show it
           if (trainingData[0][0] != None):
             update = False
             for i in range(len(trainingData)):
               # Show (Multiple) Input(s)
               x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], key = 'training' + str(i), disabled = not checkbox_val)
               if (trainingData[i][0] != x):
-                training.append(x)
                 update = True
+              training.append(x)
               x = st.text_input(label = 'Institute', value = trainingData[i][1], key = 'institute' + str(i), disabled = not checkbox_val)
               if (trainingData[i][1] != x):
-                institute.append(x)
                 update = True
+              institute.append(x)
               x = st.text_input(label = 'Date', value = trainingData[i][2], key = 'date' + str(i), disabled = not checkbox_val)
               if (trainingData[i][2] != x):
-                date.append(x)
                 update = True
+              date.append(x)
               x = st.text_input(label = 'Days', value = trainingData[i][3], key = 'days' + str(i), disabled = not checkbox_val)
               if (trainingData[i][3] != x):
-                days.append(x)
                 update = True
+              days.append(x)
               
-          # Show new entry input fields if Checkbox 'Add Training' is checked
+          # Show new entry input fields if checkbox 'Add Training' is checked
           if not checkbox_training:
             if (trainingData[0][0] == None):
               st.info('No Training Data available', icon="ℹ️")
           else:
-            insert = True
             # Calculating number of training
             if (trainingData[0][0] != None):
-              counter = 'Training #' + str(len(trainingData) + 1) 
+              counter = 'Training #1'
             else:
-              counter = 'Training #' + str(len(trainingData)) 
+              counter = 'Training #' + str(len(trainingData))
+              
             # Inputs for new Training
             x = st.text_input(label = counter, placeholder = 'Training?', disabled = not checkbox_val)
-            training.append(x)
+            if x.strip():
+              training.append(x)
+              insert = True
             x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
-            institute.append(x)
+            if x.strip():
+              institute.append(x)
+              insert = True
             x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
-            date.append(x)
+            if x.strip():
+              date.append(x)
+              insert = True
             x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
-            days.append(x)
+            if x.strip():
+              days.append(x)
+              insert = True
             
         # Warning or Success messages after reloading
         if (st.session_state.run != True and st.session_state.success == True):
@@ -324,6 +341,7 @@ if check_password():
           # Writing to databank idcard Table TRAININGDATA - new Entries (not first)
           if (insert == True and update == True):
             st.write(training[0], institute[0], date[0], days[0])
+            st.write(len(trainingData))
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
               query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)
@@ -333,11 +351,11 @@ if check_password():
               st.session_state.success = False
               
           # Writing to databank idcard Table TRAININGDATA - Updates to all existing entries
-          # !!!still buggy as `i` is used for setting `ID`, which overwrites the wrong rows in the table!!!
           if (update == True):
             for i in range(len(trainingData)):
               st.write(training[i], institute[i], date[i], days[i])
-              query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], i + 1)
+              st.write(trainingData[i][4])
+              query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
               run_query(query)
               conn.commit()
             st.session_state.success = True
