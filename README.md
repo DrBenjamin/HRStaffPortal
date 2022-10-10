@@ -15,7 +15,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git
 #### [Streamlit Setup]
 ##### Installation of Python, Streamlit and dependencies plus some configuration
 
-Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally.
+Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally. A virtual Python-Environment like Anaconda is highly recommend.
 
 After that you need to install some **Python libraries*:
 
