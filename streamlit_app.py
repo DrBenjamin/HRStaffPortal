@@ -1,6 +1,6 @@
 ### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
-
+### Please reach out to benjamin.gross@giz.de for any question
 
 ## Loading neded Python libraries
 import streamlit as st
