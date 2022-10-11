@@ -115,11 +115,11 @@ if check_password():
     conn = init_connection()
 
     # Checkbox for option to see databank data
-    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE`;"
+    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
-    databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE'])
+    databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
     for row in rows:
-      df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED', 'IMAGE'])
+      df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
       databank = databank.append(df)
     
     # Print databank in dataframe table
@@ -175,9 +175,9 @@ if check_password():
         if (id == 0):
           id = 1
         
-        # Text Input for employee data
+        # Text Input for new employee data
         id = st.text_input(label = 'ID', value = id, disabled = True)
-        layout = st.text_input(label = 'Layout', value = 1)  
+        layout = st.text_input(label = 'Layout', value = 1)
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
         surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
         job = st.text_input(label = 'Job', placeholder = 'Job?')
@@ -185,24 +185,29 @@ if check_password():
         eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
         capri = st.text_input(label = 'Cards Printed', value = 0)
         st.image('portrait-placeholder.png')
-        uploaded_file = st.file_uploader("Upload a picture (256×360)")
-        image = 'DATA'
+        uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = ['png', 'jpg'])
+        image = 'NoPic'
         if uploaded_file is not None:
-          image = bytes_data = uploaded_file.getvalue()
-        
+          image = uploaded_file.getvalue()
+
+        # Submit Button `Create New Employee`
         submitted = st.form_submit_button("Create New Employee")
         if submitted:
-          # Set query parameter
-          st.experimental_set_query_params(
-          eno=eno)
-          
-          # Writing to databank
-          query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s, '%s');" %(id, layout, forename, surname, job, exp, eno, capri, image)
-          run_query(query)
-          conn.commit()
-          
-          # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
-          st.session_state.index = int(id)
+          # Writing to databank if data wsa entered
+          if (layout is not None and forename and surname and job and exp and eno and capri):
+            query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s, '%s');" %(id, layout, forename, surname, job, exp, eno, capri, image)
+            run_query(query)
+            conn.commit()
+            st.session_state.success = True
+            
+            # Set query parameter
+            st.experimental_set_query_params(eno=eno)
+            
+            # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
+            st.session_state.index = int(id)
+            
+          else:
+            st.session_state.success = False
           
           st.experimental_rerun()
       
@@ -212,24 +217,43 @@ if check_password():
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
         employee = run_query(query)
         
-        # Text Input for employee data
+        # Text Input for updating employee data
+        updataMaster = False
         id = st.text_input(label = 'ID', value = employee[0][0], disabled = True)
         layout = st.text_input(label = 'Layout', value = employee[0][1], disabled = True)
         forename = st.text_input(label = 'Forename', value = employee[0][2], disabled = not checkbox_val)
+        if (employee[0][2] != forename):
+          updateMaster = True
         surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
+        if (employee[0][3] != surname):
+          updateMaster = True
         job = st.text_input(label = 'Job', value = employee[0][4], disabled = not checkbox_val)
+        if (employee[0][4] != job):
+          updateMaster = True
         exp = st.text_input(label = 'Expirity Date', value = employee[0][5], disabled = not checkbox_val)
+        if (employee[0][5] != exp):
+          updateMaster = True
         eno = st.text_input(label = 'Employee Number', value = employee[0][6], disabled = not checkbox_val)
+        if (employee[0][6] != eno):
+          updateMaster = True
         capri = st.text_input(label = 'Cards Printed', value = employee[0][7], disabled = not checkbox_val)
-        st.image('portrait-placeholder.png')
-        uploaded_file = st.file_uploader("Upload a picture (256×360)")
-        image = 'DATA'
+        if (employee[0][7] != capri):
+          updateMaster = True
+        if (len(employee[0][8]) < 10):
+          st.image('portrait-placeholder.png')
+        else:          
+          st.image(employee[0][8])
+        uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = ['png', 'jpg'])
         if uploaded_file is not None:
-          image = bytes_data = uploaded_file.getvalue()
+          updateMaster = True
+          image = uploaded_file.getvalue()
+          #' '.join(format(ord(x), 'b') for x in image)
+          #' '.join('{0:08b}'.format(ord(x), 'b') for x in st)
+        else:
+          image = ''
         
         # Set query parameter
-        st.experimental_set_query_params(
-        eno=eno)
+        st.experimental_set_query_params(eno=eno)
           
         with st.expander("Training Data", expanded = checkbox_training):
           ## Get information of selected Employee regarding Training
@@ -324,9 +348,14 @@ if check_password():
           st.session_state.index = index
           
           # Writing to databank idcard Table IMAGEBASE
-          query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, image, index)
-          run_query(query)
-          conn.commit()
+          if (updateMaster == True):
+            query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = %s;" %(layout, forename, surname, job, exp, eno, capri, image, index)
+            st.write(query)
+            run_query(query)
+            conn.commit()
+            st.session_state.success = True
+          else:
+            st.session_state.success = False
           
           # Writing to databank idcard Table TRAININGDATA - new first Entry
           if (insert == True and update == False):
