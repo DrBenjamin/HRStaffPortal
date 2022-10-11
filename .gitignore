@@ -2,6 +2,7 @@
 .Rdata
 .Rbuildignore
 HRStaffPortal.*
+HRStaffPortal.Rproj
 .Rhistory
 secrets.toml
 .streamlit/
@@ -113,3 +114,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .Rproj.user
+HRStaffPortal.Rproj
