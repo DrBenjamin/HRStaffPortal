@@ -1,6 +1,7 @@
 # My stuff to be ignored
 .Rdata
 .Rbuildignore
+blob*
 HRStaffPortal.*
 HRStaffPortal.Rproj
 .Rhistory
