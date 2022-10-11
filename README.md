@@ -3,7 +3,7 @@
 
 This Prototype handles **employee data** of **KCH Staff** which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL Databank.
 
-Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended (RStudio project file is included). Install [git](https://git-scm.com/download/win) to use version control.
+Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended. Install [git](https://git-scm.com/download/win) to use version control.
 
 Clone the **repository** of `HRStaffPortal` with following command:
 
