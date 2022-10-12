@@ -1,9 +1,9 @@
-### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
-### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
-### Please reach out to benjamin.gross@giz.de for any questions
+##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
+##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
+##### Please reach out to benjamin.gross@giz.de for any questions
 
 
-## Loading neded Python libraries
+#### Loading neded Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
 import pandas as pd
@@ -14,7 +14,7 @@ import mysql.connector
 import sys
 
 
-## Streamlit initial setup
+#### Streamlit initial setup
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
   page_icon = "thumbnail.png",
@@ -28,10 +28,14 @@ st.set_page_config(
 )
 
 
-## Get query parameter `EMPLOYE_NO`
+#### Query parameters
+# Get param `EMPLOYE_NO`
 eno = st.experimental_get_query_params()
 
-## Initialization of Session States
+# Get params for trainings / workshops
+# [code]
+
+#### Initialization of Session States
 # First Run State
 if ('success' not in st.session_state):
   st.session_state['run'] = True
@@ -43,7 +47,8 @@ if ('index' not in st.session_state):
   st.session_state['index'] = 0
 
 
-## Password / User checking
+#### All used functions
+### Password / User checking
 def check_password():
     """Returns `True` if the user had a correct password."""
     def password_entered():
@@ -90,19 +95,46 @@ def check_password():
         show_title = False
         return True
 
-## Logged in state
+### SQL Connection
+# Initialize connection
+def init_connection():
+  return mysql.connector.connect(**st.secrets["mysql"])
+# Perform query
+def run_query(query):
+  with conn.cursor() as cur:  
+    cur.execute(query)
+    return cur.fetchall()
+
+### Picture-uploader
+def pictureUploader(image, index):
+  # Initialize connection
+  connection = mysql.connector.connect(**st.secrets["mysql"])
+  cursor = connection.cursor()
+  # SQL statement
+  sql_insert_blob_query = """ UPDATE IMAGEBASE SET IMAGE = %s WHERE ID = %s;"""
+  # Convert data into tuple format
+  insert_blob_tuple = (image, index)
+  result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
+  connection.commit()
+  
+### Convert digital data to binary format
+def loadFile(filename):
+  with open(filename, 'rb') as file:
+    binaryData = file.read()
+  return binaryData
+
+### Write binary data on Hard Disk
+def writeFile(data, filename):
+  with open(filename, mode = 'wb') as file:
+    file.write(data)
+        
+        
+
+#### Two Versions of the page -> Landing page vs. HRStaffPortal
+### Logged in state (HRStattPortal)
 if check_password():
-    ## SQL Connection
-    # Initialize connection
-    def init_connection():
-      return mysql.connector.connect(**st.secrets["mysql"])
-    # Perform query
-    def run_query(query):
-      with conn.cursor() as cur:  
-        cur.execute(query)
-        return cur.fetchall()
     
-    # Show information
+    ## Show information
     with st.expander("Header", expanded = True):
       st.title('KCH HR Staff Portal')
       st.image('MoH.png')
@@ -114,7 +146,7 @@ if check_password():
     # open Databak Connection
     conn = init_connection()
 
-    # Checkbox for option to see databank data
+    ## Checkbox for option to see databank data
     query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
     databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
@@ -122,12 +154,12 @@ if check_password():
       df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
       databank = databank.append(df)
     
-    # Print databank in dataframe table
+    ## Print databank in dataframe table
     with st.expander("See all Databank entries", expanded = False):
       databank = databank.set_index('ID')
       st.dataframe(databank, use_container_width = True)
       
-    # Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee Selectbox
+    ## Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee Selectbox
     query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
     # Building `ID` / `EMPLOYEE` pair and
@@ -143,15 +175,15 @@ if check_password():
       # Concenate Forename and Surname for Sidebar Selectbox
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
-    # Employee Selectbox (on change sets first start session state)
+    ## Employee Selectbox (on change sets first start session state)
     def onChange():
       st.session_state.run = True
     index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.index)
     
-    # Checkboxes for editing and adding Training data
+    ## Checkboxes for editing and adding Training data
     if (index != 0):
       checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
-      checkbox_training = st.checkbox(label = 'Add Training', value = False, disabled = not checkbox_val)
+      checkbox_training = st.checkbox(label = 'Add Training', value = checkbox_val, disabled = not checkbox_val)
     
     ## Form for showing Employee input fields 
     with st.form("Employee", clear_on_submit = True):
@@ -162,6 +194,9 @@ if check_password():
         # Set query parameter
         st.experimental_set_query_params(
         eno="xxxxxx")
+        
+        # empty image
+        image = ''
         
         # Check for ID number count of Employee
         id = 0
@@ -175,7 +210,7 @@ if check_password():
         if (id == 0):
           id = 1
         
-        # Text Input for new employee data
+        ## Input for new employee data
         id = st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
@@ -184,21 +219,28 @@ if check_password():
         exp = st.text_input(label = 'Expirity Date', value = '2023-12-31 00:00:00')
         eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
         capri = st.text_input(label = 'Cards Printed', value = 0)
-        st.image('portrait-placeholder.png')
         uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = ['png', 'jpg'])
-        image = 'NoPic'
+        
         if uploaded_file is not None:
           image = uploaded_file.getvalue()
-
-        # Submit Button `Create New Employee`
+          
+        else:
+          image = loadFile("placeholder.png")
+        
+    
+        ## Submit Button `Create New Employee`
         submitted = st.form_submit_button("Create New Employee")
         if submitted:
-          # Writing to databank if data wsa entered
+          # Writing to databank if data was entered
           if (layout is not None and forename and surname and job and exp and eno and capri):
-            query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s, '%s');" %(id, layout, forename, surname, job, exp, eno, capri, image)
+            query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, eno, capri)
             run_query(query)
             conn.commit()
             st.session_state.success = True
+            
+            # Upload picture to database
+            print("Uploading image at ID ", id)
+            pictureUploader(image, id)
             
             # Set query parameter
             st.experimental_set_query_params(eno=eno)
@@ -211,13 +253,13 @@ if check_password():
           
           st.experimental_rerun()
       
-      # If data is already existent, show filled form  
+      ## If data is already existent, show filled form  
       else:
         # Get information of selected Employee
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
         employee = run_query(query)
         
-        # Text Input for updating employee data
+        # Input for updating employee data
         updataMaster = False
         id = st.text_input(label = 'ID', value = employee[0][0], disabled = True)
         layout = st.text_input(label = 'Layout', value = employee[0][1], disabled = True)
@@ -239,16 +281,19 @@ if check_password():
         capri = st.text_input(label = 'Cards Printed', value = employee[0][7], disabled = not checkbox_val)
         if (employee[0][7] != capri):
           updateMaster = True
+        # Check if image is empty and show a placeholder
         if (len(employee[0][8]) < 10):
           st.image('portrait-placeholder.png')
         else:          
           st.image(employee[0][8])
-        uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = ['png', 'jpg'])
+
+        uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = ['png', 'jpg'], disabled = not checkbox_val)
         if uploaded_file is not None:
           updateMaster = True
           image = uploaded_file.getvalue()
-          #' '.join(format(ord(x), 'b') for x in image)
-          #' '.join('{0:08b}'.format(ord(x), 'b') for x in st)
+          # Upload picture to database
+          pictureUploader(image, index)
+          
         else:
           image = ''
         
@@ -306,16 +351,18 @@ if check_password():
                 update = True
               days.append(x)
               
-          # Show new entry input fields if checkbox 'Add Training' is checked
+          ## Show new entry input fields if checkbox 'Add Training' is checked
           if not checkbox_training:
             if (trainingData[0][0] == None):
               st.info('No Training Data available', icon="ℹ️")
+              
           else:
             # Calculating number of training
-            if (trainingData[0][0] != None):
+            if (trainingData[0][0] == None):
               counter = 'Training #1'
+              
             else:
-              counter = 'Training #' + str(len(trainingData))
+              counter = 'Training #' + str(len(trainingData) + 1)
               
             # Inputs for new Training
             x = st.text_input(label = counter, placeholder = 'Training?', disabled = not checkbox_val)
@@ -335,13 +382,14 @@ if check_password():
               days.append(x)
               insert = True
             
-        # Warning or Success messages after reloading
+        ## Warning or Success messages after reloading
         if (st.session_state.run != True and st.session_state.success == True):
           st.success('Data submitted to Databank.', icon="✅")
         else:
           if (st.session_state.run != True):
             st.warning('Not sumitted, as no new Data was entered!', icon="⚠️")
         
+        ## Submit Button for Changes
         submitted = st.form_submit_button("Save Changes")
         if submitted:
           # Set session state `index`
@@ -349,11 +397,12 @@ if check_password():
           
           # Writing to databank idcard Table IMAGEBASE
           if (updateMaster == True):
-            query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s, IMAGE = '%s' WHERE ID = %s;" %(layout, forename, surname, job, exp, eno, capri, image, index)
-            st.write(query)
+            query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s WHERE ID = %s;" %(layout, forename, surname, job, exp, eno, capri, index)
             run_query(query)
             conn.commit()
+            
             st.session_state.success = True
+            
           else:
             st.session_state.success = False
           
@@ -365,6 +414,7 @@ if check_password():
               run_query(query)
               conn.commit()
               st.session_state.success = True
+              
             else:
               st.session_state.success = False
               
@@ -395,7 +445,7 @@ if check_password():
           st.experimental_rerun()
           
           
-## Not logged in -> Landing Page
+#### Not Logged in state (Landing page)
 else :
   st.title('Kamuzu Central Hospital (KCH) HR Staff Portal Landing Page')
 
