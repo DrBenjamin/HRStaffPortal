@@ -1,4 +1,7 @@
-# app/Dockerfile
+##### Dockerfile
+##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
+##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
+##### Please reach out to benjamin.gross@giz.de for any questions
 
 FROM python:3.9-slim
 

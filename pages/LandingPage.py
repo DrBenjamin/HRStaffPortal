@@ -1,4 +1,4 @@
-# LandingPage.py
+##### LandingPage.py
 ##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
