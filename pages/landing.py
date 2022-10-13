@@ -14,3 +14,7 @@ import mysql.connector
 import sys
 
 st.title('Landing page')
+
+## Sidebar
+# Sidebar Header Image
+st.sidebar.image('images/MoH.png')
