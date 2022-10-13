@@ -14,7 +14,8 @@ from datetime import datetime
 import mysql.connector
 import sys
 
-st.title('Landing page')
+## Header
+st.title('Landing Page')
 
 ## Sidebar
 # Sidebar Header Image

@@ -14,7 +14,8 @@ from datetime import datetime
 import mysql.connector
 import sys
 
-st.title('Workshops page')
+## Header
+st.title('Workshop Page')
 
 ## Sidebar
 # Sidebar Header Image

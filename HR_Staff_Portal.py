@@ -72,7 +72,7 @@ def check_password():
     if "password_correct" not in st.session_state:
         # First run, show inputs for username + password.
         # Show Header Text
-        st.sidebar.title('You are welcome to the KCH HR Staff Portal')
+        #st.sidebar.title('You are welcome to the KCH HR Staff Portal')
         st.sidebar.subheader('Please enter username and password')
         st.sidebar.text_input("Username", on_change=password_entered, key="username")
         st.sidebar.text_input(
