@@ -11,12 +11,13 @@ import streamlit.components.v1 as stc
 
 ## Header
 st.title('About')
-st.subtitle('Kamuzu Central Hospital')
+st.header('Kamuzu Central Hospital (KCH)')
+st.subheader('All KCH information')
 st.write('Private Bag 149,')
 st.write('Lilongwe, MALAWI')
-st.write('tel: +265 1 753 400')
-st.write('tel: +265 1 753 555')
-st.write('tel: +265 1 753 744')
+st.write('[Tel: +265 1 753 400](tel:+2651753400)')
+st.write('[Tel: +265 1 753 555](tel:+2651753555)')
+st.write('[Tel: +265 1 753 744](tel:+2651753744)')
 
 
 ## Sidebar
