@@ -1,4 +1,4 @@
-##### `1 - ✈_Landing_Page.py`
+##### `1 - 📈_Landing_Page.py`
 ##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
@@ -11,8 +11,23 @@ import pandas as pd
 import numpy as np
 
 
-## Header
-st.title('Landing Page')
+#### Streamlit initial setup
+st.set_page_config(
+  page_title = "KCH HR Staff Portal",
+  page_icon = "images/thumbnail.png",
+  layout = "centered",
+  initial_sidebar_state = "collapsed",
+  menu_items = { 
+         'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
+         'Report a bug': "http://www.health.gov.mw/index.php/contact-moh/head-office",
+         'About': "This is the KCH HR Staff Portal. Version 0.1.1-b1"
+        }
+)
+
+
+### Header
+## Title
+st.title('Statistic Page')
 
 ## Sidebar
 # Sidebar Header Image
@@ -24,6 +39,7 @@ st.sidebar.image('images/MoH.png')
 # https://www-app3.gfz-potsdam.de/kp_index/Kp_ap_nowcast.txt
 # https://www-app3.gfz-potsdam.de/kp_index/Kp_ap_since_1932.txt
 DATA_URL = './Employees.txt'
+
 
 ## Load data function
 # Function is cached
@@ -37,14 +53,17 @@ def load_data():
 data = load_data()
 #data_load_state.text(str('Download completed') + ' (' + str(round(sys.getsizeof(data)/1048576, 2)) + 'MB)!')
 
+
 ## Checkbox for option to see raw data
 #if st.checkbox(str('Show raw data?')):
 #  st.subheader('Raw data')
 #  st.write(data)
-  
+
+ 
 ## Create data frames
 data_plot_today = pd.DataFrame({'Time': data.Hour.astype(int), 'Employees': data.Employees}).tail(8)
 data_cal = pd.DataFrame({'Date': pd.to_datetime(data.Year.map(str) + "-" + data.Month.map(str) + "-" + data.Day.map(str)), 'Employees': data.Employees})
+
 
 ## Calculation of avg ap per day and top 10 max values
 # Function is cached
@@ -74,11 +93,13 @@ def calc_top10(date, ap):
       test_str = date[i]
   return avg_ap_d, avg_ap_d_t, max_ap
 
-# Call function to do the calculation
+
+## Call function to do the calculation
 avg_ap_d, avg_ap_d_t, max_ap = calc_top10(date = data_cal['Date'], ap = data_cal['Employees'])
 # Create dataframe with avg ap per day values
 data_plot = pd.DataFrame({'Date': pd.to_datetime(avg_ap_d_t),
                           'Employees': avg_ap_d})
+
 
 ## Plotting
 # Set indexes (x-axis) to 'Time' and 'Date' column
@@ -90,6 +111,7 @@ st.bar_chart(data_plot_today)
 # All data plot
 st.subheader('Diagram of employee activity last 30 days')
 st.line_chart(data_plot)
+
 
 ## Show 10 lowest employee days
 # Reverse 'False' -> order with lowest first
