@@ -2,7 +2,6 @@
 .Rdata
 .Rbuildignore
 blob*
-HRStaffPortal.*
 HRStaffPortal.Rproj
 .Rhistory
 secrets.toml
