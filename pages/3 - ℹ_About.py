@@ -11,7 +11,12 @@ import streamlit.components.v1 as stc
 
 ## Header
 st.title('About')
-st.subtitle('')
+st.subtitle('Kamuzu Central Hospital')
+st.write('Private Bag 149,')
+st.write('Lilongwe, MALAWI')
+st.write('tel: +265 1 753 400')
+st.write('tel: +265 1 753 555')
+st.write('tel: +265 1 753 744')
 
 
 ## Sidebar
