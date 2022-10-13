@@ -17,7 +17,7 @@ import sys
 #### Streamlit initial setup
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
-  page_icon = "thumbnail.png",
+  page_icon = "images/thumbnail.png",
   layout = "centered",
   initial_sidebar_state = "expanded",
   menu_items = { 
@@ -66,7 +66,7 @@ def check_password():
     
     ## Header
     # Header Image
-    st.sidebar.image('MoH.png')
+    st.sidebar.image('images/MoH.png')
 
     if "password_correct" not in st.session_state:
         # First run, show inputs for username + password.
@@ -137,7 +137,7 @@ if check_password():
     ## Show information
     with st.expander("Header", expanded = True):
       st.title('KCH HR Staff Portal')
-      st.image('MoH.png')
+      st.image('images/MoH.png')
       st.subheader('Kamuzu Central Hospital employee data.')
       st.write('All the employee data is stored in a local MySQL databank on a Raspberry Pi.')
       st.write('The HR Portal is running on Streamlit, an Open Source Python framework for visualisation.')
@@ -225,7 +225,7 @@ if check_password():
           image = uploaded_file.getvalue()
           
         else:
-          image = loadFile("placeholder.png")
+          image = loadFile("images/placeholder.png")
         
     
         ## Submit Button `Create New Employee`
@@ -283,7 +283,7 @@ if check_password():
           updateMaster = True
         # Check if image is empty and show a placeholder
         if (len(employee[0][8]) < 10):
-          st.image('portrait-placeholder.png')
+          st.image('images/portrait-placeholder.png')
         else:          
           st.image(employee[0][8])
 
