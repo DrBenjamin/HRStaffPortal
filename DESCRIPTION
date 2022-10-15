@@ -1,10 +1,10 @@
 Package: HRStaffPortal
 Type: Package
-Title: Kamuzu Central Hospital HR Staff Portal
+Title: HR Staff Portal
 Version: 0.1.1-b.2
 Author: Benjamin Groß
 Maintainer: Benjamin Groß <benjamin.gross@giz.de>
-Description: Alpha Version of a Prototype for the KCH HR Staff Portal with basic functionality. Employee and Training data can be shown, edited and added.
+Description: Prototype of a HR Staff Portal with basic functionality. Employee and Training data can be shown, edited and added.
 License: Freeware
 Encoding: UTF-8
 LazyData: true
