@@ -1,7 +1,7 @@
 # HRStaffPortal
-## HR Staff Portal Prototype
+## HR Staff Portal
 
-This Prototype handles **employee data** which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL Databank.
+This App handles **employee data** which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL Databank.
 
 Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended. Install [git](https://git-scm.com/download/win) to use version control.
 

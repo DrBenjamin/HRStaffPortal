@@ -4,9 +4,13 @@
 ##### Please reach out to benjamin.gross@giz.de for any questions
 
 
+
 #### Loading neded Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
+from shillelagh.backends.apsw.db import connect
+from sqlalchemy.engine import create_engine
+
 
 
 #### Streamlit initial setup
@@ -31,3 +35,8 @@ st.title('Workshop Page')
 ### Sidebar
 ## Sidebar Header Image
 st.sidebar.image('images/MoH.png')
+
+
+
+
+
