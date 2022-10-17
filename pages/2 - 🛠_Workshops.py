@@ -12,14 +12,6 @@ from shillelagh.adapters.registry import registry
 from shillelagh.adapters.file.csvfile import CSVFile
 from shillelagh.backends.apsw.db import connect
 
-# show names of available adapters
-print(registry.loaders.keys())
-#registry.add('csvfile', CSVFile)
-connect(':memory:', adapters = ['csvfile'])
-
-query = "SELECT * FROM 'test.csv';"
-csvData = cursor.execute(query)
-
 
 
 #### Streamlit initial setup
@@ -39,6 +31,12 @@ st.set_page_config(
 ### Header
 ## Title
 st.title('Workshop Page')
+
+
+connect(':memory:', adapters = 'csvfile')
+cursor = connection.cursor()
+query = "SELECT * FROM 'test.csv';"
+csvData = cursor.execute(query)
 st.dataframe(csvData, use_container_width = True)
 
 
