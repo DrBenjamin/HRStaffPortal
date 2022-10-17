@@ -185,7 +185,7 @@ if check_password():
 
       
     ## Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee Selectbox
-    query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
+    query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM 'test.csv';"
     rows = run_query(query)
     # Building `ID` / `EMPLOYEE` pair and
     # combine Forename and Surname for employee selectbox
