@@ -13,6 +13,13 @@ from shillelagh.adapters.file.csvfile import CSVFile
 from shillelagh.backends.apsw.db import connect
 
 
+#### Functions
+## Perform query
+def run_query(query):
+  sql = cursor.execute(query)
+    return sql
+  
+  
 
 #### Streamlit initial setup
 st.set_page_config(
@@ -38,7 +45,8 @@ cursor = connection.cursor()
 
 # Execute query
 query = "SELECT * FROM 'test.csv';"
-csvData = cursor.execute(query)
+#csvData = cursor.execute(query)
+csvData = run_query(query)
 st.dataframe(csvData, use_container_width = True)
 
 
