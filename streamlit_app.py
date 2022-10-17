@@ -13,14 +13,7 @@ import numpy as np
 import mysql.connector
 import sys
 import webbrowser
-from shillelagh.adapters.registry import registry
-from shillelagh.adapters.file.csvfile import CSVFile
-from shillelagh.backends.apsw.db import connect
 
-# show names of available adapters
-print(registry.loaders.keys())
-#registry.add('csvfile', CSVFile)
-connect(':memory:', adapters = ['csvfile'])
 
 
 #### Streamlit initial setup
