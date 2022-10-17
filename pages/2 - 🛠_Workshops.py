@@ -17,7 +17,7 @@ from shillelagh.backends.apsw.db import connect
 ## Perform query
 def run_query(query):
   sql = cursor.execute(query)
-    return sql
+  return sql
   
   
 
