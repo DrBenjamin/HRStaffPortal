@@ -107,7 +107,7 @@ def pictureUploader(image, index):
   connection = mysql.connector.connect(**st.secrets["mysql"])
   cursor = connection.cursor()
   ## SQL statement
-  sql_insert_blob_query = """ UPDATE IMAGEBASE SET IMAGE = %s WHERE ID = %s;"""
+  sql_insert_blob_query = """ UPDATE 'test.csv' SET IMAGE = %s WHERE ID = %s;"""
   ## Convert data into tuple format
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
@@ -198,10 +198,6 @@ if check_password():
           if (eno['eno'][0] == row[3]):
             st.session_state.index = row[0]
       # Concenate Forename and Surname for Sidebar Selectbox
-      st.write(type(row[1]))
-      st.write(type(row[2]))
-      st.write(type(row[3]))
-      st.write(type(row[4]))
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
 
@@ -232,7 +228,7 @@ if check_password():
         
         # Check for ID number count of Employee
         id = 0
-        query = "SELECT ID from `idcard`.`IMAGEBASE`;"
+        query = "SELECT ID from 'test.csv';"
         rows = run_query(query)
         row = [0]
         for row in rows:
@@ -265,7 +261,7 @@ if check_password():
         if submitted:
           ## Writing to databank if data was entered
           if (layout is not None and forename and surname and job and exp and eno and capri):
-            query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, eno, capri)
+            query = "INSERT INTO 'test.csv'(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, eno, capri)
             run_query(query)
             conn.commit()
             st.session_state.success = True
@@ -288,7 +284,7 @@ if check_password():
       ## If data is already existent, show filled form  
       else:
         ## Get information of selected Employee
-        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
+        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'test.csv' WHERE ID = %s;" %(index)
         employee = run_query(query)
         
         ## Input for updating employee data
@@ -349,7 +345,7 @@ if check_password():
           
           ## Check for last ID number in TrainingData (to add data after)
           idT = 0
-          query = "SELECT ID from `idcard`.`TRAININGDATA`;"
+          query = "SELECT ID from 'test2.csv';"
           rows = run_query(query)
           row = [0]
           for row in rows:
@@ -359,7 +355,7 @@ if check_password():
             idT = 1
           
           ## Get Training Data
-          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
+          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'test.csv' AS ima LEFT JOIN 'test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
           trainingData = run_query(query)
           
           ## Variables for Text Input
@@ -442,7 +438,7 @@ if check_password():
           
           # Writing to databank idcard Table IMAGEBASE
           if (updateMaster == True):
-            query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s WHERE ID = %s;" %(layout, forename, surname, job, exp, eno, capri, index)
+            query = "UPDATE 'test.csv' SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s WHERE ID = %s;" %(layout, forename, surname, job, exp, eno, capri, index)
             run_query(query)
             conn.commit()
             
@@ -456,7 +452,7 @@ if check_password():
           if (insert == True and update == False):
             st.write(training[0], institute[0], date[0], days[0])
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
-              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+              query = "INSERT INTO 'test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
               run_query(query)
               conn.commit()
               st.session_state.success = True
@@ -470,7 +466,7 @@ if check_password():
             st.write(training[0], institute[0], date[0], days[0])
             st.write(len(trainingData))
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
-              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
+              query = "INSERT INTO 'test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)
               conn.commit()
               st.session_state.success = True
@@ -483,7 +479,7 @@ if check_password():
             for i in range(len(trainingData)):
               st.write(training[i], institute[i], date[i], days[i])
               st.write(trainingData[i][4])
-              query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
+              query = "UPDATE 'test2.csv' SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
               run_query(query)
               conn.commit()
             st.session_state.success = True
