@@ -13,6 +13,9 @@ import numpy as np
 import mysql.connector
 import sys
 import webbrowser
+from shillelagh.adapters.registry import registry
+from shillelagh.adapters.file.csvfile import CSVFile
+from shillelagh.backends.apsw.db import connect
 
 
 
@@ -92,14 +95,10 @@ def logout():
   
 
 ### Function: SQL Connection
-## Initialize connection
-def init_connection():
-  return mysql.connector.connect(**st.secrets["mysql"])
 ## Perform query
 def run_query(query):
-  with conn.cursor() as cur:  
-    cur.execute(query)
-    return cur.fetchall()
+  sql = cursor.execute(query)
+  return sql
 
 
 ### Function: Picture-uploader
@@ -166,12 +165,12 @@ if check_password():
 
 
     ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
-    # open Databak Connection
-    conn = init_connection()
-
+    # open Databak Connection with Shillelagh
+    connection = connect(":memory:", adapters = 'csvfile')
+    cursor = connection.cursor()
 
     ## Checkbox for option to see databank data
-    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
+    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM 'test.csv';"
     rows = run_query(query)
     databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
     for row in rows:
