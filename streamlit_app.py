@@ -198,6 +198,10 @@ if check_password():
           if (eno['eno'][0] == row[3]):
             st.session_state.index = row[0]
       # Concenate Forename and Surname for Sidebar Selectbox
+      st.write(type(row[1]))
+      st.write(type(row[2]))
+      st.write(type(row[3]))
+      st.write(type(row[4]))
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
 
