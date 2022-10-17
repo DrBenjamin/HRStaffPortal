@@ -32,7 +32,6 @@ st.set_page_config(
 ## Title
 st.title('Workshop Page')
 
-
 connect(':memory:', adapters = 'csvfile')
 cursor = connection.cursor()
 query = "SELECT * FROM 'test.csv';"
