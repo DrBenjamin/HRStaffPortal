@@ -33,8 +33,10 @@ st.set_page_config(
 st.title('Workshop Page')
 
 ## Shillelagh
-connect(':memory:', adapters = 'csvfile')
-cursor = connect.cursor()
+connection = connect(":memory:", adapters = 'csvfile')
+cursor = connection.cursor()
+
+# Execute query
 query = "SELECT * FROM 'test.csv';"
 csvData = cursor.execute(query)
 st.dataframe(csvData, use_container_width = True)
