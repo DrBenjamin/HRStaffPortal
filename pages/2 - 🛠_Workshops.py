@@ -35,7 +35,12 @@ st.title('Workshop Page')
 ## Shillelagh
 connect(':memory:', adapters = 'csvfile')
 <<<<<<< HEAD
+<<<<<<< HEAD
 cursor = connect.cursor()
+=======
+cursor = connection.cursor()
+connect(':memory:', adapters = 'csvfile')
+>>>>>>> e7bcaa856d3c83aabc9fb89d9d9bd9c60a277466
 =======
 cursor = connection.cursor()
 connect(':memory:', adapters = 'csvfile')
