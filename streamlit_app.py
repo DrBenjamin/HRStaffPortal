@@ -166,8 +166,8 @@ if check_password():
 
     ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
     # open Databak Connection with Shillelagh
-    connection = connect(":memory:", adapters = 'csvfile')
-    cursor = connection.cursor()
+    conn = connect(":memory:", adapters = 'csvfile')
+    cursor = conn.cursor()
 
     ## Checkbox for option to see databank data
     query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM 'test.csv';"
@@ -287,6 +287,7 @@ if check_password():
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'test.csv' WHERE ID = %s;" %(index)
         employee = run_query(query)
         st.write(employee)
+        st.write(employee[0][3])
         
         ## Input for updating employee data
         updataMaster = False
