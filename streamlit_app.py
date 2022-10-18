@@ -288,25 +288,25 @@ if check_password():
         
         ## Input for updating employee data
         updataMaster = False
-        id = st.text_input(label = 'ID', value = employee[0][0], disabled = True)
-        layout = st.text_input(label = 'Layout', value = employee[0][1], disabled = True)
-        forename = st.text_input(label = 'Forename', value = employee[0][2], disabled = not checkbox_val)
-        if (employee[0][2] != forename):
+        id = st.text_input(label = 'ID', value = employee[0], disabled = True)
+        layout = st.text_input(label = 'Layout', value = employee[1], disabled = True)
+        forename = st.text_input(label = 'Forename', value = employee[2], disabled = not checkbox_val)
+        if (employee[2] != forename):
           updateMaster = True
-        surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
-        if (employee[0][3] != surname):
+        surname = st.text_input(label = 'Surname', value = employee[3], disabled = not checkbox_val)
+        if (employee[3] != surname):
           updateMaster = True
-        job = st.text_input(label = 'Job', value = employee[0][4], disabled = not checkbox_val)
-        if (employee[0][4] != job):
+        job = st.text_input(label = 'Job', value = employee[4], disabled = not checkbox_val)
+        if (employee[4] != job):
           updateMaster = True
-        exp = st.text_input(label = 'Expirity Date', value = employee[0][5], disabled = not checkbox_val)
-        if (employee[0][5] != exp):
+        exp = st.text_input(label = 'Expirity Date', value = employee[5], disabled = not checkbox_val)
+        if (employee[5] != exp):
           updateMaster = True
-        eno = st.text_input(label = 'Employee Number', value = employee[0][6], disabled = not checkbox_val)
-        if (employee[0][6] != eno):
+        eno = st.text_input(label = 'Employee Number', value = employee[6], disabled = not checkbox_val)
+        if (employee[6] != eno):
           updateMaster = True
-        capri = st.text_input(label = 'Cards Printed', value = employee[0][7], disabled = not checkbox_val)
-        if (employee[0][7] != capri):
+        capri = st.text_input(label = 'Cards Printed', value = employee[7], disabled = not checkbox_val)
+        if (employee[7] != capri):
           updateMaster = True
           
         ## Check if image is empty and show a placeholder
