@@ -244,6 +244,7 @@ if check_password():
         job = st.text_input(label = 'Job', placeholder = 'Job?')
         exp = st.text_input(label = 'Expirity Date', value = '2023-12-31 00:00:00')
         eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
+        eno = str(eno)
         capri = st.text_input(label = 'Cards Printed', value = 0)
         uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
         if uploaded_file is not None:
@@ -264,7 +265,7 @@ if check_password():
             st.session_state.success = True
             
             # Upload picture to database
-            pictureUploader(image, id)
+            #pictureUploader(image, id)
             
             # Set query parameter
             st.experimental_set_query_params(eno=eno)
@@ -328,7 +329,7 @@ if check_password():
           updateMaster = True
           image = uploaded_file.getvalue()
           # Upload picture to database
-          pictureUploader(image, index)
+          #pictureUploader(image, index)
         
         ## No image data  
         else:
