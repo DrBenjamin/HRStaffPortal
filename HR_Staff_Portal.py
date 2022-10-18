@@ -361,7 +361,7 @@ if check_password():
           for row in rows:
             st.write('Row: ', row[0], ' ' , row[1], ' ', row[2], ' ', row[3], ' ', row[4])
             #trainingData.append([[row[0], row[1], row[2], row[3], row[4]]])
-            trainingData.append([row[0])
+            trainingData.append(row[0])
             trainingData.append(row[1])
             trainingData.append(row[2])
             trainingData.append(row[3])
