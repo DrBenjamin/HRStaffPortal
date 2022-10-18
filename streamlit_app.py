@@ -196,7 +196,6 @@ if check_password():
             st.session_state.index = row[0]
       # Concenate Forename and Surname for Selectbox
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
-    st.write(type(names))
 
 
     ## Employee Selectbox (on change sets first start session state)
@@ -282,7 +281,7 @@ if check_password():
       ## If data is already existent, show filled form  
       else:
         ## Get information of selected Employee
-        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'test.csv' WHERE ID = '%s';" %(str(index))
+        query = """SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'test.csv' WHERE "ID" = '%s';""" %(str(index))
         employee = run_query(query)
         st.write(employee)
         st.write(employee[0][3])
