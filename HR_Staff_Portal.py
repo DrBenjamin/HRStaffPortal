@@ -374,7 +374,7 @@ if check_password():
           update = False # Will be set to `True` if existing data is altered
           
           ## Check if Training Data is already there for an Employee and show it
-          if (trainingData[0][0] != None):
+          if (trainingData['TRAINING'][0] != None):
             update = False
             for i in range(len(trainingData)):
               # Show (Multiple) Input(s)
