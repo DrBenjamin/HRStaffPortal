@@ -2,21 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 
+## Version 0.1.1 - 2022-10-18
+`Initial Release`
 
-## 2022-xx-xx
-## Version 0.1.2
+
 ### Added
-- xy
+- View and edit Employee and training data
+- Basic Cloud version with local data stored in csv file (not persistend)
 
 
 ### Changed
-- xy
+- No changes
 
 
 ### Fixed
-- xy
-
-
-
-## 2022-10-16
-Initial Release 0.1.1
+- Several logical bugs
