@@ -310,7 +310,7 @@ if check_password():
           updateMaster = True
           
         ## Check if image is empty and show a placeholder
-        if (len(employee[0][8]) < 10):
+        if (len(employee[8]) < 10):
           # Show placeholder
           st.image('images/portrait-placeholder.png')
           # Set Image Session State to `No Image` placeholder
@@ -318,9 +318,9 @@ if check_password():
           
         ## Show existing Image
         else:          
-          st.image(employee[0][8])
+          st.image(employee[8])
           # Save Image for downloading to Image Session State
-          st.session_state.image = employee[0][8]
+          st.session_state.image = employee[8]
         
         ## Image Uploader
         uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png', disabled = not checkbox_val)
