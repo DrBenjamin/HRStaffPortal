@@ -358,7 +358,7 @@ if check_password():
           rows = run_query(query)
           trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS'])
           for row in rows:
-            df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS'])
+            df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4]]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
             trainingData = trainingData.append(df)
           st.write(trainingData)
           st.write(trainingData[0][0])
