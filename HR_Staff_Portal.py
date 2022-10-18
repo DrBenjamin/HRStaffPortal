@@ -362,6 +362,7 @@ if check_password():
           trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
           for row in rows:
             df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4]]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
+            df.reset_index(drop = True)
             trainingData = trainingData.append(df)
             st.write('DF: ', df)
           trainingData.reset_index(drop = True)
