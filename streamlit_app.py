@@ -258,7 +258,7 @@ if check_password():
         if submitted:
           ## Writing to databank if data was entered
           if (layout is not None and forename and surname and job and exp and eno and capri):
-            query = "INSERT INTO 'test.csv'(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', '%s', %s);" %(id, layout, forename, surname, job, exp, eno, capri)
+            query = "INSERT INTO 'test.csv'(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, layout, forename, surname, job, exp, eno, capri)
             run_query(query)
             conn.commit()
             st.session_state.success = True
