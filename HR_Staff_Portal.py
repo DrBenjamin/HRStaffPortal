@@ -366,7 +366,7 @@ if check_password():
             st.write('DF: ', df)
             
           st.write(trainingData)
-          st.write(trainingData[0][0])
+          st.write(type(trainingData))
           
           ## Variables for Text Input
           training = []
