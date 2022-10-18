@@ -104,7 +104,7 @@ def run_query(query):
 ### Function: Picture-uploader
 def pictureUploader(image, index):
   ## SQL statement
-  sql_insert_blob_query = """ UPDATE 'test.csv' SET IMAGE = %s WHERE ID = %s;"""
+  sql_insert_blob_query = """ UPDATE 'test.csv' SET IMAGE = '%s' WHERE ID = '%s';"""
   ## Convert data into tuple format
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
@@ -354,7 +354,7 @@ if check_password():
             idT = 1
           
           ## Get Training Data
-          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'test.csv' AS ima LEFT JOIN 'test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
+          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'test.csv' AS ima LEFT JOIN 'test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = '%s';" %(str(index))
           trainingData = run_query(query)
           
           ## Variables for Text Input
@@ -437,7 +437,7 @@ if check_password():
           
           # Writing to databank idcard Table IMAGEBASE
           if (updateMaster == True):
-            query = "UPDATE 'test.csv' SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s WHERE ID = %s;" %(layout, forename, surname, job, exp, eno, capri, index)
+            query = "UPDATE 'test.csv' SET LAYOUT = '%s', FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, str(index))
             run_query(query)
             conn.commit()
             
@@ -451,7 +451,7 @@ if check_password():
           if (insert == True and update == False):
             st.write(training[0], institute[0], date[0], days[0])
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
-              query = "INSERT INTO 'test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+              query = "INSERT INTO 'test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
               run_query(query)
               conn.commit()
               st.session_state.success = True
@@ -465,7 +465,7 @@ if check_password():
             st.write(training[0], institute[0], date[0], days[0])
             st.write(len(trainingData))
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
-              query = "INSERT INTO 'test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
+              query = "INSERT INTO 'test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)
               conn.commit()
               st.session_state.success = True
@@ -478,7 +478,7 @@ if check_password():
             for i in range(len(trainingData)):
               st.write(training[i], institute[i], date[i], days[i])
               st.write(trainingData[i][4])
-              query = "UPDATE 'test2.csv' SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
+              query = "UPDATE 'test2.csv' SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = '%s';" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
               run_query(query)
               conn.commit()
             st.session_state.success = True
