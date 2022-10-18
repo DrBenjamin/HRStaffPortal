@@ -358,7 +358,6 @@ if check_password():
           rows = run_query(query)
           trainingData = []
           for row in rows:
-            st.write('Row: ', row[0], ' ' , row[1], ' ', row[2], ' ', row[3], ' ', row[4])
             trainingData.append([row[0], row[1], row[2], row[3], row[4]])
 
           
