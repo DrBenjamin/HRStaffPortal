@@ -368,8 +368,10 @@ if check_password():
             st.write('DF: ', df)
           trainingData.set_index('TRAINING')
             
-          st.write(trainingData)
+          # Debugging
           st.write(type(trainingData))
+          st.write(trainingData)
+          st.write(trainingData['TRAINING'][0])
           
           ## Variables for Text Input
           training = []
