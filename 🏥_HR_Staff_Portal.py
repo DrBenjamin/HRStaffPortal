@@ -422,6 +422,7 @@ if check_password():
             if x.strip():
               days.append(x)
               insert = True
+            st.write(len(trainingData))
    
             
         ## Warning or Success messages after reloading
@@ -449,9 +450,8 @@ if check_password():
             st.session_state.success = False
      
           
-          ## Writing to databank idcard Table TRAININGDATA - new first Entry
+          ## Writing to databank idcard Table TRAININGDATA - first entry
           if (insert == True and update == False):
-            st.write(training[0], institute[0], date[0], days[0])
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
               query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
               run_query(query)
@@ -462,10 +462,8 @@ if check_password():
               st.session_state.success = False
               
               
-          ## Writing to databank idcard Table TRAININGDATA - new Entries (not first)
+          ## Writing to databank idcard Table TRAININGDATA - new entry (not first)
           if (insert == True and update == True):
-            st.write(training[0], institute[0], date[0], days[0])
-            st.write(len(trainingData))
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
               query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)

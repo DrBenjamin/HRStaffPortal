@@ -356,18 +356,11 @@ if check_password():
           query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'test.csv' AS ima LEFT JOIN 'test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = '%s';" %(str(index))
           row = [0]
           rows = run_query(query)
-          #trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
           trainingData = []
           for row in rows:
             st.write('Row: ', row[0], ' ' , row[1], ' ', row[2], ' ', row[3], ' ', row[4])
             trainingData.append([row[0], row[1], row[2], row[3], row[4]])
-            st.write(trainingData)
 
-            
-          # Debugging
-          st.write(type(trainingData))
-          st.write(trainingData)
-          st.write(trainingData[0][0])
           
           ## Variables for Text Input
           training = []
