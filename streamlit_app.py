@@ -358,11 +358,7 @@ if check_password():
           rows = run_query(query)
           trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS'])
           for row in rows:
-<<<<<<< HEAD
             df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS'])
-=======
-            df = pd.DataFrame([[row[0], row[1], row[2], row[3]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS'])
->>>>>>> ce96fb3c1f54c0edd4e90aebae1d027b3a822a48
             trainingData = trainingData.append(df)
           
           ## Variables for Text Input
