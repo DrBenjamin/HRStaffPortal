@@ -367,7 +367,7 @@ if check_password():
           # Debugging
           st.write(type(trainingData))
           st.write(trainingData)
-          st.write(trainingData['TRAINING'][0])
+          st.write(trainingData[0][0])
           
           ## Variables for Text Input
           training = []
