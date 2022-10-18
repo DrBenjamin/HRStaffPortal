@@ -196,7 +196,7 @@ if check_password():
             st.session_state.index = row[0]
       # Concenate Forename and Surname for Selectbox
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
-      st.write(type(names))
+    st.write(type(names))
 
 
     ## Employee Selectbox (on change sets first start session state)
