@@ -366,7 +366,7 @@ if check_password():
             df.set_index('TRAINING')
             trainingData = trainingData.append(df)
             st.write('DF: ', df)
-          trainingData..Index(range(1, 99, 1))
+          trainingData.Index(range(1, 99, 1))
 
             
           # Debugging
