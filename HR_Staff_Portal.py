@@ -286,7 +286,7 @@ if check_password():
           
         
         ## Input for updating employee data
-        updataMaster = False
+        updateMaster = False
         id = st.text_input(label = 'ID', value = employee[0], disabled = True)
         layout = st.text_input(label = 'Layout', value = employee[1], disabled = True)
         forename = st.text_input(label = 'Forename', value = employee[2], disabled = not checkbox_val)
