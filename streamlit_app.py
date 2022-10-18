@@ -97,8 +97,7 @@ def logout():
 ### Function: SQL Connection
 ## Perform query
 def run_query(query):
-  sql = cursor.execute(query)
-  return sql
+  return cursor.execute(query)
 
 
 ### Function: Picture-uploader
