@@ -281,7 +281,7 @@ if check_password():
       else:
         ## Get information of selected Employee
         st.write("Index", str(index))
-        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'test.csv';" # WHERE 'ID' = '%s';" %(str(index))
+        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'test.csv' WHERE ID = '%s';" %(str(index))
         for employee in run_query(query):
           st.write(employee)
         #st.write(employee[0][3])
