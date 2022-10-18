@@ -371,7 +371,6 @@ if check_password():
           
           ## Check if Training Data is already there for an Employee and show it
           if (trainingData[0][0] != None):
-            update = False
             for i in range(len(trainingData)):
               # Show (Multiple) Input(s)
               x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], key = 'training' + str(i), disabled = not checkbox_val)
@@ -393,12 +392,14 @@ if check_password():
   
               
           ## Show new entry input fields if checkbox 'Add Training' is checked
+          # If not checked
           if not checkbox_training:
             if (trainingData[0][0] == None):
               st.info(body = 'No Training Data available', icon = "ℹ️")
-              
+          
+          # If checked    
           else:
-            ## Calculating number of training
+            # Calculating number of training
             if (trainingData[0][0] == None):
               counter = 'Training #1'
               
@@ -422,7 +423,6 @@ if check_password():
             if x.strip():
               days.append(x)
               insert = True
-            st.write(len(trainingData))
    
             
         ## Warning or Success messages after reloading
@@ -431,6 +431,7 @@ if check_password():
         else:
           if (st.session_state.run != True):
             st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
+        
         
         ## Submit Button for Changes
         submitted = st.form_submit_button("Save Changes")
@@ -453,22 +454,24 @@ if check_password():
           ## Writing to databank idcard Table TRAININGDATA - first entry
           if (insert == True and update == False):
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
-              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
-              run_query(query)
-              conn.commit()
-              st.session_state.success = True
+              if (trainingData[0][0] == None):
+                query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+                run_query(query)
+                conn.commit()
+                st.session_state.success = True
               
             else:
               st.session_state.success = False
               
               
           ## Writing to databank idcard Table TRAININGDATA - new entry (not first)
-          if (insert == True and update == True):
+          if (insert == True and trainingData[0][0] != None):
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
               query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)
               conn.commit()
               st.session_state.success = True
+              
             else:
               st.session_state.success = False
               
@@ -476,8 +479,6 @@ if check_password():
           ## Writing to databank idcard Table TRAININGDATA - Updates to all existing entries
           if (update == True):
             for i in range(len(trainingData)):
-              st.write(training[i], institute[i], date[i], days[i])
-              st.write(trainingData[i][4])
               query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
               run_query(query)
               conn.commit()
