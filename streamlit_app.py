@@ -361,6 +361,7 @@ if check_password():
             df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS'])
             trainingData = trainingData.append(df)
           st.write(trainingData)
+          st.write(trainingData[0][0])
           
           ## Variables for Text Input
           training = []
