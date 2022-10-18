@@ -380,58 +380,58 @@ if check_password():
           update = False # Will be set to `True` if existing data is altered
           
           ## Check if Training Data is already there for an Employee and show it
-          #if (trainingData['TRAINING'][0] != None):
-          #  update = False
-          #  for i in range(len(trainingData)):
-          #    # Show (Multiple) Input(s)
-          #    x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], key = 'training' + str(i), disabled = not checkbox_val)
-          #    if (trainingData[i][0] != x):
-          #      update = True
-          #    training.append(x)
-          #    x = st.text_input(label = 'Institute', value = trainingData[i][1], key = 'institute' + str(i), disabled = not checkbox_val)
-          #    if (trainingData[i][1] != x):
-          #      update = True
-          #    institute.append(x)
-          #    x = st.text_input(label = 'Date', value = trainingData[i][2], key = 'date' + str(i), disabled = not checkbox_val)
-          #    if (trainingData[i][2] != x):
-          #      update = True
-          #    date.append(x)
-          #    x = st.text_input(label = 'Days', value = trainingData[i][3], key = 'days' + str(i), disabled = not checkbox_val)
-          #    if (trainingData[i][3] != x):
-          #      update = True
-          #    days.append(x)
+          if (trainingData[0][0] != None):
+            update = False
+            for i in range(len(trainingData)):
+              # Show (Multiple) Input(s)
+              x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], key = 'training' + str(i), disabled = not checkbox_val)
+              if (trainingData[i][0] != x):
+                update = True
+              training.append(x)
+              x = st.text_input(label = 'Institute', value = trainingData[i][1], key = 'institute' + str(i), disabled = not checkbox_val)
+              if (trainingData[i][1] != x):
+                update = True
+              institute.append(x)
+              x = st.text_input(label = 'Date', value = trainingData[i][2], key = 'date' + str(i), disabled = not checkbox_val)
+              if (trainingData[i][2] != x):
+                update = True
+              date.append(x)
+              x = st.text_input(label = 'Days', value = trainingData[i][3], key = 'days' + str(i), disabled = not checkbox_val)
+              if (trainingData[i][3] != x):
+                update = True
+              days.append(x)
   
               
           ## Show new entry input fields if checkbox 'Add Training' is checked
-          #if not checkbox_training:
-          #  if (trainingData[0][0] == None):
-          #    st.info(body = 'No Training Data available', icon = "ℹ️")
-          #    
-          #else:
-            ## Calculating number of training
-          #  if (trainingData[0][0] == None):
-          #    counter = 'Training #1'
+          if not checkbox_training:
+            if (trainingData[0][0] == None):
+              st.info(body = 'No Training Data available', icon = "ℹ️")
               
-          #  else:
-          #    counter = 'Training #' + str(len(trainingData) + 1)
+          else:
+            ## Calculating number of training
+            if (trainingData[0][0] == None):
+              counter = 'Training #1'
+              
+            else:
+              counter = 'Training #' + str(len(trainingData) + 1)
               
             ## Inputs for new Training
-          #  x = st.text_input(label = counter, placeholder = 'Training?', disabled = not checkbox_val)
-          #  if x.strip():
-          #    training.append(x)
-          #    insert = True
-          #  x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
-          #  if x.strip():
-          #    institute.append(x)
-          #    insert = True
-          #  x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
-          #  if x.strip():
-          #    date.append(x)
-          #    insert = True
-          #  x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
-          #  if x.strip():
-          #    days.append(x)
-          #    insert = True
+            x = st.text_input(label = counter, placeholder = 'Training?', disabled = not checkbox_val)
+            if x.strip():
+              training.append(x)
+              insert = True
+            x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
+            if x.strip():
+              institute.append(x)
+              insert = True
+            x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
+            if x.strip():
+              date.append(x)
+              insert = True
+            x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
+            if x.strip():
+              days.append(x)
+              insert = True
    
             
         ## Warning or Success messages after reloading
