@@ -194,8 +194,9 @@ if check_password():
         if (eno['eno'][0].strip()):
           if (eno['eno'][0] == row[3]):
             st.session_state.index = row[0]
-      # Concenate Forename and Surname for Sidebar Selectbox
+      # Concenate Forename and Surname for Selectbox
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
+      st.write(type(names))
 
 
     ## Employee Selectbox (on change sets first start session state)
