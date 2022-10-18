@@ -264,7 +264,7 @@ if check_password():
             st.session_state.success = True
             
             # Upload picture to database
-            pictureUploader(image, id)
+            #pictureUploader(image, id)
             
             # Set query parameter
             st.experimental_set_query_params(eno=eno)
@@ -328,7 +328,7 @@ if check_password():
           updateMaster = True
           image = uploaded_file.getvalue()
           # Upload picture to database
-          pictureUploader(image, index)
+          #pictureUploader(image, index)
         
         ## No image data  
         else:
