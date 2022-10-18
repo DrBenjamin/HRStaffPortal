@@ -357,16 +357,10 @@ if check_password():
           row = [0]
           rows = run_query(query)
           #trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
-
           trainingData = []
-          trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
-          trainingData.set_index('TRAINING')
           for row in rows:
-            df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4]]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
-            df.set_index('TRAINING')
-            trainingData = trainingData.append(df)
-            st.write('DF: ', df)
-          trainingData.Index(range(1, 99, 1))
+            trainingData = trainingData.append(row)
+            st.write('DF: ', row)
 
             
           # Debugging
