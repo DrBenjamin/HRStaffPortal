@@ -284,7 +284,7 @@ if check_password():
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'test.csv' WHERE ID = '%s';" %(str(index))
         for employee in run_query(query):
           st.write(employee)
-        #st.write(employee[0][3])
+        st.write(employee[0][3])
         
         ## Input for updating employee data
         updataMaster = False
