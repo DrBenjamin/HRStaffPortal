@@ -103,15 +103,12 @@ def run_query(query):
 
 ### Function: Picture-uploader
 def pictureUploader(image, index):
-  ## Initialize connection
-  connection = mysql.connector.connect(**st.secrets["mysql"])
-  cursor = connection.cursor()
   ## SQL statement
   sql_insert_blob_query = """ UPDATE 'test.csv' SET IMAGE = %s WHERE ID = %s;"""
   ## Convert data into tuple format
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
-  connection.commit()
+  conn.commit()
  
   
 ### Function: Convert digital data to binary format
