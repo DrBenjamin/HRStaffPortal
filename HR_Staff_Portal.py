@@ -354,6 +354,7 @@ if check_password():
           
           ## Get Training Data
           query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'test.csv' AS ima LEFT JOIN 'test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = '%s';" %(str(index))
+          row = [0]
           rows = run_query(query)
           trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
           for row in rows:
