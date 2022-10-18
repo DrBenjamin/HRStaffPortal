@@ -359,8 +359,8 @@ if check_password():
           #trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
           trainingData = []
           for row in rows:
-            trainingData = trainingData.append(row)
-            st.write('DF: ', row)
+            st.write('Row: ', row[0], ' ' , row[1], ' ', row[2], ' ', row[3], ' ', row[4])
+            trainingData = trainingData.append([[row[0], row[1], row[2], row[3], row[4]]])
 
             
           # Debugging
