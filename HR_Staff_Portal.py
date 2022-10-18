@@ -361,6 +361,8 @@ if check_password():
             df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4]]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS', 'ID'])
             #trainingData = trainingData.append(df)
             trainingData = pd.concat([trainingData, df])
+            
+          trainingData = list(trainingData)
           st.write(trainingData)
           st.write(trainingData['TRAINING'][0])
           
