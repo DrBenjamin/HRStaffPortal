@@ -355,7 +355,11 @@ if check_password():
           
           ## Get Training Data
           query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'test.csv' AS ima LEFT JOIN 'test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = '%s';" %(str(index))
-          trainingData = run_query(query)
+          rows = run_query(query)
+          trainingData = pd.DataFrame(columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS'])
+          for row in rows:
+            df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['TRAINING', 'INSTITUE', 'DATE', 'DAYS'])
+            trainingData = trainingData.append(df)
           
           ## Variables for Text Input
           training = []
