@@ -268,6 +268,7 @@ if check_password():
           if (layout is not None and forename and surname and job and exp and eno and capri):
             # Get latest ID from database
             id = lastID(url = "idcard.IMAGEBASE")
+            # Maybe it needs a break???
             query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, eno, capri)
             run_query(query)
             conn.commit()
