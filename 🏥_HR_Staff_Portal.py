@@ -113,6 +113,20 @@ def pictureUploader(image, index):
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
   connection.commit()
+  
+  
+### Function: Check for last ID number in Table (to add data after)
+def lastID(url):
+  id = 0
+  query = "SELECT ID from %s;" %(url)
+  rows = run_query(query)
+  row = [0]
+  for row in rows:
+    id = int(row[0]) + 1
+  # If first entry in database start with `ID` `1` 
+  if (id == 0):
+    id = 1
+  return id
  
   
 ### Function: Convert digital data to binary format
@@ -228,17 +242,7 @@ if check_password():
         image = ''
         
         # Check for ID number count of Employee
-        id = 0
-        query = "SELECT ID from `idcard`.`IMAGEBASE`;"
-        rows = run_query(query)
-        row = [0]
-        for row in rows:
-          # Checking for ID
-          id = int(row[0]) + 1
-        # If first entry in database start with `ID` `1`
-        if (id == 0):
-          id = 1
-
+        id = lastID(url = "idcard.IMAGEBASE")
         
         ## Input for new employee data
         id = st.text_input(label = 'ID', value = id, disabled = True)
@@ -345,15 +349,7 @@ if check_password():
           st.title('Employee Training Data')
           
           ## Check for last ID number in TrainingData (to add data after)
-          idT = 0
-          query = "SELECT ID from `idcard`.`TRAININGDATA`;"
-          rows = run_query(query)
-          row = [0]
-          for row in rows:
-            idT = int(row[0]) + 1
-          # If first entry in database start with `ID` `1` 
-          if (idT == 0):
-            idT = 1
+          idT = lastID(url = "idcard.TRAININGDATA")
           
           ## Get Training Data
           query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
