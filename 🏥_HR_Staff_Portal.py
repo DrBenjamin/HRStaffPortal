@@ -41,7 +41,7 @@ eno = st.experimental_get_query_params()
   
 
 #### All Functions used in HRStaffPortal
-### Function: Password / User checking
+### Function: check_password = Password / User checking
 def check_password():
   # Returns `True` if the user had a correct password."""
   def password_entered():
@@ -83,7 +83,7 @@ def check_password():
     return True
  
       
-### Logout Button
+### Funtion: logout = Logout Button
 def logout():
   ## Set Logout to get Logout-message
   st.session_state['logout'] = True
@@ -91,7 +91,7 @@ def logout():
   st.session_state["password_correct"] = False
   
 
-### Function: SQL Connection
+### Function: run_query = SQL Connection
 ## Initialize connection
 def init_connection():
   return mysql.connector.connect(**st.secrets["mysql"])
@@ -102,7 +102,7 @@ def run_query(query):
     return cur.fetchall()
 
 
-### Function: Picture-uploader
+### Function: pictureUploader = uploads employee images
 def pictureUploader(image, index):
   ## Initialize connection
   connection = mysql.connector.connect(**st.secrets["mysql"])
@@ -115,7 +115,7 @@ def pictureUploader(image, index):
   connection.commit()
   
   
-### Function: Check for last ID number in Table (to add data after)
+### Function: lastID = checks for last ID number in Table (to add data after)
 def lastID(url):
   id = 0
   query = "SELECT ID from %s;" %(url)
@@ -129,14 +129,14 @@ def lastID(url):
   return id
  
   
-### Function: Convert digital data to binary format
+### Function: loadFile = converts digital data to binary format
 def loadFile(filename):
   with open(filename, 'rb') as file:
     binaryData = file.read()
   return binaryData
 
 
-### Function: Write binary data on Hard Disk
+### Function: writeFile = writes binary data on Hard Disk
 def writeFile(data, filename):
   with open(filename, mode = 'wb') as file:
     file.write(data)
