@@ -38,7 +38,32 @@ eno = st.experimental_get_query_params()
 ## Get params for trainings / workshops
 # [code]
 
+
+
+
+#### Initialization of session states
+## First Run State
+if ('success' not in st.session_state):
+  st.session_state['run'] = True
   
+## Database transmission success state1
+if ('success1' not in st.session_state):
+  st.session_state['success1'] = False
+if ('success2' not in st.session_state):
+  st.session_state['success2'] = False
+if ('success3' not in st.session_state):
+  st.session_state['success3'] = False
+  
+## Selected Employee session state
+if ('index' not in st.session_state):
+  st.session_state['index'] = 0
+  
+## Logout
+if ('logout' not in st.session_state):
+  st.session_state['logout'] = False
+  
+
+
 
 #### All Functions used in HRStaffPortal
 ### Function: check_password = Password / User checking
@@ -134,6 +159,9 @@ def loadFile(filename):
   with open(filename, 'rb') as file:
     binaryData = file.read()
   return binaryData
+## Current Image data
+if ('image' not in st.session_state):
+  st.session_state['image'] = loadFile('images/No_Image.png')
 
 
 ### Function: writeFile = writes binary data on Hard Disk
@@ -141,32 +169,10 @@ def writeFile(data, filename):
   with open(filename, mode = 'wb') as file:
     file.write(data)
     
-    
-    
-#### Initialization of Session States
-## First Run State
-if ('success' not in st.session_state):
-  st.session_state['run'] = True
-  
-## Database Transmition Success State
-if ('success' not in st.session_state):
-  st.session_state['success'] = False
-  
-## Selected Employee Session State
-if ('index' not in st.session_state):
-  st.session_state['index'] = 0
-  
-## Logout
-if ('logout' not in st.session_state):
-  st.session_state['logout'] = False
-  
-## Current Image data
-if ('image' not in st.session_state):
-  st.session_state['image'] = loadFile('images/No_Image.png')
 
 
 
-#### Two Versions of the page -> Landing page vs. HRStaffPortal
+#### Two versions of the page -> Landing page vs. HRStaffPortal
 ### Logged in state (HRStattPortal)
 if check_password():
     
@@ -230,127 +236,169 @@ if check_password():
     
     ## Form for showing Employee input fields 
     with st.form("Employee", clear_on_submit = True):
-      st.title('Employee Master Data')
+      ## Create tabs
+      tab1, tab2, tab3 = st.tabs(["Master data", "Training data", "More data"])
       
-      # If new Employee just show empty form
-      if (index == 0):
-        # Set query parameter
-        st.experimental_set_query_params(
-        eno="xxxxxx")
-        
-        # empty image
-        image = ''
-        
-        # Check for ID number count of Employee
-        id = lastID(url = "idcard.IMAGEBASE")
-        
-        ## Input for new employee data
-        id = st.text_input(label = 'ID', value = id, disabled = True)
-        layout = st.text_input(label = 'Layout', value = 1)
-        forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
-        surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
-        job = st.text_input(label = 'Job', placeholder = 'Job?')
-        exp = st.text_input(label = 'Expirity Date', value = '2023-12-31 00:00:00')
-        eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
-        capri = st.text_input(label = 'Cards Printed', value = 0)
-        uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
-        if uploaded_file is not None:
-          image = uploaded_file.getvalue()
-          
-        else:
-          image = loadFile("images/placeholder.png")
-        
-    
-        ## Submit Button `Create New Employee`
-        submitted = st.form_submit_button("Create New Employee")
-        if submitted:
-          ## Writing to databank if data was entered
-          if (layout is not None and forename and surname and job and exp and eno and capri):
-            # Get latest ID from database
-            id = lastID(url = "idcard.IMAGEBASE")
-            # Maybe it needs a break???
-            query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, eno, capri)
-            run_query(query)
-            conn.commit()
-            st.session_state.success = True
-            
-            # Upload picture to database
-            pictureUploader(image, id)
-            
-            # Set query parameter
-            st.experimental_set_query_params(eno=eno)
-            
-            # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
-            st.session_state.index = int(id)
-            
-          else:
-            st.session_state.success = False
-          
-          st.experimental_rerun()
- 
+      ## tab `Master data`
+      with tab1:
+        st.title('Employee Master data')
       
-      ## If data is already existent, show filled form  
-      else:
-        ## Get information of selected Employee
-        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
-        employee = run_query(query)
+        ## If new Employee just show empty form
+        if (index == 0):
+          # Set query parameter
+          st.experimental_set_query_params(
+          eno="xxxxxx")
         
-        ## Input for updating employee data
-        updateMaster = False
-        id = st.text_input(label = 'ID', value = employee[0][0], disabled = True)
-        layout = st.text_input(label = 'Layout', value = employee[0][1], disabled = True)
-        forename = st.text_input(label = 'Forename', value = employee[0][2], disabled = not checkbox_val)
-        if (employee[0][2] != forename):
-          updateMaster = True
-        surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
-        if (employee[0][3] != surname):
-          updateMaster = True
-        job = st.text_input(label = 'Job', value = employee[0][4], disabled = not checkbox_val)
-        if (employee[0][4] != job):
-          updateMaster = True
-        exp = st.text_input(label = 'Expirity Date', value = employee[0][5], disabled = not checkbox_val)
-        if (employee[0][5] != exp):
-          updateMaster = True
-        eno = st.text_input(label = 'Employee Number', value = employee[0][6], disabled = not checkbox_val)
-        if (employee[0][6] != eno):
-          updateMaster = True
-        capri = st.text_input(label = 'Cards Printed', value = employee[0][7], disabled = not checkbox_val)
-        if (employee[0][7] != capri):
-          updateMaster = True
-          
-        ## Check if image is empty and show a placeholder
-        if (len(employee[0][8]) < 10):
-          # Show placeholder
-          st.image('images/portrait-placeholder.png')
-          # Set Image Session State to `No Image` placeholder
-          st.session_state['image'] = loadFile('images/No_Image.png')
-          
-        ## Show existing Image
-        else:          
-          st.image(employee[0][8])
-          # Save Image for downloading to Image Session State
-          st.session_state.image = employee[0][8]
-        
-        ## Image Uploader
-        uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png', disabled = not checkbox_val)
-        if uploaded_file is not None:
-          updateMaster = True
-          image = uploaded_file.getvalue()
-          # Upload picture to database
-          pictureUploader(image, index)
-        
-        ## No image data  
-        else:
+          # empty image
           image = ''
         
-        ## Set query parameter
-        st.experimental_set_query_params(eno=eno)
+          # Check for ID number count of Employee
+          id = lastID(url = "idcard.IMAGEBASE")
+        
+          ## Input for new employee data
+          id = st.text_input(label = 'ID', value = id, disabled = True)
+          layout = st.text_input(label = 'Layout', value = 1)
+          forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+          surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+          job = st.text_input(label = 'Job', placeholder = 'Job?')
+          exp = st.text_input(label = 'Expirity Date', value = '2023-12-31 00:00:00')
+          eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
+          capri = st.text_input(label = 'Cards Printed', value = 0)
+          uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
+          if uploaded_file is not None:
+            image = uploaded_file.getvalue()
+          
+          else:
+            image = loadFile("images/placeholder.png")
+        
+    
+          ## Submit Button `Create New Employee`
+          submitted = st.form_submit_button("Create New Employee")
+          if submitted:
+            ## Writing to databank if data was entered
+            if (layout is not None and forename and surname and job and exp and eno and capri):
+              # Get latest ID from database
+              id = lastID(url = "idcard.IMAGEBASE")
+              # Maybe it needs a break???
+              query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, eno, capri)
+              run_query(query)
+              conn.commit()
+              st.session_state['success1'] = True
+            
+              # Upload picture to database
+              pictureUploader(image, id)
+            
+              # Set query parameter
+              st.experimental_set_query_params(eno=eno)
+            
+              # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
+              st.session_state.index = int(id)
+            
+            else:
+              st.session_state['success1'] = False
+          
+            st.experimental_rerun()
+ 
+      
+        ## If data is already existent, show filled form  
+        else:
+          ## Get information of selected Employee
+          query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
+          employee = run_query(query)
+        
+          ## Input for updating employee data
+          updateMaster = False
+          id = st.text_input(label = 'ID', value = employee[0][0], disabled = True)
+          layout = st.text_input(label = 'Layout', value = employee[0][1], disabled = True)
+          forename = st.text_input(label = 'Forename', value = employee[0][2], disabled = not checkbox_val)
+          if (employee[0][2] != forename):
+            updateMaster = True
+          surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
+          if (employee[0][3] != surname):
+            updateMaster = True
+          job = st.text_input(label = 'Job', value = employee[0][4], disabled = not checkbox_val)
+          if (employee[0][4] != job):
+            updateMaster = True
+          exp = st.text_input(label = 'Expirity Date', value = employee[0][5], disabled = not checkbox_val)
+          if (employee[0][5] != exp):
+            updateMaster = True
+          eno = st.text_input(label = 'Employee Number', value = employee[0][6], disabled = not checkbox_val)
+          if (employee[0][6] != eno):
+            updateMaster = True
+          capri = st.text_input(label = 'Cards Printed', value = employee[0][7], disabled = not checkbox_val)
+          if (employee[0][7] != capri):
+            updateMaster = True
+          
+          ## Check if image is empty and show a placeholder
+          if (len(employee[0][8]) < 10):
+            # Show placeholder
+            st.image('images/portrait-placeholder.png')
+            # Set Image Session State to `No Image` placeholder
+            st.session_state['image'] = loadFile('images/No_Image.png')
+          
+          ## Show existing Image
+          else:          
+            st.image(employee[0][8])
+            # Save Image for downloading to Image Session State
+            st.session_state.image = employee[0][8]
+        
+          ## Image Uploader
+          uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png', disabled = not checkbox_val)
+          if uploaded_file is not None:
+            updateMaster = True
+            image = uploaded_file.getvalue()
+            # Upload picture to database
+            pictureUploader(image, index)
+        
+          ## No image data  
+          else:
+            image = ''
+        
+          ## Set query parameter
+          st.experimental_set_query_params(eno=eno)
+          
+          ## Submit Button for Changes on employee master data
+          submitted = st.form_submit_button("Save changes on Master data")
+          if submitted:
+            # Set session state `index`
+            st.session_state.index = index
+          
+            ## Writing to databank idcard Table IMAGEBASE
+            if (updateMaster == True):
+              query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s WHERE ID = %s;" %(layout, forename, surname, job, exp, eno, capri, index)
+              run_query(query)
+              conn.commit()
+              st.session_state['success1'] = True
+            
+            else:
+              st.session_state['success1'] = False
+
+          
+            ## Set Session State to 2nd run and reloading to get actual data
+            st.session_state.run = False
+            st.experimental_rerun()
+          
+            
+          ## Warning or Success messages after reloading
+          if (st.session_state.run != True and st.session_state['success1'] == True):
+            st.success(body = 'Data submitted to Databank.', icon = "✅")
+          else:
+            if (st.session_state.run != True):
+              st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
           
 
+        
+      ## tab `Training data`
+      with tab2:
         ## Get information of selected Employee regarding Training
-        with st.expander("Training Data", expanded = checkbox_training):
-          st.title('Employee Training Data')
+        st.title('Employee Training data')
           
+        ## If new Employee just show empty form
+        if (index == 0):
+          st.info(body = 'No Training data available', icon = "ℹ️")
+          
+        ## Employee existend
+        else:
           ## Check for last ID number in TrainingData (to add data after)
           idT = lastID(url = "idcard.TRAININGDATA")
           
@@ -391,12 +439,12 @@ if check_password():
   
               
           ## Show new entry input fields if checkbox 'Add Training' is checked
-          # If not checked
+          ## If not checked
           if not checkbox_training:
             if (trainingData[0][0] == None):
-              st.info(body = 'No Training Data available', icon = "ℹ️")
+              st.info(body = 'No Training data available', icon = "ℹ️")
           
-          # If checked    
+          ## If checked    
           else:
             # Calculating number of training
             if (trainingData[0][0] == None):
@@ -422,74 +470,97 @@ if check_password():
             if x.strip():
               days.append(x)
               insert = True
-   
-            
-        ## Warning or Success messages after reloading
-        if (st.session_state.run != True and st.session_state.success == True):
-          st.success(body = 'Data submitted to Databank.', icon = "✅")
-        else:
-          if (st.session_state.run != True):
-            st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
-        
-        
-        ## Submit Button for Changes
-        submitted = st.form_submit_button("Save Changes")
-        if submitted:
-          # Set session state `index`
-          st.session_state.index = index
-          
-          # Writing to databank idcard Table IMAGEBASE
-          if (updateMaster == True):
-            query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s WHERE ID = %s;" %(layout, forename, surname, job, exp, eno, capri, index)
-            run_query(query)
-            conn.commit()
-            
-            st.session_state.success = True
-            
-          else:
-            st.session_state.success = False
-     
-          
-          ## Writing to databank idcard Table TRAININGDATA - first entry
-          if (insert == True and update == False):
-            if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
-              if (trainingData[0][0] == None):
-                query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+                
+                
+          ## Submit Button for Changes on employee `Training data`
+          submitted = st.form_submit_button("Save changes on Training data")
+          if submitted:
+              
+            ## Writing to databank idcard Table TRAININGDATA - first entry
+            if (insert == True and update == False):
+              if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
+                if (trainingData[0][0] == None):
+                  query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+                  run_query(query)
+                  conn.commit()
+                  st.session_state['success2'] = True
+              
+              else:
+                st.session_state['success2'] = False
+              
+              
+            ## Writing to databank idcard Table TRAININGDATA - new entry (not first)
+            if (insert == True and trainingData[0][0] != None):
+              if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
+                query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
                 run_query(query)
                 conn.commit()
-                st.session_state.success = True
+                st.session_state['success2'] = True
               
-            else:
-              st.session_state.success = False
-              
-              
-          ## Writing to databank idcard Table TRAININGDATA - new entry (not first)
-          if (insert == True and trainingData[0][0] != None):
-            if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
-              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
-              run_query(query)
-              conn.commit()
-              st.session_state.success = True
-              
-            else:
-              st.session_state.success = False
+              else:
+                st.session_state['success2'] = False
               
               
-          ## Writing to databank idcard Table TRAININGDATA - Updates to all existing entries
-          if (update == True):
-            for i in range(len(trainingData)):
-              query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
-              run_query(query)
-              conn.commit()
-            st.session_state.success = True
-
+            ## Writing to databank idcard Table TRAININGDATA - Updates to all existing entries
+            if (update == True):
+              for i in range(len(trainingData)):
+                query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
+                run_query(query)
+                conn.commit()
+              st.session_state['success2'] = True
+                
+                
+            ## Set Session State to 2nd run and reloading to get actual data
+            st.session_state.run = False
+            st.experimental_rerun()
+            
+            
+          ## Warning or Success messages after reloading
+          if (st.session_state.run != True and st.session_state['success2'] == True):
+            st.success(body = 'Data submitted to Databank.', icon = "✅")
+          else:
+            if (st.session_state.run != True):
+              st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
+        
+    
+        
+      ## tab `More data`
+      with tab3:
+        st.title('More employee data')
           
+        ## If new Employee just show empty form
+        if (index == 0):
+          st.info(body = 'No data available', icon = "ℹ️")
+          
+        ## Employee existend
+        else:
+          st.info(body = 'Coming soon...', icon = "ℹ️")
+            
+        ## Submit Button for Changes on `More data`
+        submitted = st.form_submit_button("Save changes on More data")
+        if submitted:
+          ## Let not succeed as there is nothing to submit!
+          st.session_state['success3'] = False
+            
           ## Set Session State to 2nd run and reloading to get actual data
           st.session_state.run = False
           st.experimental_rerun()
-
-
           
+        ## Warning or Success messages after reloading
+        if (st.session_state.run != True and st.session_state['success3'] == True):
+          st.success(body = 'Data submitted to Databank.', icon = "✅")
+        else:
+          if (st.session_state.run != True):
+            st.warning(body = 'Not submitted, as not yet implemented!', icon = "⚠️")
+        
+      
+        
+      ## Out of the Tabs
+      ## Nothing yet to show
+        
+        
+
+
     ### Out of the Form
     ## Image Download Button
     st.download_button('Download Image', data = st.session_state.image, mime="image/png")
