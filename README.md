@@ -104,5 +104,5 @@ Open the `HRStaffPortal.Rproj` file (RStudio Project will open) and configure th
 If you installed all dependencies, configured the MySQL Server and configured the streamlit app (`config.toml` / `secrets.toml`) you can run the app locally within the **Terminal** of RStudio with this command:
 
 ```
-streamlit run streamlit_app.py
+streamlit run 🏥_HR_Staff_Portal.py
 ```

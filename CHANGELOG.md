@@ -2,6 +2,23 @@
 All notable changes to this project will be documented in this file.
 
 
+
+## Version 0.1.2 - 2022-xx-xx
+`Wonder bag`
+
+
+### Added
+- Delete employee
+
+
+### Changed
+- Tabs instead of expander for data view
+
+
+### Fixed
+- Simultaneous creating of new employee gives right ID 
+
+
 ## Version 0.1.1 - 2022-10-18
 `Initial Release`
 
