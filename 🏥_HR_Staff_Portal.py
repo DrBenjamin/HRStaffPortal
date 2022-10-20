@@ -180,7 +180,7 @@ if check_password():
 
 
     ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
-    # open Databak Connection
+    # Open databank connection
     conn = init_connection()
 
 
