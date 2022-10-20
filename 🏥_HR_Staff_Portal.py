@@ -217,15 +217,15 @@ if check_password():
       if eno:
         if (eno['eno'][0].strip()):
           if (eno['eno'][0] == row[3]):
-            st.session_state.index = row[0]
+            st.session_state['index'] = row[0]
       # Concenate Forename and Surname for Selectbox
       names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
 
     ## Employee Selectbox (on change sets first start session state)
     def onChange():
-      st.session_state.run = True
-    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.index)
+      st.session_state['run'] = True
+    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'])
  
     
     ## Checkboxes for editing and adding Training data
@@ -292,7 +292,7 @@ if check_password():
               st.experimental_set_query_params(eno=eno)
             
               # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
-              st.session_state.index = int(id)
+              st.session_state['index'] = int(id)
             
             else:
               st.session_state['success1'] = False
@@ -340,7 +340,7 @@ if check_password():
           else:          
             st.image(employee[0][8])
             # Save Image for downloading to Image Session State
-            st.session_state.image = employee[0][8]
+            st.session_state['image'] = employee[0][8]
         
           ## Image Uploader
           uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png', disabled = not checkbox_val)
@@ -361,7 +361,7 @@ if check_password():
           submitted = st.form_submit_button("Save changes on Master data")
           if submitted:
             # Set session state `index`
-            st.session_state.index = index
+            st.session_state['index'] = index
           
             ## Writing to databank idcard Table IMAGEBASE
             if (updateMaster == True):
@@ -375,15 +375,15 @@ if check_password():
 
           
             ## Set Session State to 2nd run and reloading to get actual data
-            st.session_state.run = False
+            st.session_state['run'] = False
             st.experimental_rerun()
           
             
           ## Warning or Success messages after reloading
-          if (st.session_state.run != True and st.session_state['success1'] == True):
+          if (st.session_state['run'] != True and st.session_state['success1'] == True):
             st.success(body = 'Data submitted to Databank.', icon = "✅")
           else:
-            if (st.session_state.run != True):
+            if (st.session_state['run'] != True):
               st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
           
 
@@ -511,15 +511,15 @@ if check_password():
                 
                 
             ## Set Session State to 2nd run and reloading to get actual data
-            st.session_state.run = False
+            st.session_state['run'] = False
             st.experimental_rerun()
             
             
           ## Warning or Success messages after reloading
-          if (st.session_state.run != True and st.session_state['success2'] == True):
+          if (st.session_state['run'] != True and st.session_state['success2'] == True):
             st.success(body = 'Data submitted to Databank.', icon = "✅")
           else:
-            if (st.session_state.run != True):
+            if (st.session_state['run'] != True):
               st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
         
     
@@ -543,14 +543,14 @@ if check_password():
           st.session_state['success3'] = False
             
           ## Set Session State to 2nd run and reloading to get actual data
-          st.session_state.run = False
+          st.session_state['run'] = False
           st.experimental_rerun()
           
         ## Warning or Success messages after reloading
-        if (st.session_state.run != True and st.session_state['success3'] == True):
+        if (st.session_state['run'] != True and st.session_state['success3'] == True):
           st.success(body = 'Data submitted to Databank.', icon = "✅")
         else:
-          if (st.session_state.run != True):
+          if (st.session_state['run'] != True):
             st.warning(body = 'Not submitted, as not yet implemented!', icon = "⚠️")
         
       
@@ -563,7 +563,7 @@ if check_password():
 
     ### Out of the Form
     ## Image Download Button
-    st.download_button('Download Image', data = st.session_state.image, mime="image/png")
+    st.download_button('Download Image', data = st.session_state['image'], mime="image/png")
 
  
           
