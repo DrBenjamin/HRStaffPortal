@@ -225,7 +225,11 @@ if check_password():
     ## Employee Selectbox (on change sets first start session state)
     def onChange():
       st.session_state['run'] = True
+<<<<<<< HEAD
     index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'])
+=======
+    index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.index)
+>>>>>>> 0d632c78b263d5921ccc93e3661f46ca28bf1c9c
  
     
     ## Checkboxes for editing and adding Training data
