@@ -224,7 +224,7 @@ if check_password():
 
     ## Employee Selectbox (on change sets first start session state)
     def onChange():
-      st.session_state.run = True
+      st.session_state['run'] = True
     index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state.index)
  
     
@@ -375,15 +375,15 @@ if check_password():
 
           
             ## Set Session State to 2nd run and reloading to get actual data
-            st.session_state.run = False
+            st.session_state['run'] = False
             st.experimental_rerun()
           
             
           ## Warning or Success messages after reloading
-          if (st.session_state.run != True and st.session_state['success1'] == True):
+          if (st.session_state['run'] != True and st.session_state['success1'] == True):
             st.success(body = 'Data submitted to Databank.', icon = "✅")
           else:
-            if (st.session_state.run != True):
+            if (st.session_state['run'] != True):
               st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
           
 
@@ -511,15 +511,15 @@ if check_password():
                 
                 
             ## Set Session State to 2nd run and reloading to get actual data
-            st.session_state.run = False
+            st.session_state['run'] = False
             st.experimental_rerun()
             
             
           ## Warning or Success messages after reloading
-          if (st.session_state.run != True and st.session_state['success2'] == True):
+          if (st.session_state['run'] != True and st.session_state['success2'] == True):
             st.success(body = 'Data submitted to Databank.', icon = "✅")
           else:
-            if (st.session_state.run != True):
+            if (st.session_state['run'] != True):
               st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
         
     
@@ -543,14 +543,14 @@ if check_password():
           st.session_state['success3'] = False
             
           ## Set Session State to 2nd run and reloading to get actual data
-          st.session_state.run = False
+          st.session_state['run'] = False
           st.experimental_rerun()
           
         ## Warning or Success messages after reloading
-        if (st.session_state.run != True and st.session_state['success3'] == True):
+        if (st.session_state['run'] != True and st.session_state['success3'] == True):
           st.success(body = 'Data submitted to Databank.', icon = "✅")
         else:
-          if (st.session_state.run != True):
+          if (st.session_state['run'] != True):
             st.warning(body = 'Not submitted, as not yet implemented!', icon = "⚠️")
         
       
