@@ -381,10 +381,10 @@ if check_password():
             
           ## Warning or Success messages after reloading
           if (st.session_state['run'] != True and st.session_state['success1'] == True):
-            st.success(body = 'Data submitted to Databank.', icon = "✅")
+            st.success(body = 'Master data submitted to Databank.', icon = "✅")
           else:
             if (st.session_state['run'] != True):
-              st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
+              st.warning(body = 'Not sumitted, as no new Master data was entered!', icon = "⚠️")
           
 
         
@@ -517,10 +517,10 @@ if check_password():
             
           ## Warning or Success messages after reloading
           if (st.session_state['run'] != True and st.session_state['success2'] == True):
-            st.success(body = 'Data submitted to Databank.', icon = "✅")
+            st.success(body = 'Training data submitted to Databank.', icon = "✅")
           else:
             if (st.session_state['run'] != True):
-              st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
+              st.warning(body = 'Not sumitted, as no new Training data was entered!', icon = "⚠️")
         
     
         
