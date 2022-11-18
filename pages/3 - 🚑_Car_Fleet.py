@@ -60,7 +60,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     ## Columns
     col1, col2, col3 = st.columns(3)
     with col1:
-      st.header("Audi")
+      st.header("Audie")
       st.image("./pages/images/audi-a4.jpg", caption = "Audi A4")
       st.write("Vehicle ID: 00001")
 
