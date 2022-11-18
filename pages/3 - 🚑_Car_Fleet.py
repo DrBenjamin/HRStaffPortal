@@ -9,4 +9,20 @@ import streamlit as st
 
 
 st.title("KCH Car Fleet")
-st.write("Sample Code from Hope...")
+
+## Form for showing Employee input fields 
+    with st.form("Car Fleet Management", clear_on_submit = True):
+      ## Create tabs
+      tab1, tab2, tab3 = st.tabs(["Vehicles", "Repairs", "Fuel Consumption"])
+      
+      ## tab `Master data`
+      with tab1:
+        st.title('Vehicles')
+        
+      ## tab `Master data`
+      with tab1:
+        st.title('Repairs')
+        
+      ## tab `Master data`
+      with tab1:
+        st.title('Fuel Consumption')
