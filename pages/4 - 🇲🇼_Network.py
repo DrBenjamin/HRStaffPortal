@@ -15,7 +15,7 @@ import streamlit.components.v1 as stc
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
   page_icon = "images/thumbnail.png",
-  layout = "centered",
+  layout = "wide",
   initial_sidebar_state = "collapsed",
   menu_items = { 
          'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
@@ -26,9 +26,9 @@ st.set_page_config(
 
 
 ## Header
-st.title('Network')
-st.header('Kamuzu Central Hospital (KCH)')
-st.subheader('Mastodon Server')
+#st.title('Network')
+#st.header('Kamuzu Central Hospital (KCH)')
+#st.subheader('Mastodon Server')
 
 
 ## Sidebar
@@ -37,7 +37,7 @@ st.sidebar.image('images/MoH.png')
 
 # Iframe
 #stc.iframe(src = "http://localhost/hopecarrental/index.php", height = 600, scrolling = True)
-stc.iframe(src = "https://joinmastodon.org", height = 600, scrolling = True)
+stc.iframe(src = "https://joinmastodon.org", height = 692, scrolling = True)
 
 stc.html(
   """
