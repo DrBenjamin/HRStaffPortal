@@ -111,3 +111,69 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   submitted = st.form_submit_button("Edit")
   if submitted:
     st.write("Edited.")
+
+
+    
+### Out side of the form
+## Bar Chart for fuel consumption of the Vehicles
+fuel_rate = []
+data_fuel_rate = pd.DataFrame(columns = ['Vehicle', 'Consumption'])
+for i in range(len(databank_fuel['VEHICLE_FUEL'])):
+  # Vaulue still a string 
+  dist = databank_fuel['VEHICLE_DISTANCE'][i + 1]
+  # Cutting of the 'km' letters and convert to float
+  dist = float(dist[:-2])
+
+  # Vaulue still a string 
+  fuel = databank_fuel['VEHICLE_FUEL'][i + 1]
+  # Cutting of the 'L' letter and convert to float
+  fuel = float(fuel[:-1])
+  
+  # Calculate the average fuel consumption
+  fuel_rate.append(dist / fuel)
+
+  # Converting to pandas dataframe
+  df = pd.DataFrame([[databank_fuel['VEHICLE_ID'][i + 1], (dist / fuel)]], columns = ['Vehicle', 'Consumption'])
+  data_fuel_rate = data_fuel_rate.append(df)
+
+# Plotting the bar chart
+st.bar_chart(fuel_rate)
+data_fuel_rate = data_fuel_rate.set_index('Vehicle')
+st.bar_chart(data_fuel_rate)
+
+
+## Getting unique Vehicle IDs average fuel consumption
+# Checking for unique Vehicles IDs
+vehicle = []
+i = 0
+while i < len(databank_fuel):
+  if i > 0:
+    x = 0
+    double = False
+    for x in range(i):
+      if (vehicle[x] == databank_fuel['VEHICLE_ID'][i + 1]):
+        double = True
+        break
+    if (double != True):    
+      vehicle.append(databank_fuel['VEHICLE_ID'][i + 1])
+  else:
+    vehicle.append(databank_fuel['VEHICLE_ID'][i + 1])
+    
+  i += 1
+
+# Getting average fuel consumption per Vehicle
+data_fuel_rate_average = pd.DataFrame(columns = ['Vehicle', 'Consumption'])
+for i in range(len(vehicle)):
+  query = "SELECT ID, VEHICLE_ID, VEHICLE_FUEL, VEHICLE_DISTANCE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicle[i])
+  rows = run_query(query)
+  i = 0
+  fuel = 0.0
+  for row in rows:
+    i += 1
+    fuel += float(row[3][:-2]) / float(row[2][:-1])
+  df = pd.DataFrame([[row[1], fuel / i]], columns = ['Vehicle', 'Consumption'])
+  data_fuel_rate_average = data_fuel_rate_average.append(df)
+data_fuel_rate_average = data_fuel_rate_average.set_index('Vehicle')
+
+# Plotting
+st.bar_chart(data_fuel_rate_average)
