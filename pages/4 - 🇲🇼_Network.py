@@ -37,20 +37,12 @@ st.sidebar.image('images/MoH.png')
 
 # Iframe
 #stc.iframe(src = "http://localhost/hopecarrental/index.php", height = 600, scrolling = True)
-stc.iframe(src = "https://joinmastodon.org", height = 692, scrolling = True)
+#stc.iframe(src = "https://techhub.social/@DrBenjamin", height = 692, scrolling = True)
+stc.iframe(src = "http://192.168.1.173/index.html", height = 500, scrolling = True)
 
 stc.html(
   """
-  <!DOCTYPE html>
-  <html lang="en_UK">
-  <head>
-  <meta charset="UTF-8">
-  <title>Titel of the Webpage</title>
-  <meta name="robots" content="index,follow" />
-  Text
-  <br />
-  Text 2
-  </head>
+  <iframe src="https://techhub.social/@DrBenjamin/109397699095825866/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="400"></iframe><script src="https://techhub.social/embed.js" async="async"></script>
   """,
-  height=100,
+  height=300,
 )
