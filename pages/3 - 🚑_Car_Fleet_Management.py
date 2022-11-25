@@ -60,10 +60,6 @@ def check_vehicles(databank):
     i += 1
   return vehicle
 
-### Function: check_open_tab = checking which tab is open
-def check_open_tab(number):
-  return number
-
 
 
 #### Main Program
@@ -74,10 +70,10 @@ st.title("KCH Car Fleet")
 chosen_id = stx.tab_bar(data = [
   stx.TabBarItemData(id = 1, title = "Vehicles", description = "Vehicles at KCH"),
   stx.TabBarItemData(id = 2, title = "Repairs", description = "Repairs at KCH"),
-  stx.TabBarItemData(id = 3, title = "Fuel Consumption", description = "Fuel consumption at KCH"),
+  stx.TabBarItemData(id = 3, title = "Fuel", description = "Fuel consumption at KCH"),
 ], default = 1)
 
-with st.form("Custom Car Fleet Management", clear_on_submit = True):
+with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Vehicles`
   if (f"{chosen_id}" == '1'):
     st.title('Vehicles')
@@ -138,7 +134,8 @@ with st.form("Custom Car Fleet Management", clear_on_submit = True):
 
 
     
-### Out side of the form
+#### Out side of the form
+### Data Analysis
 ## Data analysis for `Vehicles`
 if (f"{chosen_id}" == '1'):
   st.write('Data analysis for vehicles')
@@ -188,7 +185,7 @@ elif (f"{chosen_id}" == '2'):
     st.bar_chart(data_repair_costs)
 
   
-## Data analysis for `Fuel Consumption`
+## Data analysis for `Fuel`
 elif (f"{chosen_id}" == '3'):
   ## Average Fuel Consumption Chart
   # Checking for unique Vehicles IDs
