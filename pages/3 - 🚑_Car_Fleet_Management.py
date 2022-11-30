@@ -66,12 +66,13 @@ def check_vehicles(databank):
 ### Title
 st.title("KCH Car Fleet")
 
-### Custom Tab with ID
+
+### Custom Tab with IDs
 chosen_id = stx.tab_bar(data = [
   stx.TabBarItemData(id = 1, title = "Vehicles", description = "Vehicles at KCH"),
   stx.TabBarItemData(id = 2, title = "Repairs", description = "Repairs at KCH"),
-  stx.TabBarItemData(id = 3, title = "Fuel", description = "Fuel consumption at KCH"),
-], default = 1)
+  stx.TabBarItemData(id = 3, title = "Fuel", description = "Fuel consumption at KCH"),], default = 1)
+
 
 with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Vehicles`
