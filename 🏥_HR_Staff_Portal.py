@@ -117,15 +117,21 @@ def logout():
   st.session_state["password_correct"] = False
   
 
-### Function: run_query = SQL Connection
-## Initialize connection
+### Function: run_query = Initial SQL Connection
 def init_connection():
+  ## Initialize connection
   return mysql.connector.connect(**st.secrets["mysql"])
-## Perform query
+
+
+### Function: run_query = SQL query
 def run_query(query):
-  with conn.cursor() as cur:  
-    cur.execute(query)
-    return cur.fetchall()
+  with conn.cursor() as cur:
+    try:
+      ## Perform query
+      cur.execute(query)
+      return cur.fetchall()
+    except:
+      print("An exception occurred in function `run_query`")
 
 
 ### Function: pictureUploader = uploads employee images

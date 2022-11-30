@@ -29,18 +29,22 @@ st.set_page_config(
 
 
 #### All functions used in Car Fleet Management
-### Function: run_query = SQL Connection
+### Function: init_connection = Initial SQL connection
 ## Initialize connection
 def init_connection():
   return mysql.connector.connect(**st.secrets["mysql"])
-## Perform query
+
+
+### Function: run_query = SQL query
 def run_query(query):
-  with conn.cursor() as cur:  
-    cur.execute(query)
-    return cur.fetchall()
-## Use local databank carfleet with Table REPAIRS
-# Open databank connection
-conn = init_connection()
+  with conn.cursor() as cur:
+    try:
+      ## Perform query
+      cur.execute(query)
+      return cur.fetchall()
+    except:
+      print("An exception occurred in function `run_query`")
+
 
 ### Function: check_vehicles = checking for unique Vehicles IDs
 def check_vehicles(databank):
@@ -65,6 +69,10 @@ def check_vehicles(databank):
 #### Main Program
 ### Title
 st.title("KCH Car Fleet")
+
+
+## Open databank connection
+conn = init_connection()
 
 
 ### Custom Tab with IDs
@@ -101,6 +109,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   elif (f"{chosen_id}" == '2'):
     st.title('Repairs')
     
+      
     ## Get repair data and print out as a dataframe
     query = "SELECT ID, VEHICLE_ID, VEHICLE_REPAIR, VEHICLE_SPARE_PARTS, VEHICLE_SPARE_PART_COSTS, VEHICLE_DOWN_TIME FROM `carfleet`.`REPAIRS`;"
     rows = run_query(query)
