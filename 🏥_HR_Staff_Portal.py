@@ -401,7 +401,12 @@ if check_password():
           
       ## If new Employee just show empty form
       if (index == 0):
-        st.info(body = 'No Training data available', icon = "ℹ️")
+        st.info(body = 'Create Employee first!', icon = "ℹ️")
+        
+        ## Submit Button for Changes on employee `Training data` - New employee
+        submitted = st.form_submit_button("Nothing to save.")
+        if submitted:
+          print("Nothing changed")
           
       ## Employee existend
       else:
@@ -478,7 +483,7 @@ if check_password():
             insert = True
                 
                 
-        ## Submit Button for Changes on employee `Training data`
+        ## Submit Button for Changes on employee `Training data` - existend employee
         submitted = st.form_submit_button("Save changes on Training data")
         if submitted:
           ## Writing to databank idcard Table TRAININGDATA - first entry
@@ -533,30 +538,37 @@ if check_password():
     elif (f"{chosen_id}" == '3'):
       st.title('More employee data')
           
+          
       ## If new Employee just show empty form
       if (index == 0):
-        st.info(body = 'No data available', icon = "ℹ️")
+        st.info(body = 'Create Employee first!', icon = "ℹ️")
+        
+        ## Submit Button for Changes on `More data` - New employee
+        submitted = st.form_submit_button("Nothing to save.")
+        if submitted:
+          print("Nothing changed")
+          
           
       ## Employee existend
       else:
         st.info(body = 'Coming soon...', icon = "ℹ️")
             
-      ## Submit Button for Changes on `More data`
-      submitted = st.form_submit_button("Save changes on More data")
-      if submitted:
-        ## Let not succeed as there is nothing to submit!
-        st.session_state['success3'] = False
+        ## Submit Button for Changes on `More data` - existend employee
+        submitted = st.form_submit_button("Save changes on More data")
+        if submitted:
+          ## Let not succeed as there is nothing to submit!
+          st.session_state['success3'] = False
             
-        ## Set Session State to 2nd run and reloading to get actual data
-        st.session_state['run'] = False
-        st.experimental_rerun()
+          ## Set Session State to 2nd run and reloading to get actual data
+          st.session_state['run'] = False
+          st.experimental_rerun()
           
-      ## Warning or Success messages after reloading
-      if (st.session_state['run'] != True and st.session_state['success3'] == True):
-        st.success(body = 'Data submitted to Databank.', icon = "✅")
-      else:
-        if (st.session_state['run'] != True):
-          st.warning(body = 'Not submitted, as not yet implemented!', icon = "⚠️")
+        ## Warning or Success messages after reloading
+        if (st.session_state['run'] != True and st.session_state['success3'] == True):
+          st.success(body = 'Data submitted to Databank.', icon = "✅")
+        else:
+          if (st.session_state['run'] != True):
+            st.warning(body = 'Not submitted, as not yet implemented!', icon = "⚠️")
         
       
         
