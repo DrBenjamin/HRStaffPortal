@@ -14,6 +14,8 @@ import numpy as np
 import mysql.connector
 import sys
 import webbrowser
+import time
+from threading import Thread
 
 
 
@@ -117,10 +119,26 @@ def logout():
   st.session_state["password_correct"] = False
   
 
+### Function: database_connect = Threadend SQL Connection
+def database_connect():
+  t = Thread(target = init_connection())
+  t.daemon = True
+  t.start()
+  t.join(5)
+  if t.is_alive():
+    print("An exception occurred in function `init_connection` 2")
+    st.error(body = 'Databank connection timeout 2!', icon = "🚨")
+
+
 ### Function: run_query = Initial SQL Connection
 def init_connection():
   ## Initialize connection
-  return mysql.connector.connect(**st.secrets["mysql"])
+  try:
+    return mysql.connector.connect(**st.secrets["mysql"])
+  except:
+    print("An exception occurred in function `init_connection`")
+    st.error(body = 'Databank connection timeout!', icon = "🚨")
+    st.stop()
 
 
 ### Function: run_query = SQL query
@@ -197,7 +215,10 @@ if check_password():
 
   ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
   # Open databank connection
+  #conn = database_connect()
   conn = init_connection()
+  #with st.spinner(''):
+    #time.sleep(5)
 
 
   ## Checkbox for option to see databank data
