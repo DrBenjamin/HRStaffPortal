@@ -10,6 +10,9 @@ import streamlit as st
 import extra_streamlit_components as stx
 import pandas as pd
 import mysql.connector
+import subprocess
+import io
+import os
 
 
 
@@ -30,9 +33,14 @@ st.set_page_config(
 
 #### All functions used in Car Fleet Management
 ### Function: init_connection = Initial SQL connection
-## Initialize connection
 def init_connection():
-  return mysql.connector.connect(**st.secrets["mysql"])
+  try:
+    ## Initialize connection
+    return mysql.connector.connect(**st.secrets["mysql"])
+  except:
+    print("An exception occurred in function `init_connection`")
+    st.error(body = 'Databank connection timeout!', icon = "🚨")
+    st.stop()
 
 
 ### Function: run_query = SQL query
@@ -139,8 +147,14 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     
   ## Submit Button `Test`
   submitted = st.form_submit_button("Test")
+
   if submitted:
-    st.write("Tested.")
+    ## Printing
+    #toprint = bytes("databank_fuel", 'utf-8')
+    #lpr =  subprocess.Popen("/usr/bin/lpr", stdin = subprocess.PIPE)
+    #lpr.stdin.write(toprint)
+    os.startfile("./TestFile.txt", "print")
+    st.write("Printed.")
 
 
     
