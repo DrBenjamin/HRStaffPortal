@@ -3,16 +3,11 @@
 
 This App handles **employee data** which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL Databank.
 
-Development with [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is highly recommended. Install [git](https://git-scm.com/download/win) to use version control.
-
-Clone the **repository** of `HRStaffPortal` with following command:
-
-```
-git clone https://github.com/DrBenjamin/HRStaffPortal.git
-```
+For development [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is used. Install [git](https://git-scm.com/download/win) to use version control.
 
 
-#### [Streamlit Setup]
+### Setup
+#### Install and Configure all needed software
 ##### Installation of Python, Streamlit and dependencies plus some configuration
 
 Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally. A virtual Python-Environment like Anaconda is highly recommend.
@@ -24,7 +19,17 @@ pip install mysql-connector-python-rf
 pip install mysql-connector-python==8.0.29
 ```
 
-##### Configuration
+
+##### Getting the Source Code
+
+Clone the **repository** of `HRStaffPortal` with following command:
+
+```
+git clone https://github.com/DrBenjamin/HRStaffPortal.git
+```
+
+
+##### Configuration of Streamlit config files
 
 In the `./streamlit/config.toml` you define the **theming** and some **Streamlit-Server behaviour** flags:
 
@@ -50,7 +55,7 @@ xyz = "xyz"
 ```
 
 
-#### [MySQL Server Configuration]
+#### MySQL Server Configuration
 ##### For proper usage a local MySQL Server is needed
 
 In the `./streamlit/secrets.toml` you define the **user/password** combination for the MySQL Server:
@@ -92,17 +97,48 @@ To configure the database to work with the Prototype and run the following **SQL
 ```
 
 
-#### [Open the project in RStudio]
-##### Access all the files of the cloned repository
+#### Create new project in RStudio
+##### Working with RStudio on the project
 
-Open the `HRStaffPortal.Rproj` file (RStudio Project will open) and configure the *Project Options* to set the **Anaconda / Miniconda Python** environment, plus the *Version Control* with **git**.  Now you can access all the source files.
+In RStudio choose **File** - **New Project** and choose **Existing Directory**. This will create a new Project. Configure the *Project Options* to set the **Anaconda / Miniconda Python** environment. Also add the *Version Control* with **git**. Now you can open the source code as a RStudio project everytime you are working on the source files and easily use the **git** functionality within the RStudio IDE.
 
 
-#### [Run the App]
-##### Streamlit will open the web app on your IP address on port 8501
+### Software update & use
+#### Use of the web application
 
-If you installed all dependencies, configured the MySQL Server and configured the streamlit app (`config.toml` / `secrets.toml`) you can run the app locally within the **Terminal** of RStudio with this command:
+##### Clone a specific version of HR Staff Portal
+
+To clone a specific version of HR Staff Portal use this command:
+
+```
+git clone https://github.com/DrBenjamin/HRStaffPortal.git -b v0.1.1
+```
+
+
+##### Update HR Staff Portal
+
+To update the source files to the newest version use the build-in **pull function** of git. If you are using the app on a computer without RStudion installed, use this command:
+
+```
+git pull
+```
+
+
+##### Execute Streamlit 
+
+If you've installed all dependencies, configured the MySQL Server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the **Terminal** of RStudio with this command:
 
 ```
 streamlit run 🏥_HR_Staff_Portal.py
+```
+
+This will open the web app on your IP address on **port 8501**.
+
+
+#### Update Streamlit & Dependencies
+##### Update of Streamlit
+
+```
+pip install mysql-connector-python-rf
+pip install mysql-connector-python==8.0.29
 ```
