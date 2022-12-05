@@ -8,15 +8,16 @@
 #### Loading neded Python libraries
 import streamlit as st
 import extra_streamlit_components as stx
+import platform
 import pandas as pd
 import mysql.connector
-import subprocess
-import io
-import sys
 import os
 import tempfile
-import win32api
-import win32print
+plt = platform.system()
+if plt == "Windows":
+  print("Your system is Windows")
+  import win32api
+  import win32print
 import openpyxl
 
 
@@ -85,7 +86,10 @@ def printing(print_data):
       line = print_data.loc[i + 1].to_string()
       line = line + "\n" + "\n"
       open(filename, 'a+').write(line)
-    win32api.ShellExecute (0, "print", filename, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
+    if plt == "Windows":
+      win32api.ShellExecute (0, "print", filename, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
+    elif plt == "Darwin":
+      st.write("Open ", filename)
     
     
 
@@ -113,7 +117,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     ## Columns
     col1, col2, col3 = st.columns(3)
     with col1:
-      st.header("Audie")
+      st.header("Audi")
       st.image("./pages/images/audi-a4.jpg", caption = "Audi A4")
       st.write("Vehicle ID: 00001")
 
@@ -126,14 +130,33 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       st.header("Hyundai")
       st.image("./pages/images/creta.jpg", caption = "Hyundai Creta")
       st.write("Vehicle ID: 00003")
-      
+    
+    ## Get vehicle data and print out as a dataframe
+    query = "SELECT ID, VEHICLE_ID, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE FROM `carfleet`.`VEHICLES`;"
+    rows = run_query(query)
+    
+    databank_vehicles = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE'])
+    data_cars = pd.DataFrame(columns = ['VEHICLE_ID', 'VEHICLE_TYPE'])
+    
+    for row in rows:
+      df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE'])
+      databank_vehicles = pd.concat([databank_vehicles, df])
+      df = pd.DataFrame([[row[1], row[2]]], columns = ['VEHICLE_ID', 'VEHICLE_TYPE'])
+      data_cars = pd.concat([data_cars, df])
+    databank_vehicles = databank_vehicles.set_index('ID')
+    st.dataframe(databank_vehicles, use_container_width = True)
+    
     ## Submit Button `Export to Excel`
     submitted = st.form_submit_button("Export to Excel")
 
     if submitted:
-      # Export DataFrame to Excel file
-      #databank_fuel.to_excel('files\\Export.xlsx', sheet_name = 'Fuel', index = False)
-      os.startfile('files\\Export.xlsx')
+      ## Export DataFrame to Excel file
+      if plt == "Windows":
+        databank_vehicles.to_excel('files\\Export.xlsx', sheet_name = 'Vehicles', index = False)
+        # Open Excel document
+        os.startfile('files\\Export.xlsx')
+      elif plt == "Darwin":
+        databank_vehicles.to_excel('files/Export.xlsx', sheet_name = 'Vehicles', index = False)
   
   
   ## tab `Repairs` 
@@ -156,9 +179,13 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     submitted = st.form_submit_button("Export to Excel")
 
     if submitted:
-      # Export DataFrame to Excel file
-      databank_repairs.to_excel('files\\Export.xlsx', sheet_name = 'Repairs', index = False)
-      os.startfile('files\\Export.xlsx')
+      ## Export DataFrame to Excel file
+      if plt == "Windows":
+        databank_repairs.to_excel('files\\Export.xlsx', sheet_name = 'Repairs', index = False)
+        # Open Excel document
+        os.startfile('files\\Export.xlsx')
+      elif plt == "Darwin":
+        databank_repairs.to_excel('files/Export.xlsx', sheet_name = 'Repairs', index = False)
   
   
   ## tab `Fuel Consumption`   
@@ -180,21 +207,29 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     submitted = st.form_submit_button("Export to Excel")
 
     if submitted:
-      # Print text data under Windows
-      #printing(databank_fuel)
-    
-      # Export DataFrame to Excel file
-      databank_fuel.to_excel('files\\Export.xlsx', sheet_name = 'Fuel', index = False)
-      os.startfile('files\\Export.xlsx')
+      ## Export DataFrame to Excel file
+      if plt == "Windows":
+        databank_repairs.to_excel('files\\Export.xlsx', sheet_name = 'Fuel', index = False)
+        # Open Excel document
+        os.startfile('files\\Export.xlsx')
+      elif plt == "Darwin":
+        databank_repairs.to_excel('files/Export.xlsx', sheet_name = 'Fuel', index = False)
 
 
     
-#### Out side of the form
-### Data Analysis
+#### Outside the form
+### Data analysis
 ## Data analysis for `Vehicles`
 if (f"{chosen_id}" == '1'):
-  st.write('Data analysis for vehicles')
-  
+  if st.button('Print vehicle data'):
+      ## Print text data
+      printing(databank_vehicles)
+
+  # Plotting
+  data_cars = data_cars.set_index('VEHICLE_TYPE')
+  st.bar_chart(data_cars)
+
+
 ## Data analysis for `Repairs`
 elif (f"{chosen_id}" == '2'):
   ## Repair cost chart
@@ -208,7 +243,7 @@ elif (f"{chosen_id}" == '2'):
   if (selected_vehicle != 'All vehicles'):
     vehicles = selected_vehicle
     
-  ## Calculate repair costs per vehicle
+  # Calculate repair costs per vehicle
   if (selected_vehicle == 'All vehicles'): 
     data_repair_costs = pd.DataFrame(columns = ['Vehicle ID', 'Repair costs'])
     for i in range(len(vehicles)):
@@ -225,6 +260,7 @@ elif (f"{chosen_id}" == '2'):
     
     # Plotting
     st.bar_chart(data_repair_costs, x = vehicles)
+
   
   ## Show repair costs per incident
   else:
