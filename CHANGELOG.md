@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 
 
-## Version 0.2.0 - 2022-xx-xx
+## Version 0.2.0 - 2023-xx-xx
 `Wonder bag`
 
 
