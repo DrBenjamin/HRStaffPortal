@@ -12,6 +12,7 @@ import pandas as pd
 import mysql.connector
 import subprocess
 import io
+import sys
 import os
 
 
@@ -153,8 +154,21 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     #toprint = bytes("databank_fuel", 'utf-8')
     #lpr =  subprocess.Popen("/usr/bin/lpr", stdin = subprocess.PIPE)
     #lpr.stdin.write(toprint)
-    os.startfile("./TestFile.txt", "print")
-    st.write("Printed.")
+    os.startfile("TestFile.txt", "print")
+    #st.write("Printed.")
+    
+    towrite = io.BytesIO()
+    databank_fuel.to_excel(towrite)  # write to BytesIO buffer
+    towrite.seek(0)
+    #_io.BytesIO
+    
+    # make an fd to pass to write() method as a parameter
+    file_descriptor = os.open("./TestFile.txt", os.O_CREAT|os.O_RDWR)
+    # writing the byte code into the file
+    os.write(file_descriptor, towrite.getvalue())
+    # closing the file
+    os.close(file_descriptor)
+    print ("The file is closed successfully!!")
 
 
     
