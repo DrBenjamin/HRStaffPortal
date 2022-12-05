@@ -2,8 +2,8 @@ Package: HRStaffPortal
 Type: Package
 Title: HR Staff Portal
 Version: 0.2.0-a.1
-Author: Benjamin Groß
-Maintainer: Benjamin Groß <benjamin.gross@giz.de>
+Author: Benjamin Gross
+Maintainer: Benjamin Gross <benjamin.gross@giz.de>
 Description: Prototype of a HR Staff Portal with basic functionality. Employee and Training data can be shown, edited and added.
 License: Freeware
 Encoding: UTF-8
