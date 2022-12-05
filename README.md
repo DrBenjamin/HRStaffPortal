@@ -6,6 +6,7 @@ This App handles **employee data** which is created through the process of print
 For development [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is used. Install [git](https://git-scm.com/download/win) to use version control.
 
 
+
 ### Setup
 #### Install and Configure all needed software
 ##### Installation of Python, Streamlit and dependencies plus some configuration
@@ -103,6 +104,7 @@ To configure the database to work with the Prototype and run the following **SQL
 In RStudio choose **File** - **New Project** and choose **Existing Directory**. This will create a new Project. Configure the *Project Options* to set the **Anaconda / Miniconda Python** environment. Also add the *Version Control* with **git**. Now you can open the source code as a RStudio project everytime you are working on the source files and easily use the **git** functionality within the RStudio IDE.
 
 
+
 ### Software update & use
 #### Use of the web application
 
@@ -138,7 +140,18 @@ This will open the web app on your IP address on **port 8501**.
 #### Update Streamlit & Dependencies
 ##### Update of Streamlit
 
+To install the latest version of the Streamlit web app framework run the following command:
+
 ```
-pip install mysql-connector-python-rf
-pip install mysql-connector-python==8.0.29
+pip install --upgrade streamlit
+```
+
+
+##### Update dependencies
+
+To update a specifig dependency, for instance **extra_streamlit_components** use this command:
+
+```
+pip install --upgrade eextra_streamlit_components
+
 ```
