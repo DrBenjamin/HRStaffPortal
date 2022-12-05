@@ -21,6 +21,7 @@ if plt == "Windows":
 elif plt == "Darwin":
   print("Your system is MacOS")
 import openpyxl
+import xlsxwriter
 
 
 
@@ -209,13 +210,31 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     submitted = st.form_submit_button("Export to Excel")
 
     if submitted:
-      ## Export DataFrame to Excel file
+      ## Export dataframe to Excel Makro file (xlsm)
+      # Create a Pandas Excel writer using XlsxWriter as the engine
+      writer = pd.ExcelWriter('Export.xlsx', engine = 'xlsxwriter')
+      workbook = writer.book
+
+      # Add dataframe data
+      databank_fuel.to_excel(writer, sheet_name = 'Fuel', index = False)
+      
+      # Add a table to the worksheet
+      worksheet = writer.sheets['Fuel']
+      length = int(len(databank_fuel) + 1)
+      span = "A1:E%s" %(length)
+      worksheet.add_table(span, {'columns': [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_FUEL'}, {'header': 'VEHICLE_DISTANCE'}, {'header': 'VEHICLE_FUEL_DATE'}, {'header': 'VEHICLE_FUEL_SHORTAGE'},]})
+      worksheet.set_column('A:E', 23)
+      
+      # Add Excel VBA code
+      workbook.add_vba_project('vbaProject.bin')
+      # Add a button tied to a macro in the VBA project
+      worksheet.insert_button('G3', {'macro': 'Button', 'caption': 'Press Me', 'width': 80, 'height': 30})
+      workbook.filename = 'Export.xlsm'
+      writer.save()
+      
+      # Open Excel Workbook if OS is Windows
       if plt == "Windows":
-        databank_repairs.to_excel('files\\Export.xlsx', sheet_name = 'Fuel', index = False)
-        # Open Excel document
-        os.startfile('files\\Export.xlsx')
-      elif plt == "Darwin":
-        databank_repairs.to_excel('files/Export.xlsx', sheet_name = 'Fuel', index = False)
+        os.startfile('Export.xlsm')
 
 
     
