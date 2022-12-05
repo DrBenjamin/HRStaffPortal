@@ -247,7 +247,7 @@ elif (f"{chosen_id}" == '3'):
   if (selected_vehicle != 'All vehicles'):
     vehicles = selected_vehicle
 
-  # Calculate average fuel consumption per Vehicle
+  ## Calculate average fuel consumption per Vehicle
   if (selected_vehicle == 'All vehicles'):
     data_fuel_rate_average = pd.DataFrame(columns = ['Vehicle ID', 'Average Fuel Consumption'])
     for i in range(len(vehicles)):
@@ -264,9 +264,9 @@ elif (f"{chosen_id}" == '3'):
     
     # Plotting
     st.bar_chart(data_fuel_rate_average, x = vehicles)
-    st.plotly_chart(data_fuel_rate_average, use_container_width = False, sharing = "streamlit", theme = None)
   
-  # Show fuel consumption of one vehicle
+  
+  ## Show fuel consumption of one vehicle
   else:
     data_fuel_rate = pd.DataFrame(columns = ['Date', 'Fuel Consumption Rate'])
     query = "SELECT ID, VEHICLE_ID, VEHICLE_FUEL, VEHICLE_DISTANCE, VEHICLE_FUEL_DATE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles)
