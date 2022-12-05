@@ -1,6 +1,7 @@
 # My stuff to be ignored
 .Rdata
 .Rbuildignore
+Export.xlsx
 blob*
 HRStaffPortal.Rproj
 .Rhistory

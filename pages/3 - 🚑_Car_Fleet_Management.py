@@ -14,6 +14,10 @@ import subprocess
 import io
 import sys
 import os
+import tempfile
+import win32api
+import win32print
+import openpyxl
 
 
 
@@ -72,6 +76,26 @@ def check_vehicles(databank):
       vehicle.append(databank['VEHICLE_ID'][i + 1])
     i += 1
   return vehicle
+
+
+### Function: printing = send text data to standard printer
+def printing(print_data):
+    filename = tempfile.mktemp(".txt")
+    for i in range(len(print_data)):
+      line = print_data.loc[i + 1].to_string()
+      line = line + "\n" + "\n"
+      open(filename, 'a+').write(line)
+    win32api.ShellExecute (0, "print", filename, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
+    
+    
+### Function: printExcel = send an Excel file to standard printer
+def printExcel(print_data):
+    filename = tempfile.mktemp(".txt")
+    for i in range(len(print_data)):
+      line = print_data.loc[i + 1].to_string()
+      line = line + "\n" + "\n"
+      open(filename, 'a+').write(line)
+    win32api.ShellExecute (0, "print", filename, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
 
 
 
@@ -147,29 +171,15 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     st.dataframe(databank_fuel, use_container_width = True)
     
   ## Submit Button `Test`
-  submitted = st.form_submit_button("Test")
+  submitted = st.form_submit_button("Export to Excel")
 
   if submitted:
-    ## Printing
-    #toprint = bytes("databank_fuel", 'utf-8')
-    #lpr =  subprocess.Popen("/usr/bin/lpr", stdin = subprocess.PIPE)
-    #lpr.stdin.write(toprint)
-    os.startfile("files/TestFile.txt", "print")
-
-    #st.write("Printed.")
+    # Print text data under Windows
+    #printing(databank_fuel)
     
-    towrite = io.BytesIO()
-    databank_fuel.to_excel(towrite)  # write to BytesIO buffer
-    towrite.seek(0)
-    #_io.BytesIO
-    
-    # make an fd to pass to write() method as a parameter
-    file_descriptor = os.open("./TestFile.txt", os.O_CREAT|os.O_RDWR)
-    # writing the byte code into the file
-    os.write(file_descriptor, towrite.getvalue())
-    # closing the file
-    os.close(file_descriptor)
-    print ("The file is closed successfully!!")
+    # Export DataFrame to Excel file
+    databank_fuel.to_excel('files\\Export.xlsx', sheet_name = 'Fuel', index = False)
+    os.startfile('files\\Export.xlsx')
 
 
     
@@ -254,6 +264,7 @@ elif (f"{chosen_id}" == '3'):
     
     # Plotting
     st.bar_chart(data_fuel_rate_average, x = vehicles)
+    st.plotly_chart(data_fuel_rate_average, use_container_width = False, sharing = "streamlit", theme = None)
   
   # Show fuel consumption of one vehicle
   else:
