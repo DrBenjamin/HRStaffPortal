@@ -119,7 +119,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git -b v0.1.1
 
 ##### Update HR Staff Portal
 
-To update the source files to the newest version use the build-in **pull function** of git. If you are using the app on a computer without RStudion installed, use this command:
+To update the source files to the newest version use the build-in **pull function** of git (git menu on the right upper corner, choose the green arrow which shows down). If you are using the app on a computer without a RStudio installion, just use this git command:
 
 ```
 git pull
@@ -128,7 +128,7 @@ git pull
 
 ##### Execute Streamlit 
 
-If you've installed all dependencies, configured the MySQL Server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the **Terminal** of RStudio with this command:
+If you've installed all dependencies, configured the MySQL Server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the **Terminal** of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
 
 ```
 streamlit run 🏥_HR_Staff_Portal.py
@@ -140,7 +140,7 @@ This will open the web app on your IP address on **port 8501**.
 #### Update Streamlit & Dependencies
 ##### Update of Streamlit
 
-To install the latest version of the Streamlit web app framework run the following command:
+To install the latest version of the **Streamlit web app framework**, run the following command:
 
 ```
 pip install --upgrade streamlit
@@ -149,7 +149,7 @@ pip install --upgrade streamlit
 
 ##### Update dependencies
 
-To update a specifig dependency, for instance **extra_streamlit_components** use this command:
+To update a specifig dependency, for instance **extra_streamlit_components**, use this command:
 
 ```
 pip install --upgrade extra_streamlit_components
