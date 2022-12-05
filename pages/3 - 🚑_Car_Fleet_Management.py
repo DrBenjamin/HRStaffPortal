@@ -18,6 +18,8 @@ if plt == "Windows":
   print("Your system is Windows")
   import win32api
   import win32print
+elif plt == "Darwin":
+  print("Your system is MacOS")
 import openpyxl
 
 
