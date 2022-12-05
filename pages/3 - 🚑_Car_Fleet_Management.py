@@ -88,16 +88,6 @@ def printing(print_data):
     win32api.ShellExecute (0, "print", filename, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
     
     
-### Function: printExcel = send an Excel file to standard printer
-def printExcel(print_data):
-    filename = tempfile.mktemp(".txt")
-    for i in range(len(print_data)):
-      line = print_data.loc[i + 1].to_string()
-      line = line + "\n" + "\n"
-      open(filename, 'a+').write(line)
-    win32api.ShellExecute (0, "print", filename, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
-
-
 
 #### Main Program
 ### Title
@@ -136,6 +126,14 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       st.header("Hyundai")
       st.image("./pages/images/creta.jpg", caption = "Hyundai Creta")
       st.write("Vehicle ID: 00003")
+      
+    ## Submit Button `Export to Excel`
+    submitted = st.form_submit_button("Export to Excel")
+
+    if submitted:
+      # Export DataFrame to Excel file
+      #databank_fuel.to_excel('files\\Export.xlsx', sheet_name = 'Fuel', index = False)
+      os.startfile('files\\Export.xlsx')
   
   
   ## tab `Repairs` 
@@ -153,6 +151,14 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       databank_repairs = pd.concat([databank_repairs, df])
     databank_repairs = databank_repairs.set_index('ID')
     st.dataframe(databank_repairs, use_container_width = True)
+    
+    ## Submit Button `Export to Excel`
+    submitted = st.form_submit_button("Export to Excel")
+
+    if submitted:
+      # Export DataFrame to Excel file
+      databank_repairs.to_excel('files\\Export.xlsx', sheet_name = 'Repairs', index = False)
+      os.startfile('files\\Export.xlsx')
   
   
   ## tab `Fuel Consumption`   
@@ -170,16 +176,16 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     databank_fuel = databank_fuel.set_index('ID')
     st.dataframe(databank_fuel, use_container_width = True)
     
-  ## Submit Button `Test`
-  submitted = st.form_submit_button("Export to Excel")
+    ## Submit Button `Export to Excel`
+    submitted = st.form_submit_button("Export to Excel")
 
-  if submitted:
-    # Print text data under Windows
-    #printing(databank_fuel)
+    if submitted:
+      # Print text data under Windows
+      #printing(databank_fuel)
     
-    # Export DataFrame to Excel file
-    databank_fuel.to_excel('files\\Export.xlsx', sheet_name = 'Fuel', index = False)
-    os.startfile('files\\Export.xlsx')
+      # Export DataFrame to Excel file
+      databank_fuel.to_excel('files\\Export.xlsx', sheet_name = 'Fuel', index = False)
+      os.startfile('files\\Export.xlsx')
 
 
     
@@ -202,7 +208,7 @@ elif (f"{chosen_id}" == '2'):
   if (selected_vehicle != 'All vehicles'):
     vehicles = selected_vehicle
     
-  # Calculate repair costs per vehicle
+  ## Calculate repair costs per vehicle
   if (selected_vehicle == 'All vehicles'): 
     data_repair_costs = pd.DataFrame(columns = ['Vehicle ID', 'Repair costs'])
     for i in range(len(vehicles)):
@@ -220,7 +226,7 @@ elif (f"{chosen_id}" == '2'):
     # Plotting
     st.bar_chart(data_repair_costs, x = vehicles)
   
-  # Show repair costs per incident
+  ## Show repair costs per incident
   else:
     data_repair_costs = pd.DataFrame(columns = ['Spare part', 'Repair cost'])
     query = "SELECT ID, VEHICLE_ID, VEHICLE_SPARE_PARTS, VEHICLE_SPARE_PART_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles)
