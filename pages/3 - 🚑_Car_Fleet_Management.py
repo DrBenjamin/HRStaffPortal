@@ -154,7 +154,11 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     #toprint = bytes("databank_fuel", 'utf-8')
     #lpr =  subprocess.Popen("/usr/bin/lpr", stdin = subprocess.PIPE)
     #lpr.stdin.write(toprint)
+<<<<<<< HEAD
     os.startfile("TestFile.txt", "print")
+=======
+    #os.startfile("./TestFile.txt", "print")
+>>>>>>> 1ca0208d2dc79864ce910d0893195f81245aa657
     #st.write("Printed.")
     
     towrite = io.BytesIO()
