@@ -120,8 +120,10 @@ def export_excel(sheet, column, columns, length, data):
       
   # Open Excel Workbook if OS is Windows
   if plt == "Windows":
+    os.remove('Export.xlsx')
     os.startfile('Export.xlsm')
   elif plt == "Darwin":
+    os.unlink('Export.xlsx')
     st.write("Open Export.xlsm")
     
     
