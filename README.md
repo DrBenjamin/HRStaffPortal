@@ -18,6 +18,8 @@ After that you need to install some **Python libraries*:
 ```
 pip install mysql-connector-python-rf
 pip install mysql-connector-python==8.0.29
+pip install extra_streamlit_components
+pip install XlsxWriter
 ```
 
 
