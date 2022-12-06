@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Error handling in SQL queries
 - Printing function
+- Excel Export function
 - Car Fleet Management System (with statistics)
 
 
