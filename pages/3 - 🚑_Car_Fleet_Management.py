@@ -149,22 +149,6 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   if (f"{chosen_id}" == '1'):
     st.title('Vehicles')
     
-    ## Columns
-    col1, col2, col3 = st.columns(3)
-    with col1:
-      st.header("Audi")
-      st.image("./pages/images/audi-a4.jpg", caption = "Audi A4")
-      st.write("Vehicle ID: 00001")
-
-    with col2:
-      st.header("BMW")
-      st.image("./pages/images/bmw6.jpg", caption = "BMW 6")
-      st.write("Vehicle ID: 00002")
-
-    with col3:
-      st.header("Hyundai")
-      st.image("./pages/images/creta.jpg", caption = "Hyundai Creta")
-      st.write("Vehicle ID: 00003")
     
     ## Get vehicle data and print out as a dataframe
     query = "SELECT ID, VEHICLE_ID, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_IMAGE FROM `carfleet`.`VEHICLES`;"
@@ -179,7 +163,36 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       df = pd.DataFrame([[row[1], row[2]]], columns = ['VEHICLE_ID', 'VEHICLE_TYPE'])
       data_cars = pd.concat([data_cars, df])
     databank_vehicles = databank_vehicles.set_index('ID')
+    
+    
+    ## Columns
+    col1, col2, col3 = st.columns(3)
+    with col1:
+      st.header("Vehicle ID")
+      st.write(rows[0][1])
+      st.subheader(rows[0][3])
+      st.write(rows[0][4])
+      st.image(rows[0][15])
+
+
+    with col2:
+      st.header("Vehicle ID")
+      st.write(rows[1][1])
+      st.subheader(rows[1][3])
+      st.write(rows[1][4])
+      st.image(rows[1][15])
+
+
+    with col3:
+      st.header("Vehicle ID")
+      st.write(rows[2][1])
+      st.subheader(rows[0][3])
+      st.write(rows[2][4])
+      st.image(rows[2][15])
+      
+    ## Show dataframe 
     st.dataframe(databank_vehicles, use_container_width = True)
+
     
     ## Submit Button `Export to Excel`
     submitted = st.form_submit_button("Export to Excel")
@@ -245,13 +258,17 @@ with st.form("Car Fleet Management", clear_on_submit = True):
 ### Data analysis
 ## Data analysis for `Vehicles`
 if (f"{chosen_id}" == '1'):
+  ## Print text data
   if st.button('Print vehicle data'):
-      ## Print text data
-      printing(databank_vehicles)
+    printing(databank_vehicles.iloc[: , :-1])
 
-  # Plotting
+  ## Plotting
   data_cars = data_cars.set_index('VEHICLE_TYPE')
   st.bar_chart(data_cars)
+  
+  ## Create Report
+  if st.button('Create Report'):
+    print('Report')
 
 
 ## Data analysis for `Repairs`
