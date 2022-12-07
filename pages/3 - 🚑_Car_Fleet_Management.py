@@ -63,20 +63,20 @@ def run_query(query):
 
 
 ### Function: check_vehicles = checking for unique Vehicles IDs
-def check_vehicles(databank):
+def check_vehicles(column, data):
   vehicle = []
   i = 0
-  while i < len(databank):
+  while i < len(data):
     if i > 0:
       x = 0
       double = False
       for x in range(len(vehicle)):
-        if (vehicle[x] == databank['VEHICLE_ID'][i + 1]):
+        if (vehicle[x] == data[column][i + 1]):
           double = True
       if (double != True):    
-        vehicle.append(databank['VEHICLE_ID'][i + 1])
+        vehicle.append(data[column][i + 1])
     else:
-      vehicle.append(databank['VEHICLE_ID'][i + 1])
+      vehicle.append(data[column][i + 1])
     i += 1
   return vehicle
 
@@ -160,8 +160,6 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     for row in rows:
       df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_IMAGE'])
       databank_vehicles = pd.concat([databank_vehicles, df])
-      df = pd.DataFrame([[row[1], row[2]]], columns = ['VEHICLE_ID', 'VEHICLE_TYPE'])
-      data_cars = pd.concat([data_cars, df])
     databank_vehicles = databank_vehicles.set_index('ID')
     
     
@@ -263,7 +261,19 @@ if (f"{chosen_id}" == '1'):
     printing(databank_vehicles.iloc[: , :-1])
 
   ## Plotting
-  data_cars = data_cars.set_index('VEHICLE_TYPE')
+  # Checking for unique vehicles types
+  vehicles = check_vehicles(column = 'VEHICLE_TYPE', data = databank_vehicles)
+  # Calculate total amount of vehicles per type / category
+  data_cars= pd.DataFrame(columns = ['Vehicle Type', 'Amount'])
+  for i in range(len(vehicles)):
+    query = "SELECT VEHICLE_TYPE FROM `carfleet`.`VEHICLES` WHERE VEHICLE_TYPE = '%s';" %(vehicles[i])
+    rows = run_query(query)
+    amount = 0
+    for row in rows:
+      amount += 1
+    df = pd.DataFrame([[row[0], amount]], columns = ['Vehicle Type', 'Amount'])
+    data_cars = pd.concat([data_cars, df])
+  data_cars = data_cars.set_index('Vehicle Type')
   st.bar_chart(data_cars)
   
   ## Create Report
@@ -275,7 +285,7 @@ if (f"{chosen_id}" == '1'):
 elif (f"{chosen_id}" == '2'):
   ## Repair cost chart
   # Checking for unique vehicles IDs
-  vehicles = check_vehicles(databank_repairs)
+  vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_repairs)
   # Prepare Selectbox list
   vehicles_list = list(vehicles)
   vehicles_list.insert(0, 'All vehicles')
@@ -290,10 +300,8 @@ elif (f"{chosen_id}" == '2'):
     for i in range(len(vehicles)):
       query = "SELECT ID, VEHICLE_ID, VEHICLE_REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles[i])
       rows = run_query(query)
-      i = 0
       costs = 0.0
       for row in rows:
-        i += 1
         costs += round(float(row[2]), 2)
       df = pd.DataFrame([[row[1], costs]], columns = ['Vehicle ID', 'Repair costs'])
       data_repair_costs = pd.concat([data_repair_costs, df])
@@ -321,7 +329,7 @@ elif (f"{chosen_id}" == '2'):
 elif (f"{chosen_id}" == '3'):
   ## Average Fuel Consumption Chart
   # Checking for unique Vehicles IDs
-  vehicles = check_vehicles(databank_fuel)
+  vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_fuel)
   # Prepare Selectbox list
   vehicles_list = list(vehicles)
   vehicles_list.insert(0, 'All vehicles')
