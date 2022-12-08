@@ -14,6 +14,10 @@ import numpy as np
 import mysql.connector
 import sys
 import webbrowser
+import os
+import platform
+import io
+import xlsxwriter
 
 
 
@@ -32,9 +36,21 @@ st.set_page_config(
 
 
 
+#### OS Check
+plt = platform.system()
+if plt == "Windows":
+  print("Your system is Windows")
+elif plt == "Linux":
+  print("Your system is Linux")
+elif plt == "Darwin":
+  print("Your system is MacOS")
+
+
+
 #### Query parameters
 ## Get param `EMPLOYE_NO`
 eno = st.experimental_get_query_params()
+
 
 ## Get params for trainings / workshops
 # [code]
@@ -192,10 +208,50 @@ def writeFile(data, filename):
   with open(filename, mode = 'wb') as file:
     file.write(data)
     
-### Function: onChange = If Slectbox is used
+    
+### Function: onChange = If Selectbox is used
 def onChange():
   st.session_state['run'] = True
+
+
+### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
+def export_excel(sheet, column, columns, length, data, sheet2 = 'Nothing', column2 = 'A', columns2 = '', length2 = '', data2 = ''):
+  ## Create a Pandas Excel writer using XlsxWriter as the engine
+  buffer = io.BytesIO()
+  with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
+    # Add dataframe data
+    data.to_excel(writer, sheet_name = sheet, index = False)
     
+    # Add a table to the first worksheet
+    worksheet = writer.sheets[sheet]
+    span = "A1:%s%s" %(column, length)
+    worksheet.add_table(span, {'columns': columns})
+    range_table = "A:" + column
+    print('Range: ', range_table)
+    worksheet.set_column(range_table, 30)
+    
+    # Check if second dataframe is added to add a second sheet
+    if (sheet2 == 'Nothing' and column2 == 'A' and columns2 == '' and length2 == '' and data2 == ''):
+      print('No second data presented')
+    else:
+      data2.to_excel(writer, sheet_name = sheet2, index = False)
+      # Add a table to the worksheet
+      worksheet = writer.sheets[sheet2]
+      span = "A1:%s%s" %(column2, length2)
+      worksheet.add_table(span, {'columns': columns2})
+      range_table = "A:" + column2
+      worksheet.set_column(range_table, 30)
+  
+    # Add Excel VBA code
+    workbook = writer.book
+    workbook.add_vba_project('vbaProject.bin')
+
+    # Saving changes
+    workbook.close()
+    writer.save()
+    
+    # Download Button
+    st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
 
 
 
@@ -213,26 +269,46 @@ if check_password():
 
   ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
   # Open databank connection
-  #conn = database_connect()
   conn = init_connection()
-  #with st.spinner(''):
-    #time.sleep(5)
 
 
-  ## Checkbox for option to see databank data
+  ## Getting databank data
+  # Getting Employee data
   query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
   rows = run_query(query)
   databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
   for row in rows:
     df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
     databank = pd.concat([databank, df])
+  
+  # Getting Training data
+  query = "SELECT ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS FROM `idcard`.`TRAININGDATA`;"
+  rows = run_query(query)
+  databank_training = pd.DataFrame(columns = ['ID', 'EMPLOYEE_NO', 'TRAINING', 'INSTITUTE', 'DATE', 'DAYS'])
+  for row in rows:
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5]]], columns = ['ID', 'EMPLOYEE_NO', 'TRAINING', 'INSTITUTE', 'DATE', 'DAYS'])
+    databank_training = pd.concat([databank_training, df])
  
     
   ## Print databank in dataframe table
   with st.expander("See all Databank entries", expanded = False):
+    ## Show Table data
+    # Show employee data
+    st.subheader('Employee data')
     databank = databank.set_index('ID')
     st.dataframe(databank, use_container_width = True)
-
+    
+    # Show training data
+    st.subheader('Training data')
+    databank_training = databank_training.set_index('ID')
+    st.dataframe(databank_training, use_container_width = True)
+    
+    
+    ## Export `Vehicles` dataframe to Excel Makro file
+    if st.button('Export Excel'):
+      export_excel(sheet = 'Employees', column = 'G', columns = [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'}, {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'CARDS_PRINTED'},], length = int(len(databank) + 1), data = databank,
+                sheet2 = 'Trainings', column2 = 'E', columns2 = [{'header': 'EMPLOYEE_NO'}, {'header': 'TRAINING'}, {'header': 'INSTITUTE'}, {'header': 'DATE'}, {'header': 'DAYS'},], length2 = int(len(databank_training) + 1), data2 = databank_training)
+  
       
   ## Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee Selectbox
   query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
@@ -242,7 +318,7 @@ if check_password():
   row = [0]
   names = ['New Employee']
   for row in rows:
-    # Find pair and set sessoin state `index` to `ID` if not empty
+    # Find pair and set session state `index` to `ID` if not empty
     if eno:
       if (eno['eno'][0].strip()):
         if (eno['eno'][0] == row[3]):
@@ -270,21 +346,23 @@ if check_password():
 
   ## Form for showing Employee input fields 
   with st.form("Employee", clear_on_submit = True):
-      
     ## tab `Master data`
     if (f"{chosen_id}" == '1'):
       st.title('Employee Master data')
       
       ## If new Employee just show empty form
       if (index == 0):
-        # Set query parameter
-        st.experimental_set_query_params(eno="xxxxxx")
+        ## Set query parameter
+        st.experimental_set_query_params(eno = "xxxxxx")
         
-        # empty image
+        
+        ## empty image
         image = ''
         
-        # Check for ID number count of Employee
+        
+        ## Check for ID number count of Employee
         id = lastID(url = "idcard.IMAGEBASE")
+        
         
         ## Input for new employee data
         id = st.text_input(label = 'ID', value = id, disabled = True)
@@ -293,7 +371,7 @@ if check_password():
         surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
         job = st.text_input(label = 'Job', placeholder = 'Job?')
         exp = st.text_input(label = 'Expirity Date', value = '2023-12-31 00:00:00')
-        eno = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
+        emp_no = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
         capri = st.text_input(label = 'Cards Printed', value = 0)
         uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
         if uploaded_file is not None:
@@ -307,23 +385,26 @@ if check_password():
         submitted = st.form_submit_button("Create New Employee")
         if submitted:
           ## Writing to databank if data was entered
-          if (layout is not None and forename and surname and job and exp and eno and capri):
-            # Get latest ID from database
+          if (layout is not None and forename and surname and job and exp and emp_no and capri):
+            ## Get latest ID from database
             id = lastID(url = "idcard.IMAGEBASE")
-            # Maybe it needs a break???
-            query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, eno, capri)
+            
+            ## Maybe it needs a break???
+            query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, emp_no, capri)
             run_query(query)
             conn.commit()
             st.session_state['success1'] = True
             
-            # Upload picture to database
+            ## Upload picture to database
             pictureUploader(image, id)
             
-            # Set query parameter
-            st.experimental_set_query_params(eno=eno)
+            ## Set query parameter
+            st.experimental_set_query_params(eno = eno)
             
-            # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
+            
+            ## Set `index` to refer to new `ID` position in database, so that reload opens new employee data
             st.session_state['index'] = int(id)
+            
             
           else:
             st.session_state['success1'] = False
@@ -336,6 +417,10 @@ if check_password():
         ## Get information of selected Employee
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
         employee = run_query(query)
+        
+        ## Set query parameter
+        st.experimental_set_query_params(eno = employee[0][6])
+        
         
         ## Input for updating employee data
         updateMaster = False
@@ -353,12 +438,13 @@ if check_password():
         exp = st.text_input(label = 'Expirity Date', value = employee[0][5], disabled = not checkbox_val)
         if (employee[0][5] != exp):
           updateMaster = True
-        eno = st.text_input(label = 'Employee Number', value = employee[0][6], disabled = not checkbox_val)
-        if (employee[0][6] != eno):
+        emp_no = st.text_input(label = 'Employee Number', value = employee[0][6], disabled = not checkbox_val)
+        if (employee[0][6] != emp_no):
           updateMaster = True
         capri = st.text_input(label = 'Cards Printed', value = employee[0][7], disabled = not checkbox_val)
         if (employee[0][7] != capri):
           updateMaster = True
+          
           
         ## Check if image is empty and show a placeholder
         if (len(employee[0][8]) < 10):
@@ -366,12 +452,14 @@ if check_password():
           st.image('images/portrait-placeholder.png')
           # Set Image Session State to `No Image` placeholder
           st.session_state['image'] = loadFile('images/No_Image.png')
+         
           
         ## Show existing Image
         else:          
           st.image(employee[0][8])
           # Save Image for downloading to Image Session State
           st.session_state['image'] = employee[0][8]
+        
         
         ## Image Uploader
         uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png', disabled = not checkbox_val)
@@ -381,18 +469,18 @@ if check_password():
           # Upload picture to database
           pictureUploader(image, index)
         
+        
         ## No image data  
         else:
           image = ''
         
-        ## Set query parameter
-        st.experimental_set_query_params(eno=eno)
           
         ## Submit Button for Changes on employee master data
         submitted = st.form_submit_button("Save changes on Master data")
         if submitted:
           # Set session state `index`
           st.session_state['index'] = index
+          
           
           ## Writing to databank idcard Table IMAGEBASE
           if (updateMaster == True):
@@ -423,24 +511,33 @@ if check_password():
     elif (f"{chosen_id}" == '2'):
       ## Get information of selected Employee regarding Training
       st.title('Employee Training data')
+       
           
       ## If new Employee just show empty form
       if (index == 0):
         st.info(body = 'Create Employee first!', icon = "ℹ️")
         
+        
         ## Submit Button for Changes on employee `Training data` - New employee
         submitted = st.form_submit_button("Nothing to save.")
         if submitted:
           print("Nothing changed")
+      
           
       ## Employee existend
       else:
         ## Check for last ID number in TrainingData (to add data after)
         idT = lastID(url = "idcard.TRAININGDATA")
+        
           
         ## Get Training Data
-        query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
+        query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID, ima.EMPLOYEE_NO FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
         trainingData = run_query(query)
+        
+        
+        ## Set query parameter
+        st.experimental_set_query_params(eno = trainingData[0][5])
+         
           
         ## Variables for Text Input
         training = []
@@ -448,9 +545,11 @@ if check_password():
         date = []
         days = []
           
+          
         ## Boolean for flow control
         insert = False # Will be set to `True` if a new entry is entered
         update = False # Will be set to `True` if existing data is altered
+        
           
         ## Check if Training Data is already there for an Employee and show it
         if (trainingData[0][0] != None):
@@ -479,7 +578,8 @@ if check_password():
         if not checkbox_training:
           if (trainingData[0][0] == None):
             st.info(body = 'No Training data available', icon = "ℹ️")
-          
+
+
         ## If checked    
         else:
           # Calculating number of training
@@ -488,7 +588,8 @@ if check_password():
               
           else:
             counter = 'Training #' + str(len(trainingData) + 1)
-              
+          
+
           ## Inputs for new Training
           x = st.text_input(label = counter, placeholder = 'Training?', disabled = not checkbox_val)
           if x.strip():
@@ -515,7 +616,7 @@ if check_password():
           if (insert == True and update == False):
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
               if (trainingData[0][0] == None):
-                query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+                query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[0], institute[0], date[0], days[0])
                 run_query(query)
                 conn.commit()
                 st.session_state['success2'] = True
@@ -527,7 +628,7 @@ if check_password():
           ## Writing to databank idcard Table TRAININGDATA - new entry (not first)
           if (insert == True and trainingData[0][0] != None):
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
-              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
+              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)
               conn.commit()
               st.session_state['success2'] = True
