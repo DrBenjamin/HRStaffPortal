@@ -268,8 +268,8 @@ if (f"{chosen_id}" == '1'):
   
   
   ## Create Report
-  if st.button('Create Report'):
-    print('Report')
+  #if st.button('Create Report'):
+    #print('Report')
 
 
 ## Data analysis for `Repairs`
