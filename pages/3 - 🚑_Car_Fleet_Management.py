@@ -117,13 +117,14 @@ def export_excel(sheet, column, columns, length, data):
   #worksheet.insert_button('G3', {'macro': 'Button', 'caption': 'Press Me', 'width': 80, 'height': 30})
   workbook.filename = 'Export.xlsm'
   writer.save()
+  workbook.close()
       
   # Open Excel Workbook if OS is Windows
   if plt == "Windows":
-    os.remove('Export.xlsx')
+    #os.remove('Export.xlsx')
     os.startfile('Export.xlsm')
   elif plt == "Darwin":
-    os.unlink('Export.xlsx')
+    #os.unlink('Export.xlsx')
     st.write("Open Export.xlsm")
     
     
