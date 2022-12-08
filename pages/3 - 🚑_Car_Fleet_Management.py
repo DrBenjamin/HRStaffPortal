@@ -35,12 +35,13 @@ st.set_page_config(
 
 #### OS Check
 plt = platform.system()
+print(plt)
 if plt == "Windows":
-  st.write("Your system is Windows")
-  import win32api
-  import win32print
+  print("Your system is Windows")
+  #import win32api
+  #import win32print
 elif plt == "Darwin":
-  st.write("Your system is MacOS")
+  print("Your system is MacOS")
 
 
 
