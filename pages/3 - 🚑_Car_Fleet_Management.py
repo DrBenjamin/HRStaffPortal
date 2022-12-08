@@ -250,11 +250,6 @@ if (f"{chosen_id}" == '1'):
     export_excel(sheet = 'Vehicles', column = 'N', columns = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'},], length = int(len(databank_vehicles) + 1), data = databank_vehicles_excel)
   
   
-  ## Print text data
-  if st.button('Print vehicle data'):
-    printing(databank_vehicles.iloc[: , :-1])
-
-
   ## Plotting
   # Checking for unique vehicles types
   vehicles = check_vehicles(column = 'VEHICLE_TYPE', data = databank_vehicles)
