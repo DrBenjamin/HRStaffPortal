@@ -14,8 +14,6 @@ import numpy as np
 import mysql.connector
 import sys
 import webbrowser
-import time
-from threading import Thread
 
 
 
