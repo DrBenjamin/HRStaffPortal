@@ -15,6 +15,8 @@ import os
 import tempfile
 import xlsxwriter
 import io
+import win32api
+import win32print
 
 
 
@@ -35,11 +37,10 @@ st.set_page_config(
 
 #### OS Check
 plt = platform.system()
-print(plt)
 if plt == "Windows":
   print("Your system is Windows")
-  #import win32api
-  #import win32print
+elif plt == "Linux":
+  print("Your system is Linux")
 elif plt == "Darwin":
   print("Your system is MacOS")
 
