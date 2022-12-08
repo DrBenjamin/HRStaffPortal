@@ -12,11 +12,9 @@ import platform
 import pandas as pd
 import mysql.connector
 import os
-import tempfile
-import xlsxwriter
 import io
-import win32api
-import win32print
+import xlsxwriter
+
 
 
 
@@ -88,19 +86,6 @@ def check_vehicles(column, data):
   return vehicle
 
 
-### Function: printing = send text data to standard printer
-def printing(print_data):
-    filename = tempfile.mktemp(".txt")
-    for i in range(len(print_data)):
-      line = print_data.loc[i + 1].to_string()
-      line = line + "\n" + "\n"
-      open(filename, 'a+').write(line)
-    if plt == "Windows":
-      win32api.ShellExecute (0, "print", filename, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
-    elif plt == "Darwin":
-      st.write("Open ", filename)
-      
-      
 ### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
 def export_excel(sheet, column, columns, length, data):
   ## Create a Pandas Excel writer using XlsxWriter as the engine
