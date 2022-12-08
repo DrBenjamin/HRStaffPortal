@@ -13,14 +13,8 @@ import pandas as pd
 import mysql.connector
 import os
 import tempfile
-plt = platform.system()
-if plt == "Windows":
-  print("Your system is Windows")
-  import win32api
-  import win32print
-elif plt == "Darwin":
-  print("Your system is MacOS")
 import xlsxwriter
+import io
 
 
 
@@ -36,6 +30,17 @@ st.set_page_config(
          'About': "This is the KCH HR Staff Portal. Version 0.0.1"
         }
 )
+
+
+
+#### OS Check
+plt = platform.system()
+if plt == "Windows":
+  st.write("Your system is Windows")
+  import win32api
+  import win32print
+elif plt == "Darwin":
+  st.write("Your system is MacOS")
 
 
 
@@ -97,35 +102,30 @@ def printing(print_data):
 ### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
 def export_excel(sheet, column, columns, length, data):
   ## Create a Pandas Excel writer using XlsxWriter as the engine
-  writer = pd.ExcelWriter('Export.xlsx', engine = 'xlsxwriter')
-  workbook = writer.book
+  buffer = io.BytesIO()
+  with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
+    # Add dataframe data
+    data.to_excel(writer, sheet_name = sheet, index = False)
 
-  # Add dataframe data
-  data.to_excel(writer, sheet_name = sheet, index = False)
+    # Add a table to the worksheet
+    worksheet = writer.sheets[sheet]
+    span = "A1:%s%s" %(column, length)
+    worksheet.add_table(span, {'columns': columns})
+    range_table = "A:" + column
+    worksheet.set_column(range_table, 30)
       
-  # Add a table to the worksheet
-  worksheet = writer.sheets[sheet]
-  
-  span = "A1:%s%s" %(column, length)
-  worksheet.add_table(span, {'columns': columns})
-  range_table = "A:" + column
-  worksheet.set_column(range_table, 30)
-      
-  # Add Excel VBA code
-  workbook.add_vba_project('vbaProject.bin')
-  # Add a button tied to a macro in the VBA project
-  #worksheet.insert_button('G3', {'macro': 'Button', 'caption': 'Press Me', 'width': 80, 'height': 30})
-  workbook.filename = 'Export.xlsm'
-  writer.save()
-  workbook.close()
-      
-  # Open Excel Workbook if OS is Windows
-  if plt == "Windows":
-    #os.remove('Export.xlsx')
-    os.startfile('Export.xlsm')
-  elif plt == "Darwin":
-    #os.unlink('Export.xlsx')
-    st.write("Open Export.xlsm")
+    # Add Excel VBA code
+    workbook = writer.book
+    workbook.add_vba_project('vbaProject.bin')
+    # Add a button tied to a macro in the VBA project
+    #worksheet.insert_button('G3', {'macro': 'Button', 'caption': 'Press Me', 'width': 80, 'height': 30})
+
+    # Saving changes
+    workbook.close()
+    writer.save()
+    
+    # Download Button
+    st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
     
     
 
@@ -147,9 +147,10 @@ chosen_id = stx.tab_bar(data = [
 
 with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Vehicles`
+  export = False
   if (f"{chosen_id}" == '1'):
     st.title('Vehicles')
-    
+  
     
     ## Get vehicle data and print out as a dataframe
     query = "SELECT ID, VEHICLE_ID, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_IMAGE FROM `carfleet`.`VEHICLES`;"
@@ -198,10 +199,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
 
     if submitted:
       ## Export `Vehicles` dataframe to Excel Makro file
-      # Drop last column (`VEHICLE_IMAGE`)
-      databank_vehicles_excel = databank_vehicles.iloc[: , :-1]
-      export_excel(sheet = 'Vehicles', column = 'N', columns = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'},], length = int(len(databank_vehicles) + 1), data = databank_vehicles_excel)
-
+      export = True
   
   
   ## tab `Repairs` 
@@ -219,19 +217,20 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       databank_repairs = pd.concat([databank_repairs, df])
     databank_repairs = databank_repairs.set_index('ID')
     st.dataframe(databank_repairs, use_container_width = True)
-    
+
+
     ## Submit Button `Export to Excel`
     submitted = st.form_submit_button("Export to Excel")
 
     if submitted:
-      ## Export `Repairs` dataframe to Excel Makro file
-      export_excel(sheet = 'Repairs', column = 'H', columns = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_REPAIR_DETAILS'}, {'header': 'VEHICLE_REPAIR_DATE'}, {'header': 'VEHICLE_REPAIR_COSTS'}, {'header': 'VEHICLE_SPARE_PARTS'}, {'header': 'VEHICLE_DOWN_TIME'}, {'header': 'SERVICE_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], length = int(len(databank_repairs) + 1), data = databank_repairs)
+      export = True
 
   
   
   ## tab `Fuel Consumption`   
   elif (f"{chosen_id}" == '3'):
     st.title('Fuel Consumption')
+    
     
     ## Get fuel consumption data and print out as a dataframe
     query = "SELECT ID, VEHICLE_ID, VEHICLE_FUEL_AMOUNT, VEHICLE_FUEL_COST, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_DATE, VEHICLE_DISTANCE, FUEL_SHORTAGE, COST_CENTRE FROM `carfleet`.`FUEL`;"
@@ -243,23 +242,31 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       databank_fuel = pd.concat([databank_fuel, df])
     databank_fuel = databank_fuel.set_index('ID')
     st.dataframe(databank_fuel, use_container_width = True)
+
     
     ## Submit Button `Export to Excel`
     submitted = st.form_submit_button("Export to Excel")
 
     if submitted:
       ## Export `Fuel` dataframe to Excel Makro file
-      export_excel(sheet = 'Fuel', column = 'H', columns = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_FUEL_AMOUNT'}, {'header': 'VEHICLE_FUEL_COST'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_DATE'}, {'header': 'VEHICLE_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], length = int(len(databank_fuel) + 1), data = databank_fuel)
-
+      export = True
 
     
 #### Outside the form
 ### Data analysis
 ## Data analysis for `Vehicles`
 if (f"{chosen_id}" == '1'):
+  ## Export `Vehicles` dataframe to Excel Makro file
+  if export == True:
+    # Drop last column (`VEHICLE_IMAGE`)
+    databank_vehicles_excel = databank_vehicles.iloc[: , :-1]
+    export_excel(sheet = 'Vehicles', column = 'N', columns = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'},], length = int(len(databank_vehicles) + 1), data = databank_vehicles_excel)
+  
+  
   ## Print text data
   if st.button('Print vehicle data'):
     printing(databank_vehicles.iloc[: , :-1])
+
 
   ## Plotting
   # Checking for unique vehicles types
@@ -277,6 +284,7 @@ if (f"{chosen_id}" == '1'):
   data_cars = data_cars.set_index('Vehicle Type')
   st.bar_chart(data_cars)
   
+  
   ## Create Report
   if st.button('Create Report'):
     print('Report')
@@ -284,6 +292,11 @@ if (f"{chosen_id}" == '1'):
 
 ## Data analysis for `Repairs`
 elif (f"{chosen_id}" == '2'):
+  ## Export `Repairs` dataframe to Excel Makro file
+  if export == True:
+    export_excel(sheet = 'Repairs', column = 'H', columns = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_REPAIR_DETAILS'}, {'header': 'VEHICLE_REPAIR_DATE'}, {'header': 'VEHICLE_REPAIR_COSTS'}, {'header': 'VEHICLE_SPARE_PARTS'}, {'header': 'VEHICLE_DOWN_TIME'}, {'header': 'SERVICE_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], length = int(len(databank_repairs) + 1), data = databank_repairs)
+    
+    
   ## Repair cost chart
   # Checking for unique vehicles IDs
   vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_repairs)
@@ -328,6 +341,11 @@ elif (f"{chosen_id}" == '2'):
   
 ## Data analysis for `Fuel`
 elif (f"{chosen_id}" == '3'):
+  ## Export `Fuel` dataframe to Excel Makro file
+  if export == True:
+    export_excel(sheet = 'Fuel', column = 'H', columns = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_FUEL_AMOUNT'}, {'header': 'VEHICLE_FUEL_COST'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_DATE'}, {'header': 'VEHICLE_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], length = int(len(databank_fuel) + 1), data = databank_fuel)
+
+  
   ## Average Fuel Consumption Chart
   # Checking for unique Vehicles IDs
   vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_fuel)
