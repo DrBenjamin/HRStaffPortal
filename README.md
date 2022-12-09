@@ -34,7 +34,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git
 
 ##### Configuration of Streamlit config files
 
-In the `./streamlit/config.toml` you define the **theming** and some **Streamlit-Server behaviour** flags:
+First make a directory `.streamlit`. Than create the file `./streamlit/config.toml`. Here you define the **theming** and some **Streamlit-Server behaviour** flags:
 
 ```
 [theme]
@@ -51,7 +51,7 @@ gatherUsageStats = false
 headless = true
 ```
 
-Create `./streamlit/secrets.toml` and define the user / password combinations:
+Now create the file `./streamlit/secrets.toml` where you define the user / password combinations:
 
 ```
 [passwords]
