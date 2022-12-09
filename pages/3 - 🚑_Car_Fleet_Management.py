@@ -87,7 +87,15 @@ def check_vehicles(column, data):
 
 
 ### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
-def export_excel(sheet, column, columns, length, data):
+def export_excel(sheet, column, columns, length, data, 
+                sheet2 = 'Nothing', column2 = 'A', columns2 = '', length2 = '', data2 = '',
+                sheet3 = 'Nothing', column3 = 'A', columns3 = '', length3 = '', data3 = '',
+                sheet4 = 'Nothing', column4 = 'A', columns4 = '', length4 = '', data4 = '',
+                sheet5 = 'Nothing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
+                sheet6 = 'Nothing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
+                sheet7 = 'Nothing', column7 = 'A', columns7 = '', length7 = '', data7 = ''):
+  ## Creating data arrays
+  func_arr =[]
   ## Create a Pandas Excel writer using XlsxWriter as the engine
   buffer = io.BytesIO()
   with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
@@ -100,6 +108,18 @@ def export_excel(sheet, column, columns, length, data):
     worksheet.add_table(span, {'columns': columns})
     range_table = "A:" + column
     worksheet.set_column(range_table, 30)
+    
+    # Check if second dataframe is added to add a second sheet
+    if (sheet2 == 'Nothing' and column2 == 'A' and columns2 == '' and length2 == '' and data2 == ''):
+      print('No second data presented')
+    else:
+      data2.to_excel(writer, sheet_name = sheet2, index = False)
+      # Add a table to the worksheet
+      worksheet = writer.sheets[sheet2]
+      span = "A1:%s%s" %(column2, length2)
+      worksheet.add_table(span, {'columns': columns2})
+      range_table = "A:" + column2
+      worksheet.set_column(range_table, 30)
       
     # Add Excel VBA code
     workbook = writer.book
