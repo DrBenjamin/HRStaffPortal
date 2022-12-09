@@ -215,8 +215,16 @@ def onChange():
 
 
 ### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
-def export_excel(sheet, column, columns, length, data, sheet2 = 'Nothing', column2 = 'A', columns2 = '', length2 = '', data2 = ''):
-  ## Create a Pandas Excel writer using XlsxWriter as the engine
+def export_excel(sheet, column, columns, length, data, 
+                sheet2 = 'Nothing', column2 = 'A', columns2 = '', length2 = '', data2 = '',
+                sheet3 = 'Nothing', column3 = 'A', columns3 = '', length3 = '', data3 = '',
+                sheet4 = 'Nothing', column4 = 'A', columns4 = '', length4 = '', data4 = '',
+                sheet5 = 'Nothing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
+                sheet6 = 'Nothing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
+                sheet7 = 'Nothing', column7 = 'A', columns7 = '', length7 = '', data7 = ''):
+  ## Creating data arrays
+  func_arr =[]
+  ## Create a Pandas Excel writer using XlsxWriter as the engine and writing the content to a buffer
   buffer = io.BytesIO()
   with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
     # Add dataframe data
