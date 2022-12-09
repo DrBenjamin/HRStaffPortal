@@ -51,7 +51,7 @@ gatherUsageStats = false
 headless = true
 ```
 
-Now create the file `./streamlit/secrets.toml` where you define the user / password combinations:
+Now create the file `./streamlit/secrets.toml` where you define the **user / password** combinations:
 
 ```
 [passwords]
@@ -64,7 +64,7 @@ xyz = "xyz"
 #### MySQL Server Configuration
 ##### For proper usage a local MySQL Server is needed
 
-In the `./streamlit/secrets.toml` you define the **user/password** combination for the MySQL Server:
+In the `./streamlit/secrets.toml` you define the **user / password** combination for the MySQL Server:
 
 ```
 [mysql]
