@@ -222,43 +222,48 @@ def export_excel(sheet, column, columns, length, data,
                 sheet5 = 'Nothing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
                 sheet6 = 'Nothing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
                 sheet7 = 'Nothing', column7 = 'A', columns7 = '', length7 = '', data7 = ''):
-  ## Creating data arrays
+
+  
+  ## Store function arguments in array
+  # Create empty array
   func_arr =[]
-  ## Create a Pandas Excel writer using XlsxWriter as the engine and writing the content to a buffer
+  # Add function arguments to array
+  func_arr.append([sheet, column, columns, length, data])
+  func_arr.append([sheet2, column2, columns2, length2, data2])
+  func_arr.append([sheet3, column3, columns3, length3, data3])
+  func_arr.append([sheet4, column4, columns4, length4, data4])
+  func_arr.append([sheet5, column5, columns5, length5, data5])
+  func_arr.append([sheet6, column6, columns6, length6, data6])
+  func_arr.append([sheet7, column7, columns7, length7, data7])
+
+  
+  ## Create a Pandas Excel writer using XlsxWriter as the engine
   buffer = io.BytesIO()
   with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
-    # Add dataframe data
-    data.to_excel(writer, sheet_name = sheet, index = False)
-    
-    # Add a table to the first worksheet
-    worksheet = writer.sheets[sheet]
-    span = "A1:%s%s" %(column, length)
-    worksheet.add_table(span, {'columns': columns})
-    range_table = "A:" + column
-    print('Range: ', range_table)
-    worksheet.set_column(range_table, 30)
-    
-    # Check if second dataframe is added to add a second sheet
-    if (sheet2 == 'Nothing' and column2 == 'A' and columns2 == '' and length2 == '' and data2 == ''):
-      print('No second data presented')
-    else:
-      data2.to_excel(writer, sheet_name = sheet2, index = False)
-      # Add a table to the worksheet
-      worksheet = writer.sheets[sheet2]
-      span = "A1:%s%s" %(column2, length2)
-      worksheet.add_table(span, {'columns': columns2})
-      range_table = "A:" + column2
-      worksheet.set_column(range_table, 30)
-  
-    # Add Excel VBA code
+    for i in range(7):
+      if (func_arr[i][0] != 'Nothing'):
+        # Add dataframe data to worksheet
+        func_arr[i][4].to_excel(writer, sheet_name = func_arr[i][0], index = False)
+
+        # Add a table to the worksheet
+        worksheet = writer.sheets[func_arr[i][0]]
+        span = "A1:%s%s" %(func_arr[i][1], func_arr[i][3])
+        worksheet.add_table(span, {'columns': func_arr[i][2]})
+        range_table = "A:" + func_arr[i][1]
+        worksheet.set_column(range_table, 30)
+      
+      
+    ## Add Excel VBA code
     workbook = writer.book
     workbook.add_vba_project('vbaProject.bin')
-
-    # Saving changes
+    
+    
+    ## Saving changes
     workbook.close()
     writer.save()
     
-    # Download Button
+    
+    ## Download Button
     st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
 
 

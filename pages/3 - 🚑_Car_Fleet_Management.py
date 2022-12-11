@@ -17,7 +17,6 @@ import xlsxwriter
 
 
 
-
 #### Streamlit initial setup
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
@@ -94,44 +93,48 @@ def export_excel(sheet, column, columns, length, data,
                 sheet5 = 'Nothing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
                 sheet6 = 'Nothing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
                 sheet7 = 'Nothing', column7 = 'A', columns7 = '', length7 = '', data7 = ''):
-  ## Creating data arrays
+  
+  
+  ## Store fuction arguments in array
+  # Create empty array
   func_arr =[]
+  # Add function arguments to array
+  func_arr.append([sheet, column, columns, length, data])
+  func_arr.append([sheet2, column2, columns2, length2, data2])
+  func_arr.append([sheet3, column3, columns3, length3, data3])
+  func_arr.append([sheet4, column4, columns4, length4, data4])
+  func_arr.append([sheet5, column5, columns5, length5, data5])
+  func_arr.append([sheet6, column6, columns6, length6, data6])
+  func_arr.append([sheet7, column7, columns7, length7, data7])
+
+  
   ## Create a Pandas Excel writer using XlsxWriter as the engine
   buffer = io.BytesIO()
   with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
-    # Add dataframe data
-    data.to_excel(writer, sheet_name = sheet, index = False)
+    for i in range(7):
+      if (func_arr[i][0] != 'Nothing'):
+        # Add dataframe data to worksheet
+        func_arr[i][4].to_excel(writer, sheet_name = func_arr[i][0], index = False)
 
-    # Add a table to the worksheet
-    worksheet = writer.sheets[sheet]
-    span = "A1:%s%s" %(column, length)
-    worksheet.add_table(span, {'columns': columns})
-    range_table = "A:" + column
-    worksheet.set_column(range_table, 30)
-    
-    # Check if second dataframe is added to add a second sheet
-    if (sheet2 == 'Nothing' and column2 == 'A' and columns2 == '' and length2 == '' and data2 == ''):
-      print('No second data presented')
-    else:
-      data2.to_excel(writer, sheet_name = sheet2, index = False)
-      # Add a table to the worksheet
-      worksheet = writer.sheets[sheet2]
-      span = "A1:%s%s" %(column2, length2)
-      worksheet.add_table(span, {'columns': columns2})
-      range_table = "A:" + column2
-      worksheet.set_column(range_table, 30)
+        # Add a table to the worksheet
+        worksheet = writer.sheets[func_arr[i][0]]
+        span = "A1:%s%s" %(func_arr[i][1], func_arr[i][3])
+        worksheet.add_table(span, {'columns': func_arr[i][2]})
+        range_table = "A:" + func_arr[i][1]
+        worksheet.set_column(range_table, 30)
       
-    # Add Excel VBA code
+      
+    ## Add Excel VBA code
     workbook = writer.book
     workbook.add_vba_project('vbaProject.bin')
-    # Add a button tied to a macro in the VBA project
-    #worksheet.insert_button('G3', {'macro': 'Button', 'caption': 'Press Me', 'width': 80, 'height': 30})
+    
 
-    # Saving changes
+    ## Saving changes
     workbook.close()
     writer.save()
     
-    # Download Button
+    
+    ## Download Button
     st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
     
     
@@ -143,6 +146,61 @@ st.title("KCH Car Fleet")
 
 ## Open databank connection
 conn = init_connection()
+
+
+
+### Database Excel Export Expander
+with st.expander('Database Excel Export'):
+  ## Get vehicle data and print out as a dataframe
+  query = "SELECT ID, VEHICLE_ID, VEHICLE_PLATE_NUMBER, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_COST_KM, VEHICLE_IMAGE FROM `carfleet`.`VEHICLES`;"
+  rows = run_query(query)
+    
+  # Create pandas dataframes
+  databank_vehicles = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'VEHICLE_PLATE_NUMBER', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_COST_KM', 'VEHICLE_IMAGE'])
+  data_cars = pd.DataFrame(columns = ['VEHICLE_ID', 'VEHICLE_TYPE'])
+    
+  # Populate dataframe
+  for row in rows:
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_PLATE_NUMBER', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_COST_KM', 'VEHICLE_IMAGE'])
+    databank_vehicles = pd.concat([databank_vehicles, df])
+  databank_vehicles = databank_vehicles.set_index('ID')
+  
+  
+  ## Get repair data and print out as a dataframe
+  query = "SELECT ID, VEHICLE_ID, VEHICLE_REPAIR_DETAILS, VEHICLE_REPAIR_DATE, VEHICLE_REPAIR_COSTS, VEHICLE_SPARE_PARTS, VEHICLE_DOWN_TIME, SERVICE_CENTRE_PERSON, COST_CENTRE FROM `carfleet`.`REPAIRS`;"
+  rows = run_query(query)
+    
+  # Create pandas dataframe
+  databank_repairs = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'VEHICLE_REPAIR_DETAILS', 'VEHICLE_REPAIR_DATE', 'VEHICLE_REPAIR_COSTS', 'VEHICLE_SPARE_PARTS', 'VEHICLE_DOWN_TIME', 'SERVICE_CENTRE_PERSON', 'COST_CENTRE'])
+    
+  # Populate dataframe
+  for row in rows:
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_REPAIR_DETAILS', 'VEHICLE_REPAIR_DATE', 'VEHICLE_REPAIR_COSTS', 'VEHICLE_SPARE_PARTS', 'VEHICLE_DOWN_TIME', 'SERVICE_CENTRE_PERSON', 'COST_CENTRE'])
+    databank_repairs = pd.concat([databank_repairs, df])
+  databank_repairs = databank_repairs.set_index('ID')
+    
+    
+  ## Get fuel consumption data and print out as a dataframe
+  query = "SELECT ID, VEHICLE_ID, DRIVER_ID, VEHICLE_FUEL_AMOUNT, VEHICLE_FUEL_COST, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_DATE, VEHICLE_DISTANCE, FUEL_SHORTAGE, COST_CENTRE FROM `carfleet`.`FUEL`;"
+  rows = run_query(query)
+   
+  # Create pandas dataframe 
+  databank_fuel = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'VEHICLE_FUEL_AMOUNT', 'VEHICLE_FUEL_COST', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_DATE', 'VEHICLE_DISTANCE', 'FUEL_SHORTAGE', 'COST_CENTRE'])
+  
+  # Populate dataframe
+  for row in rows:
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]], columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'VEHICLE_FUEL_AMOUNT', 'VEHICLE_FUEL_COST', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_DATE', 'VEHICLE_DISTANCE', 'FUEL_SHORTAGE', 'COST_CENTRE'])
+    databank_fuel = pd.concat([databank_fuel, df])
+  databank_fuel = databank_fuel.set_index('ID')
+  
+  
+  ## Export tables to Excel workbook
+  if st.button('Database Exel Export'):
+    databank_vehicles_excel = databank_vehicles.iloc[: , :-1]
+    export_excel(sheet = 'Vehicles', column = 'P', columns = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], length = int(len(databank_vehicles) + 1), data = databank_vehicles_excel,
+                sheet2 = 'Repairs', column2 = 'H', columns2 = [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_REPAIR_DETAILS'}, {'header': 'VEHICLE_REPAIR_DATE'}, {'header': 'VEHICLE_REPAIR_COSTS'}, {'header': 'VEHICLE_SPARE_PARTS'}, {'header': 'VEHICLE_DOWN_TIME'}, {'header': 'SERVICE_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], length2 = int(len(databank_repairs) + 1), data2 = databank_repairs,
+                sheet3 = 'Fuel', column3 = 'I', columns3 = [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'VEHICLE_FUEL_AMOUNT'}, {'header': 'VEHICLE_FUEL_COST'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_DATE'}, {'header': 'VEHICLE_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], length3 = int(len(databank_fuel) + 1), data3 = databank_fuel)
+
 
 
 ### Custom Tab with IDs
@@ -157,45 +215,33 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   export = False
   if (f"{chosen_id}" == '1'):
     st.title('Vehicles')
-  
-    
-    ## Get vehicle data and print out as a dataframe
-    query = "SELECT ID, VEHICLE_ID, VEHICLE_PLATE_NUMBER, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_COST_KM, VEHICLE_IMAGE FROM `carfleet`.`VEHICLES`;"
-    rows = run_query(query)
-    
-    databank_vehicles = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'VEHICLE_PLATE_NUMBER', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_COST_KM', 'VEHICLE_IMAGE'])
-    data_cars = pd.DataFrame(columns = ['VEHICLE_ID', 'VEHICLE_TYPE'])
-    
-    for row in rows:
-      df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_PLATE_NUMBER', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_COST_KM', 'VEHICLE_IMAGE'])
-      databank_vehicles = pd.concat([databank_vehicles, df])
-    databank_vehicles = databank_vehicles.set_index('ID')
     
     
     ## Columns
     col1, col2, col3 = st.columns(3)
     with col1:
       st.header("Vehicle ID")
-      st.write(rows[0][1])
-      st.subheader(rows[0][4])
-      st.write(rows[0][5])
-      st.image(rows[0][17])
+      st.write(databank_vehicles._get_value(1, 'VEHICLE_ID'))
+      st.subheader(databank_vehicles._get_value(1, 'VEHICLE_BRAND'))
+      st.write(databank_vehicles._get_value(1, 'VEHICLE_MODEL'))
+      st.image(databank_vehicles._get_value(1, 'VEHICLE_IMAGE'))
 
-
+    # Coloumn 2
     with col2:
       st.header("Vehicle ID")
-      st.write(rows[1][1])
-      st.subheader(rows[1][4])
-      st.write(rows[1][5])
-      st.image(rows[1][17])
+      st.write(databank_vehicles._get_value(2, 'VEHICLE_ID'))
+      st.subheader(databank_vehicles._get_value(2, 'VEHICLE_BRAND'))
+      st.write(databank_vehicles._get_value(2, 'VEHICLE_MODEL'))
+      st.image(databank_vehicles._get_value(2, 'VEHICLE_IMAGE'))
 
-
+    # Column 3
     with col3:
       st.header("Vehicle ID")
-      st.write(rows[2][1])
-      st.subheader(rows[0][4])
-      st.write(rows[2][5])
-      st.image(rows[2][17])
+      st.write(databank_vehicles._get_value(3, 'VEHICLE_ID'))
+      st.subheader(databank_vehicles._get_value(3, 'VEHICLE_BRAND'))
+      st.write(databank_vehicles._get_value(3, 'VEHICLE_MODEL'))
+      st.image(databank_vehicles._get_value(3, 'VEHICLE_IMAGE'))
+    
       
     ## Show dataframe 
     st.dataframe(databank_vehicles, use_container_width = True)
@@ -212,20 +258,12 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Repairs` 
   elif (f"{chosen_id}" == '2'):
     st.title('Repairs')
-    
-      
-    ## Get repair data and print out as a dataframe
-    query = "SELECT ID, VEHICLE_ID, VEHICLE_REPAIR_DETAILS, VEHICLE_REPAIR_DATE, VEHICLE_REPAIR_COSTS, VEHICLE_SPARE_PARTS, VEHICLE_DOWN_TIME, SERVICE_CENTRE_PERSON, COST_CENTRE FROM `carfleet`.`REPAIRS`;"
-    rows = run_query(query)
-    
-    databank_repairs = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'VEHICLE_REPAIR_DETAILS', 'VEHICLE_REPAIR_DATE', 'VEHICLE_REPAIR_COSTS', 'VEHICLE_SPARE_PARTS', 'VEHICLE_DOWN_TIME', 'SERVICE_CENTRE_PERSON', 'COST_CENTRE'])
-    for row in rows:
-      df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_REPAIR_DETAILS', 'VEHICLE_REPAIR_DATE', 'VEHICLE_REPAIR_COSTS', 'VEHICLE_SPARE_PARTS', 'VEHICLE_DOWN_TIME', 'SERVICE_CENTRE_PERSON', 'COST_CENTRE'])
-      databank_repairs = pd.concat([databank_repairs, df])
-    databank_repairs = databank_repairs.set_index('ID')
+
+
+    ## Show dataframe 
     st.dataframe(databank_repairs, use_container_width = True)
-
-
+  
+  
     ## Submit Button `Export to Excel`
     submitted = st.form_submit_button("Export to Excel")
 
@@ -233,21 +271,12 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       export = True
 
   
-  
   ## tab `Fuel Consumption`   
   elif (f"{chosen_id}" == '3'):
     st.title('Fuel Consumption')
     
     
-    ## Get fuel consumption data and print out as a dataframe
-    query = "SELECT ID, VEHICLE_ID, DRIVER_ID, VEHICLE_FUEL_AMOUNT, VEHICLE_FUEL_COST, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_DATE, VEHICLE_DISTANCE, FUEL_SHORTAGE, COST_CENTRE FROM `carfleet`.`FUEL`;"
-    rows = run_query(query)
-    
-    databank_fuel = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'VEHICLE_FUEL_AMOUNT', 'VEHICLE_FUEL_COST', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_DATE', 'VEHICLE_DISTANCE', 'FUEL_SHORTAGE', 'COST_CENTRE'])
-    for row in rows:
-      df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]], columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'VEHICLE_FUEL_AMOUNT', 'VEHICLE_FUEL_COST', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_DATE', 'VEHICLE_DISTANCE', 'FUEL_SHORTAGE', 'COST_CENTRE'])
-      databank_fuel = pd.concat([databank_fuel, df])
-    databank_fuel = databank_fuel.set_index('ID')
+    ## Show dataframe
     st.dataframe(databank_fuel, use_container_width = True)
 
     
@@ -257,6 +286,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     if submitted:
       ## Export `Fuel` dataframe to Excel Makro file
       export = True
+
 
     
 #### Outside the form
