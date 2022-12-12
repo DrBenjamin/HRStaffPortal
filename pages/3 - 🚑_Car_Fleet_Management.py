@@ -48,7 +48,7 @@ elif plt == "Darwin":
 def init_connection():
   try:
     ## Initialize connection
-    return mysql.connector.connect(**st.secrets["mysql"])
+    return mysql.connector.connect(**st.secrets["mysql_car"])
   except:
     print("An exception occurred in function `init_connection`")
     st.error(body = 'Databank connection timeout!', icon = "🚨")
@@ -98,6 +98,7 @@ def export_excel(sheet, column, columns, length, data,
   ## Store fuction arguments in array
   # Create empty array
   func_arr =[]
+  
   # Add function arguments to array
   func_arr.append([sheet, column, columns, length, data])
   func_arr.append([sheet2, column2, columns2, length2, data2])
@@ -138,14 +139,31 @@ def export_excel(sheet, column, columns, length, data,
     st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
     
     
-### Function: pictureUploader = uploads employee images
-def pictureUploader(image, index):
-  ## Initialize connection
-  connection = mysql.connector.connect(**st.secrets["mysql"])
+### Function: pictureUploaderDrivers = uploads driver images
+def pictureUploaderDrivers(image, index):
+  # Initialize connection
+  connection = mysql.connector.connect(**st.secrets["mysql_car"])
   cursor = connection.cursor()
-  ## SQL statement
-  sql_insert_blob_query = """ UPDATE IMAGEBASE SET IMAGE = %s WHERE ID = %s;"""
-  ## Convert data into tuple format
+  
+  # SQL statement
+  sql_insert_blob_query = """ UPDATE DRIVERS SET DRIVER_IMAGE = %s WHERE ID = %s;"""
+  
+  # Convert data into tuple format
+  insert_blob_tuple = (image, index)
+  result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
+  connection.commit()
+  
+
+### Function: pictureUploaderVehicles = uploads vehicle images
+def pictureUploaderVehicles(image, index):
+  # Initialize connection
+  connection = mysql.connector.connect(**st.secrets["mysql_car"])
+  cursor = connection.cursor()
+  
+  # SQL statement
+  sql_insert_blob_query = """ UPDATE VEHICLES SET VEHICLE_IMAGE = %s WHERE ID = %s;"""
+  
+  # Convert data into tuple format
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
   connection.commit()
@@ -159,6 +177,7 @@ def lastID(url):
   row = [0]
   for row in rows:
     id = int(row[0]) + 1
+  
   # If first entry in database start with `ID` `1` 
   if (id == 0):
     id = 1
@@ -170,7 +189,8 @@ def loadFile(filename):
   with open(filename, 'rb') as file:
     binaryData = file.read()
   return binaryData
-## Current Image data
+
+# Current Image data
 if ('image' not in st.session_state):
   st.session_state['image'] = loadFile('images/No_Image.png')
 
@@ -295,7 +315,7 @@ databank_vehicles_excel = databank_vehicles.iloc[: , :-1]
 with st.expander('Database Excel Export'):
   ## Show `DRIVERS` table dataframe
   st.subheader('Drivers data')
-  st.dataframe(databank_drivers, use_container_width = True)
+  st.dataframe(databank_drivers_excel, use_container_width = True)
   
   
   ## Show `FUEL` table dataframe
@@ -325,7 +345,7 @@ with st.expander('Database Excel Export'):
   
   ## Show `VEHICLES` table dataframe
   st.subheader('Vehicles data')
-  st.dataframe(databank_vehicles, use_container_width = True)
+  st.dataframe(databank_vehicles_excel, use_container_width = True)
   
   
   ## Export tables to Excel workbook
@@ -357,9 +377,9 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Fuel Consumption`   
   if (f"{chosen_id}" == '1'):
     st.title('Drivers')
-
     
-    ## Input for new `Driver` data
+    
+    ## Input for new `DRIVERS` data
     # Get latest ID from database
     id = lastID(url = "carfleet.DRIVERS")   
     id = st.text_input(label = 'ID', value = id, disabled = True)
@@ -375,7 +395,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
     
     # empty image
-    driver_image = ''
+    #driver_image = ''
     if uploaded_file is not None:
       driver_image = uploaded_file.getvalue()
           
@@ -394,7 +414,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       
             
       ## Upload picture to database
-      pictureUploader(driver_image, id)
+      pictureUploaderDrivers(driver_image, id)
       
       
   ## tab `Fuel Consumption`   
@@ -402,12 +422,29 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     st.title('Fuel Consumption')
 
     
-    ## Submit Button `Export to Excel`
-    submitted = st.form_submit_button("Export to Excel")
+    ## Input for new `FUEL` data
+    # Get latest ID from database
+    id = lastID(url = "carfleet.FUEL")   
+    id = st.text_input(label = 'ID', value = id, disabled = True)
+    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
+    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
+    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
+    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
+    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
+    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
+    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
 
+    
+    ## Submit Button `Create new Refueling`
+    submitted = st.form_submit_button("Create new Refueling")
     if submitted:
-      ## Export `Fuel` dataframe to Excel Makro file
-      export = True
+      # Get latest ID from database
+      id = lastID(url = "carfleet.FUEL")
+      query = "INSERT INTO `carfleet`.`FUEL`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      run_query(query)
+      conn.commit()
       
       
   ## tab `Insurances`   
@@ -415,12 +452,28 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     st.title('Insurances')
 
     
-    ## Submit Button `Export to Excel`
-    submitted = st.form_submit_button("Export to Excel")
+    ## Input for new `INSURANCES` data
+    # Get latest ID from database
+    id = lastID(url = "carfleet.INSURANCES")   
+    id = st.text_input(label = 'ID', value = id, disabled = True)
+    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
+    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
+    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
+    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
+    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
+    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
+    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
 
+    ## Submit Button `Create new Insurance`
+    submitted = st.form_submit_button("Create new Insurance")
     if submitted:
-      ## Export `Insurances` dataframe to Excel Makro file
-      export = True
+      # Get latest ID from database
+      id = lastID(url = "carfleet.INSURANCES")
+      query = "INSERT INTO `carfleet`.`INSURANCES`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      run_query(query)
+      conn.commit()
   
   
   ## tab `Repairs` 
@@ -428,11 +481,28 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     st.title('Repairs')
 
   
-    ## Submit Button `Export to Excel`
-    submitted = st.form_submit_button("Export to Excel")
+    ## Input for new `REPAIRS` data
+    # Get latest ID from database
+    id = lastID(url = "carfleet.REPAIRS")   
+    id = st.text_input(label = 'ID', value = id, disabled = True)
+    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
+    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
+    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
+    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
+    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
+    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
+    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
 
+    ## Submit Button `Create new Repair`
+    submitted = st.form_submit_button("Create new Repair")
     if submitted:
-      export = True
+      # Get latest ID from database
+      id = lastID(url = "carfleet.REPAIRS")
+      query = "INSERT INTO `carfleet`.`REPAIRS`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      run_query(query)
+      conn.commit()
       
       
   ## tab `Services`   
@@ -440,12 +510,28 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     st.title('Services')
 
     
-    ## Submit Button `Export to Excel`
-    submitted = st.form_submit_button("Export to Excel")
+    ## Input for new `SERVICES` data
+    # Get latest ID from database
+    id = lastID(url = "carfleet.SERVICES")   
+    id = st.text_input(label = 'ID', value = id, disabled = True)
+    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
+    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
+    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
+    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
+    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
+    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
+    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
 
+    ## Submit Button `Create new Service`
+    submitted = st.form_submit_button("Create new Service")
     if submitted:
-      ## Export `Services` dataframe to Excel Makro file
-      export = True
+      # Get latest ID from database
+      id = lastID(url = "carfleet.SERVICES")
+      query = "INSERT INTO `carfleet`.`SERVICES`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      run_query(query)
+      conn.commit()
       
       
   ## tab `Trips`   
@@ -453,12 +539,28 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     st.title('Trips')
 
     
-    ## Submit Button `Export to Excel`
-    submitted = st.form_submit_button("Export to Excel")
+    ## Input for new `TRIPS` data
+    # Get latest ID from database
+    id = lastID(url = "carfleet.TRIPS")   
+    id = st.text_input(label = 'ID', value = id, disabled = True)
+    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
+    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
+    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
+    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
+    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
+    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
+    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
 
+    ## Submit Button `Create new Trip`
+    submitted = st.form_submit_button("Create new Trip")
     if submitted:
-      ## Export `Trips` dataframe to Excel Makro file
-      export = True
+      # Get latest ID from database
+      id = lastID(url = "carfleet.TRIPS")
+      query = "INSERT INTO `carfleet`.`TRIPS`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      run_query(query)
+      conn.commit()
   
       
   ## tab `Vehicles`
@@ -492,12 +594,40 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       st.image(databank_vehicles._get_value(3, 'VEHICLE_IMAGE'))
 
     
-    ## Submit Button `Export to Excel`
-    submitted = st.form_submit_button("Export to Excel")
-
+    ## Input for new `VEHICLES` data
+    # Get latest ID from database
+    id = lastID(url = "carfleet.VEHICLES")   
+    id = st.text_input(label = 'ID', value = id, disabled = True)
+    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
+    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
+    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
+    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
+    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
+    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
+    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
+    uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
+    
+    if uploaded_file is not None:
+      driver_image = uploaded_file.getvalue()
+          
+    else:
+      driver_image = loadFile("images/placeholder.png")
+        
+    
+    ## Submit Button `Create new Vehicles`
+    submitted = st.form_submit_button("Create new Vehicle")
     if submitted:
-      ## Export `Vehicles` dataframe to Excel Makro file
-      export = True
+      # Get latest ID from database
+      id = lastID(url = "carfleet.VEHICLES")
+      query = "INSERT INTO `carfleet`.`VEHICLES`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      run_query(query)
+      conn.commit()
+      
+            
+      ## Upload picture to database
+      pictureUploaderVehicles(driver_image, id)
 
 
     
