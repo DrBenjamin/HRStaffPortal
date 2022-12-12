@@ -570,50 +570,62 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     
     ## Columns
     col1, col2, col3 = st.columns(3)
+    cars = lastID(url = "carfleet.VEHICLES")  
     with col1:
-      st.header("Vehicle ID")
-      st.write(databank_vehicles._get_value(1, 'VEHICLE_ID'))
-      st.subheader(databank_vehicles._get_value(1, 'VEHICLE_BRAND'))
-      st.write(databank_vehicles._get_value(1, 'VEHICLE_MODEL'))
-      st.image(databank_vehicles._get_value(1, 'VEHICLE_IMAGE'))
+      for i in range(1, cars, 3):
+        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+        st.subheader("Vehicle ID")
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
 
+        
     # Coloumn 2
     with col2:
-      st.header("Vehicle ID")
-      st.write(databank_vehicles._get_value(2, 'VEHICLE_ID'))
-      st.subheader(databank_vehicles._get_value(2, 'VEHICLE_BRAND'))
-      st.write(databank_vehicles._get_value(2, 'VEHICLE_MODEL'))
-      st.image(databank_vehicles._get_value(2, 'VEHICLE_IMAGE'))
+      for i in range(2, cars, 3):
+        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+        st.subheader("Vehicle ID")
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
 
     # Column 3
     with col3:
-      st.header("Vehicle ID")
-      st.write(databank_vehicles._get_value(3, 'VEHICLE_ID'))
-      st.subheader(databank_vehicles._get_value(3, 'VEHICLE_BRAND'))
-      st.write(databank_vehicles._get_value(3, 'VEHICLE_MODEL'))
-      st.image(databank_vehicles._get_value(3, 'VEHICLE_IMAGE'))
+      for i in range(3, cars, 3):
+        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+        st.subheader("Vehicle ID")
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
 
     
     ## Input for new `VEHICLES` data
     # Get latest ID from database
     id = lastID(url = "carfleet.VEHICLES")   
     id = st.text_input(label = 'ID', value = id, disabled = True)
-    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
-    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
-    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
-    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
-    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
-    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
-    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
-    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
-    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
+    vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
+    vehicle_plate_number = st.text_input(label = 'Plate number', placeholder = 'Plate number?')
+    vehicle_type = st.text_input(label = 'Type', placeholder = 'Type?')
+    vehicle_brand = st.text_input(label = 'Brand', placeholder = 'Brand?')
+    vehicle_model = st.text_input(label = 'Model', placeholder = 'Model?')
+    vehicle_seats = st.text_input(label = 'Seats', placeholder = 'Seats?')
+    vehicle_fuel_type = st.text_input(label = 'Fuel type', placeholder = 'Fuel type?')
+    vehicle_colour = st.text_input(label = 'Colour', placeholder = 'Colour?')
+    vehicle_chasis_number = st.text_input(label = 'Chasis number', placeholder = 'Chasis number?')
+    vehicle_manufacture_year = st.text_input(label = 'Manufacture year', placeholder = 'Manufacture year?')
+    vehicle_purchase_date = st.text_input(label = 'Purchase date', placeholder = 'Purchase date?')
+    vehicle_purchase_price = st.text_input(label = 'Purchase price', placeholder = 'Purchase price?')
+    vehicle_disposition_year = st.text_input(label = 'Disposition year', placeholder = 'Disposition year?')
+    vehicle_vendor = st.text_input(label = 'Vendor', placeholder = 'Vendor?')
+    vehicle_duty = st.text_input(label = 'Duty', placeholder = 'Duty?')
+    vehicle_cost_km = st.text_input(label = 'Cost per km', placeholder = 'Cost per km?')
     uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
     
     if uploaded_file is not None:
-      driver_image = uploaded_file.getvalue()
+      vehicle_image = uploaded_file.getvalue()
           
     else:
-      driver_image = loadFile("images/placeholder.png")
+      vehicle_image = loadFile("images/placeholder.png")
         
     
     ## Submit Button `Create new Vehicles`
@@ -621,13 +633,15 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     if submitted:
       # Get latest ID from database
       id = lastID(url = "carfleet.VEHICLES")
-      query = "INSERT INTO `carfleet`.`VEHICLES`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      query = "INSERT INTO `carfleet`.`VEHICLES`(ID, VEHICLE_ID, VEHICLE_PLATE_NUMBER, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_COST_KM) VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', '%s', '%s', '%s', '%s', %s, '%s', '%s', %s, %s);" %(id, vehicle_id, vehicle_plate_number, vehicle_type, vehicle_brand, vehicle_model, vehicle_seats, vehicle_fuel_type, vehicle_colour, vehicle_chasis_number, vehicle_manufacture_year, vehicle_purchase_date, vehicle_purchase_price, vehicle_disposition_year, vehicle_vendor, vehicle_duty, vehicle_cost_km)
       run_query(query)
       conn.commit()
       
             
       ## Upload picture to database
-      pictureUploaderVehicles(driver_image, id)
+      pictureUploaderVehicles(vehicle_image, id)
+      
+      st.experimental_rerun()
 
 
     
