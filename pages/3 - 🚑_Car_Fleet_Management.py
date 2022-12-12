@@ -223,15 +223,15 @@ databank_drivers_excel = databank_drivers.iloc[: , :-1]
 
 
 ## Get `FUEL` table data
-query = "SELECT ID, VEHICLE_ID, DRIVER_ID, VEHICLE_FUEL_AMOUNT, VEHICLE_FUEL_COST, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_DATE, VEHICLE_DISTANCE, FUEL_SHORTAGE, COST_CENTRE FROM `carfleet`.`FUEL`;"
+query = "SELECT ID, VEHICLE_ID, DRIVER_ID, FUEL_AMOUNT, FUEL_COST, FUEL_TYPE, FUEL_DATE, FUEL_DISTANCE, FUEL_SHORTAGE, COST_CENTRE FROM `carfleet`.`FUEL`;"
 rows = run_query(query)
    
 # Create pandas dataframe 
-databank_fuel = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'VEHICLE_FUEL_AMOUNT', 'VEHICLE_FUEL_COST', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_DATE', 'VEHICLE_DISTANCE', 'FUEL_SHORTAGE', 'COST_CENTRE'])
+databank_fuel = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'FUEL_AMOUNT', 'FUEL_COST', 'FUEL_TYPE', 'FUEL_DATE', 'FUEL_DISTANCE', 'FUEL_SHORTAGE', 'COST_CENTRE'])
   
 # Populate dataframe
 for row in rows:
-  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]], columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'VEHICLE_FUEL_AMOUNT', 'VEHICLE_FUEL_COST', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_DATE', 'VEHICLE_DISTANCE', 'FUEL_SHORTAGE', 'COST_CENTRE'])
+  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]], columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'FUEL_AMOUNT', 'FUEL_COST', 'FUEL_TYPE', 'FUEL_DATE', 'FUEL_DISTANCE', 'FUEL_SHORTAGE', 'COST_CENTRE'])
   databank_fuel = pd.concat([databank_fuel, df])
 databank_fuel = databank_fuel.set_index('ID')
   
@@ -251,15 +251,15 @@ databank_insurances = databank_insurances.set_index('ID')
   
 
 ## Get `REPAIRS` table data
-query = "SELECT ID, VEHICLE_ID, VEHICLE_REPAIR_DETAILS, VEHICLE_REPAIR_DATE, VEHICLE_REPAIR_COSTS, VEHICLE_SPARE_PARTS, VEHICLE_DOWN_TIME, SERVICE_CENTRE_PERSON, COST_CENTRE FROM `carfleet`.`REPAIRS`;"
+query = "SELECT ID, VEHICLE_ID, REPAIR_DETAILS, REPAIR_DATE, REPAIR_COSTS, REPAIR_SPARE_PARTS, REPAIR_DOWN_TIME, REPAIR_CENTRE_PERSON, COST_CENTRE FROM `carfleet`.`REPAIRS`;"
 rows = run_query(query)
     
 # Create pandas dataframe
-databank_repairs = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'VEHICLE_REPAIR_DETAILS', 'VEHICLE_REPAIR_DATE', 'VEHICLE_REPAIR_COSTS', 'VEHICLE_SPARE_PARTS', 'VEHICLE_DOWN_TIME', 'SERVICE_CENTRE_PERSON', 'COST_CENTRE'])
+databank_repairs = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'REPAIR_DETAILS', 'REPAIR_DATE', 'REPAIR_COSTS', 'REPAIR_SPARE_PARTS', 'REPAIR_DOWN_TIME', 'REPAIR_CENTRE_PERSON', 'COST_CENTRE'])
     
 # Populate dataframe
 for row in rows:
-  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_REPAIR_DETAILS', 'VEHICLE_REPAIR_DATE', 'VEHICLE_REPAIR_COSTS', 'VEHICLE_SPARE_PARTS', 'VEHICLE_DOWN_TIME', 'SERVICE_CENTRE_PERSON', 'COST_CENTRE'])
+  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'VEHICLE_ID', 'REPAIR_DETAILS', 'REPAIR_DATE', 'REPAIR_COSTS', 'REPAIR_SPARE_PARTS', 'REPAIR_DOWN_TIME', 'REPAIR_CENTRE_PERSON', 'COST_CENTRE'])
   databank_repairs = pd.concat([databank_repairs, df])
 databank_repairs = databank_repairs.set_index('ID')
   
@@ -279,15 +279,15 @@ databank_services = databank_services.set_index('ID')
   
 
 ## Get `TRIPS` table data
-query = "SELECT ID, VEHICLE_ID, DRIVER_ID, TRIP_DATE, TRIP_DESCRIPTION, TRIP_COMMENTS, TRIP_TIME_OUT, TRIP_TIME_IN, TRIP_OPEN_MILEAGE, TRIP_CLOSE_MILEAGE, TRIP_TOTAL_MILEAGE FROM `carfleet`.`TRIPS`;"
+query = "SELECT ID, VEHICLE_ID, DRIVER_ID, TRIP_DATE, TRIP_DESCRIPTION, TRIP_COMMENTS, TRIP_TIME_OUT, TRIP_TIME_IN, TRIP_OPEN_MILEAGE, TRIP_CLOSE_MILEAGE, TRIP_DISTANCE FROM `carfleet`.`TRIPS`;"
 rows = run_query(query)
    
 # Create pandas dataframe 
-databank_trips = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'TRIP_DATE', 'TRIP_DESCRIPTION', 'TRIP_COMMENTS', 'TRIP_TIME_OUT', 'TRIP_TIME_IN', 'TRIP_OPEN_MILEAGE', 'TRIP_CLOSE_MILEAGE', 'TRIP_TOTAL_MILEAGE'])
+databank_trips = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'TRIP_DATE', 'TRIP_DESCRIPTION', 'TRIP_COMMENTS', 'TRIP_TIME_OUT', 'TRIP_TIME_IN', 'TRIP_OPEN_MILEAGE', 'TRIP_CLOSE_MILEAGE', 'TRIP_DISTANCE'])
   
 # Populate dataframe
 for row in rows:
-  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]], columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'TRIP_DATE', 'TRIP_DESCRIPTION', 'TRIP_COMMENTS', 'TRIP_TIME_OUT', 'TRIP_TIME_IN', 'TRIP_OPEN_MILEAGE', 'TRIP_CLOSE_MILEAGE', 'TRIP_TOTAL_MILEAGE'])
+  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]], columns = ['ID', 'VEHICLE_ID', 'DRIVER_ID', 'TRIP_DATE', 'TRIP_DESCRIPTION', 'TRIP_COMMENTS', 'TRIP_TIME_OUT', 'TRIP_TIME_IN', 'TRIP_OPEN_MILEAGE', 'TRIP_CLOSE_MILEAGE', 'TRIP_DISTANCE'])
   databank_trips= pd.concat([databank_trips, df])
 databank_trips = databank_trips.set_index('ID')
   
@@ -312,7 +312,7 @@ databank_vehicles_excel = databank_vehicles.iloc[: , :-1]
 
 
 ### Database Excel Export Expander
-with st.expander('Database Excel Export'):
+with st.expander('Database Excel Export', expanded = False):
   ## Show `DRIVERS` table dataframe
   st.subheader('Drivers data')
   st.dataframe(databank_drivers_excel, use_container_width = True)
@@ -352,11 +352,11 @@ with st.expander('Database Excel Export'):
   if st.button('Database Exel Export'):
     # Do the exporting
     export_excel('Drivers', 'I', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel,
-                'Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'VEHICLE_FUEL_AMOUNT'}, {'header': 'VEHICLE_FUEL_COST'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_DATE'}, {'header': 'VEHICLE_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel,
+                'Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'FUEL_AMOUNT'}, {'header': 'FUEL_COST'}, {'header': 'FUEL_TYPE'}, {'header': 'FUEL_DATE'}, {'header': 'FUEL_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel,
                 'Insurances', 'E', [{'header': 'VEHICLE_ID'}, {'header': 'INSURANCE_DETAILS'}, {'header': 'INSURANCES_TYPE'}, {'header': 'INSURANCE_START_DATE'}, {'header': 'INSURANCE_EXPIRY_DATE'},], int(len(databank_insurances) + 1), databank_insurances,
-                'Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_REPAIR_DETAILS'}, {'header': 'VEHICLE_REPAIR_DATE'}, {'header': 'VEHICLE_REPAIR_COSTS'}, {'header': 'VEHICLE_SPARE_PARTS'}, {'header': 'VEHICLE_DOWN_TIME'}, {'header': 'SERVICE_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs,
+                'Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'REPAIR_DETAILS'}, {'header': 'REPAIR_DATE'}, {'header': 'REPAIR_COSTS'}, {'header': 'REPAIR_SPARE_PARTS'}, {'header': 'REPAIR_DOWN_TIME'}, {'header': 'REPAIR_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs,
                 'Services', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'SERVICE_DATE'}, {'header': 'SERVICE_DETAILS'}, {'header': 'SERVICE_COSTS'}, {'header': 'SERVICE_MILEAGE_ON_SERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE_MAX'},], int(len(databank_services) + 1), databank_services,
-                'Trips', 'J', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'TRIP_DATE'}, {'header': 'TRIP_DESCRIPTION'}, {'header': 'TRIP_COMMENTS'},{'header': 'TRIP_TIME_OUT'}, {'header': 'TRIP_TIME_IN'}, {'header': 'TRIP_OPEN_MILEAGE'}, {'header': 'TRIP_CLOSE_MILEAGE'}, {'header': '`TRIP_TOTAL_MILEAGE'},], int(len(databank_trips) + 1), databank_trips,
+                'Trips', 'J', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'TRIP_DATE'}, {'header': 'TRIP_DESCRIPTION'}, {'header': 'TRIP_COMMENTS'},{'header': 'TRIP_TIME_OUT'}, {'header': 'TRIP_TIME_IN'}, {'header': 'TRIP_OPEN_MILEAGE'}, {'header': 'TRIP_CLOSE_MILEAGE'}, {'header': '`TRIP_DISTANCE'},], int(len(databank_trips) + 1), databank_trips,
                 'Vehicles', 'P', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles) + 1), databank_vehicles_excel)
 
 
@@ -415,6 +415,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
             
       ## Upload picture to database
       pictureUploaderDrivers(driver_image, id)
+      st.experimental_rerun()
       
       
   ## tab `Fuel Consumption`   
@@ -426,15 +427,15 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     # Get latest ID from database
     id = lastID(url = "carfleet.FUEL")   
     id = st.text_input(label = 'ID', value = id, disabled = True)
+    vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
     driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
-    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
-    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
-    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
-    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
-    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
-    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
-    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
-    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
+    fuel_amount = st.text_input(label = 'Amount', placeholder = 'Amount?')
+    fuel_cost = st.text_input(label = 'Cost', placeholder = 'Cost?')
+    fuel_type = st.text_input(label = 'Type', placeholder = 'Type?')
+    fuel_date = st.text_input(label = 'Date', placeholder = 'Date?')
+    fuel_distance = st.text_input(label = 'Distance', placeholder = 'Distance?')
+    fuel_shortage = st.text_input(label = 'Shortage', placeholder = 'Shortage?')
+    cost_centre = st.text_input(label = 'Cost Centre', placeholder = 'Cost Centre?')
 
     
     ## Submit Button `Create new Refueling`
@@ -442,9 +443,10 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     if submitted:
       # Get latest ID from database
       id = lastID(url = "carfleet.FUEL")
-      query = "INSERT INTO `carfleet`.`FUEL`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      query = "INSERT INTO `carfleet`.`FUEL`(ID, VEHICLE_ID, DRIVER_ID, FUEL_AMOUNT, FUEL_COST, FUEL_TYPE, FUEL_DATE, FUEL_DISTANCE, FUEL_SHORTAGE, COST_CENTRE) VALUES (%s, '%s', '%s', %s, %s, '%s', '%s', %s, '%s', '%s');" %(id, vehicle_id, driver_id, fuel_amount, fuel_cost, fuel_type, fuel_date, fuel_distance, fuel_shortage, cost_centre)
       run_query(query)
       conn.commit()
+      st.experimental_rerun()
       
       
   ## tab `Insurances`   
@@ -456,24 +458,22 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     # Get latest ID from database
     id = lastID(url = "carfleet.INSURANCES")   
     id = st.text_input(label = 'ID', value = id, disabled = True)
-    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
-    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
-    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
-    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
-    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
-    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
-    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
-    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
-    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
+    vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
+    insurance_details = st.text_input(label = 'Details', placeholder = 'Details?')
+    insurance_type = st.text_input(label = 'Type', placeholder = 'Type?')
+    insurance_start_date = st.text_input(label = 'Start date', placeholder = 'Start date?')
+    insurance_expiry_date = st.text_input(label = 'Expiry date', placeholder = 'Expiry date?')
+    
 
     ## Submit Button `Create new Insurance`
     submitted = st.form_submit_button("Create new Insurance")
     if submitted:
       # Get latest ID from database
       id = lastID(url = "carfleet.INSURANCES")
-      query = "INSERT INTO `carfleet`.`INSURANCES`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      query = "INSERT INTO `carfleet`.`INSURANCES`(ID, VEHICLE_ID, INSURANCE_DETAILS, INSURANCES_TYPE, INSURANCE_START_DATE, INSURANCE_EXPIRY_DATE) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(id, vehicle_id, insurance_details, insurance_type, insurance_start_date, insurance_expiry_date)
       run_query(query)
       conn.commit()
+      st.experimental_rerun()
   
   
   ## tab `Repairs` 
@@ -485,24 +485,25 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     # Get latest ID from database
     id = lastID(url = "carfleet.REPAIRS")   
     id = st.text_input(label = 'ID', value = id, disabled = True)
-    driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
-    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
-    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
-    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
-    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
-    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
-    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
-    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
-    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
-
+    vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
+    repair_details = st.text_input(label = 'Details', placeholder = 'Details?')
+    repair_date = st.text_input(label = 'Date', placeholder = 'Date?')
+    repair_costs = st.text_input(label = 'Costs', placeholder = 'Costs?')
+    repair_spare_parts = st.text_input(label = 'Spare parts', placeholder = 'Spare parts?')
+    repair_down_time = st.text_input(label = 'Down time', placeholder = 'Down time?')
+    repair_centre_person = st.text_input(label = 'Centre / Person', placeholder = 'Centre / Person?')
+    cost_centre = st.text_input(label = 'Cost Centre', placeholder = 'Cost Centre?')
+    
+    
     ## Submit Button `Create new Repair`
     submitted = st.form_submit_button("Create new Repair")
     if submitted:
       # Get latest ID from database
       id = lastID(url = "carfleet.REPAIRS")
-      query = "INSERT INTO `carfleet`.`REPAIRS`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      query = "INSERT INTO `carfleet`.`REPAIRS`(ID, VEHICLE_ID, REPAIR_DETAILS, REPAIR_DATE, REPAIR_COSTS, REPAIR_SPARE_PARTS, REPAIR_DOWN_TIME, REPAIR_CENTRE_PERSON, COST_CENTRE) VALUES (%s, '%s', '%s', '%s', %s, '%s', '%s', '%s', '%s');" %(id, vehicle_id, repair_details, repair_date, repair_costs, repair_spare_parts, repair_down_time, repair_centre_person, cost_centre)
       run_query(query)
       conn.commit()
+      st.experimental_rerun()
       
       
   ## tab `Services`   
@@ -514,24 +515,25 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     # Get latest ID from database
     id = lastID(url = "carfleet.SERVICES")   
     id = st.text_input(label = 'ID', value = id, disabled = True)
+    vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
     driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
-    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
-    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
-    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
-    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
-    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
-    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
-    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
-    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
-
+    service_date = st.text_input(label = 'Date', placeholder = 'Date?')
+    service_details = st.text_input(label = 'Details', placeholder = 'Details?')
+    service_costs = st.text_input(label = 'Costs', placeholder = 'Costs?')
+    service_mileage_on_service = st.text_input(label = 'Mileage', placeholder = 'Mileage?')
+    service_mileage_nextservice = st.text_input(label = 'Next service mileage', placeholder = 'Next service mileage?')
+    service_mileage_nextservice_max = st.text_input(label = 'Next service max. mileage', placeholder = 'Next service max. mileage?')
+    
+    
     ## Submit Button `Create new Service`
     submitted = st.form_submit_button("Create new Service")
     if submitted:
       # Get latest ID from database
       id = lastID(url = "carfleet.SERVICES")
-      query = "INSERT INTO `carfleet`.`SERVICES`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      query = "INSERT INTO `carfleet`.`SERVICES`(ID, VEHICLE_ID, DRIVER_ID, SERVICE_DATE, SERVICE_DETAILS, SERVICE_COSTS, SERVICE_MILEAGE_ON_SERVICE, SERVICE_MILEAGE_NEXTSERVICE, SERVICE_MILEAGE_NEXTSERVICE_MAX) VALUES (%s, '%s', '%s', '%s', '%s', %s, %s, %s, %s);" %(id, vehicle_id, driver_id, service_date, service_details, service_costs, service_mileage_on_service, service_mileage_nextservice, service_mileage_nextservice_max)
       run_query(query)
       conn.commit()
+      st.experimental_rerun()
       
       
   ## tab `Trips`   
@@ -543,61 +545,33 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     # Get latest ID from database
     id = lastID(url = "carfleet.TRIPS")   
     id = st.text_input(label = 'ID', value = id, disabled = True)
+    vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
     driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
-    driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
-    driver_surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
-    driver_national_id = st.text_input(label = 'National ID', placeholder = 'National ID number?')
-    driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
-    driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
-    driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
-    driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
-    driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
+    trip_date = st.text_input(label = 'Date', placeholder = 'Date?')
+    trip_description = st.text_input(label = 'Description', placeholder = 'Description?')
+    trip_comments = st.text_input(label = 'Comments', placeholder = 'Comments?')
+    trip_time_out = st.text_input(label = 'Time out', placeholder = 'Time out?')
+    trip_time_in = st.text_input(label = 'Time in', placeholder = 'Time in?')
+    trip_open_mileage = st.text_input(label = 'Open mileage', placeholder = 'Open mileage?')
+    trip_close_mileage = st.text_input(label = 'Close mileage', placeholder = 'Close mileage?')
+    trip_distance = st.text_input(label = 'Distance', placeholder = 'Distance?')
+
 
     ## Submit Button `Create new Trip`
     submitted = st.form_submit_button("Create new Trip")
     if submitted:
       # Get latest ID from database
       id = lastID(url = "carfleet.TRIPS")
-      query = "INSERT INTO `carfleet`.`TRIPS`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      query = "INSERT INTO `carfleet`.`TRIPS`(ID, VEHICLE_ID, DRIVER_ID, TRIP_DATE, TRIP_DESCRIPTION, TRIP_COMMENTS, TRIP_TIME_OUT, TRIP_TIME_IN, TRIP_OPEN_MILEAGE, TRIP_CLOSE_MILEAGE, TRIP_DISTANCE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s);" %(id, vehicle_id, driver_id, trip_date, trip_description, trip_comments, trip_time_out, trip_time_in, trip_open_mileage, trip_close_mileage, trip_distance)
       run_query(query)
       conn.commit()
+      st.experimental_rerun()
   
       
   ## tab `Vehicles`
   elif (f"{chosen_id}" == '7'):
     st.title('Vehicles')
     
-    
-    ## Columns
-    col1, col2, col3 = st.columns(3)
-    cars = lastID(url = "carfleet.VEHICLES")  
-    with col1:
-      for i in range(1, cars, 3):
-        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-        st.subheader("Vehicle ID")
-        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
-
-        
-    # Coloumn 2
-    with col2:
-      for i in range(2, cars, 3):
-        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-        st.subheader("Vehicle ID")
-        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
-
-    # Column 3
-    with col3:
-      for i in range(3, cars, 3):
-        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-        st.subheader("Vehicle ID")
-        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
-
     
     ## Input for new `VEHICLES` data
     # Get latest ID from database
@@ -640,7 +614,6 @@ with st.form("Car Fleet Management", clear_on_submit = True):
             
       ## Upload picture to database
       pictureUploaderVehicles(vehicle_image, id)
-      
       st.experimental_rerun()
 
 
@@ -653,12 +626,42 @@ if (f"{chosen_id}" == '1'):
   if st.button('Export Drivers data to Excel document'):
     export_excel('Drivers', 'I', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel)
 
+
+  ## Columns for showing Driver images and some data
+  col1, col2, col3 = st.columns(3)
+  drivers = lastID(url = "carfleet.DRIVERS")  
+  with col1:
+    for i in range(1, drivers, 3):
+      st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
+      st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
+      st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
+      st.subheader("Driver ID")
+      st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
+
+        
+  # Coloumn 2
+  with col2:
+    for i in range(2, drivers, 3):
+      st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
+      st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
+      st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
+      st.subheader("Driver ID")
+      st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
+
+  # Column 3
+  with col3:
+    for i in range(3, drivers, 3):
+      st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
+      st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
+      st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
+      st.subheader("Driver ID")
+      st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
   
 ## Data analysis for `Fuel`
 elif (f"{chosen_id}" == '2'):
   ## Export `Fuel` dataframe to Excel Makro file
   if st.button('Export Fuel data to Excel document'):
-    export_excel('Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'VEHICLE_FUEL_AMOUNT'}, {'header': 'VEHICLE_FUEL_COST'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_DATE'}, {'header': 'VEHICLE_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel)
+    export_excel('Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'FUEL_AMOUNT'}, {'header': 'FUEL_COST'}, {'header': 'FUEL_TYPE'}, {'header': 'FUEL_DATE'}, {'header': 'FUEL_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel)
 
   
   ## Average Fuel Consumption Chart
@@ -677,13 +680,13 @@ elif (f"{chosen_id}" == '2'):
   if (selected_vehicle == 'All vehicles'):
     data_fuel_rate_average = pd.DataFrame(columns = ['Vehicle ID', 'Average Fuel Consumption'])
     for i in range(len(vehicles)):
-      query = "SELECT ID, VEHICLE_ID, VEHICLE_FUEL_AMOUNT, VEHICLE_DISTANCE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles[i])
+      query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles[i])
       rows = run_query(query)
       i = 0
       fuel = 0.0
       for row in rows:
         i += 1
-        fuel += round(float(row[3]) / float(row[2]), 2)
+        fuel += round((100 * float(row[2])) / float(row[3]), 2)
       df = pd.DataFrame([[row[1], round((fuel / i), 2)]], columns = ['Vehicle ID', 'Average Fuel Consumption'])
       data_fuel_rate_average = pd.concat([data_fuel_rate_average, df])
     data_fuel_rate_average = data_fuel_rate_average.set_index('Vehicle ID')
@@ -695,13 +698,13 @@ elif (f"{chosen_id}" == '2'):
   ## Show fuel consumption of one vehicle
   else:
     data_fuel_rate = pd.DataFrame(columns = ['Date', 'Fuel Consumption Rate'])
-    query = "SELECT ID, VEHICLE_ID, VEHICLE_FUEL_AMOUNT, VEHICLE_DISTANCE, VEHICLE_FUEL_DATE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles)
+    query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE, FUEL_DATE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles)
     rows = run_query(query)
     fuel = 0.0
     for row in rows:
       distance = round(float(row[3]), 2)
       fuel = round(float(row[2]), 2)
-      df = pd.DataFrame([[row[4], distance / fuel]], columns = ['Date', 'Fuel Consumption Rate'])
+      df = pd.DataFrame([[row[4], (fuel * 100) / distance]], columns = ['Date', 'Fuel Consumption Rate'])
       data_fuel_rate = pd.concat([data_fuel_rate, df])
     data_fuel_rate = data_fuel_rate.set_index('Date')
     
@@ -720,7 +723,7 @@ elif (f"{chosen_id}" == '3'):
 elif (f"{chosen_id}" == '4'):
   ## Export `Repairs` dataframe to Excel Makro file
   if st.button('Export Repairs data to Excel document'):
-    export_excel('Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_REPAIR_DETAILS'}, {'header': 'VEHICLE_REPAIR_DATE'}, {'header': 'VEHICLE_REPAIR_COSTS'}, {'header': 'VEHICLE_SPARE_PARTS'}, {'header': 'VEHICLE_DOWN_TIME'}, {'header': 'SERVICE_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs)
+    export_excel('Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'REPAIR_DETAILS'}, {'header': 'REPAIR_DATE'}, {'header': 'REPAIR_COSTS'}, {'header': 'REPAIR_SPARE_PARTS'}, {'header': 'REPAIR_DOWN_TIME'}, {'header': 'REPAIR_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs)
     
     
   ## Repair cost chart
@@ -738,7 +741,7 @@ elif (f"{chosen_id}" == '4'):
   if (selected_vehicle == 'All vehicles'): 
     data_repair_costs = pd.DataFrame(columns = ['Vehicle ID', 'Repair costs'])
     for i in range(len(vehicles)):
-      query = "SELECT ID, VEHICLE_ID, VEHICLE_REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles[i])
+      query = "SELECT ID, VEHICLE_ID, REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles[i])
       rows = run_query(query)
       costs = 0.0
       for row in rows:
@@ -754,7 +757,7 @@ elif (f"{chosen_id}" == '4'):
   ## Show repair costs per incident
   else:
     data_repair_costs = pd.DataFrame(columns = ['Spare part', 'Repair cost'])
-    query = "SELECT ID, VEHICLE_ID, VEHICLE_REPAIR_DETAILS, VEHICLE_REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles)
+    query = "SELECT ID, VEHICLE_ID, REPAIR_DETAILS, REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles)
     rows = run_query(query)
     for row in rows:
       df = pd.DataFrame([[row[2], round(float(row[3]), 1)]], columns = ['Repair Details', 'Repair cost'])
@@ -776,7 +779,7 @@ elif (f"{chosen_id}" == '5'):
 elif (f"{chosen_id}" == '6'):
   ## Export `Trips` dataframe to Excel Makro file
   if st.button('Export Trips data to Excel document'):
-    export_excel('Trips', 'J', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'TRIP_DATE'}, {'header': 'TRIP_DESCRIPTION'}, {'header': 'TRIP_COMMENTS'},{'header': 'TRIP_TIME_OUT'}, {'header': 'TRIP_TIME_IN'}, {'header': 'TRIP_OPEN_MILEAGE'}, {'header': 'TRIP_CLOSE_MILEAGE'}, {'header': '`TRIP_TOTAL_MILEAGE'},], int(len(databank_trips) + 1), databank_trips)
+    export_excel('Trips', 'J', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'TRIP_DATE'}, {'header': 'TRIP_DESCRIPTION'}, {'header': 'TRIP_COMMENTS'},{'header': 'TRIP_TIME_OUT'}, {'header': 'TRIP_TIME_IN'}, {'header': 'TRIP_OPEN_MILEAGE'}, {'header': 'TRIP_CLOSE_MILEAGE'}, {'header': 'TRIP_DISTANCE'},], int(len(databank_trips) + 1), databank_trips)
     
    
 ## Data analysis for `Vehicles`
@@ -784,6 +787,37 @@ elif (f"{chosen_id}" == '7'):
   ## Export `Vehicles` dataframe to Excel Makro file
   if st.button('Export Vehicles data to Excel document'):
     export_excel('Vehicles', 'P', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles) + 1), databank_vehicles_excel)
+  
+  
+  ## Columns for showing Vehicle images and some data
+  col1, col2, col3 = st.columns(3)
+  cars = lastID(url = "carfleet.VEHICLES")  
+  with col1:
+    for i in range(1, cars, 3):
+      st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+      st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+      st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+      st.subheader("Vehicle ID")
+      st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
+
+        
+  # Coloumn 2
+  with col2:
+    for i in range(2, cars, 3):
+      st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+      st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+      st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+      st.subheader("Vehicle ID")
+      st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
+
+  # Column 3
+  with col3:
+    for i in range(3, cars, 3):
+      st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+      st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+      st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+      st.subheader("Vehicle ID")
+      st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
   
   
   ## Plotting
@@ -801,5 +835,3 @@ elif (f"{chosen_id}" == '7'):
     data_cars = pd.concat([data_cars, df])
   data_cars = data_cars.set_index('Vehicle Type')
   st.bar_chart(data_cars)
-
-  
