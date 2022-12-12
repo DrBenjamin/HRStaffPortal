@@ -369,15 +369,9 @@ if check_password():
         st.experimental_set_query_params(eno = "xxxxxx")
         
         
-        ## empty image
-        image = ''
-        
-        
-        ## Check for ID number count of Employee
-        id = lastID(url = "idcard.IMAGEBASE")
-        
-        
         ## Input for new employee data
+        # Check for ID number count of Employee
+        id = lastID(url = "idcard.IMAGEBASE")
         id = st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
@@ -386,6 +380,9 @@ if check_password():
         exp = st.text_input(label = 'Expirity Date', value = '2023-12-31 00:00:00')
         emp_no = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
         capri = st.text_input(label = 'Cards Printed', value = 0)
+        
+        # empty image
+        image = ''
         uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
         if uploaded_file is not None:
           image = uploaded_file.getvalue()
