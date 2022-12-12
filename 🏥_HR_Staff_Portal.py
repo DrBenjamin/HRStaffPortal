@@ -216,12 +216,12 @@ def onChange():
 
 ### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
 def export_excel(sheet, column, columns, length, data, 
-                sheet2 = 'Nothing', column2 = 'A', columns2 = '', length2 = '', data2 = '',
-                sheet3 = 'Nothing', column3 = 'A', columns3 = '', length3 = '', data3 = '',
-                sheet4 = 'Nothing', column4 = 'A', columns4 = '', length4 = '', data4 = '',
-                sheet5 = 'Nothing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
-                sheet6 = 'Nothing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
-                sheet7 = 'Nothing', column7 = 'A', columns7 = '', length7 = '', data7 = ''):
+                sheet2 = 'N0thing', column2 = 'A', columns2 = '', length2 = '', data2 = '',
+                sheet3 = 'N0thing', column3 = 'A', columns3 = '', length3 = '', data3 = '',
+                sheet4 = 'N0thing', column4 = 'A', columns4 = '', length4 = '', data4 = '',
+                sheet5 = 'N0thing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
+                sheet6 = 'N0thing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
+                sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = ''):
 
   
   ## Store function arguments in array
@@ -241,7 +241,7 @@ def export_excel(sheet, column, columns, length, data,
   buffer = io.BytesIO()
   with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
     for i in range(7):
-      if (func_arr[i][0] != 'Nothing'):
+      if (func_arr[i][0] != 'N0thing'):
         # Add dataframe data to worksheet
         func_arr[i][4].to_excel(writer, sheet_name = func_arr[i][0], index = False)
 
@@ -293,6 +293,7 @@ if check_password():
   for row in rows:
     df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
     databank = pd.concat([databank, df])
+  databank = databank.set_index('ID')
   
   # Getting Training data
   query = "SELECT ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS FROM `idcard`.`TRAININGDATA`;"
@@ -301,19 +302,18 @@ if check_password():
   for row in rows:
     df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5]]], columns = ['ID', 'EMPLOYEE_NO', 'TRAINING', 'INSTITUTE', 'DATE', 'DAYS'])
     databank_training = pd.concat([databank_training, df])
+  databank_training = databank_training.set_index('ID')
  
     
   ## Print databank in dataframe table
   with st.expander("See all Databank entries", expanded = False):
-    ## Show Table data
-    # Show employee data
+    ## Show `IMAGEBASE` table data
     st.subheader('Employee data')
-    databank = databank.set_index('ID')
     st.dataframe(databank, use_container_width = True)
     
-    # Show training data
+    
+    # Show `TRAININGDATA` table data
     st.subheader('Training data')
-    databank_training = databank_training.set_index('ID')
     st.dataframe(databank_training, use_container_width = True)
     
     
@@ -402,14 +402,17 @@ if check_password():
             ## Get latest ID from database
             id = lastID(url = "idcard.IMAGEBASE")
             
+            
             ## Maybe it needs a break???
             query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" %(id, layout, forename, surname, job, exp, emp_no, capri)
             run_query(query)
             conn.commit()
             st.session_state['success1'] = True
             
+            
             ## Upload picture to database
             pictureUploader(image, id)
+            
             
             ## Set query parameter
             st.experimental_set_query_params(eno = eno)
@@ -430,6 +433,7 @@ if check_password():
         ## Get information of selected Employee
         query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" %(index)
         employee = run_query(query)
+        
         
         ## Set query parameter
         st.experimental_set_query_params(eno = employee[0][6])
