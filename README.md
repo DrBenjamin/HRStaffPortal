@@ -64,13 +64,20 @@ xyz = "xyz"
 #### MySQL Server Configuration
 ##### For proper usage a local MySQL Server is needed
 
-In the `./streamlit/secrets.toml` you define the **user / password** combination for the MySQL Server:
+In the `./streamlit/secrets.toml` you define the **user / password** combination for the HR Staff Portal MySQL Server `[mysql]`, and if using the Car Fleet Management System module also in the section `[mysql_car]`:
 
 ```
 [mysql]
 host = "127.0.0.1"
 port = 3306
 database = "idcard"
+user = "xyz"
+password = "xyz"
+
+[mysql_car]
+host = "127.0.0.1"
+port = 3306
+database = "carfleet"
 user = "xyz"
 password = "xyz"
 ```
