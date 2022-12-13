@@ -5,6 +5,7 @@
 
 
 
+
 #### Loading neded Python libraries
 import streamlit as st
 import extra_streamlit_components as stx
@@ -18,6 +19,7 @@ import os
 import platform
 import io
 import xlsxwriter
+
 
 
 
@@ -36,6 +38,7 @@ st.set_page_config(
 
 
 
+
 #### OS Check
 plt = platform.system()
 if plt == "Windows":
@@ -44,6 +47,7 @@ elif plt == "Linux":
   print("Your system is Linux")
 elif plt == "Darwin":
   print("Your system is MacOS")
+
 
 
 
@@ -124,6 +128,7 @@ def check_password():
     st.sidebar.button(label = 'Logout', on_click = logout)
     return True
  
+ 
       
 ### Funtion: logout = Logout Button
 def logout():
@@ -131,6 +136,7 @@ def logout():
   st.session_state['logout'] = True
   ## Logout
   st.session_state["password_correct"] = False
+
   
 
 ### Function: database_connect = Threadend SQL Connection
@@ -155,6 +161,7 @@ def init_connection():
     st.stop()
 
 
+
 ### Function: run_query = SQL query
 def run_query(query):
   with conn.cursor() as cur:
@@ -164,6 +171,7 @@ def run_query(query):
       return cur.fetchall()
     except:
       print("An exception occurred in function `run_query`")
+
 
 
 ### Function: pictureUploader = uploads employee images
@@ -178,6 +186,7 @@ def pictureUploader(image, index):
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
   connection.commit()
   
+
   
 ### Function: lastID = checks for last ID number in Table (to add data after)
 def lastID(url):
@@ -192,6 +201,7 @@ def lastID(url):
     id = 1
   return id
  
+
   
 ### Function: loadFile = converts digital data to binary format
 def loadFile(filename):
@@ -203,15 +213,18 @@ if ('image' not in st.session_state):
   st.session_state['image'] = loadFile('images/No_Image.png')
 
 
+
 ### Function: writeFile = writes binary data on Hard Disk
 def writeFile(data, filename):
   with open(filename, mode = 'wb') as file:
     file.write(data)
+
     
     
 ### Function: onChange = If Selectbox is used
 def onChange():
   st.session_state['run'] = True
+
 
 
 ### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
@@ -265,6 +278,7 @@ def export_excel(sheet, column, columns, length, data,
     
     ## Download Button
     st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
+
 
 
 
@@ -502,7 +516,6 @@ if check_password():
           if (st.session_state['run'] != True):
             st.warning(body = 'Not sumitted, as no new Master data was entered!', icon = "⚠️")
           
-
         
     ## tab `Training data`
     elif (f"{chosen_id}" == '2'):
@@ -655,7 +668,6 @@ if check_password():
           if (st.session_state['run'] != True):
             st.warning(body = 'Not sumitted, as no new Training data was entered!', icon = "⚠️")
         
-    
         
     ## tab `More data`
     elif (f"{chosen_id}" == '3'):
@@ -693,15 +705,16 @@ if check_password():
           if (st.session_state['run'] != True):
             st.warning(body = 'Not submitted, as not yet implemented!', icon = "⚠️")
         
-      
+     
         
-    ## Out of the Tabs
-    # Nothing yet to show
+    ### Out of the Tabs
+    ## Nothing yet to show
         
         
 
 
-  ### Out of the Form
+  #### Out of the Form
+  ### More functionanlity
   ## Image Download Button
   st.download_button('Download Image', data = st.session_state['image'], mime="image/png")
   
@@ -723,21 +736,22 @@ if check_password():
       export_excel('Employees', 'G', [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'}, {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'CARDS_PRINTED'},], int(len(databank) + 1), databank,
                   'Trainings', 'E', [{'header': 'EMPLOYEE_NO'}, {'header': 'TRAINING'}, {'header': 'INSTITUTE'}, {'header': 'DATE'}, {'header': 'DAYS'},], int(len(databank_training) + 1), databank_training)
   
-          
+
+       
           
 #### Not Logged in state (Landing page)
 else :
   ### Header of Landing Page
   ## Title and information
   st.title('Kamuzu Central Hospital (KCH)')
-  st.header('Welcome to the HR Staff Portal')
+  st.header('Welcome to the KCH HR Staff Portal')
   st.subheader('User Login')
   st.write('Please login (sidebar on the left) to access the KCH HR Staff Portal.')
   
   
-  ## Sub-pages menu
+  
+  ### Sub-pages menu
   ## Menu to open sub-pages  
-  #st.header('Menu')
   st.subheader('Pages (without login)')
   st.write('You can access these pages without user log in:')
   st.write("<a href='Statistics' target='_self'>Statistics</a>", unsafe_allow_html = True)
