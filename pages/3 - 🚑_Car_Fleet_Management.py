@@ -191,13 +191,12 @@ def pictureUploaderVehicles(image, index):
   
 ### Function: lastID = checks for last ID number in Table (to add data after)
 def lastID(url):
-  id = 0
-  query = "SELECT ID from %s;" %(url)
+  query = "SELECT MAX(ID) FROM %s;" %(url)
   rows = run_query(query)
-  row = [0]
+  id = 0
   for row in rows:
     id = int(row[0]) + 1
-  
+
   # If first entry in database start with `ID` `1` 
   if (id == 0):
     id = 1
