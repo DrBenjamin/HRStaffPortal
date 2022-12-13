@@ -235,7 +235,8 @@ def export_excel(sheet, column, columns, length, data,
                 sheet4 = 'N0thing', column4 = 'A', columns4 = '', length4 = '', data4 = '',
                 sheet5 = 'N0thing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
                 sheet6 = 'N0thing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
-                sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = ''):
+                sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = '',
+                excel_file_name = 'Export.xlsm'):
 
   
   ## Store function arguments in array
@@ -278,7 +279,7 @@ def export_excel(sheet, column, columns, length, data,
     
     
     ## Download Button
-    st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
+    st.download_button(label = 'Download Excel document', data = buffer, file_name = excel_file_name, mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
 
 
 
