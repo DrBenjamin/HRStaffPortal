@@ -109,7 +109,8 @@ def export_excel(sheet, column, columns, length, data,
                 sheet4 = 'N0thing', column4 = 'A', columns4 = '', length4 = '', data4 = '',
                 sheet5 = 'N0thing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
                 sheet6 = 'N0thing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
-                sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = ''):
+                sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = '',
+                excel_file_name = 'Export.xlsm'):
   
   
   ## Store fuction arguments in array
@@ -153,7 +154,7 @@ def export_excel(sheet, column, columns, length, data,
     
     
     ## Download Button
-    st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
+    st.download_button(label = 'Download Excel document', data = buffer, file_name = excel_file_name, mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
  
     
     
@@ -321,16 +322,16 @@ databank_trips = databank_trips.set_index('ID')
   
 
 ## Get `VEHICLES` table data
-query = "SELECT ID, VEHICLE_ID, VEHICLE_PLATE_NUMBER, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_CAPACITY, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_COST_KM, VEHICLE_IMAGE FROM `carfleet`.`VEHICLES`;"
+query = "SELECT ID, VEHICLE_ID, VEHICLE_PLATE_NUMBER, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_CAPACITY, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_COF_EXPIRY_DATE, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_COST_KM, VEHICLE_IMAGE FROM `carfleet`.`VEHICLES`;"
 rows = run_query(query)
     
 # Create pandas dataframes
-databank_vehicles = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'VEHICLE_PLATE_NUMBER', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_CAPACITY', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_COST_KM', 'VEHICLE_IMAGE'])
+databank_vehicles = pd.DataFrame(columns = ['ID', 'VEHICLE_ID', 'VEHICLE_PLATE_NUMBER', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_CAPACITY', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_COF_EXPIRY_DATE', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_COST_KM', 'VEHICLE_IMAGE'])
 data_cars = pd.DataFrame(columns = ['VEHICLE_ID', 'VEHICLE_TYPE'])
   
 # Populate dataframe
 for row in rows:
-  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_PLATE_NUMBER', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_CAPACITY', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_COST_KM', 'VEHICLE_IMAGE'])
+  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19]]], columns = ['ID', 'VEHICLE_ID', 'VEHICLE_PLATE_NUMBER', 'VEHICLE_TYPE', 'VEHICLE_BRAND', 'VEHICLE_MODEL', 'VEHICLE_SEATS', 'VEHICLE_FUEL_TYPE', 'VEHICLE_FUEL_CAPACITY', 'VEHICLE_COLOUR', 'VEHICLE_CHASIS_NUMBER', 'VEHICLE_MANUFACTURE_YEAR', 'VEHICLE_PURCHASE_DATE', 'VEHICLE_PURCHASE_PRICE', 'VEHICLE_DISPOSITION_YEAR', 'VEHICLE_COF_EXPIRY_DATE', 'VEHICLE_VENDOR', 'VEHICLE_DUTY', 'VEHICLE_COST_KM', 'VEHICLE_IMAGE'])
   databank_vehicles = pd.concat([databank_vehicles, df])
 databank_vehicles = databank_vehicles.set_index('ID')
 # Drop last columns (Images)
@@ -575,6 +576,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     vehicle_purchase_date = st.text_input(label = 'Purchase date', placeholder = 'Purchase date?')
     vehicle_purchase_price = st.text_input(label = 'Purchase price', placeholder = 'Purchase price?')
     vehicle_disposition_year = st.text_input(label = 'Disposition year', placeholder = 'Disposition year?')
+    vehicle_cof_expiry_date = st.text_input(label = 'COF expiry date', placeholder = 'COF expiry date?')
     vehicle_vendor = st.text_input(label = 'Vendor', placeholder = 'Vendor?')
     vehicle_duty = st.text_input(label = 'Duty', placeholder = 'Duty?')
     vehicle_cost_km = st.text_input(label = 'Cost per km', placeholder = 'Cost per km?')
@@ -592,7 +594,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     if submitted:
       # Get latest ID from database
       id = lastID(url = "carfleet.VEHICLES")
-      query = "INSERT INTO `carfleet`.`VEHICLES`(ID, VEHICLE_ID, VEHICLE_PLATE_NUMBER, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_CAPACITY, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_COST_KM) VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', %s, '%s', '%s', '%s', '%s', %s, '%s', '%s', %s, %s);" %(id, vehicle_id, vehicle_plate_number, vehicle_type, vehicle_brand, vehicle_model, vehicle_seats, vehicle_fuel_type, vehicle_fuel_capacity, vehicle_colour, vehicle_chasis_number, vehicle_manufacture_year, vehicle_purchase_date, vehicle_purchase_price, vehicle_disposition_year, vehicle_vendor, vehicle_duty, vehicle_cost_km)
+      query = "INSERT INTO `carfleet`.`VEHICLES`(ID, VEHICLE_ID, VEHICLE_PLATE_NUMBER, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_CAPACITY, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_COF_EXPIRY_DATE, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_COST_KM) VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', %s, '%s', '%s', '%s', '%s', %s, '%s', '%s', '%s', %s, %s);" %(id, vehicle_id, vehicle_plate_number, vehicle_type, vehicle_brand, vehicle_model, vehicle_seats, vehicle_fuel_type, vehicle_fuel_capacity, vehicle_colour, vehicle_chasis_number, vehicle_manufacture_year, vehicle_purchase_date, vehicle_purchase_price, vehicle_disposition_year, vehicle_cof_expiry_date, vehicle_vendor, vehicle_duty, vehicle_cost_km)
       run_query(query)
       conn.commit()
       
@@ -704,9 +706,78 @@ elif (f"{chosen_id}" == '2'):
       # Plotting
       st.bar_chart(data_fuel_rate)
       
-  ## Show fuel consumtion report
-  with st.expander('Fuel consumption report', expanded = False):
-    st.write('Report')
+  ## Show `Fuel` Report
+  with st.expander('Fuel Report', expanded = False):
+    ## Checking for unique Vehicles IDs and create a selectbox with it
+    vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_fuel)
+    
+    # Prepare Selectbox list
+    vehicles_list = list(vehicles)
+    
+    # Selectbox for choosing vehicle
+    vehicle = st.selectbox('Which vehicles?', options = vehicles_list, index = 0)
+      
+      
+    ## Selectbox for choosing time span
+    time_span = ['Last week', 'Last month', 'Last year']
+    time_span = st.selectbox('Which time span?', options = time_span, index = 0)
+    if (time_span == 'Last week'):
+      weeks = 1
+    elif (time_span == 'Last month'):
+      weeks = 4
+    if (time_span == 'Last year'):
+      weeks = 52
+      
+      
+    ## Calculate average fuel consumption per Vehicle for the last week / month / year
+    report_fuel_consumption_average = pd.DataFrame(columns = ['Vehicle ID', 'Date', 'Average Fuel Consumption'])
+    query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE, FUEL_DATE FROM carfleet.FUEL WHERE FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND VEHICLE_ID = '%s';" %(weeks, vehicle)
+    rows = run_query(query)
+    for row in rows:
+      fuel_avg = round(((row[2] * 100) / row[3]), 2)
+      date = str(row[4])[:10]
+      df = pd.DataFrame([[row[1], date, fuel_avg]], columns = ['Vehicle ID', 'Date', 'Average Fuel Consumption'])
+      report_fuel_consumption_average = pd.concat([report_fuel_consumption_average, df])
+    report_fuel_consumption_average = report_fuel_consumption_average.set_index('Vehicle ID')
+    st.subheader('Avg Fuel Consumption')
+    st.dataframe(report_fuel_consumption_average)
+    
+    
+    ## Calculate average fuel price per Vehicle for the last week / month / year
+    report_fuel_price_litre = pd.DataFrame(columns = ['Vehicle ID', 'Date', 'Fuel Cost'])
+    query = "SELECT ID, VEHICLE_ID, FUEL_COST, FUEL_DATE FROM carfleet.FUEL WHERE FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND VEHICLE_ID = '%s';" %(weeks, vehicle)
+    rows = run_query(query)
+    for row in rows:
+      fuel_cost = round(row[2], 3)
+      date = str(row[3])[:10]
+      df = pd.DataFrame([[row[1], date, fuel_cost]], columns = ['Vehicle ID', 'Date', 'Fuel Cost'])
+      report_fuel_price_litre = pd.concat([report_fuel_price_litre, df])
+    report_fuel_price_litre = report_fuel_price_litre.set_index('Vehicle ID')
+    st.subheader('Fuel Cost per Litre')
+    st.dataframe(report_fuel_price_litre)
+    
+    
+    ## Check if fuel refuilling was under max capacity for the last week / month / year
+    report_fuel_max_cap = pd.DataFrame(columns = ['Vehicle ID', 'Date', 'Fuel Amount', 'Fuel max. Capacity'])
+    query = "SELECT fue.ID, fue.VEHICLE_ID, fue.FUEL_AMOUNT, fue.FUEL_DATE, vec.VEHICLE_FUEL_CAPACITY FROM carfleet.FUEL AS fue LEFT JOIN carfleet.VEHICLES AS vec ON vec.VEHICLE_ID = fue.VEHICLE_ID WHERE fue.FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND fue.VEHICLE_ID = '%s';" %(weeks, vehicle)
+    rows = run_query(query)
+    for row in rows:
+      fuel_amount = round(row[2], 1)
+      date = str(row[3])[:10]
+      df = pd.DataFrame([[row[1], date, fuel_amount, row[4]]], columns = ['Vehicle ID', 'Date', 'Fuel Amount', 'Fuel max. Capacity'])
+      report_fuel_max_cap = pd.concat([report_fuel_max_cap, df])
+    report_fuel_max_cap = report_fuel_max_cap.set_index('Vehicle ID')
+    st.subheader('Fuel max. Capacity')
+    st.dataframe(report_fuel_max_cap)
+    
+    
+    ## Export `Fuel` Report to Excel Makro file
+    if st.button('Export Fuel Report to Excel document'):
+      excel_file_name = 'Fuel Report - Vehicle ' + vehicle + '.xlsm'
+      export_excel('Avg Fuel Consumption', 'B', [{'header': 'Date'}, {'header': 'Average Fuel Consumption'},], int(len(report_fuel_consumption_average) + 1), report_fuel_consumption_average, 
+                  'Fuel Cost per Litre', 'B', [{'header': 'Date'}, {'header': 'Fuel Cost'},], int(len(report_fuel_price_litre) + 1), report_fuel_price_litre,
+                  'Fuel max. Capacity', 'C', [{'header': 'Date'}, {'header': 'Fuel Amount'}, {'header': 'Fuel max. Capacity'},], int(len(report_fuel_max_cap) + 1), report_fuel_max_cap,
+                  excel_file_name = excel_file_name)
 
   
 ## Data analysis for `Insurances`
@@ -801,7 +872,7 @@ elif (f"{chosen_id}" == '6'):
 elif (f"{chosen_id}" == '7'):
   ## Export `Vehicles` dataframe to Excel Makro file
   if st.button('Export Vehicles data to Excel document'):
-    export_excel('Vehicles', 'P', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_CAPACITY'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles) + 1), databank_vehicles_excel)
+    export_excel('Vehicles', 'R', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_CAPACITY'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_COF_EXPIRY_DATE'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles_excel) + 1), databank_vehicles_excel)
   
   
   ## Show `Vehicles` statistics in an expander
@@ -903,4 +974,4 @@ with st.expander('Database Excel Export (all tables)', expanded = False):
                 'Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'REPAIR_DETAILS'}, {'header': 'REPAIR_DATE'}, {'header': 'REPAIR_COSTS'}, {'header': 'REPAIR_SPARE_PARTS'}, {'header': 'REPAIR_DOWN_TIME'}, {'header': 'REPAIR_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs,
                 'Services', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'SERVICE_DATE'}, {'header': 'SERVICE_DETAILS'}, {'header': 'SERVICE_COSTS'}, {'header': 'SERVICE_MILEAGE_ON_SERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE_MAX'},], int(len(databank_services) + 1), databank_services,
                 'Trips', 'J', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'TRIP_DATE'}, {'header': 'TRIP_DESCRIPTION'}, {'header': 'TRIP_COMMENTS'},{'header': 'TRIP_TIME_OUT'}, {'header': 'TRIP_TIME_IN'}, {'header': 'TRIP_OPEN_MILEAGE'}, {'header': 'TRIP_CLOSE_MILEAGE'}, {'header': '`TRIP_DISTANCE'},], int(len(databank_trips) + 1), databank_trips,
-                'Vehicles', 'P', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_CAPACITY'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles) + 1), databank_vehicles_excel)
+                'Vehicles', 'R', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_CAPACITY'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_COF_EXPIRY_DATE'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles_excel) + 1), databank_vehicles_excel)
