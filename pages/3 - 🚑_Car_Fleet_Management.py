@@ -222,7 +222,7 @@ if ('image' not in st.session_state):
 ### Title Header
 ## Header information
 with st.expander("Header", expanded = True):
-  st.title('KCH Car Fleet Management System')
+  st.title('Car Fleet Management System')
   st.image('images/car_fleet.png')
   st.subheader('Kamuzu Central Hospital vehicle data.')
   st.write('All data related to the KCH car fleet is stored in a local MySQL databank.')
@@ -355,6 +355,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Fuel Consumption`   
   if (f"{chosen_id}" == '1'):
     st.title('Drivers')
+    st.subheader('Enter drivers data')
     
     
     ## Input for new `DRIVERS` data
@@ -399,6 +400,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Fuel Consumption`   
   elif (f"{chosen_id}" == '2'):
     st.title('Fuel Consumption')
+    st.subheader('Enter fuel consumption data')
 
     
     ## Input for new `FUEL` data
@@ -430,6 +432,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Insurances`   
   elif (f"{chosen_id}" == '3'):
     st.title('Insurances')
+    st.subheader('Enter insurances data')
 
     
     ## Input for new `INSURANCES` data
@@ -457,6 +460,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Repairs` 
   elif (f"{chosen_id}" == '4'):
     st.title('Repairs')
+    st.subheader('Enter repairs data')
 
   
     ## Input for new `REPAIRS` data
@@ -487,6 +491,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Services`   
   elif (f"{chosen_id}" == '5'):
     st.title('Services')
+    st.subheader('Enter services data')
 
     
     ## Input for new `SERVICES` data
@@ -517,6 +522,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Trips`   
   elif (f"{chosen_id}" == '6'):
     st.title('Trips')
+    st.subheader('Enter trips data')
 
     
     ## Input for new `TRIPS` data
@@ -549,6 +555,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
   ## tab `Vehicles`
   elif (f"{chosen_id}" == '7'):
     st.title('Vehicles')
+    st.subheader('Enter vehicles data')
     
     
     ## Input for new `VEHICLES` data
