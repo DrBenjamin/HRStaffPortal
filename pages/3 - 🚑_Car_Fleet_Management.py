@@ -613,35 +613,38 @@ if (f"{chosen_id}" == '1'):
     export_excel('Drivers', 'I', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel)
 
 
-  ## Columns for showing Driver images and some data
-  col1, col2, col3 = st.columns(3)
-  drivers = lastID(url = "carfleet.DRIVERS")  
-  with col1:
-    for i in range(1, drivers, 3):
-      st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
-      st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
-      st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
-      st.subheader("Driver ID")
-      st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
+  ## Show driver profiles in an expander
+  with st.expander('Driver profiles', expanded = False):
+    st.subheader('Driver profiles')
+    col1, col2, col3 = st.columns(3)
+    drivers = lastID(url = "carfleet.DRIVERS")  
+  
+    # Column 1
+    with col1:
+      for i in range(1, drivers, 3):
+        st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
+        st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
+        st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
+        st.subheader("Driver ID")
+        st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
 
-        
-  # Coloumn 2
-  with col2:
-    for i in range(2, drivers, 3):
-      st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
-      st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
-      st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
-      st.subheader("Driver ID")
-      st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
+    # Coloumn 2
+    with col2:
+      for i in range(2, drivers, 3):
+        st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
+        st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
+        st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
+        st.subheader("Driver ID")
+        st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
 
-  # Column 3
-  with col3:
-    for i in range(3, drivers, 3):
-      st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
-      st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
-      st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
-      st.subheader("Driver ID")
-      st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
+    # Column 3
+    with col3:
+      for i in range(3, drivers, 3):
+        st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
+        st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
+        st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
+        st.subheader("Driver ID")
+        st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
   
 ## Data analysis for `Fuel`
 elif (f"{chosen_id}" == '2'):
@@ -650,52 +653,54 @@ elif (f"{chosen_id}" == '2'):
     export_excel('Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'FUEL_AMOUNT'}, {'header': 'FUEL_COST'}, {'header': 'FUEL_TYPE'}, {'header': 'FUEL_DATE'}, {'header': 'FUEL_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel)
 
   
-  ## Average Fuel Consumption Chart
-  # Checking for unique Vehicles IDs
-  vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_fuel)
-  # Prepare Selectbox list
-  vehicles_list = list(vehicles)
-  vehicles_list.insert(0, 'All vehicles')
-  # Selectbox for choosing vehicle
-  selected_vehicle = st.selectbox('All vehicles or a specific?', options = vehicles_list, index = 0)
-  if (selected_vehicle != 'All vehicles'):
-    vehicles = selected_vehicle
+  ## Show fuel consumtion statistics in an expander
+  with st.expander('Fuel consumption statistics', expanded = False):
+    ## Average Fuel Consumption Chart
+    # Checking for unique Vehicles IDs
+    vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_fuel)
+    # Prepare Selectbox list
+    vehicles_list = list(vehicles)
+    vehicles_list.insert(0, 'All vehicles')
+    # Selectbox for choosing vehicle
+    selected_vehicle = st.selectbox('All vehicles or a specific?', options = vehicles_list, index = 0)
+    if (selected_vehicle != 'All vehicles'):
+      vehicles = selected_vehicle
 
 
-  ## Calculate average fuel consumption per Vehicle
-  if (selected_vehicle == 'All vehicles'):
-    data_fuel_rate_average = pd.DataFrame(columns = ['Vehicle ID', 'Average Fuel Consumption'])
-    for i in range(len(vehicles)):
-      query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles[i])
+    ## Calculate average fuel consumption per Vehicle
+    if (selected_vehicle == 'All vehicles'):
+      data_fuel_rate_average = pd.DataFrame(columns = ['Vehicle ID', 'Average Fuel Consumption'])
+      for i in range(len(vehicles)):
+        query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles[i])
+        rows = run_query(query)
+        i = 0
+        fuel = 0.0
+        for row in rows:
+          i += 1
+          fuel += round((100 * float(row[2])) / float(row[3]), 2)
+        df = pd.DataFrame([[row[1], round((fuel / i), 2)]], columns = ['Vehicle ID', 'Average Fuel Consumption'])
+        data_fuel_rate_average = pd.concat([data_fuel_rate_average, df])
+      data_fuel_rate_average = data_fuel_rate_average.set_index('Vehicle ID')
+    
+      # Plotting
+      st.bar_chart(data_fuel_rate_average, x = vehicles)
+  
+  
+    ## Show fuel consumption of one vehicle
+    else:
+      data_fuel_rate = pd.DataFrame(columns = ['Date', 'Fuel Consumption Rate'])
+      query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE, FUEL_DATE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles)
       rows = run_query(query)
-      i = 0
       fuel = 0.0
       for row in rows:
-        i += 1
-        fuel += round((100 * float(row[2])) / float(row[3]), 2)
-      df = pd.DataFrame([[row[1], round((fuel / i), 2)]], columns = ['Vehicle ID', 'Average Fuel Consumption'])
-      data_fuel_rate_average = pd.concat([data_fuel_rate_average, df])
-    data_fuel_rate_average = data_fuel_rate_average.set_index('Vehicle ID')
+        distance = round(float(row[3]), 2)
+        fuel = round(float(row[2]), 2)
+        df = pd.DataFrame([[row[4], (fuel * 100) / distance]], columns = ['Date', 'Fuel Consumption Rate'])
+        data_fuel_rate = pd.concat([data_fuel_rate, df])
+      data_fuel_rate = data_fuel_rate.set_index('Date')
     
-    # Plotting
-    st.bar_chart(data_fuel_rate_average, x = vehicles)
-  
-  
-  ## Show fuel consumption of one vehicle
-  else:
-    data_fuel_rate = pd.DataFrame(columns = ['Date', 'Fuel Consumption Rate'])
-    query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE, FUEL_DATE FROM `carfleet`.`FUEL` WHERE VEHICLE_ID = %s;" %(vehicles)
-    rows = run_query(query)
-    fuel = 0.0
-    for row in rows:
-      distance = round(float(row[3]), 2)
-      fuel = round(float(row[2]), 2)
-      df = pd.DataFrame([[row[4], (fuel * 100) / distance]], columns = ['Date', 'Fuel Consumption Rate'])
-      data_fuel_rate = pd.concat([data_fuel_rate, df])
-    data_fuel_rate = data_fuel_rate.set_index('Date')
-    
-    # Plotting
-    st.bar_chart(data_fuel_rate)
+      # Plotting
+      st.bar_chart(data_fuel_rate)
 
   
 ## Data analysis for `Insurances`
@@ -704,54 +709,62 @@ elif (f"{chosen_id}" == '3'):
   if st.button('Export Insurances data to Excel document'):
     export_excel('Insurances', 'E', [{'header': 'VEHICLE_ID'}, {'header': 'INSURANCE_DETAILS'}, {'header': 'INSURANCES_TYPE'}, {'header': 'INSURANCE_START_DATE'}, {'header': 'INSURANCE_EXPIRY_DATE'},], int(len(databank_insurances) + 1), databank_insurances)
 
-
+  ## Show `Insurances` statistics in an expander
+  with st.expander('Insurances statistics', expanded = False):
+    st.write('Statistics')
+    
+    
 ## Data analysis for `Repairs`
 elif (f"{chosen_id}" == '4'):
   ## Export `Repairs` dataframe to Excel Makro file
   if st.button('Export Repairs data to Excel document'):
     export_excel('Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'REPAIR_DETAILS'}, {'header': 'REPAIR_DATE'}, {'header': 'REPAIR_COSTS'}, {'header': 'REPAIR_SPARE_PARTS'}, {'header': 'REPAIR_DOWN_TIME'}, {'header': 'REPAIR_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs)
     
+  
+  ## Show `Repairs` statistics in an expander
+  with st.expander('Repairs statistics', expanded = False):
+    ## Repair cost chart
+    # Checking for unique vehicles IDs
+    vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_repairs)
     
-  ## Repair cost chart
-  # Checking for unique vehicles IDs
-  vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_repairs)
-  # Prepare Selectbox list
-  vehicles_list = list(vehicles)
-  vehicles_list.insert(0, 'All vehicles')
-  # Selectbox for choosing vehicle
-  selected_vehicle = st.selectbox('All vehicles or a specific?', options = vehicles_list, index = 0)
-  if (selected_vehicle != 'All vehicles'):
-    vehicles = selected_vehicle
+    # Prepare Selectbox list
+    vehicles_list = list(vehicles)
+    vehicles_list.insert(0, 'All vehicles')
     
-  # Calculate repair costs per vehicle
-  if (selected_vehicle == 'All vehicles'): 
-    data_repair_costs = pd.DataFrame(columns = ['Vehicle ID', 'Repair costs'])
-    for i in range(len(vehicles)):
-      query = "SELECT ID, VEHICLE_ID, REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles[i])
-      rows = run_query(query)
-      costs = 0.0
-      for row in rows:
-        costs += round(float(row[2]), 2)
-      df = pd.DataFrame([[row[1], costs]], columns = ['Vehicle ID', 'Repair costs'])
-      data_repair_costs = pd.concat([data_repair_costs, df])
-    data_repair_costs = data_repair_costs.set_index('Vehicle ID')
+    # Selectbox for choosing vehicle
+    selected_vehicle = st.selectbox('All vehicles or a specific?', options = vehicles_list, index = 0)
+    if (selected_vehicle != 'All vehicles'):
+      vehicles = selected_vehicle
     
-    # Plotting
-    st.bar_chart(data_repair_costs, x = vehicles)
+    # Calculate repair costs per vehicle
+    if (selected_vehicle == 'All vehicles'): 
+      data_repair_costs = pd.DataFrame(columns = ['Vehicle ID', 'Repair costs'])
+      for i in range(len(vehicles)):
+        query = "SELECT ID, VEHICLE_ID, REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles[i])
+        rows = run_query(query)
+        costs = 0.0
+        for row in rows:
+          costs += round(float(row[2]), 2)
+        df = pd.DataFrame([[row[1], costs]], columns = ['Vehicle ID', 'Repair costs'])
+        data_repair_costs = pd.concat([data_repair_costs, df])
+      data_repair_costs = data_repair_costs.set_index('Vehicle ID')
+    
+      # Plotting
+      st.bar_chart(data_repair_costs, x = vehicles)
 
   
-  ## Show repair costs per incident
-  else:
-    data_repair_costs = pd.DataFrame(columns = ['Spare part', 'Repair cost'])
-    query = "SELECT ID, VEHICLE_ID, REPAIR_DETAILS, REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles)
-    rows = run_query(query)
-    for row in rows:
-      df = pd.DataFrame([[row[2], round(float(row[3]), 1)]], columns = ['Repair Details', 'Repair cost'])
-      data_repair_costs = pd.concat([data_repair_costs, df])
-    data_repair_costs = data_repair_costs.set_index('Repair Details')
+    ## Show repair costs per incident
+    else:
+      data_repair_costs = pd.DataFrame(columns = ['Spare part', 'Repair cost'])
+      query = "SELECT ID, VEHICLE_ID, REPAIR_DETAILS, REPAIR_COSTS FROM `carfleet`.`REPAIRS` WHERE VEHICLE_ID = %s;" %(vehicles)
+      rows = run_query(query)
+      for row in rows:
+        df = pd.DataFrame([[row[2], round(float(row[3]), 1)]], columns = ['Repair Details', 'Repair cost'])
+        data_repair_costs = pd.concat([data_repair_costs, df])
+      data_repair_costs = data_repair_costs.set_index('Repair Details')
     
-    # Plotting
-    st.bar_chart(data_repair_costs)
+      # Plotting
+      st.bar_chart(data_repair_costs)
 
   
 ## Data analysis for `Services`
@@ -761,11 +774,21 @@ elif (f"{chosen_id}" == '5'):
     export_excel('Services', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'SERVICE_DATE'}, {'header': 'SERVICE_DETAILS'}, {'header': 'SERVICE_COSTS'}, {'header': 'SERVICE_MILEAGE_ON_SERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE_MAX'},], int(len(databank_services) + 1), databank_services)
   
   
+  ## Show `Services` statistics in an expander
+  with st.expander('Services statistics', expanded = False):
+    st.write('Statistics')
+    
+    
 ## Data analysis for `Trips`
 elif (f"{chosen_id}" == '6'):
   ## Export `Trips` dataframe to Excel Makro file
   if st.button('Export Trips data to Excel document'):
     export_excel('Trips', 'J', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'TRIP_DATE'}, {'header': 'TRIP_DESCRIPTION'}, {'header': 'TRIP_COMMENTS'},{'header': 'TRIP_TIME_OUT'}, {'header': 'TRIP_TIME_IN'}, {'header': 'TRIP_OPEN_MILEAGE'}, {'header': 'TRIP_CLOSE_MILEAGE'}, {'header': 'TRIP_DISTANCE'},], int(len(databank_trips) + 1), databank_trips)
+    
+  
+  ## Show `Trips` statistics in an expander
+  with st.expander('Trips statistics', expanded = False):
+    st.write('Statistics')
     
    
 ## Data analysis for `Vehicles`
@@ -775,52 +798,56 @@ elif (f"{chosen_id}" == '7'):
     export_excel('Vehicles', 'P', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles) + 1), databank_vehicles_excel)
   
   
-  ## Columns for showing Vehicle images and some data
-  col1, col2, col3 = st.columns(3)
-  cars = lastID(url = "carfleet.VEHICLES")  
-  with col1:
-    for i in range(1, cars, 3):
-      st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-      st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-      st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-      st.subheader("Vehicle ID")
-      st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
+  ## Show `Vehicles` statistics in an expander
+  with st.expander('Vehicles statistics', expanded = False):
+    ## Columns for showing Vehicle profile
+    col1, col2, col3 = st.columns(3)
+    cars = lastID(url = "carfleet.VEHICLES")  
+    
+    # Column 1
+    with col1:
+      for i in range(1, cars, 3):
+        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+        st.subheader("Vehicle ID")
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
 
-        
-  # Coloumn 2
-  with col2:
-    for i in range(2, cars, 3):
-      st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-      st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-      st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-      st.subheader("Vehicle ID")
-      st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
+    # Coloumn 2
+    with col2:
+      for i in range(2, cars, 3):
+        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+        st.subheader("Vehicle ID")
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
 
-  # Column 3
-  with col3:
-    for i in range(3, cars, 3):
-      st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-      st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-      st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-      st.subheader("Vehicle ID")
-      st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
+    # Column 3
+    with col3:
+      for i in range(3, cars, 3):
+        st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
+        st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
+        st.subheader("Vehicle ID")
+        st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
   
+    # Checking for unique vehicles types
+    vehicles = check_vehicles(column = 'VEHICLE_TYPE', data = databank_vehicles)
   
-  ## Plotting
-  # Checking for unique vehicles types
-  vehicles = check_vehicles(column = 'VEHICLE_TYPE', data = databank_vehicles)
-  # Calculate total amount of vehicles per type / category
-  data_cars= pd.DataFrame(columns = ['Vehicle Type', 'Amount'])
-  for i in range(len(vehicles)):
-    query = "SELECT VEHICLE_TYPE FROM `carfleet`.`VEHICLES` WHERE VEHICLE_TYPE = '%s';" %(vehicles[i])
-    rows = run_query(query)
-    amount = 0
-    for row in rows:
-      amount += 1
-    df = pd.DataFrame([[row[0], amount]], columns = ['Vehicle Type', 'Amount'])
-    data_cars = pd.concat([data_cars, df])
-  data_cars = data_cars.set_index('Vehicle Type')
-  st.bar_chart(data_cars)
+    # Calculate total amount of vehicles per type / category
+    data_cars= pd.DataFrame(columns = ['Vehicle Type', 'Amount'])
+    for i in range(len(vehicles)):
+      query = "SELECT VEHICLE_TYPE FROM `carfleet`.`VEHICLES` WHERE VEHICLE_TYPE = '%s';" %(vehicles[i])
+      rows = run_query(query)
+      amount = 0
+      for row in rows:
+        amount += 1
+      df = pd.DataFrame([[row[0], amount]], columns = ['Vehicle Type', 'Amount'])
+      data_cars = pd.concat([data_cars, df])
+    data_cars = data_cars.set_index('Vehicle Type')
+    
+    # Plotting
+    st.bar_chart(data_cars)
 
 
 
