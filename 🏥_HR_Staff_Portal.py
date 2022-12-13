@@ -276,8 +276,9 @@ if check_password():
     st.title('KCH HR Staff Portal')
     st.image('images/MoH.png')
     st.subheader('Kamuzu Central Hospital employee data.')
-    st.write('All the employee data is stored in a local MySQL databank on a Raspberry Pi.')
-    st.write('The HR Portal is running on Streamlit, an Open Source Python framework for visualisation.')
+    st.write('All employee data is stored in a local MySQL databank on a Windows Server hosted at KCH.')
+    st.write('The HR Staff Portal is developed with Python and installed on Windows Subsystem for Linux.')
+    st.write('It uses Streamlit framework for visualisation which is turns Python scipts into data web apps.')
 
 
   ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
@@ -304,24 +305,6 @@ if check_password():
     databank_training = pd.concat([databank_training, df])
   databank_training = databank_training.set_index('ID')
  
-    
-  ## Print databank in dataframe table
-  with st.expander("See all Databank entries", expanded = False):
-    ## Show `IMAGEBASE` table data
-    st.subheader('Employee data')
-    st.dataframe(databank, use_container_width = True)
-    
-    
-    # Show `TRAININGDATA` table data
-    st.subheader('Training data')
-    st.dataframe(databank_training, use_container_width = True)
-    
-    
-    ## Export `Vehicles` dataframe to Excel Makro file
-    if st.button('Export Excel'):
-      export_excel(sheet = 'Employees', column = 'G', columns = [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'}, {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'CARDS_PRINTED'},], length = int(len(databank) + 1), data = databank,
-                sheet2 = 'Trainings', column2 = 'E', columns2 = [{'header': 'EMPLOYEE_NO'}, {'header': 'TRAINING'}, {'header': 'INSTITUTE'}, {'header': 'DATE'}, {'header': 'DAYS'},], length2 = int(len(databank_training) + 1), data2 = databank_training)
-  
       
   ## Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee Selectbox
   query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
@@ -721,8 +704,25 @@ if check_password():
   ### Out of the Form
   ## Image Download Button
   st.download_button('Download Image', data = st.session_state['image'], mime="image/png")
-
- 
+  
+  
+  ## Print databank in dataframe table
+  with st.expander("See all Databank entries", expanded = False):
+    ## Show `IMAGEBASE` table data
+    st.subheader('Employee data')
+    st.dataframe(databank, use_container_width = True)
+    
+    
+    # Show `TRAININGDATA` table data
+    st.subheader('Training data')
+    st.dataframe(databank_training, use_container_width = True)
+    
+    
+    ## Export `Vehicles` dataframe to Excel Makro file
+    if st.button('Export Excel'):
+      export_excel('Employees', 'G', [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'}, {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'CARDS_PRINTED'},], int(len(databank) + 1), databank,
+                  'Trainings', 'E', [{'header': 'EMPLOYEE_NO'}, {'header': 'TRAINING'}, {'header': 'INSTITUTE'}, {'header': 'DATE'}, {'header': 'DAYS'},], int(len(databank_training) + 1), databank_training)
+  
           
           
 #### Not Logged in state (Landing page)

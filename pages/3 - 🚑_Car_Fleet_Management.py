@@ -196,11 +196,18 @@ if ('image' not in st.session_state):
 
 
 
-#### Main Program
-### Title
-st.title("KCH Car Fleet")
-
-
+#### Main Program (password protection)
+### Title Header
+## Header information
+with st.expander("Header", expanded = True):
+  st.title('KCH Car Fleet Management System')
+  st.image('images/car_fleet.png')
+  st.subheader('Kamuzu Central Hospital vehicle data.')
+  st.write('All data related to the KCH car fleet is stored in a local MySQL databank.')
+  st.write('The Car Fleet Managmenet System is developed with Python and installed on WSL.')
+  st.write('It uses the Streamlit framework for visualisation which turns Python scipts into web apps.')
+    
+    
 ## Use local databank carfleet
 # Open databank connection
 conn = init_connection()
@@ -308,57 +315,6 @@ databank_vehicles = databank_vehicles.set_index('ID')
 # Drop last columns (Images)
 databank_vehicles_excel = databank_vehicles.iloc[: , :-1]
     
-
-
-
-### Database Excel Export Expander
-with st.expander('Database Excel Export', expanded = False):
-  ## Show `DRIVERS` table dataframe
-  st.subheader('Drivers data')
-  st.dataframe(databank_drivers_excel, use_container_width = True)
-  
-  
-  ## Show `FUEL` table dataframe
-  st.subheader('Fuel data')
-  st.dataframe(databank_fuel, use_container_width = True)
-  
-  
-  ## Show `INSURANCES` table dataframe
-  st.subheader('Insurances data')
-  st.dataframe(databank_insurances, use_container_width = True)
-  
-  
-  ## Show `REPAIRS` table dataframe
-  st.subheader('Repairs data')
-  st.dataframe(databank_repairs, use_container_width = True)
-  
-  
-  ## Show `SERVICES` table dataframe
-  st.subheader('Services data')
-  st.dataframe(databank_services, use_container_width = True)
-  
-  
-  ## Show `TRIPS` table dataframe
-  st.subheader('Trips data')
-  st.dataframe(databank_trips, use_container_width = True)
-  
-  
-  ## Show `VEHICLES` table dataframe
-  st.subheader('Vehicles data')
-  st.dataframe(databank_vehicles_excel, use_container_width = True)
-  
-  
-  ## Export tables to Excel workbook
-  if st.button('Database Exel Export'):
-    # Do the exporting
-    export_excel('Drivers', 'I', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel,
-                'Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'FUEL_AMOUNT'}, {'header': 'FUEL_COST'}, {'header': 'FUEL_TYPE'}, {'header': 'FUEL_DATE'}, {'header': 'FUEL_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel,
-                'Insurances', 'E', [{'header': 'VEHICLE_ID'}, {'header': 'INSURANCE_DETAILS'}, {'header': 'INSURANCES_TYPE'}, {'header': 'INSURANCE_START_DATE'}, {'header': 'INSURANCE_EXPIRY_DATE'},], int(len(databank_insurances) + 1), databank_insurances,
-                'Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'REPAIR_DETAILS'}, {'header': 'REPAIR_DATE'}, {'header': 'REPAIR_COSTS'}, {'header': 'REPAIR_SPARE_PARTS'}, {'header': 'REPAIR_DOWN_TIME'}, {'header': 'REPAIR_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs,
-                'Services', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'SERVICE_DATE'}, {'header': 'SERVICE_DETAILS'}, {'header': 'SERVICE_COSTS'}, {'header': 'SERVICE_MILEAGE_ON_SERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE_MAX'},], int(len(databank_services) + 1), databank_services,
-                'Trips', 'J', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'TRIP_DATE'}, {'header': 'TRIP_DESCRIPTION'}, {'header': 'TRIP_COMMENTS'},{'header': 'TRIP_TIME_OUT'}, {'header': 'TRIP_TIME_IN'}, {'header': 'TRIP_OPEN_MILEAGE'}, {'header': 'TRIP_CLOSE_MILEAGE'}, {'header': '`TRIP_DISTANCE'},], int(len(databank_trips) + 1), databank_trips,
-                'Vehicles', 'P', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles) + 1), databank_vehicles_excel)
-
 
 
 ### Custom Tab with IDs
@@ -835,3 +791,53 @@ elif (f"{chosen_id}" == '7'):
     data_cars = pd.concat([data_cars, df])
   data_cars = data_cars.set_index('Vehicle Type')
   st.bar_chart(data_cars)
+
+
+
+### Database Excel Export Expander
+with st.expander('Database Excel Export', expanded = False):
+  ## Show `DRIVERS` table dataframe
+  st.subheader('Drivers data')
+  st.dataframe(databank_drivers_excel, use_container_width = True)
+  
+  
+  ## Show `FUEL` table dataframe
+  st.subheader('Fuel data')
+  st.dataframe(databank_fuel, use_container_width = True)
+  
+  
+  ## Show `INSURANCES` table dataframe
+  st.subheader('Insurances data')
+  st.dataframe(databank_insurances, use_container_width = True)
+  
+  
+  ## Show `REPAIRS` table dataframe
+  st.subheader('Repairs data')
+  st.dataframe(databank_repairs, use_container_width = True)
+  
+  
+  ## Show `SERVICES` table dataframe
+  st.subheader('Services data')
+  st.dataframe(databank_services, use_container_width = True)
+  
+  
+  ## Show `TRIPS` table dataframe
+  st.subheader('Trips data')
+  st.dataframe(databank_trips, use_container_width = True)
+  
+  
+  ## Show `VEHICLES` table dataframe
+  st.subheader('Vehicles data')
+  st.dataframe(databank_vehicles_excel, use_container_width = True)
+  
+  
+  ## Export tables to Excel workbook
+  if st.button('Database Exel Export'):
+    # Do the exporting
+    export_excel('Drivers', 'I', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel,
+                'Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'FUEL_AMOUNT'}, {'header': 'FUEL_COST'}, {'header': 'FUEL_TYPE'}, {'header': 'FUEL_DATE'}, {'header': 'FUEL_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel,
+                'Insurances', 'E', [{'header': 'VEHICLE_ID'}, {'header': 'INSURANCE_DETAILS'}, {'header': 'INSURANCES_TYPE'}, {'header': 'INSURANCE_START_DATE'}, {'header': 'INSURANCE_EXPIRY_DATE'},], int(len(databank_insurances) + 1), databank_insurances,
+                'Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'REPAIR_DETAILS'}, {'header': 'REPAIR_DATE'}, {'header': 'REPAIR_COSTS'}, {'header': 'REPAIR_SPARE_PARTS'}, {'header': 'REPAIR_DOWN_TIME'}, {'header': 'REPAIR_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs,
+                'Services', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'SERVICE_DATE'}, {'header': 'SERVICE_DETAILS'}, {'header': 'SERVICE_COSTS'}, {'header': 'SERVICE_MILEAGE_ON_SERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE'}, {'header': 'SERVICE_MILEAGE_NEXTSERVICE_MAX'},], int(len(databank_services) + 1), databank_services,
+                'Trips', 'J', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'TRIP_DATE'}, {'header': 'TRIP_DESCRIPTION'}, {'header': 'TRIP_COMMENTS'},{'header': 'TRIP_TIME_OUT'}, {'header': 'TRIP_TIME_IN'}, {'header': 'TRIP_OPEN_MILEAGE'}, {'header': 'TRIP_CLOSE_MILEAGE'}, {'header': '`TRIP_DISTANCE'},], int(len(databank_trips) + 1), databank_trips,
+                'Vehicles', 'P', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles) + 1), databank_vehicles_excel)
