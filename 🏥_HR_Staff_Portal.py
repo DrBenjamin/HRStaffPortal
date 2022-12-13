@@ -287,7 +287,7 @@ def export_excel(sheet, column, columns, length, data,
 if check_password():
   ## Header information
   with st.expander("Header", expanded = True):
-    st.title('KCH HR Staff Portal')
+    st.title('HR Staff Portal')
     st.image('images/MoH.png')
     st.subheader('Kamuzu Central Hospital employee data.')
     st.write('All employee data is stored in a local MySQL databank on a Windows Server hosted at KCH.')
