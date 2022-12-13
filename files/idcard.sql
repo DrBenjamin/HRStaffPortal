@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `idcard` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `idcard`;
 -- MySQL dump 10.13  Distrib 8.0.28, for macos11 (x86_64)
 --
 -- Host: 127.0.0.1    Database: idcard
@@ -14,10 +16,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-
--- Use database `idcard`
-USE idcard;
 
 --
 -- Table structure for table `IMAGEBASE`
@@ -96,4 +94,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-13  9:08:17
+-- Dump completed on 2022-12-13 16:38:04
