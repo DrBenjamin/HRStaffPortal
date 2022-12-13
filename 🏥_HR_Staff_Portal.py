@@ -359,6 +359,8 @@ if check_password():
     ## tab `Master data`
     if (f"{chosen_id}" == '1'):
       st.title('Employee Master data')
+      st.subheader('Enter or view exmployee master data')
+      
       
       ## If new Employee just show empty form
       if (index == 0):
@@ -521,6 +523,7 @@ if check_password():
     elif (f"{chosen_id}" == '2'):
       ## Get information of selected Employee regarding Training
       st.title('Employee Training data')
+      st.subheader('Enter or view exmployee training data')
        
           
       ## If new Employee just show empty form
@@ -672,6 +675,7 @@ if check_password():
     ## tab `More data`
     elif (f"{chosen_id}" == '3'):
       st.title('More employee data')
+      st.subheader('Enter or view exmployee data')
           
           
       ## If new Employee just show empty form
