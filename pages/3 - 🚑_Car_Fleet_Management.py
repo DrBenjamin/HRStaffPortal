@@ -19,14 +19,14 @@ import xlsxwriter
 
 #### Streamlit initial setup
 st.set_page_config(
-  page_title = "KCH HR Staff Portal",
-  page_icon = "images/thumbnail.png",
+  page_title = "KCH Car Fleet Management System",
+  page_icon = "images/thumbnail_car_fleet.png",
   layout = "centered",
   initial_sidebar_state = "expanded",
   menu_items = { 
          'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
          'Report a bug': "http://www.health.gov.mw/index.php/contact-moh/head-office",
-         'About': "This is the KCH HR Staff Portal. Version 0.0.1"
+         'About': "This is the KCH Car Fleet Management System Version 0.2.0"
         }
 )
 
