@@ -109,6 +109,8 @@ To configure the database to work with the Prototype and run the following **SQL
   PRIMARY KEY (`ID`));
 ```
 
+or use the sample data `files/idcard.sql` and `files/carfleet.sql` and import them to a **MySQL** / **MariaDB** database.
+
 
 #### Create new project in RStudio
 ##### Working with RStudio on the project
