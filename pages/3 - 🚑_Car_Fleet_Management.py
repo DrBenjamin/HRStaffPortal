@@ -236,15 +236,15 @@ conn = init_connection()
 
 
 ## Get `DRIVERS` table data
-query = "SELECT ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES, DRIVER_IMAGE FROM `carfleet`.`DRIVERS`;"
+query = "SELECT ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES, DRIVER_IMAGE FROM `carfleet`.`DRIVERS`;"
 rows = run_query(query)
    
 # Create pandas dataframe 
-databank_drivers = pd.DataFrame(columns = ['ID', 'DRIVER_ID', 'DRIVER_FORENAME', 'DRIVER_SURNAME', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES', 'DRIVER_IMAGE'])
+databank_drivers = pd.DataFrame(columns = ['ID', 'DRIVER_ID', 'DRIVER_FORENAME', 'DRIVER_SURNAME', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES', 'DRIVER_IMAGE'])
   
 # Populate dataframe
 for row in rows:
-  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]], columns = ['ID', 'DRIVER_ID', 'DRIVER_FORENAME', 'DRIVER_SURNAME', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES', 'DRIVER_IMAGE'])
+  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]]], columns = ['ID', 'DRIVER_ID', 'DRIVER_FORENAME', 'DRIVER_SURNAME', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES', 'DRIVER_IMAGE'])
   databank_drivers = pd.concat([databank_drivers, df])
 databank_drivers = databank_drivers.set_index('ID')
 # Drop last columns (Images)
@@ -369,6 +369,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
     driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
     driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
+    driver_license_expiry_date = st.text_input(label = 'License expiry date', placeholder = 'License expiry date?')
     driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
     driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
     uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
@@ -387,7 +388,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     if submitted:
       # Get latest ID from database
       id = lastID(url = "carfleet.DRIVERS")
-      query = "INSERT INTO `carfleet`.`DRIVERS`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_psv_badge, driver_notes)
+      query = "INSERT INTO `carfleet`.`DRIVERS`(ID, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_license_expiry_date, driver_psv_badge, driver_notes)
       run_query(query)
       conn.commit()
       
@@ -612,7 +613,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
 if (f"{chosen_id}" == '1'):
   ## Export `Drivers` dataframe to Excel Makro file
   if st.button('Export Drivers data to Excel document'):
-    export_excel('Drivers', 'I', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel)
+    export_excel('Drivers', 'J', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_LICENSE_EXPIRY_DATE'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel)
 
 
   ## Show driver profiles in an expander
@@ -968,7 +969,7 @@ with st.expander('Database Excel Export (all tables)', expanded = False):
   ## Export tables to Excel workbook
   if st.button('Database Exel Export (all tables)'):
     # Do the exporting
-    export_excel('Drivers', 'I', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel,
+    export_excel('Drivers', 'J', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_LICENSE_EXPIRY_DATE'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel,
                 'Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'FUEL_AMOUNT'}, {'header': 'FUEL_COST'}, {'header': 'FUEL_TYPE'}, {'header': 'FUEL_DATE'}, {'header': 'FUEL_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel,
                 'Insurances', 'E', [{'header': 'VEHICLE_ID'}, {'header': 'INSURANCE_DETAILS'}, {'header': 'INSURANCES_TYPE'}, {'header': 'INSURANCE_START_DATE'}, {'header': 'INSURANCE_EXPIRY_DATE'},], int(len(databank_insurances) + 1), databank_insurances,
                 'Repairs', 'H', [{'header': 'VEHICLE_ID'}, {'header': 'REPAIR_DETAILS'}, {'header': 'REPAIR_DATE'}, {'header': 'REPAIR_COSTS'}, {'header': 'REPAIR_SPARE_PARTS'}, {'header': 'REPAIR_DOWN_TIME'}, {'header': 'REPAIR_CENTRE_PERSON'}, {'header': 'COST_CENTRE'},], int(len(databank_repairs) + 1), databank_repairs,
