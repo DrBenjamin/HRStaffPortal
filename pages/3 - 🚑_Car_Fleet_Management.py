@@ -5,6 +5,7 @@
 
 
 
+
 #### Loading neded Python libraries
 import streamlit as st
 import extra_streamlit_components as stx
@@ -14,6 +15,7 @@ import mysql.connector
 import os
 import io
 import xlsxwriter
+
 
 
 
@@ -32,7 +34,18 @@ st.set_page_config(
 
 
 
+
+#### Sidebar  (password check?)
+### Sidebar Header 
+## Sidebar Image
+st.sidebar.image('images/MoH.png')
+
+
+
+
 #### OS Check
+### Check for 3 different platforms
+## Check which OS
 plt = platform.system()
 if plt == "Windows":
   print("Your system is Windows")
@@ -40,6 +53,7 @@ elif plt == "Linux":
   print("Your system is Linux")
 elif plt == "Darwin":
   print("Your system is MacOS")
+
 
 
 
@@ -55,6 +69,7 @@ def init_connection():
     st.stop()
 
 
+
 ### Function: run_query = SQL query
 def run_query(query):
   with conn.cursor() as cur:
@@ -64,6 +79,7 @@ def run_query(query):
       return cur.fetchall()
     except:
       print("An exception occurred in function `run_query`")
+
 
 
 ### Function: check_vehicles = checking for unique Vehicles IDs
@@ -83,6 +99,7 @@ def check_vehicles(column, data):
       vehicle.append(data[column][i + 1])
     i += 1
   return vehicle
+
 
 
 ### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
@@ -137,6 +154,7 @@ def export_excel(sheet, column, columns, length, data,
     
     ## Download Button
     st.download_button(label = 'Download Excel document', data = buffer, file_name = 'Export.xlsm', mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
+ 
     
     
 ### Function: pictureUploaderDrivers = uploads driver images
@@ -154,6 +172,7 @@ def pictureUploaderDrivers(image, index):
   connection.commit()
   
 
+
 ### Function: pictureUploaderVehicles = uploads vehicle images
 def pictureUploaderVehicles(image, index):
   # Initialize connection
@@ -167,6 +186,7 @@ def pictureUploaderVehicles(image, index):
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
   connection.commit()
+ 
   
   
 ### Function: lastID = checks for last ID number in Table (to add data after)
@@ -184,6 +204,7 @@ def lastID(url):
   return id
 
 
+
 ### Function: loadFile = converts digital data to binary format
 def loadFile(filename):
   with open(filename, 'rb') as file:
@@ -193,6 +214,7 @@ def loadFile(filename):
 # Current Image data
 if ('image' not in st.session_state):
   st.session_state['image'] = loadFile('images/No_Image.png')
+
 
 
 
@@ -571,6 +593,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
       ## Upload picture to database
       pictureUploaderVehicles(vehicle_image, id)
       st.experimental_rerun()
+
 
 
     
