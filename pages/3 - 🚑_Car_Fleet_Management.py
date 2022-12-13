@@ -224,7 +224,7 @@ if ('image' not in st.session_state):
 with st.expander("Header", expanded = True):
   st.title('Car Fleet Management System')
   st.image('images/car_fleet.png')
-  st.subheader('Kamuzu Central Hospital vehicle data.')
+  st.subheader('Kamuzu Central Hospital vehicle data')
   st.write('All data related to the KCH car fleet is stored in a local MySQL databank.')
   st.write('The Car Fleet Managmenet System is developed with Python and installed on WSL.')
   st.write('It uses the Streamlit framework for visualisation which turns Python scipts into web apps.')

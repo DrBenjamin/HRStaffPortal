@@ -289,7 +289,7 @@ if check_password():
   with st.expander("Header", expanded = True):
     st.title('HR Staff Portal')
     st.image('images/MoH.png')
-    st.subheader('Kamuzu Central Hospital employee data.')
+    st.subheader('Kamuzu Central Hospital employee data')
     st.write('All employee data is stored in a local MySQL databank on a Windows Server hosted at KCH.')
     st.write('The HR Staff Portal is developed with Python and installed on Windows Subsystem for Linux.')
     st.write('It uses Streamlit framework for visualisation which is turns Python scipts into data web apps.')
