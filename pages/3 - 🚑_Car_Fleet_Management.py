@@ -657,9 +657,11 @@ elif (f"{chosen_id}" == '2'):
     ## Average Fuel Consumption Chart
     # Checking for unique Vehicles IDs
     vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_fuel)
+    
     # Prepare Selectbox list
     vehicles_list = list(vehicles)
     vehicles_list.insert(0, 'All vehicles')
+    
     # Selectbox for choosing vehicle
     selected_vehicle = st.selectbox('All vehicles or a specific?', options = vehicles_list, index = 0)
     if (selected_vehicle != 'All vehicles'):
@@ -700,6 +702,10 @@ elif (f"{chosen_id}" == '2'):
     
       # Plotting
       st.bar_chart(data_fuel_rate)
+      
+  ## Show fuel consumtion report
+  with st.expander('Fuel consumption report', expanded = False):
+    st.write('Report')
 
   
 ## Data analysis for `Insurances`
@@ -851,7 +857,7 @@ elif (f"{chosen_id}" == '7'):
 
 
 ### Database Excel Export Expander
-with st.expander('Database Excel Export', expanded = False):
+with st.expander('Database Excel Export (all tables)', expanded = False):
   ## Show `DRIVERS` table dataframe
   st.subheader('Drivers data')
   st.dataframe(databank_drivers_excel, use_container_width = True)
@@ -888,7 +894,7 @@ with st.expander('Database Excel Export', expanded = False):
   
   
   ## Export tables to Excel workbook
-  if st.button('Database Exel Export'):
+  if st.button('Database Exel Export (all tables)'):
     # Do the exporting
     export_excel('Drivers', 'I', [{'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel,
                 'Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'FUEL_AMOUNT'}, {'header': 'FUEL_COST'}, {'header': 'FUEL_TYPE'}, {'header': 'FUEL_DATE'}, {'header': 'FUEL_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel,
