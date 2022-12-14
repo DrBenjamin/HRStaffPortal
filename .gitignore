@@ -3,6 +3,7 @@
 .Rbuildignore
 *Export.xlsm
 *Export.xlsx
+*VBA.xlsm
 blob*
 HRStaffPortal.Rproj
 .Rhistory
