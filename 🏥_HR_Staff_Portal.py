@@ -236,7 +236,7 @@ def export_excel(sheet, column, columns, length, data,
                 sheet5 = 'N0thing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
                 sheet6 = 'N0thing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
                 sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = '',
-                image = 'NoImage', excel_file_name = 'Export.xlsm'):
+                image = 'NoImage', image_pos = 'D1', excel_file_name = 'Export.xlsm'):
 
   
   ## Store function arguments in array
@@ -268,8 +268,13 @@ def export_excel(sheet, column, columns, length, data,
         worksheet.set_column(range_table, 30)
         
         # Add Image to worksheet
+        # Add Image to worksheet
         if (image != 'NoImage'):
-          worksheet.insert_image('D1', image)
+          # Write Image to a png file
+          f = open('Image.png', 'wb')
+          f.write(image)
+          f.close()
+          worksheet.insert_image(image_pos, 'Image.png')
       
       
     ## Add Excel VBA code
@@ -280,6 +285,8 @@ def export_excel(sheet, column, columns, length, data,
     ## Saving changes
     workbook.close()
     writer.save()
+    if os.path.exists("Image.png"):
+      os.remove("Image.png")
     
     
     ## Download Button

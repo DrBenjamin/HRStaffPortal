@@ -111,7 +111,7 @@ def export_excel(sheet, column, columns, length, data,
                 sheet5 = 'N0thing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
                 sheet6 = 'N0thing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
                 sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = '',
-                image = 'NoImage', excel_file_name = 'Export.xlsm'):
+                image = 'NoImage', image_pos = 'D1', excel_file_name = 'Export.xlsm'):
   
   
   ## Store fuction arguments in array
@@ -145,7 +145,11 @@ def export_excel(sheet, column, columns, length, data,
         
         # Add Image to worksheet
         if (image != 'NoImage'):
-          worksheet.insert_image('D1', image)
+          # Write Image to a png file
+          f = open('Image.png', 'wb')
+          f.write(image)
+          f.close()
+          worksheet.insert_image(image_pos, 'Image.png')
       
       
     ## Add Excel VBA code
@@ -156,6 +160,8 @@ def export_excel(sheet, column, columns, length, data,
     ## Saving changes
     workbook.close()
     writer.save()
+    if os.path.exists("Image.png"):
+      os.remove("Image.png")
     
     
     ## Download Button
@@ -779,13 +785,23 @@ elif (f"{chosen_id}" == '2'):
     st.dataframe(report_fuel_max_cap)
     
     
+    ## Prepare Image
+    report_image = pd.DataFrame(columns = ['Vehicle ID', 'Image'])
+    query = "SELECT VEHICLE_ID, VEHICLE_IMAGE FROM carfleet.VEHICLES WHERE VEHICLE_ID = '%s';" %(vehicle)
+    rows = run_query(query)
+    for row in rows:
+      df = pd.DataFrame([[row[0], row[1]]], columns = ['Vehicle ID', 'Image'])
+      report_image = pd.concat([report_image, df])
+      break
+    
+    
     ## Export `Fuel` Report to Excel Makro file
     if st.button('Export Fuel Report to Excel document'):
       excel_file_name = 'Fuel Report - Vehicle ' + vehicle + '.xlsm'
       export_excel('Avg. Fuel Consumption', 'B', [{'header': 'Date'}, {'header': 'Average Fuel Consumption'},], int(len(report_fuel_consumption_average) + 1), report_fuel_consumption_average, 
                   'Fuel Cost per Litre', 'B', [{'header': 'Date'}, {'header': 'Fuel Cost'},], int(len(report_fuel_price_litre) + 1), report_fuel_price_litre,
                   'Fuel max. Capacity', 'C', [{'header': 'Date'}, {'header': 'Fuel Amount'}, {'header': 'Fuel max. Capacity'},], int(len(report_fuel_max_cap) + 1), report_fuel_max_cap,
-                  excel_file_name = excel_file_name)
+                  image = report_image._get_value(0, 'Image'), image_pos = 'E1', excel_file_name = excel_file_name)
 
   
 ## Data analysis for `Insurances`
