@@ -15,6 +15,7 @@ import mysql.connector
 import os
 import io
 import xlsxwriter
+from datetime import datetime
 
 
 
@@ -369,7 +370,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     driver_mobile_no = st.text_input(label = 'Mobile number', placeholder = 'Mobile number?')
     driver_license_no = st.text_input(label = 'License number', placeholder = 'License number?')
     driver_license_class = st.text_input(label = 'License Class', placeholder = 'License class?')
-    driver_license_expiry_date = st.text_input(label = 'License expiry date', placeholder = 'License expiry date?')
+    driver_license_expiry_date = st.date_input(label = 'License expiry date', value = datetime.now())
     driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
     driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
     uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
@@ -413,7 +414,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     fuel_amount = st.text_input(label = 'Amount', placeholder = 'Amount?')
     fuel_cost = st.text_input(label = 'Cost', placeholder = 'Cost?')
     fuel_type = st.text_input(label = 'Type', placeholder = 'Type?')
-    fuel_date = st.text_input(label = 'Date', placeholder = 'Date?')
+    fuel_date = st.date_input(label = 'Date', value = datetime.now())
     fuel_distance = st.text_input(label = 'Distance', placeholder = 'Distance?')
     fuel_shortage = st.text_input(label = 'Shortage', placeholder = 'Shortage?')
     cost_centre = st.text_input(label = 'Cost Centre', placeholder = 'Cost Centre?')
@@ -443,8 +444,8 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
     insurance_details = st.text_input(label = 'Details', placeholder = 'Details?')
     insurance_type = st.text_input(label = 'Type', placeholder = 'Type?')
-    insurance_start_date = st.text_input(label = 'Start date', placeholder = 'Start date?')
-    insurance_expiry_date = st.text_input(label = 'Expiry date', placeholder = 'Expiry date?')
+    insurance_start_date = st.date_input(label = 'Start date', value = datetime.now())
+    insurance_expiry_date = st.date_input(label = 'Expiry date', value = datetime.now())
     
 
     ## Submit Button `Create new Insurance`
@@ -470,7 +471,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     id = st.text_input(label = 'ID', value = id, disabled = True)
     vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
     repair_details = st.text_input(label = 'Details', placeholder = 'Details?')
-    repair_date = st.text_input(label = 'Date', placeholder = 'Date?')
+    repair_date = st.date_input(label = 'Date', value = datetime.now())
     repair_costs = st.text_input(label = 'Costs', placeholder = 'Costs?')
     repair_spare_parts = st.text_input(label = 'Spare parts', placeholder = 'Spare parts?')
     repair_down_time = st.text_input(label = 'Down time', placeholder = 'Down time?')
@@ -501,7 +502,7 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     id = st.text_input(label = 'ID', value = id, disabled = True)
     vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
     driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
-    service_date = st.text_input(label = 'Date', placeholder = 'Date?')
+    service_date = st.date_input(label = 'Date', value = datetime.now())
     service_details = st.text_input(label = 'Details', placeholder = 'Details?')
     service_costs = st.text_input(label = 'Costs', placeholder = 'Costs?')
     service_mileage_on_service = st.text_input(label = 'Mileage', placeholder = 'Mileage?')
@@ -532,11 +533,13 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     id = st.text_input(label = 'ID', value = id, disabled = True)
     vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
     driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
-    trip_date = st.text_input(label = 'Date', placeholder = 'Date?')
+    trip_date = st.date_input(label = 'Date', value = datetime.now())
     trip_description = st.text_input(label = 'Description', placeholder = 'Description?')
     trip_comments = st.text_input(label = 'Comments', placeholder = 'Comments?')
     trip_time_out = st.text_input(label = 'Time out', placeholder = 'Time out?')
+    #trip_time_out = st.time_input(label = 'Time out', key = 'time_out')
     trip_time_in = st.text_input(label = 'Time in', placeholder = 'Time in?')
+    #trip_time_in = st.time_input(label = 'Time in', value = datetime.now().time(), key = 'time_in')
     trip_open_mileage = st.text_input(label = 'Open mileage', placeholder = 'Open mileage?')
     trip_close_mileage = st.text_input(label = 'Close mileage', placeholder = 'Close mileage?')
     trip_distance = st.text_input(label = 'Distance', placeholder = 'Distance?')
@@ -573,11 +576,11 @@ with st.form("Car Fleet Management", clear_on_submit = True):
     vehicle_fuel_capacity = st.text_input(label = 'Fuel capacity', placeholder = 'Fuel capacity?')
     vehicle_colour = st.text_input(label = 'Colour', placeholder = 'Colour?')
     vehicle_chasis_number = st.text_input(label = 'Chasis number', placeholder = 'Chasis number?')
-    vehicle_manufacture_year = st.text_input(label = 'Manufacture year', placeholder = 'Manufacture year?')
-    vehicle_purchase_date = st.text_input(label = 'Purchase date', placeholder = 'Purchase date?')
+    vehicle_manufacture_year = st.date_input(label = 'Manufacture year', value = datetime.now())
+    vehicle_purchase_date = st.date_input(label = 'Purchase date', value = datetime.now())
     vehicle_purchase_price = st.text_input(label = 'Purchase price', placeholder = 'Purchase price?')
-    vehicle_disposition_year = st.text_input(label = 'Disposition year', placeholder = 'Disposition year?')
-    vehicle_cof_expiry_date = st.text_input(label = 'COF expiry date', placeholder = 'COF expiry date?')
+    vehicle_disposition_year = st.date_input(label = 'Disposition year', value = datetime.now())
+    vehicle_cof_expiry_date = st.date_input(label = 'COF expiry date', value = datetime.now())
     vehicle_vendor = st.text_input(label = 'Vendor', placeholder = 'Vendor?')
     vehicle_duty = st.text_input(label = 'Duty', placeholder = 'Duty?')
     vehicle_cost_km = st.text_input(label = 'Cost per km', placeholder = 'Cost per km?')
