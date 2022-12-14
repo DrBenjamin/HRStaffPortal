@@ -111,7 +111,7 @@ def export_excel(sheet, column, columns, length, data,
                 sheet5 = 'N0thing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
                 sheet6 = 'N0thing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
                 sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = '',
-                excel_file_name = 'Export.xlsm'):
+                image = 'NoImage', excel_file_name = 'Export.xlsm'):
   
   
   ## Store fuction arguments in array
@@ -142,6 +142,10 @@ def export_excel(sheet, column, columns, length, data,
         worksheet.add_table(span, {'columns': func_arr[i][2]})
         range_table = "A:" + func_arr[i][1]
         worksheet.set_column(range_table, 30)
+        
+        # Add Image to worksheet
+        if (image != 'NoImage'):
+          worksheet.insert_image('D1', image)
       
       
     ## Add Excel VBA code
