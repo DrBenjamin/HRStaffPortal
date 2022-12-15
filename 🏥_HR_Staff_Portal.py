@@ -619,9 +619,9 @@ else :
   ### Header of Landing Page
   ## Title and information
   st.title('Kamuzu Central Hospital (KCH)')
-  st.header('Welcome to the KCH HR Staff Portal')
+  st.header('Welcome to HR Staff Portal')
   st.subheader('User Login')
-  st.write('Please login (sidebar on the left) to access the KCH HR Staff Portal.')
+  st.write('Please login (sidebar on the left) to access the HR Staff Portal.')
   
   
   
