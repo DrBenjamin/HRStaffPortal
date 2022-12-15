@@ -8,7 +8,6 @@ import pandas as pd
 import io
 import os
 import xlsxwriter
-import mysql.connector
 
 
 
@@ -63,26 +62,6 @@ def logout():
   st.session_state['logout'] = True
   ## Logout
   st.session_state["password_correct"] = False
-
-
-
-### Function: check_vehicles = checking for unique Vehicles IDs
-def check_vehicles(column, data):
-  vehicle = []
-  i = 0
-  while i < len(data):
-    if i > 0:
-      x = 0
-      double = False
-      for x in range(len(vehicle)):
-        if (vehicle[x] == data[column][i + 1]):
-          double = True
-      if (double != True):    
-        vehicle.append(data[column][i + 1])
-    else:
-      vehicle.append(data[column][i + 1])
-    i += 1
-  return vehicle
 
 
 
@@ -150,52 +129,6 @@ def export_excel(sheet, column, columns, length, data,
     ## Download Button
     st.download_button(label = 'Download Excel document', data = buffer, file_name = excel_file_name, mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
  
-    
-
-### Function: pictureUploader = uploads employee images
-def pictureUploader(image, index):
-  ## Initialize connection
-  connection = mysql.connector.connect(**st.secrets["mysql"])
-  cursor = connection.cursor()
-  ## SQL statement
-  sql_insert_blob_query = """ UPDATE IMAGEBASE SET IMAGE = %s WHERE ID = %s;"""
-  ## Convert data into tuple format
-  insert_blob_tuple = (image, index)
-  result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
-  connection.commit()
-  
-  
-
-### Function: pictureUploaderDrivers = uploads driver images
-def pictureUploaderDrivers(image, index):
-  # Initialize connection
-  connection = mysql.connector.connect(**st.secrets["mysql_car"])
-  cursor = connection.cursor()
-  
-  # SQL statement
-  sql_insert_blob_query = """ UPDATE DRIVERS SET DRIVER_IMAGE = %s WHERE ID = %s;"""
-  
-  # Convert data into tuple format
-  insert_blob_tuple = (image, index)
-  result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
-  connection.commit()
-  
-
-
-### Function: pictureUploaderVehicles = uploads vehicle images
-def pictureUploaderVehicles(image, index):
-  # Initialize connection
-  connection = mysql.connector.connect(**st.secrets["mysql_car"])
-  cursor = connection.cursor()
-  
-  # SQL statement
-  sql_insert_blob_query = """ UPDATE VEHICLES SET VEHICLE_IMAGE = %s WHERE ID = %s;"""
-  
-  # Convert data into tuple format
-  insert_blob_tuple = (image, index)
-  result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
-  connection.commit()
- 
 
 
 ### Function: loadFile = converts digital data to binary format
@@ -203,9 +136,3 @@ def loadFile(filename):
   with open(filename, 'rb') as file:
     binaryData = file.read()
   return binaryData
-
-
-
-### Function: onChange = If Selectbox is used
-def onChange():
-  st.session_state['run'] = True

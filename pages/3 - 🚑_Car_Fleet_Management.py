@@ -1,4 +1,4 @@
-##### `3 - 🚑_Car_Fleet_Management.py`
+##### `pages/3 - 🚑_Car_Fleet_Management.py`
 ##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
@@ -14,8 +14,11 @@ import pandas as pd
 import mysql.connector
 import os
 import io
-import xlsxwriter
 from datetime import datetime
+import sys
+sys.path.insert(1, "pages/functions/")
+from functions import export_excel
+from functions import loadFile
 
 
 
@@ -58,7 +61,7 @@ elif plt == "Darwin":
 
 
 
-#### All functions used in Car Fleet Management
+#### All functions used exclusively in Car Fleet Management
 ### Function: init_connection = Initial SQL connection
 def init_connection():
   try:
@@ -80,6 +83,21 @@ def run_query(query):
       return cur.fetchall()
     except:
       print("An exception occurred in function `run_query`")
+      
+      
+
+### Function: lastID = checks for last ID number in Table (to add data after)
+def lastID(url):
+  query = "SELECT MAX(ID) FROM %s;" %(url)
+  rows = run_query(query)
+  id = 0
+  for row in rows:
+    id = int(row[0]) + 1
+
+  # If first entry in database start with `ID` `1` 
+  if (id == 0):
+    id = 1
+  return id
 
 
 
@@ -101,72 +119,6 @@ def check_vehicles(column, data):
     i += 1
   return vehicle
 
-
-
-### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
-def export_excel(sheet, column, columns, length, data, 
-                sheet2 = 'N0thing', column2 = 'A', columns2 = '', length2 = '', data2 = '',
-                sheet3 = 'N0thing', column3 = 'A', columns3 = '', length3 = '', data3 = '',
-                sheet4 = 'N0thing', column4 = 'A', columns4 = '', length4 = '', data4 = '',
-                sheet5 = 'N0thing', column5 = 'A', columns5 = '', length5 = '', data5 = '',
-                sheet6 = 'N0thing', column6 = 'A', columns6 = '', length6 = '', data6 = '',
-                sheet7 = 'N0thing', column7 = 'A', columns7 = '', length7 = '', data7 = '',
-                image = 'NoImage', image_pos = 'D1', excel_file_name = 'Export.xlsm'):
-  
-  
-  ## Store fuction arguments in array
-  # Create empty array
-  func_arr =[]
-  
-  # Add function arguments to array
-  func_arr.append([sheet, column, columns, length, data])
-  func_arr.append([sheet2, column2, columns2, length2, data2])
-  func_arr.append([sheet3, column3, columns3, length3, data3])
-  func_arr.append([sheet4, column4, columns4, length4, data4])
-  func_arr.append([sheet5, column5, columns5, length5, data5])
-  func_arr.append([sheet6, column6, columns6, length6, data6])
-  func_arr.append([sheet7, column7, columns7, length7, data7])
-
-  
-  ## Create a Pandas Excel writer using XlsxWriter as the engine
-  buffer = io.BytesIO()
-  with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
-    for i in range(7):
-      if (func_arr[i][0] != 'N0thing'):
-        # Add dataframe data to worksheet
-        func_arr[i][4].to_excel(writer, sheet_name = func_arr[i][0], index = False)
-
-        # Add a table to the worksheet
-        worksheet = writer.sheets[func_arr[i][0]]
-        span = "A1:%s%s" %(func_arr[i][1], func_arr[i][3])
-        worksheet.add_table(span, {'columns': func_arr[i][2]})
-        range_table = "A:" + func_arr[i][1]
-        worksheet.set_column(range_table, 30)
-        
-        # Add Image to worksheet
-        if (image != 'NoImage'):
-          # Write Image to a png file
-          f = open('Image.png', 'wb')
-          f.write(image)
-          f.close()
-          worksheet.insert_image(image_pos, 'Image.png')
-      
-      
-    ## Add Excel VBA code
-    workbook = writer.book
-    workbook.add_vba_project('vbaProject.bin')
-    
-
-    ## Saving changes
-    workbook.close()
-    writer.save()
-    if os.path.exists("Image.png"):
-      os.remove("Image.png")
-    
-    
-    ## Download Button
-    st.download_button(label = 'Download Excel document', data = buffer, file_name = excel_file_name, mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
- 
     
     
 ### Function: pictureUploaderDrivers = uploads driver images
@@ -198,33 +150,6 @@ def pictureUploaderVehicles(image, index):
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
   connection.commit()
- 
-  
-  
-### Function: lastID = checks for last ID number in Table (to add data after)
-def lastID(url):
-  query = "SELECT MAX(ID) FROM %s;" %(url)
-  rows = run_query(query)
-  id = 0
-  for row in rows:
-    id = int(row[0]) + 1
-
-  # If first entry in database start with `ID` `1` 
-  if (id == 0):
-    id = 1
-  return id
-
-
-
-### Function: loadFile = converts digital data to binary format
-def loadFile(filename):
-  with open(filename, 'rb') as file:
-    binaryData = file.read()
-  return binaryData
-
-# Current Image data
-if ('image' not in st.session_state):
-  st.session_state['image'] = loadFile('images/No_Image.png')
 
 
 
