@@ -561,8 +561,30 @@ if check_password():
           
       ## Employee existend
       else:
-        st.info(body = 'Coming soon...', icon = "ℹ️")
-            
+        ## Get Training Data
+        #st.info(body = 'Coming soon...', icon = "ℹ️")
+        query = "SELECT ID, DRIVER_ID, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES FROM carfleet.DRIVERS WHERE EMPLOYEE_NO = '%s';" %(eno['eno'][0])
+        rows = run_query(query)
+        
+        # Create pandas dataframe 
+        data_driver = pd.DataFrame(columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES'])
+        
+        # Populate dataframe
+        for row in rows:
+          df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES'])
+          data_driver = pd.concat([data_driver, df])
+        data_driver = data_driver.set_index('ID')
+        
+        
+        ## Show data if Driver data is existitent
+        if (len(data_driver) == 1):
+          st.dataframe(data_driver)
+        
+        ## If no data existend
+        else:
+          st.info(body = 'No data available', icon = "ℹ️")
+        
+        
         ## Submit Button for Changes on `More data` - existend employee
         submitted = st.form_submit_button("Save changes on More data")
         if submitted:
@@ -594,7 +616,7 @@ if check_password():
   st.download_button('Download Image', data = st.session_state['image'], mime="image/png")
   
   
-  ## Print databank in dataframe table
+  ## Show databank data in dataframe
   with st.expander("See all Databank entries", expanded = False):
     ## Show `IMAGEBASE` table data
     st.subheader('Employee data')
