@@ -561,8 +561,7 @@ if check_password():
           
       ## Employee existend
       else:
-        ## Get Training Data
-        #st.info(body = 'Coming soon...', icon = "ℹ️")
+        ## Get Driver Data if available
         query = "SELECT ID, DRIVER_ID, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES FROM carfleet.DRIVERS WHERE EMPLOYEE_NO = '%s';" %(eno['eno'][0])
         rows = run_query(query)
         
