@@ -22,6 +22,7 @@ from functions import check_password
 from functions import logout
 from functions import export_excel
 from functions import loadFile
+from functions import landingPage
 
 
 
@@ -637,19 +638,4 @@ if check_password():
           
 #### Not Logged in state (Landing page)
 else :
-  ### Header of Landing Page
-  ## Title and information
-  st.title('Kamuzu Central Hospital (KCH)')
-  st.header('Welcome to HR Staff Portal')
-  st.subheader('User Login')
-  st.write('Please login (sidebar on the left) to access the HR Staff Portal.')
-  
-  
-  
-  ### Sub-pages menu
-  ## Menu to open sub-pages  
-  st.subheader('Pages (without login)')
-  st.write('You can access these pages without user log in:')
-  st.write("<a href='Statistics' target='_self'>Statistics</a>", unsafe_allow_html = True)
-  st.write("<a href='Workshops' target='_self'>Workshops</a>", unsafe_allow_html = True)
-  st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
+  landingPage('HR Staff Portal')

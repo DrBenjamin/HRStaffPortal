@@ -149,4 +149,20 @@ def trans(input, target_lang):
 
 
 
-### Function: openai = OpenAI GPT-3 Chat Bot
+### Function: landigPage = shows the landing page (not loged in state)
+def landingPage(page):
+  ## Title and information
+  st.title('Kamuzu Central Hospital (KCH)')
+  header = 'Welcome to ' + page
+  st.header(header)
+  st.subheader('User Login')
+  st.write('Please login (sidebar on the left) to access the ', page, '.')
+  
+  
+  ## Sub-pages menu
+  st.subheader('Pages (without login)')
+  st.write('You can access these pages without being logged in:')
+  st.write("<a href='Statistics' target='_self'>Statistics</a>", unsafe_allow_html = True)
+  st.write("<a href='Workshops' target='_self'>Workshops</a>", unsafe_allow_html = True)
+  st.write("<a href='Network' target='_self'>Network</a>", unsafe_allow_html = True)
+  st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
