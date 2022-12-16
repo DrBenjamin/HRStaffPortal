@@ -27,7 +27,7 @@ from functions import loadFile
 
 #### Streamlit initial setup
 st.set_page_config(
-  page_title = "KCH Car Fleet Management System",
+  page_title = "Car Fleet Management System",
   page_icon = "images/thumbnail_car_fleet.png",
   layout = "centered",
   initial_sidebar_state = "expanded",
