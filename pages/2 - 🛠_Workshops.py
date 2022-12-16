@@ -10,9 +10,10 @@
 import streamlit as st
 import streamlit.components.v1 as stc
 import os
-import openai
 import sys
+import chronological
 sys.path.insert(1, "pages/functions/")
+#from functions import openai
 from functions import trans
 
 
@@ -35,9 +36,20 @@ st.set_page_config(
 
 
 #### Functions
+### OpenAI framework Chronology
+async def chrono():
+  # you call the Chronology functions, awaiting the ones that are marked await
+  promt = st.text_input(label = 'What question to Ben do you have?', placeholder = 'What is a Workshop?')
+  promt = 'Write an extremely long, detailed answer to \"' + question + '?"'
+  completion = await cleaned_completion(prompt, max_tokens = 100, engine = "davinci", temperature = 0.5, top_p = 1, frequency_penalty = 0.2, stop = ["\n\n"])
+
+  st.write('Completion Response: {0}'.format(completion))
+
+
+
 ### OpenAI library
 ## Set API key
-openai.api_key = st.secrets["openai"]["key"]
+#openai.api_key = st.secrets["openai"]["key"]
   
 
 
@@ -62,20 +74,18 @@ st.subheader('Ben chatbot')
 
 
 ## Implementation of OpenAI
-question = st.text_input(label = 'What question to Ben do you have?', placeholder = 'What is a Workshop?')
-question = 'Write an extremely long, detailed answer to \"' + question + '?"'
-
-if (question != 'Write an extremely long, detailed answer to "?"'):
-  response = openai.Completion.create(engine = "text-davinci-002", prompt = question, temperature = 0.7, max_tokens = 709, top_p = 1, frequency_penalty = 0, presence_penalty = 0)
+chrono()
+#if (question != 'Write an extremely long, detailed answer to "?"'):
+  #response = openai.Completion.create(engine = "text-davinci-002", prompt = question, temperature = 0.7, max_tokens = 709, top_p = 1, frequency_penalty = 0, presence_penalty = 0)
   
   # Translation
-  if (lang != 'EN-GB'):
-    answer = trans(input = response.choices[0].text, target_lang = lang)
-  else:
-    answer = response.choices[0].text
+  #if (lang != 'EN-GB'):
+   # answer = trans(input = response, target_lang = lang)
+  #else:
+   # answer = response
   
   # Output
-  st.write(answer)
+  #st.write(answer)
 
 
 

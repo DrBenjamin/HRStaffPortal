@@ -8,6 +8,7 @@ import pandas as pd
 import io
 import os
 import xlsxwriter
+import chronological
 import deepl
 
 
@@ -145,3 +146,7 @@ def trans(input, target_lang):
   translator = deepl.Translator(st.secrets["deepl"]["key"])
   result = translator.translate_text(input, target_lang = target_lang) 
   return result
+
+
+
+### Function: openai = OpenAI GPT-3 Chat Bot
