@@ -1,6 +1,12 @@
-## Any needed libraries
+##### `requirements.txt`
+##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
+##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
+##### Please reach out to benjamin.gross@giz.de for any questions
 
-streamlit==1.52
+
+### All needed libraries and their versions
+streamlit==1.16.0
 mysql-connector-python==8.0.29
 shillelagh[all]==1.1.0
 extra_streamlit_components==0.1.56
+openai==0.25.0
