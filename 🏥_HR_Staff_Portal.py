@@ -35,7 +35,7 @@ st.set_page_config(
   menu_items = { 
          'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
          'Report a bug': "http://www.health.gov.mw/index.php/contact-moh/head-office",
-         'About': "This is the KCH HR Staff Portal Version 0.2.0"
+         'About': "This is the HR Staff Portal Version 0.2.0"
         }
 )
 
