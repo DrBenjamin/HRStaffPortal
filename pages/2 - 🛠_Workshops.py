@@ -5,19 +5,21 @@
 
 
 
+
 #### Loading neded Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
-from shillelagh.adapters.registry import registry
-from shillelagh.adapters.file.csvfile import CSVFile
-from shillelagh.backends.apsw.db import connect
+import os
+import openai
+
+
 
 
 #### Functions
-## Perform query
-def run_query(query):
-  sql = cursor.execute(query)
-  return sql
+### OpenAI library
+## Set API key
+openai.api_key = st.secrets["openai"]["key"]
+  
   
   
 
@@ -35,25 +37,30 @@ st.set_page_config(
 )
 
 
+
+
+#### Sidebar
+## Sidebar Header Image
+st.sidebar.image('images/MoH.png')
+
+
+
+
+#### Main Program
 ### Header
 ## Title
 st.title('Workshop Page')
 
-## Shillelagh
-connection = connect(":memory:", adapters = 'csvfile')
-cursor = connection.cursor()
 
-# Execute query
-query = "SELECT * FROM 'test.csv';"
-#csvData = cursor.execute(query)
-csvData = run_query(query)
-st.dataframe(csvData, use_container_width = True)
+## Implement OpenAI
+question = st.text_input(label = 'What question do you have?', placeholder = 'What is a Workshop?')
+question = 'Write an extremely long, detailed answer to \"' + question + '?"'
 
-
-### Sidebar
-## Sidebar Header Image
-st.sidebar.image('images/MoH.png')
-
+if (question != 'Write an extremely long, detailed answer to "?"'):
+  response = openai.Completion.create(engine = "text-davinci-002", prompt = question, temperature = 0.7, max_tokens = 709, top_p = 1, frequency_penalty = 0, presence_penalty = 0)
+  
+  # Output
+  st.write(response.choices[0].text)
 
 
 
