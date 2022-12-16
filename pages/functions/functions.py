@@ -8,6 +8,7 @@ import pandas as pd
 import io
 import os
 import xlsxwriter
+import deepl
 
 
 
@@ -136,3 +137,11 @@ def loadFile(filename):
   with open(filename, 'rb') as file:
     binaryData = file.read()
   return binaryData
+
+
+
+### Function: trans = DeepL translation
+def trans(input, target_lang):
+  translator = deepl.Translator(st.secrets["deepl"]["key"])
+  result = translator.translate_text(input, target_lang = target_lang) 
+  return result
