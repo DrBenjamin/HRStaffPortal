@@ -4,9 +4,9 @@
 ##### Please reach out to benjamin.gross@giz.de for any questions
 
 
-### All needed libraries and their versions
+### All needed libraries (and their versions)
 streamlit==1.16.0
 mysql-connector-python==8.0.29
 shillelagh[all]==1.1.0
 extra_streamlit_components==0.1.56
-chronological==0.1.1
+chronological==openai
