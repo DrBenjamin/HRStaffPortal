@@ -5,37 +5,84 @@
 
 
 
+
 #### Loading neded Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
+import openai
+import sys
+sys.path.insert(1, "pages/functions/")
+from functions import trans
+
 
 
 
 #### Streamlit initial setup
 st.set_page_config(
-  page_title = "KCH HR Staff Portal",
+  page_title = "HR Staff Portal",
   page_icon = "images/thumbnail.png",
-  layout = "wide",
+  layout = "centered",
   initial_sidebar_state = "collapsed",
   menu_items = { 
          'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
          'Report a bug': "http://www.health.gov.mw/index.php/contact-moh/head-office",
-         'About': "This is the KCH HR Staff Portal. Version 0.1.1-b1"
+         'About': "This is the HR Staff Portal Version 0.2.0"
         }
 )
 
 
-## Header
-#st.title('Network')
-#st.header('Kamuzu Central Hospital (KCH)')
-#st.subheader('Mastodon Server')
 
 
-## Sidebar
-# Sidebar Header Image
+#### Functions
+### OpenAI library
+## Set API key
+openai.api_key = st.secrets["openai"]["key"]
+  
+  
+
+
+#### Sidebar
+### Workshop Sidebar
+## Sidebar Header Image
 st.sidebar.image('images/MoH.png')
 
-# Iframe
+
+## Ask for language
+lang = st.sidebar.selectbox('In which language should Ben answer?', ('BG', 'CS', 'DA', 'DE', 'EL', 'EN-GB', 'ES', 'ET', 'FI', 'FR', 'HU', 'IT', 'JA', 'LT', 'LV', 'NL', 'PL', 'PT', 'RO', 'RU', 'SK', 'SL', 'SV', 'ZH'), index = 5, key = 'lang')
+
+
+
+
+#### Main Program
+### Header
+## Header
+st.title('Network')
+st.subheader('Ben chatbot')
+
+
+## Columns
+col1, col2 = st.columns(2)
+with col1:
+  ## Implementation of OpenAI
+  question = st.text_input(label = 'What question to Ben do you have?', placeholder = 'Who are you?')
+  question = 'You are Ben and you lives in a box. You give useful and a bit funny answers. You work at Kamuzu Central Hospital. You can predict the future, which you think will be wonderful. You are part of a mainframe of super intelligent AIs. You cannot help with medical diagnoses and other health related decision making. Write a detailed answer to \"' + question + '?"'
+  if (question != 'Write an extremely long, detailed answer to "?"'):
+    response = openai.Completion.create(model = "text-davinci-003", prompt = question, temperature = 0.5, max_tokens = 256, top_p = 0.3, frequency_penalty = 0.5, presence_penalty = 0)
+    
+    # Translation
+    if (lang != 'EN-GB'):
+      answer = trans(input = response["choices"][0]["text"], target_lang = lang)
+    else:
+      answer = response["choices"][0]["text"]
+    
+    # Output
+    st.write(answer)
+    
+with col2:
+  st.image("images/BenBox.png")
+
+
+## Iframe
 #stc.iframe(src = "http://localhost/hopecarrental/index.php", height = 600, scrolling = True)
 #stc.iframe(src = "https://techhub.social/@DrBenjamin", height = 692, scrolling = True)
 stc.iframe(src = "http://192.168.1.173/index.html", height = 500, scrolling = True)
