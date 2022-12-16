@@ -28,7 +28,7 @@ from functions import loadFile
 
 #### Streamlit initial setup
 st.set_page_config(
-  page_title = "KCH HR Staff Portal",
+  page_title = "HR Staff Portal",
   page_icon = "images/thumbnail.png",
   layout = "centered",
   initial_sidebar_state = "expanded",
