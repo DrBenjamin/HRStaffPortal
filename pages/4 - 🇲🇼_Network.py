@@ -57,12 +57,6 @@ def geo_check(address_part = 'city', language = 'en'):
   
   # Return output 
   return output
-
-
-
-### OpenAI library
-## Set API key
-openai.api_key = st.secrets["openai"]["key"]
   
   
 
@@ -87,9 +81,6 @@ st.subheader('Ben chatbot')
 
 
 
-
-
-
 ### Chat Bot Ben
 ## Columns
 col1, col2 = st.columns(2)
@@ -111,18 +102,18 @@ with col1:
   
   
   ## Get response from openai
+  # Set API key
+  openai.api_key = st.secrets["openai"]["key"]
+  
   try:
     response = openai.Completion.create(model = "text-davinci-003", prompt = question, temperature = 0.5, max_tokens = 256, top_p = 0.3, frequency_penalty = 0.5, presence_penalty = 0)
     
     # Translation
-    if (lang != 'EN-GB'):
-      answer = trans(input = response["choices"][0]["text"], target_lang = lang)
-    else:
-      answer = response["choices"][0]["text"]
+    answer = trans(input = response["choices"][0]["text"], target_lang = lang)
   
-  
-    ## Output
+    # Output
     st.write(answer)
+    
   except:
     print("An exception occurred in `OpenAI`")
     
