@@ -120,7 +120,7 @@ with col1:
   
 ## Column 1
 with col2:
-  st.image("images/BenBox.png")
+  st.image("images/Ben.png")
 
 
 ## Iframe
