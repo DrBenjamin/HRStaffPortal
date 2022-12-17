@@ -33,7 +33,7 @@ st.set_page_config(
 
 #### Functions
 ### Function geo_check = Geo-Location checking
-def geo_check(address_part = 'city', language = 'en'):
+def geo_check(address_part, fallback, language = 'en'):
   ## Geocoder gets coordinates related to the current IP address
   g = geocoder.ip('me')
   
@@ -49,11 +49,12 @@ def geo_check(address_part = 'city', language = 'en'):
     location = geolocator.geocode(g.latlng, addressdetails = True)
     loc = location.raw
     output = loc['address'][address_part]
+    print("Detected location:", output)
     
-  # Set to Lilongwe if not reachable
+  # Set `output` to `fallback` if not reachable
   except:
     print("An exception occurred in `Geocoder`")
-    output = 'Lilongwe'
+    output = fallback
   
   # Return output 
   return output
@@ -95,7 +96,7 @@ with col1:
   language = lang[0:2].lower()
   
   # Call geo_check function with params
-  city = geo_check(address_part = 'city', language = language)
+  city = geo_check(address_part = 'city', fallback = 'Lilongwe', language = language)
   
   # Concacenate question
   question = 'You are Ben an artificial Intelligience and you live in a blue box. You give useful and a bit funny answers. You work at Kamuzu Central Hospital in Lilongwe, abbreviated to KCH. You can predict the future, which you think will be wonderful. You are part of a mainframe of super intelligent AIs. You cannot help with medical diagnoses and other health related decision making but try to support all colleagues at KCH. Right now you are physically located in ' + city + 'Write a detailed answer to \"' + question + '?"'
