@@ -2,10 +2,6 @@
 ##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
-
-
-
-
 #### Loading neded Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
@@ -13,6 +9,8 @@ import openai
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import trans
+import geocoder
+from geopy.geocoders import Nominatim
 
 
 
@@ -60,13 +58,47 @@ st.title('Network')
 st.subheader('Ben chatbot')
 
 
+
+### Geo-Location
+## Geopy
+# Calling the Nominatim tool
+loc = Nominatim(user_agent = "GetLoc", timeout = 3)
+geolocator = Nominatim(user_agent = "geoapiExercises")
+
+# Entering the location name to get coordinates
+getLoc = loc.geocode("Lilongwe")
+
+# Geocoder gets coordinates
+g = geocoder.ip('me')
+
+# Get City name
+try:
+  geolocator.reverse(g.latlng, language = lang)
+  location = geolocator.geocode(g.latlng, addressdetails = True)
+  loc = location.raw
+  city = loc['address']['city']
+  
+# Set to Lilongwe if not reachable
+except:
+  print("An exception occurred in `Geocoder`")
+  city = 'Lilongwe'
+
+
+
+### Chat Bot Ben
 ## Columns
 col1, col2 = st.columns(2)
+
+
+## Column 1
 with col1:
   ## Implementation of OpenAI
   question = st.text_input(label = 'What question to Ben do you have?', placeholder = 'Who are you?')
-  question = 'You are Ben and you lives in a box. You give useful and a bit funny answers. You work at Kamuzu Central Hospital. You can predict the future, which you think will be wonderful. You are part of a mainframe of super intelligent AIs. You cannot help with medical diagnoses and other health related decision making. Write a detailed answer to \"' + question + '?"'
-  if (question != 'Write an extremely long, detailed answer to "?"'):
+  question = 'You are Ben an artificial Intelligience and you live in a blue box. You give useful and a bit funny answers. You work at Kamuzu Central Hospital in Lilongwe, abbreviated to KCH. You can predict the future, which you think will be wonderful. You are part of a mainframe of super intelligent AIs. You cannot help with medical diagnoses and other health related decision making but try to support all colleagues at KCH. Right now you are physically located in ' + city + 'Write a detailed answer to \"' + question + '?"'
+  
+  
+  ## Get response from openai
+  try:
     response = openai.Completion.create(model = "text-davinci-003", prompt = question, temperature = 0.5, max_tokens = 256, top_p = 0.3, frequency_penalty = 0.5, presence_penalty = 0)
     
     # Translation
@@ -74,10 +106,15 @@ with col1:
       answer = trans(input = response["choices"][0]["text"], target_lang = lang)
     else:
       answer = response["choices"][0]["text"]
-    
-    # Output
+  
+  
+    ## Output
     st.write(answer)
+  except:
+    print("An exception occurred in `OpenAI`")
     
+  
+## Column 1
 with col2:
   st.image("images/BenBox.png")
 
