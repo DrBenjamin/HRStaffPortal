@@ -6,10 +6,11 @@
 import streamlit as st
 import streamlit.components.v1 as stc
 import openai
+import geocoder
+from geopy.geocoders import Nominatim
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import trans
-from functions import geo_check
 
 
 
@@ -31,6 +32,34 @@ st.set_page_config(
 
 
 #### Functions
+### Function geo_check = Geo-Location checking
+def geo_check(address_part = 'city', language = 'en'):
+  ## Geocoder gets coordinates related to the current IP address
+  g = geocoder.ip('me')
+  
+  
+  ## Geopy
+  # Calling the Nominatim tool
+  loc = Nominatim(user_agent = "GetLoc", timeout = 3)
+  geolocator = Nominatim(user_agent = "geoapiExercises")
+  
+  # Get City name
+  try:
+    geolocator.reverse(g.latlng, language = lang)
+    location = geolocator.geocode(g.latlng, addressdetails = True)
+    loc = location.raw
+    output = loc['address'][address_part]
+    
+  # Set to Lilongwe if not reachable
+  except:
+    print("An exception occurred in `Geocoder`")
+    output = 'Lilongwe'
+  
+  # Return output 
+  return output
+
+
+
 ### OpenAI library
 ## Set API key
 openai.api_key = st.secrets["openai"]["key"]
@@ -70,7 +99,14 @@ col1, col2 = st.columns(2)
 with col1:
   ## Implementation of OpenAI
   question = st.text_input(label = 'What question to Ben do you have?', placeholder = 'Who are you?')
-  city = geo_check('city')
+  
+  # Cut language desciber to 2 letters in lowercase
+  language = lang[0:2].lower()
+  
+  # Call geo_check function with params
+  city = geo_check(address_part = 'city', language = language)
+  
+  # Concacenate question
   question = 'You are Ben an artificial Intelligience and you live in a blue box. You give useful and a bit funny answers. You work at Kamuzu Central Hospital in Lilongwe, abbreviated to KCH. You can predict the future, which you think will be wonderful. You are part of a mainframe of super intelligent AIs. You cannot help with medical diagnoses and other health related decision making but try to support all colleagues at KCH. Right now you are physically located in ' + city + 'Write a detailed answer to \"' + question + '?"'
   
   
