@@ -10,6 +10,8 @@ import os
 import xlsxwriter
 import chronological
 import deepl
+import geocoder
+from geopy.geocoders import Nominatim
 
 
 
@@ -166,3 +168,35 @@ def landingPage(page):
   st.write("<a href='Workshops' target='_self'>Workshops</a>", unsafe_allow_html = True)
   st.write("<a href='Network' target='_self'>Network</a>", unsafe_allow_html = True)
   st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
+  
+  
+  
+### Function geo_check = Geo-Location checking
+def geo_check(address_part):
+  ## Geocoder gets coordinates related to the current IP address
+  g = geocoder.ip('me')
+  
+  
+  ## Geopy
+  # Calling the Nominatim tool
+  loc = Nominatim(user_agent = "GetLoc", timeout = 3)
+  geolocator = Nominatim(user_agent = "geoapiExercises")
+  
+  # Entering the location name to get coordinates
+  getLoc = loc.geocode("Lilongwe")
+  
+  # Get City name
+  try:
+    geolocator.reverse(g.latlng, language = lang)
+    location = geolocator.geocode(g.latlng, addressdetails = True)
+    loc = location.raw
+    output = loc['address'][address_part]
+    
+  # Set to Lilongwe if not reachable
+  except:
+    print("An exception occurred in `Geocoder`")
+    output = 'Lilongwe'
+  
+  # Return output 
+  return output
+  

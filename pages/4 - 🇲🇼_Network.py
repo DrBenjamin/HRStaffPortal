@@ -9,8 +9,7 @@ import openai
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import trans
-import geocoder
-from geopy.geocoders import Nominatim
+from functions import geo_check
 
 
 
@@ -59,29 +58,6 @@ st.subheader('Ben chatbot')
 
 
 
-### Geo-Location
-## Geopy
-# Calling the Nominatim tool
-loc = Nominatim(user_agent = "GetLoc", timeout = 3)
-geolocator = Nominatim(user_agent = "geoapiExercises")
-
-# Entering the location name to get coordinates
-getLoc = loc.geocode("Lilongwe")
-
-# Geocoder gets coordinates
-g = geocoder.ip('me')
-
-# Get City name
-try:
-  geolocator.reverse(g.latlng, language = lang)
-  location = geolocator.geocode(g.latlng, addressdetails = True)
-  loc = location.raw
-  city = loc['address']['city']
-  
-# Set to Lilongwe if not reachable
-except:
-  print("An exception occurred in `Geocoder`")
-  city = 'Lilongwe'
 
 
 
@@ -94,6 +70,7 @@ col1, col2 = st.columns(2)
 with col1:
   ## Implementation of OpenAI
   question = st.text_input(label = 'What question to Ben do you have?', placeholder = 'Who are you?')
+  city = geo_check('city')
   question = 'You are Ben an artificial Intelligience and you live in a blue box. You give useful and a bit funny answers. You work at Kamuzu Central Hospital in Lilongwe, abbreviated to KCH. You can predict the future, which you think will be wonderful. You are part of a mainframe of super intelligent AIs. You cannot help with medical diagnoses and other health related decision making but try to support all colleagues at KCH. Right now you are physically located in ' + city + 'Write a detailed answer to \"' + question + '?"'
   
   
