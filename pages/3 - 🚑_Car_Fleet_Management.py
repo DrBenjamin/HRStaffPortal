@@ -100,13 +100,16 @@ def run_query(query):
 def lastID(url):
   query = "SELECT MAX(ID) FROM %s;" %(url)
   rows = run_query(query)
-  id = 0
+  
+  # Check for ID
   for row in rows:
-    id = int(row[0]) + 1
-
-  # If first entry in database start with `ID` `1` 
-  if (id == 0):
-    id = 1
+    if (row[0] != None):
+      id = int(row[0]) + 1
+    else:
+      id = 1
+      break
+  
+  # Return ID    
   return id
 
 
