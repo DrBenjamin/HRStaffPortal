@@ -92,7 +92,7 @@ password = "xyz"
 
 Connect to your **MySQL Database** and create the *user* you configured in `secrets.toml`. Create a **Schema / Database** with the name `idcard`. 
 
-To configure the database to work with the Prototype and run the following **SQL commands**:
+To configure the HR Staff Portal tables run the following **SQL commands**:
 
 ```
   CREATE TABLE `idcard`.`IMAGEBASE` (
@@ -101,7 +101,7 @@ To configure the database to work with the Prototype and run the following **SQL
   `FORENAME` VARCHAR(45) NULL,
   `SURNAME` VARCHAR(45) NULL,
   `JOB_TITLE` VARCHAR(45) NULL,
-  `EXPIRY_DATE` VARCHAR(45) NULL,
+  `EXPIRY_DATE` DATE NULL,
   `EMPLOYEE_NO` VARCHAR(45) NULL,
   `CARDS_PRINTED` INT NOT NULL,
   `IMAGE` BLOB NULL,
@@ -112,12 +112,12 @@ To configure the database to work with the Prototype and run the following **SQL
   `EMPLOYEE_NO` VARCHAR(45) NULL,
   `TRAINING` VARCHAR(45) NULL,
   `INSTITUTE` VARCHAR(45) NULL,
-  `DATE` VARCHAR(45) NULL,
+  `DATE` DATE NULL,
   `DAYS` VARCHAR(45) NULL,
   PRIMARY KEY (`ID`));
 ```
 
-or use the sample data `files/idcard.sql` and `files/carfleet.sql` and import them to a **MySQL** / **MariaDB** database.
+or use the database dump with sample data `files/idcard.sql` and import them to a **MySQL** / **MariaDB** database. To use the Car Fleet Management module you also need to import the file `files/carfleet.sql`.
 
 
 
