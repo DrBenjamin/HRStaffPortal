@@ -126,7 +126,7 @@ with st.form('Input', clear_on_submit = True):
     user_question = st.text_input(label = 'What text should be summarised to one keyword?', placeholder = 'Salary, is what an employee get paid at the end of the month')
     
     # Concacenate questions
-    summary_question = 'Summarise this text in no more than ten words: \"' + user_question + '"'
+    summary_question = 'A User asks in the category \"' + categories[category] + '\" and the sub-category"' + sub_categories[sub_category] + '" about this question: \"' + user_question + '" Please summarise it to a statement in no more than three words.'
     keyword_question = 'Extract one keyword of the beginning of the text which is a noun without the accompanying article and pronoun: \"' + user_question + '"'
     
     
@@ -142,13 +142,14 @@ with st.form('Input', clear_on_submit = True):
       # Summary
       response_summary = openai.Completion.create(model = "text-davinci-003", prompt = summary_question, temperature = 0.5, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
       summary = response_summary['choices'][0]['text'].lstrip()
+      summary = summary.replace('.', '')
       
-      # keyword1
+      # Find the keyword1
       response_keyword = openai.Completion.create(model = "text-curie-001", prompt = keyword_question, temperature = 0.0, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
       keyword1 = response_keyword['choices'][0]['text'].lstrip()
       keyword1 = keyword1.capitalize()
       
-      # Other 4 keywords
+      # Find the 4 other keywords 
       keywords_question = 'Extract four one-word keywords which are not the same as \"' + keyword1 + '\"' + ' of this text: \"' + user_question + '"'
       response_keywords = openai.Completion.create(model = "text-davinci-003", prompt = keywords_question, temperature = 0.0, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
       keywords = response_keywords['choices'][0]['text']
@@ -158,6 +159,7 @@ with st.form('Input', clear_on_submit = True):
       # Create array out of comma seperated string
       st.write(keyword1)
       st.write(keywords)
+      st.write(summary)
       keywords = keywords.split(',')
   
           
@@ -182,7 +184,14 @@ with st.form('Input', clear_on_submit = True):
       id = lastID(url = "benbox.QUESTIONS")
         
       # Pollute `QUESTION_ID`
-      question_id = '0000' + str(id)
+      if (id < 10):
+        question_id = '0000' + str(id)
+      elif (id < 100):
+        question_id = '000' + str(id)
+      elif (id < 1000):
+        question_id = '00' + str(id)
+      elif (id < 10000):
+        question_id = '0' + str(id)
         
       # Pollute `QUESTTION_TEXT_LANGUAGE
       language = 'en'
