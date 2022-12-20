@@ -5,6 +5,7 @@
 *Export.xlsx
 *VBA.xlsm
 blob*
+*.Rproj
 HRStaffPortal.Rproj
 .Rhistory
 secrets.toml
