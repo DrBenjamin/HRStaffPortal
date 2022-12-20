@@ -8,6 +8,8 @@ import pandas as pd
 import io
 import os
 import xlsxwriter
+from docx import Document
+from docx.shared import Inches
 import deepl
 
 

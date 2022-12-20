@@ -20,10 +20,16 @@ pip install mysql-connector-python-rf
 pip install mysql-connector-python==8.0.29
 pip install extra_streamlit_components
 pip install XlsxWriter
+pip install python-docx
 pip install openai
 pip install deepl
 ```
 
+or do it at once using the `requirements.txt` file with:
+
+```
+pip install -r requirements.txt
+```
 
 ##### Getting the Source Code
 

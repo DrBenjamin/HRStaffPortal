@@ -5,9 +5,11 @@
 
 
 ### All needed libraries (and their versions)
-streamlit==1.16.0
-mysql-connector-python==8.0.29
-shillelagh[all]==1.1.0
-extra_streamlit_components==0.1.56
+streamlit == 1.16.0
+mysql-connector-python == 8.0.29
+shillelagh[all] == 1.1.0
+extra_streamlit_components == 0.1.56
+xlsxwriter
+python-docx
 openai
 deepl
