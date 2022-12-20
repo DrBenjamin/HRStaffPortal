@@ -87,6 +87,11 @@ if ('logout' not in st.session_state):
   st.session_state['logout'] = False
   
 
+## Logout
+if ('image' not in st.session_state):
+  st.session_state['image'] = 'images/placeholder.png'
+
+
 
 
 #### All Functions used exclusively in HR Staff Portal
