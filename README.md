@@ -117,7 +117,7 @@ To configure the HR Staff Portal tables run the following **SQL commands**:
   PRIMARY KEY (`ID`));
 ```
 
-or use the database dump with sample data `files/idcard.sql` and import them to a **MySQL** / **MariaDB** database. To use the Car Fleet Management module you also need to import the file `files/carfleet.sql`.
+or use the database dump with sample data `files/idcard_dump.sql` and import them to a **MySQL** / **MariaDB** database. To use the **Car Fleet Management** module you also need to import the file `files/carfleet_dump.sql`. For the **Chatbot** please import the `files/benbox_dump.sql` file.
 
 
 

@@ -90,6 +90,9 @@ st.subheader('Ben chatbot')
 
 
 ### Chat Bot Ben
+answer = ''
+
+
 ## Form
 with st.form('Input', clear_on_submit = True):
   ## Columns
@@ -138,9 +141,9 @@ with st.form('Input', clear_on_submit = True):
     openai.api_key = st.secrets['openai']['key']
     
     try:
-      ## Doing the request to OpenAI
+      ## Doing the requests to OpenAI for summarizing / keyword extracting the question
       # Summary
-      response_summary = openai.Completion.create(model = "text-davinci-003", prompt = summary_question, temperature = 0.5, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
+      response_summary = openai.Completion.create(model = "text-davinci-003", prompt = summary_question, temperature = 0.3, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
       summary = response_summary['choices'][0]['text'].lstrip()
       summary = summary.replace('.', '')
       
@@ -151,7 +154,7 @@ with st.form('Input', clear_on_submit = True):
       
       # Find the 4 other keywords 
       keywords_question = 'Extract four one-word keywords which are not the same as \"' + keyword1 + '\"' + ' of this text: \"' + user_question + '"'
-      response_keywords = openai.Completion.create(model = "text-davinci-003", prompt = keywords_question, temperature = 0.0, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
+      response_keywords = openai.Completion.create(model = "text-curie-001", prompt = keywords_question, temperature = 0.0, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
       keywords = response_keywords['choices'][0]['text']
       
       
@@ -202,6 +205,20 @@ with st.form('Input', clear_on_submit = True):
       run_query(query)
       conn.commit()
       
+      
+      ## Get handbook data
+      query = "SELECT HANDBOOK_TEXT FROM benbox.HANDBOOK_USER WHERE ID = 1;"
+      handbook = run_query(query)
+      handbook = handbook[0][0]
+      st.write(handbook)
+      
+      ## Doing the request to OpenAI for answering the question
+      # Answer
+      answer_question = 'The user handbook contains following information: \"' + handbook + '\". Please answer following user question: \"' + user_question + '\"'
+      st.write(answer_question)
+      response_answer = openai.Completion.create(model = "text-davinci-003", prompt = answer_question, temperature = 0.5, max_tokens = 128, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
+      answer = response_answer['choices'][0]['text'].lstrip()
+      
         
     except:
       print('An exception occurred in `OpenAI`')
@@ -210,3 +227,7 @@ with st.form('Input', clear_on_submit = True):
   ## Column 1
   with col2:
     st.image("images/Ben.png")
+    
+  
+  ## Outside the form
+  st.write(answer)
