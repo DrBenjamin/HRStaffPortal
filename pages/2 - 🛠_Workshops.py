@@ -5,6 +5,7 @@
 #### Loading needed Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
+import pandas as pd
 import openai
 import mysql.connector
 import sys
@@ -82,18 +83,20 @@ st.sidebar.image('images/MoH.png')
 
 
 #### Main Program
-### Header
+### Chat Bot Ben
 ## Header
 st.title('Workshop page')
 st.subheader('Ben chatbot')
 
 
-
-### Chat Bot Ben
+## Global variables
 answer = ''
+keyword1 = ''
+keywords = []
 
 
-## Form
+
+### Form
 with st.form('Input', clear_on_submit = True):
   ## Columns
   col1, col2 = st.columns(2)
@@ -154,7 +157,7 @@ with st.form('Input', clear_on_submit = True):
       
       # Find the 4 other keywords 
       keywords_question = 'Extract four one-word keywords which are not the same as \"' + keyword1 + '\"' + ' of this text: \"' + user_question + '"'
-      response_keywords = openai.Completion.create(model = "text-curie-001", prompt = keywords_question, temperature = 0.0, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
+      response_keywords = openai.Completion.create(model = "text-davinci-003", prompt = keywords_question, temperature = 0.0, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
       keywords = response_keywords['choices'][0]['text']
       
       
@@ -164,8 +167,6 @@ with st.form('Input', clear_on_submit = True):
       st.write(keywords)
       st.write(summary)
       keywords = keywords.split(',')
-  
-          
       for i in range(4):
         # Remove leading space
         keywords[i] = keywords[i].strip()
@@ -179,7 +180,7 @@ with st.form('Input', clear_on_submit = True):
           keywords[i] = keywords[i].split()[0]
           
         # Capitalize
-        keywords[0] = keywords[0].capitalize()
+        keywords[i] = keywords[i].capitalize()
         
         
       ## Writing responses to table `QUESTIONS` in database `benbox`
@@ -201,25 +202,63 @@ with st.form('Input', clear_on_submit = True):
         
       # Write to table
       query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, QUESTION_CATEGORY, QUESTION_CATEGORY_SUB, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, question_id, categories_id[category], sub_categories_id[sub_category], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], summary, user_question, language)
-      st.write(query)
       run_query(query)
       conn.commit()
       
       
-      ## Get handbook data
-      query = "SELECT HANDBOOK_TEXT FROM benbox.HANDBOOK_USER WHERE ID = 1;"
-      handbook = run_query(query)
-      handbook = handbook[0][0]
-      st.write(handbook)
+      ## Get handbook data to answer
+      query = "SELECT ID, ID, HANDBOOK_ID, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_TEXT, HANDBOOK_HITS FROM benbox.HANDBOOK_USER WHERE HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s';" % (keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3])
+      rows = run_query(query)
+      databank_handbook = pd.DataFrame(columns = ['ID_Index', 'ID', 'HANDBOOK_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_TEXT', 'HANDBOOK_HITS'])
+      for row in rows:
+        df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]], columns = ['ID_Index', 'ID', 'HANDBOOK_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_TEXT', 'HANDBOOK_HITS'])
+        databank_handbook = pd.concat([databank_handbook, df])
+      databank_handbook = databank_handbook.set_index('ID_Index')
       
-      ## Doing the request to OpenAI for answering the question
-      # Answer
-      answer_question = 'The user handbook contains following information: \"' + handbook + '\". Please answer following user question: \"' + user_question + '\"'
-      st.write(answer_question)
-      response_answer = openai.Completion.create(model = "text-davinci-003", prompt = answer_question, temperature = 0.5, max_tokens = 128, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
-      answer = response_answer['choices'][0]['text'].lstrip()
       
-        
+      ## Checking if he found handbook data
+      if (len(databank_handbook) > 0):     
+        # Adding keyword1 at first position
+        keywords.insert(0, keyword1)
+        for x in range(len(databank_handbook)):
+          handbook = databank_handbook.iloc[x]
+          counter = 0 + int(databank_handbook._get_value(handbook[0], 'HANDBOOK_HITS'))
+          for i in range(5):
+            if handbook[2].capitalize() == keywords[i]:
+              counter += 1
+            if handbook[3].capitalize() == keywords[i]:
+              counter += 1
+            if handbook[4].capitalize() == keywords[i]:
+              counter += 1
+            if handbook[5].capitalize() == keywords[i]:
+              counter += 1
+            if handbook[6].capitalize() == keywords[i]:
+              counter += 1
+            databank_handbook['HANDBOOK_HITS'][handbook[0]] = counter
+              
+              
+        ## Checking for highest Score ('HANDBOOK_HITS')
+        for x in range(len(databank_handbook)):
+          if (x == 0):
+            handbook = databank_handbook._get_value(databank_handbook.iloc[x][0], 'HANDBOOK_TEXT')
+          else:
+            for i in range(x):
+              if (databank_handbook.iloc[x][8] <= databank_handbook.iloc[i][8]):
+                break
+              else:
+                if (i == x - 1):
+                  handbook = databank_handbook._get_value(databank_handbook.iloc[x][0], 'HANDBOOK_TEXT')
+                  
+                  
+        ## Doing the request to OpenAI for answering the question
+        # Answer
+        answer_question = 'The user handbook contains following information: \"' + handbook + '\". Please answer following user question: \"' + user_question + '\"'
+        response_answer = openai.Completion.create(model = "text-davinci-003", prompt = answer_question, temperature = 0.5, max_tokens = 128, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
+        answer = response_answer['choices'][0]['text'].lstrip()
+      else:
+        answer = 'Unfortunately we have not found the answer to your question.' 
+      
+      
     except:
       print('An exception occurred in `OpenAI`')
       
@@ -229,5 +268,6 @@ with st.form('Input', clear_on_submit = True):
     st.image("images/Ben.png")
     
   
-  ## Outside the form
-  st.write(answer)
+  
+### Outside the form
+st.write(answer)
