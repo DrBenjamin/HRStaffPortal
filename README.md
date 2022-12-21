@@ -14,7 +14,7 @@ For development [RStudio](https://www.rstudio.com/products/rstudio/download/#dow
 
 Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally. A virtual Python-Environment like Anaconda is highly recommend.
 
-After that you need to install some \*\*Python libraries\*:
+After that you need to install some **Python libraries**:
 
     pip install mysql-connector-python-rf
     pip install mysql-connector-python==8.0.29
@@ -36,7 +36,7 @@ Clone the **repository** of `HRStaffPortal` with following command:
 
 ##### Configuration of Streamlit config files
 
-First make a directory `.streamlit`. Than create the file `./streamlit/config.toml`. Here you define the **theming** and some **Streamlit-Server behaviour** flags:
+First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the **theming** and some **Streamlit-Server behaviour** flags:
 
     [theme]
     primaryColor = "#F63366"
@@ -51,7 +51,7 @@ First make a directory `.streamlit`. Than create the file `./streamlit/config.to
     [server]
     headless = true
 
-Now create the file `./streamlit/secrets.toml` where you define the **user / password** combinations:
+Now create the file `.streamlit/secrets.toml` where you define the **user / password** combinations:
 
     [passwords]
     # Follow the rule: username = "password"
@@ -61,7 +61,7 @@ Now create the file `./streamlit/secrets.toml` where you define the **user / pas
 
 ##### For proper usage a local MySQL Server is needed
 
-In the `./streamlit/secrets.toml` you define the **user / password** combination for the HR Staff Portal MySQL Server `[mysql]`, and if using the Car Fleet Management System module also in the section `[mysql_car]`:
+In the `.streamlit/secrets.toml` you define the **user / password** combination for the HR Staff Portal MySQL Server `[mysql]`, and if using the Car Fleet Management System module also in the section `[mysql_car]`:
 
     [mysql]
     host = "127.0.0.1"
@@ -74,6 +74,13 @@ In the `./streamlit/secrets.toml` you define the **user / password** combination
     host = "127.0.0.1"
     port = 3306
     database = "carfleet"
+    user = "xyz"
+    password = "xyz"
+
+    [mysql_benbox]
+    host = "127.0.0.1"
+    port = 3306
+    database = "benbox
     user = "xyz"
     password = "xyz"
 
