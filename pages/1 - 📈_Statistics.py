@@ -38,7 +38,7 @@ st.sidebar.image('images/MoH.png')
 # Data comes from Helmholtz-Zentrum Potsdam
 # https://www-app3.gfz-potsdam.de/kp_index/Kp_ap_nowcast.txt
 # https://www-app3.gfz-potsdam.de/kp_index/Kp_ap_since_1932.txt
-DATA_URL = './Employees.txt'
+DATA_URL = 'files/Employees.txt'
 
 
 ## Load data function
