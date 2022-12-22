@@ -5,12 +5,9 @@
 #### Loading needed Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
-import openai
-import geocoder
-from geopy.geocoders import Nominatim
+import mysql.connector
 import sys
 sys.path.insert(1, "pages/functions/")
-from functions import trans
 
 
 
@@ -32,35 +29,30 @@ st.set_page_config(
 
 
 #### Functions
-### Function geo_check = Geo-Location checking
-def geo_check(address_part, fallback, language = 'en'):
-  ## Geocoder gets coordinates related to the current IP address
-  g = geocoder.ip('me')
-  
-  
-  ## Geopy
-  # Calling the Nominatim tool
-  loc = Nominatim(user_agent = "GetLoc", timeout = 3)
-  geolocator = Nominatim(user_agent = "geoapiExercises")
-  
-  # Get City name
+### Function: run_query = Initial SQL Connection
+def init_connection():
+  ## Initialize connection
   try:
-    geolocator.reverse(g.latlng, language = lang)
-    location = geolocator.geocode(g.latlng, addressdetails = True)
-    loc = location.raw
-    output = loc['address'][address_part]
-    print("Detected location:", output)
-    
-  # Set `output` to `fallback` if not reachable
+    return mysql.connector.connect(**st.secrets["mysql_benbox"])
   except:
-    print("An exception occurred in `Geocoder`")
-    output = fallback
-  
-  # Return output 
-  return output
-  
-  
+    print("An exception occurred in function `init_connection`")
+    st.error(body = 'Databank connection timeout!', icon = "🚨")
+    st.stop()
 
+
+
+### Function: run_query = SQL query
+def run_query(query):
+  with conn.cursor() as cur:
+    try:
+      ## Perform query
+      cur.execute(query)
+      return cur.fetchall()
+    except:
+      print("An exception occurred in function `run_query`")
+
+
+  
 
 #### Sidebar
 ### Workshop Sidebar
@@ -68,8 +60,6 @@ def geo_check(address_part, fallback, language = 'en'):
 st.sidebar.image('images/MoH.png')
 
 
-## Ask for language
-lang = st.sidebar.selectbox('In which language should Ben answer?', ('BG', 'CS', 'DA', 'DE', 'EL', 'EN-GB', 'ES', 'ET', 'FI', 'FR', 'HU', 'IT', 'JA', 'LT', 'LV', 'NL', 'PL', 'PT', 'RO', 'RU', 'SK', 'SL', 'SV', 'ZH'), index = 5, key = 'lang')
 
 
 
@@ -78,7 +68,7 @@ lang = st.sidebar.selectbox('In which language should Ben answer?', ('BG', 'CS',
 ### Header
 ## Header
 st.title('Network')
-st.subheader('Ben chatbot')
+st.subheader('FAQ')
 
 
 
@@ -89,34 +79,15 @@ col1, col2 = st.columns(2)
 
 ## Column 1
 with col1:
-  ## Implementation of OpenAI
-  question = st.text_input(label = 'What question to Ben do you have?', placeholder = 'Who are you?')
-  
-  # Cut language desciber to 2 letters in lowercase
-  language = lang[0:2].lower()
-  
-  # Call geo_check function with params
-  city = geo_check(address_part = 'city', fallback = 'Lilongwe', language = language)
-  
-  # Concacenate question
-  question = 'You are Ben an artificial Intelligience and you live in a blue box. You give useful and a bit funny answers. You work at Kamuzu Central Hospital in Lilongwe, abbreviated to KCH. You can predict the future, which you think will be wonderful. You are part of a mainframe of super intelligent AIs. You cannot help with medical diagnoses and other health related decision making but try to support all colleagues at KCH. Right now you are physically located in ' + city + 'Write a detailed answer to \"' + question + '?"'
-  
-  
-  ## Get response from openai
-  # Set API key
-  openai.api_key = st.secrets["openai"]["key"]
-  
-  try:
-    response = openai.Completion.create(model = "text-davinci-003", prompt = question, temperature = 0.5, max_tokens = 256, top_p = 0.3, frequency_penalty = 0.5, presence_penalty = 0)
-    
-    # Translation
-    answer = trans(input = response["choices"][0]["text"], target_lang = lang)
-  
-    # Output
-    st.write(answer)
-    
-  except:
-    print("An exception occurred in `OpenAI`")
+  st.write('FAQ')
+  ## Get FAQ
+  # Open databank connection
+  conn = init_connection()
+  query = "SELECT que.QUESTION_TEXT, faq.FAQ_ANSWER FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID;"
+  faq = run_query(query)
+ 
+  # Showing dataframe
+  st.dataframe(faq)
     
   
 ## Column 1

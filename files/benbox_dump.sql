@@ -70,6 +70,7 @@ CREATE TABLE `FAQ` (
 
 LOCK TABLES `FAQ` WRITE;
 /*!40000 ALTER TABLE `FAQ` DISABLE KEYS */;
+INSERT INTO `FAQ` VALUES (1,'00003','00002','00001','To log in to the HR Staff Portal, you need to contact the Head of HR via email (head-hr@kch.mw) and request a username and password. Once you have the username and password, you can log in to the portal.','The HR Staff Portal allows employees to access their personal information, including their login information.','en',0);
 /*!40000 ALTER TABLE `FAQ` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,7 +156,7 @@ CREATE TABLE `HANDBOOK_USER` (
 
 LOCK TABLES `HANDBOOK_USER` WRITE;
 /*!40000 ALTER TABLE `HANDBOOK_USER` DISABLE KEYS */;
-INSERT INTO `HANDBOOK_USER` VALUES (1,'00001','00001','00001',1,1,'Purpose','Functions','Tool','Data','Employee','Tool to view, analyze and alter employee data.','The HR Stafff Portal is a tool for Human Resource stafff to view, analyze and alter employee data. It contains master data like name, address and age. Because of this the employee data is protected. Just staff who have an account can login and use the data.','en',NULL);
+INSERT INTO `HANDBOOK_USER` VALUES (1,'00001','00001','00001',1,1,'Purpose','Functions','Tool','Data','Employee','Tool to view, analyze and alter employee data.','The HR Stafff Portal is a tool for Human Resource stafff to view, analyze and alter employee data. It contains master data like name, address and age. Because of this the employee data is protected. Just staff who have an account can login and use the data.','en',3),(2,'00002','00001','00001',1,2,'Login','username','password','security','data privacy','Username and password provided by Head of HR.','The Hr Staff Portal has a User Rights Management for security and data privacy reasons. Access is just granted to people who have a username and password. A user is registered by the Head of HR. If you need to login and access data, please write an email to Head of HR (head-hr@kch.mw).','en',5),(3,'00003','00001','00001',1,3,'Logout','button','login','sidebar menu','public computer','Logout after usage.','After using the HR Staff Portal a user should logout immediatly to avoid access through other people. To do so, there is a logout button on the left sidebar menu. On a puplic computer, it needs to be ensured that no login data is stored, so the browser data should be deleted after usage.','en',1),(4,'00004','00001','00001',1,4,'data','login','employee','personal','training','Employee personal data and training data.','The HR Staff Portal give access to employee data such as name, age and employee number. Also training data is stored in the database. Because this data lies under data privacy rules and policies the data is protected against unauthorised access through a login with a username and password.','en',1);
 /*!40000 ALTER TABLE `HANDBOOK_USER` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +190,7 @@ CREATE TABLE `QUESTIONS` (
 
 LOCK TABLES `QUESTIONS` WRITE;
 /*!40000 ALTER TABLE `QUESTIONS` DISABLE KEYS */;
-INSERT INTO `QUESTIONS` VALUES (1,'00001','00003','00002','Trips','Input','Find','Where','Do','Input Trips','Where do I find the Trips input?','en'),(2,'00002','00001','00001','Car','Fleet','System','Purpose','What','Manage car fleet','What is the purpose of the car fleet system?','en'),(3,'00003','00001','00001','Hr staff portal','Hr','HR','HR','Portal','Manage personnel data','What is thew purpose of the HR Staff Portal tool?','en'),(4,'00004','00001','00001','Hr staff portal','Hr','HR','HR','Portal','HR Staff Support','What is thew purpose of the HR Staff Portal tool?','en'),(5,'00005','00001','00001','Hr staff portal','Hr','HR','HR','Portal','Manage staff data','What is thew purpose of the HR Staff Portal tool?','en'),(6,'00006','00001','00001','Hr staff portal','Hr','HR','HR','Portal','HR staff support','What is thew purpose of the HR Staff Portal tool?','en'),(7,'00007','00001','00001','Hr staff portal','Hr','Portal','Functionality','Staff','HR staff access','What is the functionality of the HR Staff Portal?','en');
+INSERT INTO `QUESTIONS` VALUES (1,'00001','00003','00002','Trips','Input','Find','Where','Do','Input Trips','Where do I find the Trips input?','en'),(2,'00002','00001','00001','Car','Fleet','System','Purpose','What','Manage car fleet','What is the purpose of the car fleet system?','en'),(3,'00003','00001','00001','Login','Hr','Stuff','Portal','Login','Log in HR portal','how do I log in to the hr stuff portal','en');
 /*!40000 ALTER TABLE `QUESTIONS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -202,4 +203,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-21  4:03:06
+-- Dump completed on 2022-12-22 17:47:37
