@@ -106,12 +106,12 @@ def geo_check(address_part, fallback, language = 'en'):
   
   ## Geopy
   # Calling the Nominatim tool
-  loc = Nominatim(user_agent = "GetLoc", timeout = 3)
+  loc = Nominatim(user_agent = "GetLoc", timeout = 6)
   geolocator = Nominatim(user_agent = "geoapiExercises")
   
   # Get City name
   try:
-    geolocator.reverse(g.latlng, language = lang)
+    geolocator.reverse(g.latlng, language = language)
     location = geolocator.geocode(g.latlng, addressdetails = True)
     loc = location.raw
     output = loc['address'][address_part]
@@ -203,7 +203,7 @@ with st.form('Input', clear_on_submit = True):
       sub_category = st.selectbox(label = 'Please choose the sub-category of the question', options = range(len(sub_categories)), format_func = lambda x: sub_categories[x])
       
       # User question
-      user_question = st.text_input(label = 'What do you want to ask Ben?', placeholder = st.session_state['question'])
+      user_question = st.text_input(label = 'What do you want to ask Ben?', value = st.session_state['question'])
       
       
       
@@ -220,7 +220,8 @@ with st.form('Input', clear_on_submit = True):
       
       
       ## Call geo_check function with params
-      #city = geo_check(address_part = 'city', fallback = 'Lilongwe', language = language)
+      city = geo_check(address_part = 'city', fallback = 'Lilongwe', language = 'en')
+      st.write(city)
       
       
       try:
@@ -280,7 +281,7 @@ with st.form('Input', clear_on_submit = True):
         
         
         ## Get handbook data to answer from table `HANDBOOK_USER`
-        query = "SELECT ID, ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_HITS FROM benbox.HANDBOOK_USER WHERE HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s';" % (keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3])
+        query = "SELECT ID, ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_HITS FROM benbox.HANDBOOK_USER WHERE HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR CATEGORY_ID = '%s' OR CATEGORY_SUB_ID = '%s';" % (keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], categories_id[category], sub_categories_id[sub_category])
         rows = run_query(query)
         databank_handbook = pd.DataFrame(columns = ['ID_Index', 'ID', 'HANDBOOK_ID', 'CATEGORY_ID', 'CATEGORY_SUB_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_SUMMARY', 'HANDBOOK_TEXT', 'HANDBOOK_HITS'])
         for row in rows:
@@ -375,12 +376,11 @@ with st.form('Input', clear_on_submit = True):
                 else:
                   if (i == x - 1):
                     handbook = databank_handbook._get_value(databank_handbook.iloc[x][0], 'HANDBOOK_TEXT')
-                    st.write('Running Nr. x: ', handbook)
                     handbook_id = databank_handbook._get_value(databank_handbook.iloc[x][0], 'HANDBOOK_ID')
-                    st.write('Handbook ID: ', hanbdbook_id)
                     st.session_state['handbook_id'] = handbook_id
-        
                     
+        
+          st.write(databank_handbook)          
           ## Doing the request to OpenAI for answering the question
           # Answer
           answer_question = 'The user handbook contains following information: \"' + handbook + '\". Please answer following user question: \"' + user_question + '\"'
