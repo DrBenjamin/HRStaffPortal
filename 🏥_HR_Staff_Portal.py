@@ -151,7 +151,7 @@ def pictureUploader(image, index):
  
     
     
-### Function: onChange = If Selectbox is used
+### Function: onChange = If selectbox is used
 def onChange():
   st.session_state['run'] = True
 
@@ -171,7 +171,7 @@ if check_password():
     st.write('It uses Streamlit framework for visualisation which is turns Python scipts into data web apps.')
 
 
-  ## Use local databank idcard with Table ImageBase (EasyBadge polluted)
+  ## Use local databank idcard with table `ImageBase` (EasyBadge polluted)
   # Open databank connection
   conn = init_connection()
 
@@ -196,7 +196,7 @@ if check_password():
   databank_training = databank_training.set_index('ID')
  
       
-  ## Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee Selectbox
+  ## Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee selectbox
   query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
   rows = run_query(query)
   # Building `ID` / `EMPLOYEE` pair and
@@ -213,11 +213,11 @@ if check_password():
     names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
 
-  ## Employee Selectbox (on change sets first start session state)
+  ## Employee selectbox (on change sets first start session state)
   index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'])
  
     
-  ## Checkboxes for editing and adding Training data
+  ## Checkboxes for editing and adding training data
   if (index != 0):
     checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
     checkbox_training = st.checkbox(label = 'Add Training', value = checkbox_val, disabled = not checkbox_val)
@@ -230,7 +230,7 @@ if check_password():
     stx.TabBarItemData(id = 3, title = "More data", description = "More employee data"),], default = 1)
 
 
-  ## Form for showing Employee input fields 
+  ## Form for showing employee input fields 
   with st.form("Employee", clear_on_submit = True):
     ## tab `Master data`
     if (f"{chosen_id}" == '1'):
@@ -238,7 +238,7 @@ if check_password():
       st.subheader('Enter or view exmployee master data')
       
       
-      ## If new Employee just show empty form
+      ## If new employee just show empty form
       if (index == 0):
         ## Set query parameter
         st.experimental_set_query_params(eno = "xxxxxx")
@@ -266,7 +266,7 @@ if check_password():
           image = loadFile("images/placeholder.png")
         
     
-        ## Submit Button `Create New Employee`
+        ## Submit button `Create New Employee`
         submitted = st.form_submit_button("Create New Employee")
         if submitted:
           ## Writing to databank if data was entered
@@ -343,7 +343,7 @@ if check_password():
           st.session_state['image'] = loadFile('images/No_Image.png')
          
           
-        ## Show existing Image
+        ## Show existing image
         else:          
           st.image(employee[0][8])
           # Save Image for downloading to Image Session State
@@ -364,7 +364,7 @@ if check_password():
           image = ''
         
           
-        ## Submit Button for Changes on employee master data
+        ## Submit button for changes on employee master data
         submitted = st.form_submit_button("Save changes on Master data")
         if submitted:
           # Set session state `index`
@@ -397,7 +397,7 @@ if check_password():
         
     ## tab `Training data`
     elif (f"{chosen_id}" == '2'):
-      ## Get information of selected Employee regarding Training
+      ## Get information of selected employee regarding training
       st.title('Employee Training data')
       st.subheader('Enter or view exmployee training data')
        
@@ -419,7 +419,7 @@ if check_password():
         idT = lastID(url = "idcard.TRAININGDATA")
         
           
-        ## Get Training Data
+        ## Get training data
         query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID, ima.EMPLOYEE_NO FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
         trainingData = run_query(query)
         
@@ -440,7 +440,7 @@ if check_password():
         update = False # Will be set to `True` if existing data is altered
         
           
-        ## Check if Training Data is already there for an Employee and show it
+        ## Check if training data is already there for an Employee and show it
         if (trainingData[0][0] != None):
           for i in range(len(trainingData)):
             # Show (Multiple) Input(s)
@@ -498,7 +498,7 @@ if check_password():
             insert = True
                 
                 
-        ## Submit Button for Changes on employee `Training data` - existend employee
+        ## Submit button for changes on employee `Training data` - existend employee
         submitted = st.form_submit_button("Save changes on Training data")
         if submitted:
           ## Writing to databank idcard Table TRAININGDATA - first entry
@@ -514,7 +514,7 @@ if check_password():
               st.session_state['success2'] = False
               
               
-          ## Writing to databank idcard Table TRAININGDATA - new entry (not first)
+          ## Writing to databank idcard table `TRAININGDATA` - new entry (not first)
           if (insert == True and trainingData[0][0] != None):
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
               query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
@@ -526,7 +526,7 @@ if check_password():
               st.session_state['success2'] = False
               
               
-          ## Writing to databank idcard Table TRAININGDATA - Updates to all existing entries
+          ## Writing to databank idcard table `TRAININGDATA` - updates to all existing entries
           if (update == True):
             for i in range(len(trainingData)):
               query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
@@ -540,7 +540,7 @@ if check_password():
           st.experimental_rerun()
             
             
-        ## Warning or Success messages after reloading
+        ## Warning or success messages after reloading
         if (st.session_state['run'] != True and st.session_state['success2'] == True):
           st.success(body = 'Training data submitted to Databank.', icon = "✅")
         else:
@@ -566,7 +566,7 @@ if check_password():
           
       ## Employee existend
       else:
-        ## Get Driver Data if available
+        ## Get driver data if available
         query = "SELECT ID, DRIVER_ID, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES FROM carfleet.DRIVERS WHERE EMPLOYEE_NO = '%s';" %(eno['eno'][0])
         rows = run_query(query)
         
