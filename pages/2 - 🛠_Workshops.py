@@ -178,9 +178,11 @@ with st.form('Input', clear_on_submit = False):
   if (st.session_state['feedback'] == False):
     ## Column 1
     with col1:
-      ## Implementation of OpenAI
-      # Open databank connection
+      ### Implementation of OpenAI
+      ## Open databank connection
       conn = init_connection()
+      
+      ## Get categories and sub-categories
       query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.CATEGORIES;"
       rows = run_query(query)
       
