@@ -69,10 +69,11 @@ def init_connection():
 ### Function: run_query = SQL query
 def run_query(query):
   with conn.cursor() as cur:
+    # Perform query
     try:
-      ## Perform query
       cur.execute(query)
       return cur.fetchall()
+    
     except:
       print("An exception occurred in function `run_query`")
       
