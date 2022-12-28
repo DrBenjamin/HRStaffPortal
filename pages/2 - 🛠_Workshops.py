@@ -217,7 +217,7 @@ with st.form('Input', clear_on_submit = True):
       
       
       ## Call geo_check function with params
-      city = geo_check(address_part = 'city', fallback = 'Lilongwe', language = lang)
+      city = geo_check(address_part = 'city', fallback = 'Lilongwe', language = lang[:2].lower())
       
       
       try:
@@ -267,11 +267,8 @@ with st.form('Input', clear_on_submit = True):
         question_id = generateID(id)
         st.session_state['question_id'] = question_id
           
-        # Pollute `QUESTION_TEXT_LANGUAGE
-        language = lang[:2].lower()
-          
         # Write question to table `QUESTIONS`
-        query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, QUESTION_CATEGORY, QUESTION_CATEGORY_SUB, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, question_id, categories_id[category], sub_categories_id[sub_category], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], summary, user_question, language)
+        query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, QUESTION_CATEGORY, QUESTION_CATEGORY_SUB, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, question_id, categories_id[category], sub_categories_id[sub_category], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], summary, user_question, lang[:2].lower())
         run_query(query)
         conn.commit()
         
@@ -446,16 +443,13 @@ if (st.session_state['feedback'] == False):
           # Pollute `FAQ_ID`
           faq_id = generateID(id)
             
-          # Pollute `FAQ_ANSWER_LANGUAGE`
-          language = lang[:2].lower()
-            
           # Summarising the answer
           answer_summary_question = 'Please summarise this text in no more than seven words: \"' + answer + '\"'
           response_answer_summary = openai.Completion.create(model = "text-curie-001", prompt = answer_summary_question, temperature = 0.3, max_tokens = 128, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
           answer_summary = response_answer_summary['choices'][0]['text'].lstrip()
               
           # Write question to table `FAQ`
-          query = "INSERT INTO `benbox`.`FAQ`(ID, QUESTION_ID, HANDBOOK_ID, FAQ_ID, FAQ_ANSWER, FAQ_ANSWER_SUMMARY, FAQ_ANSWER_LANGUAGE, FAQ_HITS) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', %s);" %(id, question_id, handbook_id, faq_id, answer, answer_summary, language, 0)
+          query = "INSERT INTO `benbox`.`FAQ`(ID, QUESTION_ID, HANDBOOK_ID, FAQ_ID, FAQ_ANSWER, FAQ_ANSWER_SUMMARY, FAQ_ANSWER_LANGUAGE, FAQ_HITS) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', %s);" %(id, question_id, handbook_id, faq_id, answer, answer_summary, lang[:2].lower(), 0)
           st.write(query)
           run_query(query)
           conn.commit()
