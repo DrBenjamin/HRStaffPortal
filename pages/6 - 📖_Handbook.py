@@ -1,4 +1,4 @@
-##### `pages/4 - 🇲🇼_Network.py`
+##### `pages/6 - 📖_Handbook.py`
 ##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
@@ -51,6 +51,24 @@ def run_query(query):
     
     except:
       print("An exception occurred in function `run_query`")
+      
+      
+      
+### Function: lastID = checks for last ID number in Table (to add data after)
+def lastID(url):
+  query = "SELECT MAX(ID) FROM %s;" %(url)
+  rows = run_query(query)
+  
+  # Check for ID
+  for row in rows:
+    if (row[0] != None):
+      id = int(row[0]) + 1
+    else:
+      id = 1
+      break
+  
+  # Return ID    
+  return id
 
 
   

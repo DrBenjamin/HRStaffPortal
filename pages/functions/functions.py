@@ -167,3 +167,4 @@ def landingPage(page):
   st.write("<a href='Workshops' target='_self'>Workshops</a>", unsafe_allow_html = True)
   st.write("<a href='Network' target='_self'>Network</a>", unsafe_allow_html = True)
   st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
+  st.write("<a href='Handbook' target='_self'>Handbook</a>", unsafe_allow_html = True)

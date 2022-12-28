@@ -76,7 +76,6 @@ def run_query(query):
     
     except:
       print("An exception occurred in function `run_query`")
-      st.write(query)
       
       
       
