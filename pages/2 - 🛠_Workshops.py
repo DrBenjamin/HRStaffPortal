@@ -170,7 +170,7 @@ handbook_id = '' #st.session_state['handbook_id']
 
 
 ### Form
-with st.form('Input', clear_on_submit = True):
+with st.form('Input', clear_on_submit = False):
   ## Columns
   col1, col2 = st.columns(2)
   
