@@ -140,12 +140,14 @@ def lastID(url):
 
 ### Function: pictureUploader = uploads employee images
 def pictureUploader(image, index):
-  ## Initialize connection
+  # Initialize connection
   connection = mysql.connector.connect(**st.secrets["mysql"])
   cursor = connection.cursor()
-  ## SQL statement
+  
+  # SQL statement
   sql_insert_blob_query = """ UPDATE IMAGEBASE SET IMAGE = %s WHERE ID = %s;"""
-  ## Convert data into tuple format
+  
+  # Convert data into tuple format
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
   connection.commit()
