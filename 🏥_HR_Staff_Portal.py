@@ -121,7 +121,7 @@ def run_query(query):
       
 ### Function: lastID = checks for last ID number in Table (to add data after)
 def lastID(url):
-  query = "SELECT MAX(ID) FROM %s;" %(url)
+  query = "SELECT MAX(ID) FROM '%s';" %(url)
   rows = run_query(query)
   
   # Check for ID

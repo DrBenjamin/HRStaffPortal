@@ -80,7 +80,7 @@ def run_query(query):
       
 ### Function: lastID = checks for last ID number in Table (to add data after)
 def lastID(url):
-  query = "SELECT MAX(ID) FROM %s;" %(url)
+  query = "SELECT MAX(ID) FROM '%s';" %(url)
   rows = run_query(query)
   
   # Check for ID
@@ -429,7 +429,10 @@ if (st.session_state['feedback'] == False):
           st.session_state['feedback'] = True
             
           # Get latest ID from table
-          id = lastID(url = "benbox.FAQ")
+          id = lastID(url = 'benbox.FAQ')
+          
+          # Pollute `FAQ_ID`
+          faq_id = generateID(id = id)
             
           # Pollute `QUESTION_ID`
           question_id = st.session_state['question_id']
@@ -439,9 +442,6 @@ if (st.session_state['feedback'] == False):
             
           # Pollute `FAQ_ANSWER`
           answer = st.session_state['answer']
-            
-          # Pollute `FAQ_ID`
-          faq_id = generateID(id)
             
           # Summarising the answer
           answer_summary_question = 'Please summarise this text in no more than seven words: \"' + answer + '\"'

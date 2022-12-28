@@ -79,15 +79,17 @@ col1, col2 = st.columns(2)
 
 ## Column 1
 with col1:
-  st.write('FAQ')
   ## Get FAQ
   # Open databank connection
   conn = init_connection()
   query = "SELECT que.QUESTION_TEXT, faq.FAQ_ANSWER FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID;"
   faq = run_query(query)
  
-  # Showing dataframe
-  st.dataframe(faq)
+  
+  ## Showing expander
+  for i in range(len(faq)):
+    with st.expander(faq[i][0]):
+      st.write(faq[i][1])
     
   
 ## Column 1
