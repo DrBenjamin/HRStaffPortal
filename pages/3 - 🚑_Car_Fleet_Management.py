@@ -312,7 +312,7 @@ if check_password():
       ## Input for new `DRIVERS` data
       # Get latest ID from database
       id = lastID(url = '`carfleet`.`DRIVERS`')   
-      id = st.text_input(label = 'ID', value = id, disabled = True)
+      st.text_input(label = 'ID', value = id, disabled = True)
       employee_no = st.text_input(label = 'Employee number', placeholder = 'Employee number?')
       driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
       driver_forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
@@ -357,7 +357,7 @@ if check_password():
       ## Input for new `FUEL` data
       # Get latest ID from database
       id = lastID(url = '`carfleet`.`FUEL`')   
-      id = st.text_input(label = 'ID', value = id, disabled = True)
+      st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
       fuel_amount = st.text_input(label = 'Amount', placeholder = 'Amount?')
@@ -389,7 +389,7 @@ if check_password():
       ## Input for new `INSURANCES` data
       # Get latest ID from database
       id = lastID(url = '`carfleet`.`INSURANCES`')   
-      id = st.text_input(label = 'ID', value = id, disabled = True)
+      st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       insurance_details = st.text_input(label = 'Details', placeholder = 'Details?')
       insurance_type = st.text_input(label = 'Type', placeholder = 'Type?')
@@ -417,7 +417,7 @@ if check_password():
       ## Input for new `REPAIRS` data
       # Get latest ID from database
       id = lastID(url = '`carfleet`.`REPAIRS`')   
-      id = st.text_input(label = 'ID', value = id, disabled = True)
+      st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       repair_details = st.text_input(label = 'Details', placeholder = 'Details?')
       repair_date = st.date_input(label = 'Date', value = datetime.now())
@@ -448,7 +448,7 @@ if check_password():
       ## Input for new `SERVICES` data
       # Get latest ID from database
       id = lastID(url = '`carfleet`.`SERVICES`')   
-      id = st.text_input(label = 'ID', value = id, disabled = True)
+      st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
       service_date = st.date_input(label = 'Date', value = datetime.now())
@@ -479,7 +479,7 @@ if check_password():
       ## Input for new `TRIPS` data
       # Get latest ID from database
       id = lastID(url = '`carfleet`.`TRIPS`')   
-      id = st.text_input(label = 'ID', value = id, disabled = True)
+      st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
       trip_date = st.date_input(label = 'Date', value = datetime.now())
@@ -514,7 +514,7 @@ if check_password():
       ## Input for new `VEHICLES` data
       # Get latest ID from database
       id = lastID(url = '`carfleet`.`VEHICLES`')   
-      id = st.text_input(label = 'ID', value = id, disabled = True)
+      st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       vehicle_plate_number = st.text_input(label = 'Plate number', placeholder = 'Plate number?')
       vehicle_type = st.text_input(label = 'Type', placeholder = 'Type?')

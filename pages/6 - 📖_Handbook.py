@@ -8,6 +8,7 @@ import streamlit.components.v1 as stc
 import mysql.connector
 import sys
 sys.path.insert(1, "pages/functions/")
+from functions import loadFile
 
 
 
@@ -71,6 +72,22 @@ def lastID(url):
   return id
 
 
+
+### Function: generateID = Generates an 5-digits ID
+def generateID(id):
+  if (id < 10):
+    generated_id = '0000' + str(id)
+  elif (id < 100):
+    generated_id = '000' + str(id)
+  elif (id < 1000):
+    generated_id = '00' + str(id)
+  elif (id < 10000):
+    generated_id = '0' + str(id)
+    
+  # Return the 5-digit ID
+  return(generated_id)
+
+
   
 
 #### Sidebar
@@ -84,44 +101,54 @@ st.sidebar.image('images/MoH.png')
 #### Main Program
 ### Header
 ## Header
-st.title('Network')
-st.subheader('FAQ')
+st.title('Handbook')
+st.subheader('User Handbook')
 
 
 
-### Chat Bot Ben
+### Handbook
 ## Columns
 col1, col2 = st.columns(2)
 
 
 ## Column 1
 with col1:
-  ## Get FAQ
-  # Open databank connection
-  conn = init_connection()
-  query = "SELECT que.QUESTION_TEXT, faq.FAQ_ANSWER FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID;"
-  faq = run_query(query)
- 
-  
-  ## Showing expander
-  for i in range(len(faq)):
-    with st.expander(faq[i][0]):
-      st.write(faq[i][1])
+  with st.form('Input', clear_on_submit = False):
+    ## Handbook
+    # Open databank connection
+    conn = init_connection()
     
+    
+    ## Input for new `HANDBOOK_USER` data
+    # Get latest ID from table
+    id = lastID(url = '`benbox`.`HANDBOOK_USER`')
+    handbook_id = generateID(id)
+    st.text_input(label = 'ID', value = id, disabled = True)
+    st.text_input(label = 'Handbook ID', value = handbook_id, disabled = True)
+    category_id = st.text_input(label = 'Category ID', value = '00001', disabled = True)
+    category_sub_id = st.text_input(label = 'Sub-Category ID', value = '00001', disabled = True)
+    handbook_chapter = st.text_input(label = 'Chapter', placeholder = 1)
+    handbook_paragraph = st.text_input(label = 'Paragraph', placeholder = 1)
+    
+    uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
+        
+    if uploaded_file is not None:
+      handbook_image = uploaded_file.getvalue()
+              
+    else:
+      handbook_image = loadFile("images/placeholder.png")
+      
+    
+    ## Submit button
+    submitted = st.form_submit_button("Submit")
+    if submitted:
+      # Write entry to table `HANDBOOK_USER`
+      query = "INSERT INTO `benbox`.`HANDBOOK_USER`(ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_CHAPTER, HANDBOOK_PARAGRAPH, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_LANGUAGE, HANDBOOK_HITS) VALUES (%s, '%s', '%s', '%s', );" %(id, handbook_id, )
+      st.write(query)
+      run_query(query)
+      conn.commit()
+
   
 ## Column 1
 with col2:
   st.image("images/Ben.png")
-
-
-## Iframe
-#stc.iframe(src = "http://localhost/hopecarrental/index.php", height = 600, scrolling = True)
-#stc.iframe(src = "https://techhub.social/@DrBenjamin", height = 692, scrolling = True)
-stc.iframe(src = "http://192.168.1.173/index.html", height = 500, scrolling = True)
-
-stc.html(
-  """
-  <iframe src="https://techhub.social/@DrBenjamin/109397699095825866/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="400"></iframe><script src="https://techhub.social/embed.js" async="async"></script>
-  """,
-  height=300,
-)

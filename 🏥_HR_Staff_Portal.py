@@ -248,7 +248,7 @@ if check_password():
         ## Input for new employee data
         # Check for ID number count of Employee
         id = lastID(url = '`idcard`.`IMAGEBASE`')
-        id = st.text_input(label = 'ID', value = id, disabled = True)
+        st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
         surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
