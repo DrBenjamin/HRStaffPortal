@@ -56,7 +56,7 @@ def run_query(query):
   
 
 #### Sidebar
-### Workshop Sidebar
+### Network Sidebar
 ## Sidebar Header Image
 st.sidebar.image('images/MoH.png')
 

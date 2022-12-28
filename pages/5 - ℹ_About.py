@@ -8,6 +8,7 @@ import streamlit.components.v1 as stc
 
 
 
+
 #### Streamlit initial setup
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
@@ -22,6 +23,16 @@ st.set_page_config(
 )
 
 
+
+
+#### Sidebar
+## Sidebar Header Image
+st.sidebar.image('images/MoH.png')
+
+
+
+
+#### Main program
 ## Header
 st.title('About')
 st.header('Kamuzu Central Hospital (KCH)')
@@ -31,8 +42,3 @@ st.write('Lilongwe, MALAWI')
 st.write('[Tel: +265 1 753 400](tel:+2651753400)')
 st.write('[Tel: +265 1 753 555](tel:+2651753555)')
 st.write('[Tel: +265 1 753 744](tel:+2651753744)')
-
-
-## Sidebar
-# Sidebar Header Image
-st.sidebar.image('images/MoH.png')

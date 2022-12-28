@@ -337,7 +337,7 @@ if check_password():
       submitted = st.form_submit_button("Create new Driver")
       if submitted:
         # Get latest ID from database
-        id = lastID(url = "'`carfleet`.`DRIVERS`')
+        id = lastID(url = '`carfleet`.`DRIVERS`')
         query = "INSERT INTO `carfleet`.`DRIVERS`(ID, EMPLOYEE_NO, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, employee_no, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_license_expiry_date, driver_psv_badge, driver_notes)
         run_query(query)
         conn.commit()

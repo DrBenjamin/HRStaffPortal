@@ -74,7 +74,7 @@ def lastID(url):
   
 
 #### Sidebar
-### Workshop Sidebar
+### Handbook Sidebar
 ## Sidebar Header Image
 st.sidebar.image('images/MoH.png')
 
