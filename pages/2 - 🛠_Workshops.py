@@ -37,8 +37,6 @@ st.set_page_config(
 ## Answer / question states
 if ('answer' not in st.session_state):
   st.session_state['answer'] = ''
-if ('question' not in st.session_state):
-  st.session_state['question'] = ''
   
   
 ## Feedback state
@@ -151,7 +149,8 @@ st.sidebar.image('images/MoH.png')
 
 
 ## Ask for language
-#lang = st.sidebar.selectbox('In which language should Ben answer?', ('BG', 'CS', 'DA', 'DE', 'EL', 'EN-GB', 'ES', 'ET', 'FI', 'FR', 'HU', 'IT', 'JA', 'LT', 'LV', 'NL', 'PL', 'PT', 'RO', 'RU', 'SK', 'SL', 'SV', 'ZH'), index = 5, key = 'lang')
+lang = st.sidebar.selectbox('In which language should Ben answer?', ('BG', 'CS', 'DA', 'DE', 'EL', 'EN-GB', 'ES', 'ET', 'FI', 'FR', 'HU', 'IT', 'JA', 'LT', 'LV', 'NL', 'PL', 'PT', 'RO', 'RU', 'SK', 'SL', 'SV', 'ZH'), index = 5, key = 'lang')
+
 
 
 
@@ -196,32 +195,29 @@ with st.form('Input', clear_on_submit = True):
           sub_categories.append(row[3])
           sub_categories_id.append(row[2])
         
-      # Category menu
+        
+      ## Category menu
       category = st.selectbox(label = 'Please choose the category of the question (if unknown, choose \"General\"', options = range(len(categories)), format_func = lambda x: categories[x])
       
-      # Sub-Category menu
+      
+      ## Sub-Category menu
       sub_category = st.selectbox(label = 'Please choose the sub-category of the question', options = range(len(sub_categories)), format_func = lambda x: sub_categories[x])
       
-      # User question
-      user_question = st.text_input(label = 'What do you want to ask Ben?', value = st.session_state['question'])
       
+      ## User question
+      user_question = st.text_input(label = 'What do you want to ask Ben?')
       
       
     ## Submit button
     submitted = st.form_submit_button("Ask Ben")
     if submitted:
-      ## Set `question` session state
-      st.session_state['question'] = user_question 
-      
-      
       ## Get response from openai
       # Set API key
       openai.api_key = st.secrets['openai']['key']
       
       
       ## Call geo_check function with params
-      city = geo_check(address_part = 'city', fallback = 'Lilongwe', language = 'en')
-      st.write(city)
+      city = geo_check(address_part = 'city', fallback = 'Lilongwe', language = lang)
       
       
       try:
@@ -272,7 +268,7 @@ with st.form('Input', clear_on_submit = True):
         st.session_state['question_id'] = question_id
           
         # Pollute `QUESTION_TEXT_LANGUAGE
-        language = 'en'
+        language = lang[:2].lower()
           
         # Write question to table `QUESTIONS`
         query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, QUESTION_CATEGORY, QUESTION_CATEGORY_SUB, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, question_id, categories_id[category], sub_categories_id[sub_category], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], summary, user_question, language)
@@ -383,7 +379,7 @@ with st.form('Input', clear_on_submit = True):
           st.write(databank_handbook)          
           ## Doing the request to OpenAI for answering the question
           # Answer
-          answer_question = 'The user handbook contains following information: \"' + handbook + '\". Please answer following user question: \"' + user_question + '\"'
+          answer_question = 'The user handbook contains following information: \"' + handbook + '\". Right now you are in the city called \"' + city + '\". Please answer following user question: \"' + user_question + '\"'
           response_answer = openai.Completion.create(model = "text-davinci-003", prompt = answer_question, temperature = 0.5, max_tokens = 128, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
           answer = response_answer['choices'][0]['text'].lstrip()
           st.session_state['answer'] = answer
@@ -403,7 +399,6 @@ with st.form('Input', clear_on_submit = True):
       # Set session states
       st.session_state['feedback'] = False
       st.session_state['answer'] = ''
-      st.session_state['question'] = ''
       
       # Rerun
       st.experimental_rerun()
@@ -417,7 +412,6 @@ with st.form('Input', clear_on_submit = True):
   
 ### Outside the form
 ## Give the answer
-# Pollute `FAQ_ANSWER`
 answer = st.session_state['answer']
 
 if (st.session_state['feedback'] == False):
@@ -437,7 +431,7 @@ if (st.session_state['feedback'] == False):
           # Set session state `feedback`
           st.session_state['feedback'] = True
             
-          # Get latest ID from database
+          # Get latest ID from table
           id = lastID(url = "benbox.FAQ")
             
           # Pollute `QUESTION_ID`
@@ -449,11 +443,11 @@ if (st.session_state['feedback'] == False):
           # Pollute `FAQ_ANSWER`
           answer = st.session_state['answer']
             
-          # Pollute `FAQ_ANSWER_LANGUAGE
+          # Pollute `FAQ_ID`
           faq_id = generateID(id)
             
-          # Pollute `FAQ_ANSWER_LANGUAGE
-          language = 'en'
+          # Pollute `FAQ_ANSWER_LANGUAGE`
+          language = lang[:2].lower()
             
           # Summarising the answer
           answer_summary_question = 'Please summarise this text in no more than seven words: \"' + answer + '\"'
