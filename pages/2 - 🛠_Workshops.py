@@ -76,12 +76,13 @@ def run_query(query):
     
     except:
       print("An exception occurred in function `run_query`")
+      st.write(query)
       
       
       
 ### Function: lastID = checks for last ID number in Table (to add data after)
 def lastID(url):
-  query = "SELECT MAX(ID) FROM '%s';" %(url)
+  query = "SELECT MAX(ID) FROM %s;" %(url)
   rows = run_query(query)
   
   # Check for ID
@@ -262,7 +263,7 @@ with st.form('Input', clear_on_submit = True):
           
         ## Writing responses to table `QUESTIONS` in database `benbox`
         # Get latest ID from database
-        id = lastID(url = "benbox.QUESTIONS")
+        id = lastID(url = '`benbox`.`QUESTIONS`')
           
         # Pollute `QUESTION_ID`
         question_id = generateID(id)
@@ -430,7 +431,7 @@ if (st.session_state['feedback'] == False):
           st.session_state['feedback'] = True
             
           # Get latest ID from table
-          id = lastID(url = 'benbox.FAQ')
+          id = lastID(url = '`benbox`.`FAQ`')
           
           # Pollute `FAQ_ID`
           faq_id = generateID(id = id)

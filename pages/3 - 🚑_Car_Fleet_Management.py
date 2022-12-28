@@ -99,7 +99,7 @@ def run_query(query):
 
 ### Function: lastID = checks for last ID number in Table (to add data after)
 def lastID(url):
-  query = "SELECT MAX(ID) FROM '%s';" %(url)
+  query = "SELECT MAX(ID) FROM %s;" %(url)
   rows = run_query(query)
   
   # Check for ID
@@ -311,7 +311,7 @@ if check_password():
     
       ## Input for new `DRIVERS` data
       # Get latest ID from database
-      id = lastID(url = "carfleet.DRIVERS")   
+      id = lastID(url = '`carfleet`.`DRIVERS`')   
       id = st.text_input(label = 'ID', value = id, disabled = True)
       employee_no = st.text_input(label = 'Employee number', placeholder = 'Employee number?')
       driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
@@ -337,7 +337,7 @@ if check_password():
       submitted = st.form_submit_button("Create new Driver")
       if submitted:
         # Get latest ID from database
-        id = lastID(url = "carfleet.DRIVERS")
+        id = lastID(url = "'`carfleet`.`DRIVERS`')
         query = "INSERT INTO `carfleet`.`DRIVERS`(ID, EMPLOYEE_NO, DRIVER_ID, DRIVER_FORENAME, DRIVER_SURNAME, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, employee_no, driver_id, driver_forename, driver_surname, driver_national_id, driver_mobile_no, driver_license_no, driver_license_class, driver_license_expiry_date, driver_psv_badge, driver_notes)
         run_query(query)
         conn.commit()
@@ -356,7 +356,7 @@ if check_password():
     
       ## Input for new `FUEL` data
       # Get latest ID from database
-      id = lastID(url = "carfleet.FUEL")   
+      id = lastID(url = '`carfleet`.`FUEL`')   
       id = st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
@@ -373,7 +373,7 @@ if check_password():
       submitted = st.form_submit_button("Create new Refueling")
       if submitted:
         # Get latest ID from database
-        id = lastID(url = "carfleet.FUEL")
+        id = lastID(url = '`carfleet`.`FUEL`')
         query = "INSERT INTO `carfleet`.`FUEL`(ID, VEHICLE_ID, DRIVER_ID, FUEL_AMOUNT, FUEL_COST, FUEL_TYPE, FUEL_DATE, FUEL_DISTANCE, FUEL_SHORTAGE, COST_CENTRE) VALUES (%s, '%s', '%s', %s, %s, '%s', '%s', %s, '%s', '%s');" %(id, vehicle_id, driver_id, fuel_amount, fuel_cost, fuel_type, fuel_date, fuel_distance, fuel_shortage, cost_centre)
         run_query(query)
         conn.commit()
@@ -388,7 +388,7 @@ if check_password():
       
       ## Input for new `INSURANCES` data
       # Get latest ID from database
-      id = lastID(url = "carfleet.INSURANCES")   
+      id = lastID(url = '`carfleet`.`INSURANCES`')   
       id = st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       insurance_details = st.text_input(label = 'Details', placeholder = 'Details?')
@@ -401,7 +401,7 @@ if check_password():
       submitted = st.form_submit_button("Create new Insurance")
       if submitted:
         # Get latest ID from database
-        id = lastID(url = "carfleet.INSURANCES")
+        id = lastID(url = '`carfleet`.`INSURANCES`')
         query = "INSERT INTO `carfleet`.`INSURANCES`(ID, VEHICLE_ID, INSURANCE_DETAILS, INSURANCES_TYPE, INSURANCE_START_DATE, INSURANCE_EXPIRY_DATE) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(id, vehicle_id, insurance_details, insurance_type, insurance_start_date, insurance_expiry_date)
         run_query(query)
         conn.commit()
@@ -416,7 +416,7 @@ if check_password():
     
       ## Input for new `REPAIRS` data
       # Get latest ID from database
-      id = lastID(url = "carfleet.REPAIRS")   
+      id = lastID(url = '`carfleet`.`REPAIRS`')   
       id = st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       repair_details = st.text_input(label = 'Details', placeholder = 'Details?')
@@ -432,7 +432,7 @@ if check_password():
       submitted = st.form_submit_button("Create new Repair")
       if submitted:
         # Get latest ID from database
-        id = lastID(url = "carfleet.REPAIRS")
+        id = lastID(url = '`carfleet`.`REPAIRS`')
         query = "INSERT INTO `carfleet`.`REPAIRS`(ID, VEHICLE_ID, REPAIR_DETAILS, REPAIR_DATE, REPAIR_COSTS, REPAIR_SPARE_PARTS, REPAIR_DOWN_TIME, REPAIR_CENTRE_PERSON, COST_CENTRE) VALUES (%s, '%s', '%s', '%s', %s, '%s', '%s', '%s', '%s');" %(id, vehicle_id, repair_details, repair_date, repair_costs, repair_spare_parts, repair_down_time, repair_centre_person, cost_centre)
         run_query(query)
         conn.commit()
@@ -447,7 +447,7 @@ if check_password():
       
       ## Input for new `SERVICES` data
       # Get latest ID from database
-      id = lastID(url = "carfleet.SERVICES")   
+      id = lastID(url = '`carfleet`.`SERVICES`')   
       id = st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
@@ -463,7 +463,7 @@ if check_password():
       submitted = st.form_submit_button("Create new Service")
       if submitted:
         # Get latest ID from database
-        id = lastID(url = "carfleet.SERVICES")
+        id = lastID(url = '`carfleet`.`SERVICES`')
         query = "INSERT INTO `carfleet`.`SERVICES`(ID, VEHICLE_ID, DRIVER_ID, SERVICE_DATE, SERVICE_DETAILS, SERVICE_COSTS, SERVICE_MILEAGE_ON_SERVICE, SERVICE_MILEAGE_NEXTSERVICE, SERVICE_MILEAGE_NEXTSERVICE_MAX) VALUES (%s, '%s', '%s', '%s', '%s', %s, %s, %s, %s);" %(id, vehicle_id, driver_id, service_date, service_details, service_costs, service_mileage_on_service, service_mileage_nextservice, service_mileage_nextservice_max)
         run_query(query)
         conn.commit()
@@ -478,7 +478,7 @@ if check_password():
       
       ## Input for new `TRIPS` data
       # Get latest ID from database
-      id = lastID(url = "carfleet.TRIPS")   
+      id = lastID(url = '`carfleet`.`TRIPS`')   
       id = st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       driver_id = st.text_input(label = 'Driver ID', placeholder = 'Driver ID?')
@@ -498,7 +498,7 @@ if check_password():
       submitted = st.form_submit_button("Create new Trip")
       if submitted:
         # Get latest ID from database
-        id = lastID(url = "carfleet.TRIPS")
+        id = lastID(url = '`carfleet`.`TRIPS`')
         query = "INSERT INTO `carfleet`.`TRIPS`(ID, VEHICLE_ID, DRIVER_ID, TRIP_DATE, TRIP_DESCRIPTION, TRIP_COMMENTS, TRIP_TIME_OUT, TRIP_TIME_IN, TRIP_OPEN_MILEAGE, TRIP_CLOSE_MILEAGE, TRIP_DISTANCE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s);" %(id, vehicle_id, driver_id, trip_date, trip_description, trip_comments, trip_time_out, trip_time_in, trip_open_mileage, trip_close_mileage, trip_distance)
         run_query(query)
         conn.commit()
@@ -513,7 +513,7 @@ if check_password():
       
       ## Input for new `VEHICLES` data
       # Get latest ID from database
-      id = lastID(url = "carfleet.VEHICLES")   
+      id = lastID(url = '`carfleet`.`VEHICLES`')   
       id = st.text_input(label = 'ID', value = id, disabled = True)
       vehicle_id = st.text_input(label = 'Vehicle ID', placeholder = 'Vehicle ID?')
       vehicle_plate_number = st.text_input(label = 'Plate number', placeholder = 'Plate number?')
@@ -546,7 +546,7 @@ if check_password():
       submitted = st.form_submit_button("Create new Vehicle")
       if submitted:
         # Get latest ID from database
-        id = lastID(url = "carfleet.VEHICLES")
+        id = lastID(url = '`carfleet`.`VEHICLES`')
         query = "INSERT INTO `carfleet`.`VEHICLES`(ID, VEHICLE_ID, VEHICLE_PLATE_NUMBER, VEHICLE_TYPE, VEHICLE_BRAND, VEHICLE_MODEL, VEHICLE_SEATS, VEHICLE_FUEL_TYPE, VEHICLE_FUEL_CAPACITY, VEHICLE_COLOUR, VEHICLE_CHASIS_NUMBER, VEHICLE_MANUFACTURE_YEAR, VEHICLE_PURCHASE_DATE, VEHICLE_PURCHASE_PRICE, VEHICLE_DISPOSITION_YEAR, VEHICLE_COF_EXPIRY_DATE, VEHICLE_VENDOR, VEHICLE_DUTY, VEHICLE_COST_KM) VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', %s, '%s', '%s', '%s', '%s', %s, '%s', '%s', '%s', %s, %s);" %(id, vehicle_id, vehicle_plate_number, vehicle_type, vehicle_brand, vehicle_model, vehicle_seats, vehicle_fuel_type, vehicle_fuel_capacity, vehicle_colour, vehicle_chasis_number, vehicle_manufacture_year, vehicle_purchase_date, vehicle_purchase_price, vehicle_disposition_year, vehicle_cof_expiry_date, vehicle_vendor, vehicle_duty, vehicle_cost_km)
         run_query(query)
         conn.commit()
@@ -572,7 +572,7 @@ if check_password():
     with st.expander('Driver profiles', expanded = False):
       st.subheader('Driver profiles')
       col1, col2, col3 = st.columns(3)
-      drivers = lastID(url = "carfleet.DRIVERS")  
+      drivers = lastID(url = '`carfleet`.`DRIVERS`')  
     
       # Column 1
       with col1:
@@ -842,7 +842,7 @@ if check_password():
     with st.expander('Vehicles statistics', expanded = False):
       ## Columns for showing Vehicle profile
       col1, col2, col3 = st.columns(3)
-      cars = lastID(url = "carfleet.VEHICLES")  
+      cars = lastID(url = '`carfleet`.`VEHICLES`')  
       
       # Column 1
       with col1:

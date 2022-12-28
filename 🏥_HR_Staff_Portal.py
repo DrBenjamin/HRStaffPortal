@@ -122,7 +122,7 @@ def run_query(query):
       
 ### Function: lastID = checks for last ID number in Table (to add data after)
 def lastID(url):
-  query = "SELECT MAX(ID) FROM '%s';" %(url)
+  query = "SELECT MAX(ID) FROM %s;" %(url)
   rows = run_query(query)
   
   # Check for ID
@@ -247,7 +247,7 @@ if check_password():
         
         ## Input for new employee data
         # Check for ID number count of Employee
-        id = lastID(url = "idcard.IMAGEBASE")
+        id = lastID(url = '`idcard`.`IMAGEBASE`')
         id = st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
@@ -273,7 +273,7 @@ if check_password():
           ## Writing to databank if data was entered
           if (layout is not None and forename and surname and job and exp and emp_no and capri):
             ## Get latest ID from database
-            id = lastID(url = "idcard.IMAGEBASE")
+            id = lastID(url = '`idcard`.`IMAGEBASE`')
             
             
             ## Maybe it needs a break???
@@ -417,7 +417,7 @@ if check_password():
       ## Employee existend
       else:
         ## Check for last ID number in TrainingData (to add data after)
-        idT = lastID(url = "idcard.TRAININGDATA")
+        idT = lastID(url = '`idcard`.`TRAININGDATA`')
         
           
         ## Get training data
