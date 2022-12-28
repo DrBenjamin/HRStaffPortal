@@ -451,7 +451,6 @@ if (st.session_state['feedback'] == False):
               
           # Write question to table `FAQ`
           query = "INSERT INTO `benbox`.`FAQ`(ID, QUESTION_ID, HANDBOOK_ID, FAQ_ID, FAQ_ANSWER, FAQ_ANSWER_SUMMARY, FAQ_ANSWER_LANGUAGE, FAQ_HITS) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', %s);" %(id, question_id, handbook_id, faq_id, answer, answer_summary, lang[:2].lower(), 0)
-          st.write(query)
           run_query(query)
           conn.commit()
           
