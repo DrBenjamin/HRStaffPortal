@@ -186,6 +186,7 @@ with st.form('Input', clear_on_submit = False):
       query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.CATEGORIES;"
       rows = run_query(query)
       
+      # Filling variables   
       categories = []
       sub_categories = []
       categories_id = []

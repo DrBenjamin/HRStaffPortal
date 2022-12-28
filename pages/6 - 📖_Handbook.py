@@ -107,6 +107,36 @@ st.subheader('User Handbook')
 
 
 ### Handbook
+## Open databank connection
+conn = init_connection()
+
+
+## Get categories and sub-categories
+query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.CATEGORIES;"
+rows = run_query(query)
+
+# Filling variables
+categories = []
+sub_categories = []
+categories_id = []
+sub_categories_id = []
+for row in rows:
+  if (row[0] != None):
+    categories.append(row[1])
+    categories_id.append(row[0])
+  else:
+    sub_categories.append(row[3])
+    sub_categories_id.append(row[2])
+        
+        
+## Category menu
+category = st.selectbox(label = 'Please choose the category of the handbook entry', options = range(len(categories)), format_func = lambda x: categories[x])
+      
+      
+## Sub-Category menu
+sub_category = st.selectbox(label = 'Please choose the sub-category of the handbook entry', options = range(len(sub_categories)), format_func = lambda x: sub_categories[x])
+     
+      
 ## Columns
 col1, col2 = st.columns(2)
 
@@ -114,7 +144,7 @@ col1, col2 = st.columns(2)
 ## Column 1
 with col1:
   with st.form('Input', clear_on_submit = False):
-    ## Handbook
+    ## Handbook data entry
     # Open databank connection
     conn = init_connection()
     
@@ -125,18 +155,18 @@ with col1:
     handbook_id = generateID(id)
     st.text_input(label = 'ID', value = id, disabled = True)
     st.text_input(label = 'Handbook ID', value = handbook_id, disabled = True)
-    category_id = st.text_input(label = 'Category ID', value = '00001', disabled = True)
-    category_sub_id = st.text_input(label = 'Sub-Category ID', value = '00001', disabled = True)
+    st.text_input(label = 'Category ID', value = categories_id[category], disabled = True)
+    st.text_input(label = 'Sub-Category ID', value = sub_categories_id[sub_category], disabled = True)
     handbook_chapter = st.text_input(label = 'Chapter', placeholder = 1)
     handbook_paragraph = st.text_input(label = 'Paragraph', placeholder = 1)
     
-    uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
+    uploaded_file = st.file_uploader(label = "Upload a picture", type = 'png')
         
     if uploaded_file is not None:
       handbook_image = uploaded_file.getvalue()
               
     else:
-      handbook_image = loadFile("images/placeholder.png")
+      handbook_image = loadFile("images/placeholder_documentation.png")
       
     
     ## Submit button
