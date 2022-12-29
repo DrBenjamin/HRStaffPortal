@@ -5,12 +5,12 @@
 #### Loading needed Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
+import pandas as pd
 import mysql.connector
-from docx import Document
-from docx.shared import Inches
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import loadFile
+from functions import export_docx
 
 
 
@@ -54,56 +54,6 @@ def run_query(query):
     
     except:
       print('An exception occurred in function `run_query` with query \"' + query + '\"')
-      
-      
-      
-### Function: pictureUploader = uploads handbook images
-def pictureUploader(image, index):
-  # Initialize connection
-  connection = mysql.connector.connect(**st.secrets["mysql_benbox"])
-  cursor = connection.cursor()
-  
-  # SQL statement
-  sql_insert_blob_query = """ UPDATE `HANDBOOK_USER` SET HANDBOOK_IMAGE = %s WHERE ID = %s;"""
-  
-  # Convert data into tuple format
-  insert_blob_tuple = (image, index)
-  result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
-  connection.commit()
-      
-      
-      
-### Function: lastID = checks for last ID number in Table (to add data after)
-def lastID(url):
-  query = "SELECT MAX(ID) FROM %s;" %(url)
-  rows = run_query(query)
-  
-  # Check for ID
-  for row in rows:
-    if (row[0] != None):
-      id = int(row[0]) + 1
-    else:
-      id = 1
-      break
-  
-  # Return ID    
-  return id
-
-
-
-### Function: generateID = Generates an 5-digits ID
-def generateID(id):
-  if (id < 10):
-    generated_id = '0000' + str(id)
-  elif (id < 100):
-    generated_id = '000' + str(id)
-  elif (id < 1000):
-    generated_id = '00' + str(id)
-  elif (id < 10000):
-    generated_id = '0' + str(id)
-    
-  # Return the 5-digit ID
-  return(generated_id)
 
 
   
@@ -129,45 +79,17 @@ st.subheader('User Handbook Export')
 conn = init_connection()
 
 
-## Docx Export
-document = Document()
-
-document.add_heading('User Handbook', 0)
-
-p = document.add_paragraph('A plain paragraph having some ')
-p.add_run('bold').bold = True
-p.add_run(' and some ')
-p.add_run('italic.').italic = True
-
-document.add_heading('Heading, level 1', level = 1)
-document.add_paragraph('Intense quote', style = 'Intense Quote')
-
-document.add_paragraph(
-    'first item in unordered list', style='List Bullet'
-)
-document.add_paragraph(
-    'first item in ordered list', style = 'List Number'
-)
-
-document.add_picture("images\\placeholder_documentation.png", width = Inches(1.25))
-
-records = (
-    (3, '101', 'Spam'),
-    (7, '422', 'Eggs'),
-    (4, '631', 'Spam, spam, eggs, and spam')
-)
-
-table = document.add_table(rows = 1, cols = 3)
-hdr_cells = table.rows[0].cells
-hdr_cells[0].text = 'Qty'
-hdr_cells[1].text = 'Id'
-hdr_cells[2].text = 'Desc'
-for qty, id, desc in records:
-    row_cells = table.add_row().cells
-    row_cells[0].text = str(qty)
-    row_cells[1].text = id
-    row_cells[2].text = desc
-
-document.add_page_break()
-
-document.save('demo.docx')
+## Docx export
+if st.button(label = 'Export docx'):
+  ## Get handbook data to export from table `HANDBOOK_USER`
+  query = "SELECT ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_HITS FROM benbox.HANDBOOK_USER;"
+  rows = run_query(query)
+  databank_handbook = pd.DataFrame(columns = ['ID', 'HANDBOOK_ID', 'CATEGORY_ID', 'CATEGORY_SUB_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_SUMMARY', 'HANDBOOK_TEXT', 'HANDBOOK_HITS'])
+  for row in rows:
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]]], columns = ['ID', 'HANDBOOK_ID', 'CATEGORY_ID', 'CATEGORY_SUB_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_SUMMARY', 'HANDBOOK_TEXT', 'HANDBOOK_HITS'])
+    databank_handbook = pd.concat([databank_handbook, df])
+  databank_handbook = databank_handbook.set_index('ID')
+  
+  
+  ## Export docx file
+  export_docx(data = databank_handbook, docx_file_name = 'Handbook.docx')

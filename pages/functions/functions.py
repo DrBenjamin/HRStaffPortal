@@ -8,8 +8,8 @@ import pandas as pd
 import io
 import os
 import xlsxwriter
-#from docx import Document
-#from docx.shared import Inches
+from docx import Document
+from docx.shared import Inches
 import deepl
 
 
@@ -68,7 +68,7 @@ def logout():
 
 
 
-### Function: export_excel = Pandas Dataframe to Excel Makro File (xlsm)
+### Function: export_excel = Pandas Dataframe to MS Excel Makro File (xlsm)
 def export_excel(sheet, column, columns, length, data, 
                 sheet2 = 'N0thing', column2 = 'A', columns2 = '', length2 = '', data2 = '',
                 sheet3 = 'N0thing', column3 = 'A', columns3 = '', length3 = '', data3 = '',
@@ -134,6 +134,55 @@ def export_excel(sheet, column, columns, length, data,
  
 
 
+### Function: export_docx = Pandas Dataframe to MS Word file (docx)
+def export_docx(data, docx_file_name = 'Handbook.docx'):
+  document = Document()
+  
+  document.add_heading('User Handbook', 0)
+  
+  p = document.add_paragraph('A plain paragraph having some ')
+  p.add_run('bold').bold = True
+  p.add_run(' and some ')
+  p.add_run('italic.').italic = True
+  for row in data:
+    st.write(row)
+    #p.add_run(data)
+  
+  document.add_heading('Heading, level 1', level = 1)
+  document.add_paragraph('Intense quote', style = 'Intense Quote')
+  
+  document.add_paragraph(
+      'first item in unordered list', style='List Bullet'
+  )
+  document.add_paragraph(
+      'first item in ordered list', style = 'List Number'
+  )
+  
+  document.add_picture("images\\placeholder_documentation.png", width = Inches(1.25))
+  
+  records = (
+      (3, '101', 'Spam'),
+      (7, '422', 'Eggs'),
+      (4, '631', 'Spam, spam, eggs, and spam')
+  )
+  
+  table = document.add_table(rows = 1, cols = 3)
+  hdr_cells = table.rows[0].cells
+  hdr_cells[0].text = 'Qty'
+  hdr_cells[1].text = 'Id'
+  hdr_cells[2].text = 'Desc'
+  for qty, id, desc in records:
+      row_cells = table.add_row().cells
+      row_cells[0].text = str(qty)
+      row_cells[1].text = id
+      row_cells[2].text = desc
+  
+  document.add_page_break()
+  
+  document.save(docx_file_name)
+
+
+
 ### Function: loadFile = converts digital data to binary format
 def loadFile(filename):
   with open(filename, 'rb') as file:
@@ -150,7 +199,7 @@ def trans(input, target_lang):
 
 
 
-### Function: landigPage = shows the landing page (not loged in state)
+### Function: landingPage = shows the landing page (not loged in state)
 def landingPage(page):
   ## Title and information
   st.title('Kamuzu Central Hospital (KCH)')
