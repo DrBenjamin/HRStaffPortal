@@ -190,14 +190,17 @@ with st.form('Input', clear_on_submit = True):
   
   # Image description text input
   handbook_image_text = st.text_input(label = 'Image description')
-  print(handbook_image_text)
   
   
   ## Submit button
   submitted = st.form_submit_button("Submit")
   if submitted:
+    # Check if image description is not changed
+    if (len(handbook_image_text) < 1):     
+      handbook_image_text = 'Placeholder image.'
+      
     # Write entry to table `HANDBOOK_USER`
-    query = "INSERT INTO `benbox`.`HANDBOOK_USER`(ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_CHAPTER, HANDBOOK_PARAGRAPH, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_LANGUAGE, HANDBOOK_HITS) VALUES (%s, '%s', '%s', '%s', %s, %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s');" %(id, handbook_id, categories_id[category], sub_categories_id[sub_category], handbook_chapter, handbook_paragraph, handbook_keyword1, handbook_keyword2, handbook_keyword3, handbook_keyword4, handbook_keyword5, handbook_summary, handbook_text, handbook_text_language, handbook_hits, handbook_image_text)
+    query = "INSERT INTO `benbox`.`HANDBOOK_USER`(ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_CHAPTER, HANDBOOK_PARAGRAPH, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_LANGUAGE, HANDBOOK_HITS, HANDBOOK_IMAGE_TEXT) VALUES (%s, '%s', '%s', '%s', %s, %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s');" %(id, handbook_id, categories_id[category], sub_categories_id[sub_category], handbook_chapter, handbook_paragraph, handbook_keyword1, handbook_keyword2, handbook_keyword3, handbook_keyword4, handbook_keyword5, handbook_summary, handbook_text, handbook_text_language, handbook_hits, handbook_image_text)
     run_query(query)
     conn.commit()
       
