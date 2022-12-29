@@ -141,19 +141,22 @@ with col2:
  
   
   ## Showing expander
-  for i in range(len(faq)):
-    for x in range(len(filter_cat_ids)):
-      if faq[i][4] == filter_cat_ids[x]:
-        for y in range(len(filter_sub_ids)):
-          if faq[i][5] == filter_sub_ids[y]:
-            with st.expander(label = '\"' + faq[i][0].upper() + '\"', expanded = False):
-              st.write(':orange[Category:] ', faq[i][2])
-              st.write(':green[Sub-category:] ', faq[i][3])
-              st.write(':blue[Ben`s answer:] ', faq[i][1])
-        
-  
-
-    
+  # Check if data is existend
+  if (faq != None):
+    for i in range(len(faq)):
+      for x in range(len(filter_cat_ids)):
+        if faq[i][4] == filter_cat_ids[x]:
+          for y in range(len(filter_sub_ids)):
+            if faq[i][5] == filter_sub_ids[y]:
+              with st.expander(label = '\"' + faq[i][0].upper() + '\"', expanded = False):
+                st.write(':orange[Category:] ', faq[i][2])
+                st.write(':green[Sub-category:] ', faq[i][3])
+                st.write(':blue[Ben`s answer:] ', faq[i][1])
+                
+  # No data existend
+  else:
+    st.write('No questions & answer available')
+      
 
 ## Iframe
 #stc.iframe(src = "http://localhost/hopecarrental/index.php", height = 600, scrolling = True)
