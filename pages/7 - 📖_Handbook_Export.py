@@ -139,17 +139,17 @@ p.add_run('bold').bold = True
 p.add_run(' and some ')
 p.add_run('italic.').italic = True
 
-document.add_heading('Heading, level 1', level=1)
-document.add_paragraph('Intense quote', style='Intense Quote')
+document.add_heading('Heading, level 1', level = 1)
+document.add_paragraph('Intense quote', style = 'Intense Quote')
 
 document.add_paragraph(
     'first item in unordered list', style='List Bullet'
 )
 document.add_paragraph(
-    'first item in ordered list', style='List Number'
+    'first item in ordered list', style = 'List Number'
 )
 
-document.add_picture('monty-truth.png', width=Inches(1.25))
+document.add_picture("images\\placeholder_documentation.png", width = Inches(1.25))
 
 records = (
     (3, '101', 'Spam'),
@@ -157,7 +157,7 @@ records = (
     (4, '631', 'Spam, spam, eggs, and spam')
 )
 
-table = document.add_table(rows=1, cols=3)
+table = document.add_table(rows = 1, cols = 3)
 hdr_cells = table.rows[0].cells
 hdr_cells[0].text = 'Qty'
 hdr_cells[1].text = 'Id'
