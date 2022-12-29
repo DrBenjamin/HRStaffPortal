@@ -75,7 +75,7 @@ def run_query(query):
       return cur.fetchall()
     
     except:
-      print("An exception occurred in function `run_query`")
+      print('An exception occurred in function `run_query` with query \"' + query + '\"')
       
       
       
@@ -272,7 +272,7 @@ with st.form('Input', clear_on_submit = False):
         st.session_state['question_id'] = question_id
           
         # Write question to table `QUESTIONS`
-        query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, QUESTION_CATEGORY, QUESTION_CATEGORY_SUB, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, question_id, categories_id[category], sub_categories_id[sub_category], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], summary, user_question, lang[:2].lower())
+        query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, CATEGORY_ID, CATEGORY_SUB_ID, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, question_id, categories_id[category], sub_categories_id[sub_category], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], summary, user_question, lang[:2].lower())
         run_query(query)
         conn.commit()
         

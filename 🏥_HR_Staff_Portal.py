@@ -116,7 +116,7 @@ def run_query(query):
       return cur.fetchall()
     
     except:
-      print("An exception occurred in function `run_query`")
+      print('An exception occurred in function `run_query` with query \"' + query + '\"')
       
       
       

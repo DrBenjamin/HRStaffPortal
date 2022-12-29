@@ -51,7 +51,7 @@ def run_query(query):
       return cur.fetchall()
     
     except:
-      print("An exception occurred in function `run_query`")
+      print('An exception occurred in function `run_query` with query \"' + query + '\"')
       
       
       
@@ -151,7 +151,7 @@ category = st.selectbox(label = 'Please choose the category of the handbook entr
       
 ## Sub-Category menu
 sub_category = st.selectbox(label = 'Please choose the sub-category of the handbook entry', options = range(len(sub_categories)), format_func = lambda x: sub_categories[x])
-     
+      
       
 ## Form
 with st.form('Input', clear_on_submit = True):
@@ -179,21 +179,25 @@ with st.form('Input', clear_on_submit = True):
   handbook_text = st.text_input(label = 'Text')
   handbook_text_language = st.text_input(label = 'Language', value = 'en')
   handbook_hits = st.text_input(label = 'Hits', value = 0)
-    
+   
+  # Handbook image upload 
   uploaded_file = st.file_uploader(label = "Upload a picture", type = 'png')
-        
   if uploaded_file is not None:
     handbook_image = uploaded_file.getvalue()
-              
   else:
     handbook_image = loadFile("images/placeholder_documentation.png")
-      
-    
+    handbook_image_text = 'Placeholder image.'
+  
+  # Image description text input
+  handbook_image_text = st.text_input(label = 'Image description')
+  print(handbook_image_text)
+  
+  
   ## Submit button
   submitted = st.form_submit_button("Submit")
   if submitted:
     # Write entry to table `HANDBOOK_USER`
-    query = "INSERT INTO `benbox`.`HANDBOOK_USER`(ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_CHAPTER, HANDBOOK_PARAGRAPH, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_LANGUAGE, HANDBOOK_HITS) VALUES (%s, '%s', '%s', '%s', %s, %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s);" %(id, handbook_id, categories_id[category], sub_categories_id[sub_category], handbook_chapter, handbook_paragraph, handbook_keyword1, handbook_keyword2, handbook_keyword3, handbook_keyword4, handbook_keyword5, handbook_summary, handbook_text, handbook_text_language, handbook_hits)
+    query = "INSERT INTO `benbox`.`HANDBOOK_USER`(ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_CHAPTER, HANDBOOK_PARAGRAPH, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_LANGUAGE, HANDBOOK_HITS) VALUES (%s, '%s', '%s', '%s', %s, %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s');" %(id, handbook_id, categories_id[category], sub_categories_id[sub_category], handbook_chapter, handbook_paragraph, handbook_keyword1, handbook_keyword2, handbook_keyword3, handbook_keyword4, handbook_keyword5, handbook_summary, handbook_text, handbook_text_language, handbook_hits, handbook_image_text)
     run_query(query)
     conn.commit()
       
