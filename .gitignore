@@ -6,6 +6,7 @@
 *VBA.xlsm
 *.docx
 blob*
+temp.png
 *.Rproj
 HRStaffPortal.Rproj
 .Rhistory

@@ -93,7 +93,7 @@ def export_excel(sheet, column, columns, length, data,
   func_arr.append([sheet7, column7, columns7, length7, data7])
 
   
-  ## Create a Pandas Excel writer using XlsxWriter as the engine
+  ## Create an Excel file filled with a pandas dataframe using XlsxWriter as engine
   buffer = io.BytesIO()
   with pd.ExcelWriter(buffer, engine = 'xlsxwriter') as writer:
     for i in range(7):
@@ -138,48 +138,43 @@ def export_excel(sheet, column, columns, length, data,
 def export_docx(data, docx_file_name = 'Handbook.docx'):
   document = Document()
   
+  # Writing docx file
   document.add_heading('User Handbook', 0)
+  chapter = 0
+  for i in range(len(data)):
+    if data.iloc[i]['HANDBOOK_CHAPTER'] > chapter:
+      if chapter > 0:
+        document.add_page_break()
+      chapter = data.iloc[i]['HANDBOOK_CHAPTER']
+      document.add_heading(data.iloc[i]['HANDBOOK_CHAPTER_DESCRIPTION'], level = 1)
+      document.add_paragraph(data.iloc[i]['HANDBOOK_CHAPTER_TEXT'])
+      
+    # Organizing paragraphs
+    if data.iloc[i]['HANDBOOK_PARAGRAPH'] == 1:
+      document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 2)
+    elif data.iloc[i]['HANDBOOK_PARAGRAPH'] < 10:
+      document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 3)
+    elif data.iloc[i]['HANDBOOK_PARAGRAPH'] < 20:
+      document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 4)
+    else:
+      document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 5)
+    document.add_paragraph(data.iloc[i]['HANDBOOK_PARAGRAPH_TEXT'])
+    document.add_paragraph('Keywords: ' + data.iloc[i]['HANDBOOK_KEYWORD1'] + ', ' + data.iloc[i]['HANDBOOK_KEYWORD2'] + ', ' + data.iloc[i]['HANDBOOK_KEYWORD3'] + ', ' + data.iloc[i]['HANDBOOK_KEYWORD4'] + ', ' + data.iloc[i]['HANDBOOK_KEYWORD5'])
+    document.add_paragraph(data.iloc[i]['HANDBOOK_TEXT'])
+    
+    # Add image
+    if (data.iloc[i]['HANDBOOK_IMAGE_TEXT'] != 'Placeholder image.'):
+      saveFile(data = data.iloc[i]['HANDBOOK_IMAGE'], filename = 'temp.png')
+      document.add_picture('temp.png')
+
   
-  p = document.add_paragraph('A plain paragraph having some ')
-  p.add_run('bold').bold = True
-  p.add_run(' and some ')
-  p.add_run('italic.').italic = True
-  for row in data:
-    st.write(row)
-    #p.add_run(data)
-  
-  document.add_heading('Heading, level 1', level = 1)
-  document.add_paragraph('Intense quote', style = 'Intense Quote')
-  
-  document.add_paragraph(
-      'first item in unordered list', style='List Bullet'
-  )
-  document.add_paragraph(
-      'first item in ordered list', style = 'List Number'
-  )
-  
-  document.add_picture("images\\placeholder_documentation.png", width = Inches(1.25))
-  
-  records = (
-      (3, '101', 'Spam'),
-      (7, '422', 'Eggs'),
-      (4, '631', 'Spam, spam, eggs, and spam')
-  )
-  
-  table = document.add_table(rows = 1, cols = 3)
-  hdr_cells = table.rows[0].cells
-  hdr_cells[0].text = 'Qty'
-  hdr_cells[1].text = 'Id'
-  hdr_cells[2].text = 'Desc'
-  for qty, id, desc in records:
-      row_cells = table.add_row().cells
-      row_cells[0].text = str(qty)
-      row_cells[1].text = id
-      row_cells[2].text = desc
-  
-  document.add_page_break()
-  
-  document.save(docx_file_name)
+  ## Create a Word file using python-docx as engine
+  buffer = io.BytesIO()
+  document.save(buffer)
+
+
+  ## Download Button
+  st.download_button(label = 'Download Word document', data = buffer, file_name = docx_file_name, mime = "application/vnd.openxmlformats")
 
 
 
@@ -188,6 +183,14 @@ def loadFile(filename):
   with open(filename, 'rb') as file:
     binaryData = file.read()
   return binaryData
+
+
+
+### Function: saveFile = converts binary image data to png file
+def saveFile(data, filename = 'temp.png'):
+  file = open(filename, 'wb')
+  file.write(data)
+  file.close()
 
 
 
