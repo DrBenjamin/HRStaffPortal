@@ -138,6 +138,9 @@ def export_excel(sheet, column, columns, length, data,
 def export_docx(data, docx_file_name = 'Handbook.docx'):
   document = Document()
   
+  # Sorting dataframe by Chapter and Paragraph
+  data = data.sort_values(['HANDBOOK_CHAPTER', 'HANDBOOK_PARAGRAPH'], ascending = [True, True])
+  
   # Writing docx file
   document.add_heading('User Handbook', 0)
   chapter = 0
@@ -147,7 +150,8 @@ def export_docx(data, docx_file_name = 'Handbook.docx'):
         document.add_page_break()
       chapter = data.iloc[i]['HANDBOOK_CHAPTER']
       document.add_heading(data.iloc[i]['HANDBOOK_CHAPTER_DESCRIPTION'], level = 1)
-      document.add_paragraph(data.iloc[i]['HANDBOOK_CHAPTER_TEXT'])
+      paragraph = document.add_paragraph()
+      paragraph.add_run(data.iloc[i]['HANDBOOK_CHAPTER_TEXT']).italic = True
       
     # Organizing paragraphs
     if data.iloc[i]['HANDBOOK_PARAGRAPH'] == 1:
@@ -158,9 +162,15 @@ def export_docx(data, docx_file_name = 'Handbook.docx'):
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 4)
     else:
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 5)
-    document.add_paragraph(data.iloc[i]['HANDBOOK_PARAGRAPH_TEXT'])
-    document.add_paragraph('Keywords: ' + data.iloc[i]['HANDBOOK_KEYWORD1'] + ', ' + data.iloc[i]['HANDBOOK_KEYWORD2'] + ', ' + data.iloc[i]['HANDBOOK_KEYWORD3'] + ', ' + data.iloc[i]['HANDBOOK_KEYWORD4'] + ', ' + data.iloc[i]['HANDBOOK_KEYWORD5'])
+    paragraph = document.add_paragraph()
+    paragraph.add_run(data.iloc[i]['HANDBOOK_PARAGRAPH_TEXT']).italic = True
     document.add_paragraph(data.iloc[i]['HANDBOOK_TEXT'])
+    paragraph = document.add_paragraph()
+    paragraph.add_run('Category & Sub-Category: ').bold = True
+    paragraph.add_run(data.iloc[i]['CATEGORY'] + ' / ' + data.iloc[i]['CATEGORY_SUB'] + '\n')
+    paragraph.add_run('Keywords: ').bold = True
+    paragraph.add_run(data.iloc[i]['HANDBOOK_KEYWORD1'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD2'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD3'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD4'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD5'].capitalize())
+
     
     # Add image
     if (data.iloc[i]['HANDBOOK_IMAGE_TEXT'] != 'Placeholder image.'):
