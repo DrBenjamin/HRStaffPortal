@@ -181,6 +181,8 @@ def export_docx(data, docx_file_name = 'Handbook.docx'):
   ## Create a Word file using python-docx as engine
   buffer = io.BytesIO()
   document.save(buffer)
+  if os.path.exists("temp.png"):
+    os.remove("temp.png")
 
 
   ## Download Button
