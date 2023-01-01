@@ -1,5 +1,5 @@
 ##### `🏥_HR_Staff_Portal.py`
-##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
+##### HR Staff Portal Prototype
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
 #### Loading needed Python libraries
