@@ -91,5 +91,10 @@ if st.button(label = 'Export docx'):
   databank_handbook = databank_handbook.set_index('ID')
   
   
+  ## Get FAQ
+  query = "SELECT que.QUESTION_TEXT, faq.FAQ_ANSWER, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID;"
+  faq = run_query(query)
+  
+  
   ## Export docx file
-  export_docx(data = databank_handbook, docx_file_name = 'Handbook.docx')
+  export_docx(data = databank_handbook, faq = faq, docx_file_name = 'Handbook.docx')

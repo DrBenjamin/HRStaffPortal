@@ -135,7 +135,7 @@ def export_excel(sheet, column, columns, length, data,
 
 
 ### Function: export_docx = Pandas Dataframe to MS Word file (docx)
-def export_docx(data, docx_file_name = 'Handbook.docx'):
+def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
   document = Document()
   
   # Sorting dataframe by Chapter and Paragraph
@@ -154,11 +154,11 @@ def export_docx(data, docx_file_name = 'Handbook.docx'):
       paragraph.add_run(data.iloc[i]['HANDBOOK_CHAPTER_TEXT']).italic = True
       
     # Organizing paragraphs
-    if data.iloc[i]['HANDBOOK_PARAGRAPH'] == 1:
+    if len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 1:
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 2)
-    elif data.iloc[i]['HANDBOOK_PARAGRAPH'] < 10:
+    elif len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 2:
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 3)
-    elif data.iloc[i]['HANDBOOK_PARAGRAPH'] < 20:
+    elif len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 3:
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 4)
     else:
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 5)
@@ -176,6 +176,18 @@ def export_docx(data, docx_file_name = 'Handbook.docx'):
     if (data.iloc[i]['HANDBOOK_IMAGE_TEXT'] != 'Placeholder image.'):
       saveFile(data = data.iloc[i]['HANDBOOK_IMAGE'], filename = 'temp.png')
       document.add_picture('temp.png')
+    
+      
+  ## FAQ
+  document.add_page_break()
+  document.add_heading('FAQ', level = 1)
+  for i in range(len(faq)):
+    paragraph = document.add_paragraph()
+    paragraph.add_run('Question: ' + faq[i][0].upper() + '\n').bold = True
+    paragraph.add_run('Category & Sub-Category: ').bold = True
+    paragraph.add_run(faq[i][2] + ' / ' + faq[i][3] + '\n')
+    paragraph.add_run('Ben`s answer: ').bold = True
+    paragraph.add_run(faq[i][1]+ '\n')
 
   
   ## Create a Word file using python-docx as engine

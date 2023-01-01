@@ -344,19 +344,19 @@ with st.form('Input', clear_on_submit = False):
             for i in range(5):
               # First keyword gets highest score
               if handbook[4].capitalize() == keywords[i]:
-                counter += 5
+                counter += 9
                     
               # Second and third get medium score
               if handbook[5].capitalize() == keywords[i]:
-                counter += 4
+                counter += 8
               if handbook[6].capitalize() == keywords[i]:
-                counter += 4
+                counter += 7
                       
               # Fourth and fith geth lowest score
               if handbook[7].capitalize() == keywords[i]:
-                counter += 3
+                counter += 6
               if handbook[8].capitalize() == keywords[i]:
-                counter += 3
+                counter += 5
               databank_handbook['HANDBOOK_HITS'][handbook[0]] = counter
                       
                       
