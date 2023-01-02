@@ -381,15 +381,13 @@ with st.form('Input', clear_on_submit = False):
           handbook = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_TEXT')
           handbook_id = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_ID')
           
-          # Add handbook entry which scored 2nd if score difference is under 10%
-          if (databank_handbook._get_value(databank_handbook.iloc[1][0], 'HANDBOOK_HITS') / databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_HITS') > 0.9):
-            handbook = handbook + ' ' + databank_handbook._get_value(databank_handbook.iloc[1][0], 'HANDBOOK_TEXT')
+          # Add handbook entries which scored with difference under 15%
+          for i in range(len(databank_handbook) - 1):
+            if (databank_handbook._get_value(databank_handbook.iloc[i + 1][0], 'HANDBOOK_HITS') / databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_HITS') >= 0.85):
+              handbook = handbook + ' ' + databank_handbook._get_value(databank_handbook.iloc[i + 1][0], 'HANDBOOK_TEXT')
           
-          # Add handbook entry which scored 3rd if score difference is under 10% 
-          if (databank_handbook._get_value(databank_handbook.iloc[2][0], 'HANDBOOK_HITS') / databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_HITS') > 0.9):
-            handbook = handbook + ' ' + databank_handbook._get_value(databank_handbook.iloc[2][0], 'HANDBOOK_TEXT')
             
-          # Debugging output
+          ## Debugging output
           st.write(databank_handbook)
           st.write(handbook)
           
