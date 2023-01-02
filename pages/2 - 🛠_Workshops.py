@@ -278,11 +278,11 @@ with st.form('Input', clear_on_submit = False):
         
         
         ## Get handbook data to answer from table `HANDBOOK_USER`
-        query = "SELECT ID, ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_HITS FROM benbox.HANDBOOK_USER WHERE HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR CATEGORY_ID = '%s' OR CATEGORY_SUB_ID = '%s';" % (keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], categories_id[category], sub_categories_id[sub_category])
+        query = "SELECT ID, ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_HEADLINE, HANDBOOK_HITS FROM benbox.HANDBOOK_USER WHERE HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR CATEGORY_ID = '%s' OR CATEGORY_SUB_ID = '%s';" % (keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], categories_id[category], sub_categories_id[sub_category])
         rows = run_query(query)
-        databank_handbook = pd.DataFrame(columns = ['ID_Index', 'ID', 'HANDBOOK_ID', 'CATEGORY_ID', 'CATEGORY_SUB_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_SUMMARY', 'HANDBOOK_TEXT', 'HANDBOOK_HITS'])
+        databank_handbook = pd.DataFrame(columns = ['ID_Index', 'ID', 'HANDBOOK_ID', 'CATEGORY_ID', 'CATEGORY_SUB_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_SUMMARY', 'HANDBOOK_TEXT', 'HANDBOOK_TEXT_HEADLINE', 'HANDBOOK_HITS'])
         for row in rows:
-          df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12]]], columns = ['ID_Index', 'ID', 'HANDBOOK_ID', 'CATEGORY_ID', 'CATEGORY_SUB_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_SUMMARY', 'HANDBOOK_TEXT', 'HANDBOOK_HITS'])
+          df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13]]], columns = ['ID_Index', 'ID', 'HANDBOOK_ID', 'CATEGORY_ID', 'CATEGORY_SUB_ID', 'HANDBOOK_KEYWORD1', 'HANDBOOK_KEYWORD2', 'HANDBOOK_KEYWORD3', 'HANDBOOK_KEYWORD4', 'HANDBOOK_KEYWORD5', 'HANDBOOK_SUMMARY', 'HANDBOOK_TEXT', 'HANDBOOK_TEXT_HEADLINE', 'HANDBOOK_HITS'])
           databank_handbook = pd.concat([databank_handbook, df])
         databank_handbook = databank_handbook.set_index('ID_Index')
   
@@ -298,7 +298,7 @@ with st.form('Input', clear_on_submit = False):
             handbook = databank_handbook.iloc[x]
                   
             # Add importance through `HANDBOOK_HITS` value
-            counter = 0 + handbook[11]
+            counter = 0 + handbook[12]
               
                   
             ## Check for matching category and sub-category
@@ -308,7 +308,7 @@ with st.form('Input', clear_on_submit = False):
                 counter += 5
               
                 
-            ## Counting for matching words in summary (score 4 per hit)
+            ## Counting matching words in summary (score 4 per hit)
             string1_words = set(handbook[9].split())
             string2_words = set(summary.split())
             
@@ -324,7 +324,23 @@ with st.form('Input', clear_on_submit = False):
             counter += 4 * len(matches)
             
             
-            ## Counting for matching words in text (score 1 per hit)
+            ## Counting matching words in headline (score 3 per hit)
+            string1_words = set(handbook[11].split())
+            string2_words = set(summary.split())
+            
+            # Remove unwanted characters
+            unwanted_characters = ".,!?"
+            string1_words = {word.strip(unwanted_characters) for word in string1_words}
+            string2_words = {word.strip(unwanted_characters) for word in string2_words}
+            
+            # Check for matching words
+            matches = string1_words & string2_words
+            
+            # Adding matching words to `counter`
+            counter += 3 * len(matches)
+            
+            
+            ## Counting matching words in text (score 1 per hit)
             string1_words = set(handbook[10].split())
             string2_words = set(user_question.split())
             
@@ -359,25 +375,25 @@ with st.form('Input', clear_on_submit = False):
                 counter += 5
               databank_handbook['HANDBOOK_HITS'][handbook[0]] = counter
                       
-                      
-          ## Checking for highest Score ('HANDBOOK_HITS')
-          for x in range(len(databank_handbook)):
-            if (x == 0):
-              handbook = databank_handbook._get_value(databank_handbook.iloc[x][0], 'HANDBOOK_TEXT')
-              handbook_id = databank_handbook._get_value(databank_handbook.iloc[x][0], 'HANDBOOK_ID')
-              st.session_state['handbook_id'] = handbook_id
-            else:
-              for i in range(x):
-                if (databank_handbook.iloc[x][11] <= databank_handbook.iloc[i][11]):
-                  break
-                else:
-                  if (i == x - 1):
-                    handbook = databank_handbook._get_value(databank_handbook.iloc[x][0], 'HANDBOOK_TEXT')
-                    handbook_id = databank_handbook._get_value(databank_handbook.iloc[x][0], 'HANDBOOK_ID')
-                    st.session_state['handbook_id'] = handbook_id
-                    
-        
-          st.write(databank_handbook)          
+           
+          ## Sorting highest score ('HANDBOOK_HITS') descending         
+          databank_handbook = databank_handbook.sort_values('HANDBOOK_HITS', ascending = False)
+          handbook = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_TEXT')
+          handbook_id = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_ID')
+          
+          # Add handbook entry which scored 2nd if score difference is under 10%
+          if (databank_handbook._get_value(databank_handbook.iloc[1][0], 'HANDBOOK_HITS') / databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_HITS') > 0.9):
+            handbook = handbook + ' ' + databank_handbook._get_value(databank_handbook.iloc[1][0], 'HANDBOOK_TEXT')
+          
+          # Add handbook entry which scored 3rd if score difference is under 10% 
+          if (databank_handbook._get_value(databank_handbook.iloc[2][0], 'HANDBOOK_HITS') / databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_HITS') > 0.9):
+            handbook = handbook + ' ' + databank_handbook._get_value(databank_handbook.iloc[2][0], 'HANDBOOK_TEXT')
+            
+          # Debugging output
+          st.write(databank_handbook)
+          st.write(handbook)
+          
+          
           ## Doing the request to OpenAI for answering the question
           # Answer
           answer_question = 'The user handbook contains following information: \"' + handbook + '\". Right now you are in the city called \"' + city + '\". Please answer following user question: \"' + user_question + '\"'
