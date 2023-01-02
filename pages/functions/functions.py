@@ -10,6 +10,8 @@ import os
 import xlsxwriter
 from docx import Document
 from docx.shared import Inches
+from docx.shared import Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 import deepl
 
 
@@ -27,7 +29,8 @@ def check_password():
       del st.session_state["username"]
     else:
       st.session_state["password_correct"] = False
-    
+
+
   ## Sidebar
   # Sidebar Header Image
   st.sidebar.image('images/MoH.png')
@@ -138,13 +141,39 @@ def export_excel(sheet, column, columns, length, data,
 def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
   document = Document()
   
-  # Sorting dataframe by Chapter and Paragraph
+
+  ## Sorting dataframe by Chapter and Paragraph
   data = data.sort_values(['HANDBOOK_CHAPTER', 'HANDBOOK_PARAGRAPH'], ascending = [True, True])
-  
-  # Writing docx file
+
+
+  ## Writing handbook
+  # Adding handbook header
   document.add_heading('User Handbook', 0)
+
+  # Adding table of contents
+  document.add_heading('Table of contents', level = 1)
+  paragraph = document.add_paragraph()
+  for i in range(len(data)):
+    if str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1] == '0':
+      paragraph.add_run(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[0] + ' - ' + data.iloc[i]['HANDBOOK_TEXT_HEADLINE'] + '\n').bold = True
+    else:
+      if len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 1:
+        placer = '\t'
+      elif len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 2:
+        placer = '\t\t'    
+      elif len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 3:
+        placer = '\t\t\t'   
+      else:
+        placer = '\t\t\t\t'
+      paragraph.add_run(placer + str(data.iloc[i]['HANDBOOK_PARAGRAPH']) + ' - ' + data.iloc[i]['HANDBOOK_TEXT_HEADLINE'] + '\n')
+  document.add_page_break()
+
   chapter = 0
   for i in range(len(data)):
+    # Adding handbook header
+    document.add_heading('User Handbook', 0)
+
+    # Adding chapters
     if data.iloc[i]['HANDBOOK_CHAPTER'] > chapter:
       if chapter > 0:
         document.add_page_break()
@@ -152,8 +181,8 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
       document.add_heading(data.iloc[i]['HANDBOOK_CHAPTER_DESCRIPTION'], level = 1)
       paragraph = document.add_paragraph()
       paragraph.add_run(data.iloc[i]['HANDBOOK_CHAPTER_TEXT']).italic = True
-      
-    # Organizing paragraphs
+    
+    # Adding headlines
     if len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 1:
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 2)
     elif len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 2:
@@ -162,31 +191,49 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 4)
     else:
       document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 5)
+
+    # Adding paragraphs
     paragraph = document.add_paragraph()
-    paragraph.add_run(data.iloc[i]['HANDBOOK_PARAGRAPH_TEXT']).italic = True
-    document.add_paragraph(data.iloc[i]['HANDBOOK_TEXT'])
-    paragraph = document.add_paragraph()
+    if (data.iloc[i]['HANDBOOK_PARAGRAPH_TEXT'] != None):
+      paragraph.add_run(data.iloc[i]['HANDBOOK_PARAGRAPH_TEXT'] + '\n\n').italic = True
+    paragraph.add_run(data.iloc[i]['HANDBOOK_TEXT'] + '\n\n')
     paragraph.add_run('Category & Sub-Category: ').bold = True
     paragraph.add_run(data.iloc[i]['CATEGORY'] + ' / ' + data.iloc[i]['CATEGORY_SUB'] + '\n')
     paragraph.add_run('Keywords: ').bold = True
     paragraph.add_run(data.iloc[i]['HANDBOOK_KEYWORD1'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD2'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD3'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD4'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD5'].capitalize())
 
-    # Add image
+    # Adding image
     if (data.iloc[i]['HANDBOOK_IMAGE_TEXT'] != 'Placeholder image.'):
       saveFile(data = data.iloc[i]['HANDBOOK_IMAGE'], filename = 'temp.png')
-      document.add_picture('temp.png')
-    
+      paragraph = document.add_paragraph()
+      paragraph_format = paragraph.paragraph_format
+      paragraph_format.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+      run = paragraph.add_run()
+      run.add_picture('temp.png')
+      paragraph.add_run('\n' + data.iloc[i]['HANDBOOK_IMAGE_TEXT']).italic = True
+
+    # Add page break
+    document.add_page_break()
       
-  ## Add FAQ
-  document.add_page_break()
+
+  ## Writing FAQ
+  # Adding handbook header
+  document.add_heading('User Handbook', 0)
+
+  # Adding FAQ header
   document.add_heading('FAQ', level = 1)
+
+  # Adding FAQ items
   for i in range(len(faq)):
     paragraph = document.add_paragraph()
-    paragraph.add_run('Question: ' + faq[i][0].upper() + '\n').bold = True
+    paragraph.add_run('Question: ' + faq[i][0].upper() + '\n\n').bold = True
     paragraph.add_run('Category & Sub-Category: ').bold = True
-    paragraph.add_run(faq[i][2] + ' / ' + faq[i][3] + '\n')
+    paragraph.add_run(faq[i][2] + ' / ' + faq[i][3] + '\n\n')
     paragraph.add_run('Ben`s answer: ').bold = True
     paragraph.add_run(faq[i][1]+ '\n')
+
+    # Add page break
+    document.add_page_break()
 
   
   ## Create a Word file using python-docx as engine
