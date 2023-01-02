@@ -107,7 +107,7 @@ def run_query(query):
 ### Function: Picture-uploader
 def pictureUploader(image, index):
   ## SQL statement
-  sql_insert_blob_query = """ UPDATE 'test.csv' SET IMAGE = '%s' WHERE ID = '%s';"""
+  sql_insert_blob_query = """ UPDATE 'files/test.csv' SET IMAGE = '%s' WHERE ID = '%s';"""
   ## Convert data into tuple format
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
@@ -178,7 +178,7 @@ if check_password():
 
 
     ## Checkbox for option to see databank data
-    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM 'test.csv';"
+    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM 'files/test.csv';"
     rows = run_query(query)
     databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
     for row in rows:
@@ -193,7 +193,7 @@ if check_password():
 
       
     ## Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee Selectbox
-    query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM 'test.csv';"
+    query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM 'files/test.csv';"
     rows = run_query(query)
     # Building `ID` / `EMPLOYEE` pair and
     # combine Forename and Surname for employee selectbox
@@ -236,7 +236,7 @@ if check_password():
         
         # Check for ID number count of Employee
         id = 0
-        query = "SELECT ID from 'test.csv';"
+        query = "SELECT ID from 'files/test.csv';"
         rows = run_query(query)
         row = [0]
         for row in rows:
@@ -269,7 +269,7 @@ if check_password():
         if submitted:
           ## Writing to databank if data was entered
           if (layout is not None and forename and surname and job and exp and eno and capri):
-            query = "INSERT INTO 'test.csv'(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, layout, forename, surname, job, exp, eno, capri)
+            query = "INSERT INTO 'files/test.csv'(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, layout, forename, surname, job, exp, eno, capri)
             run_query(query)
             conn.commit()
             st.session_state.success = True
@@ -292,7 +292,7 @@ if check_password():
       ## If data is already existent, show filled form  
       else:
         ## Get information of selected Employee
-        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'test.csv' WHERE ID = '%s';" %(str(index))
+        query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM 'files/test.csv' WHERE ID = '%s';" %(str(index))
         for employee in run_query(query):
           print(employee)
           
@@ -319,8 +319,8 @@ if check_password():
         capri = st.text_input(label = 'Cards Printed', value = employee[7], disabled = not checkbox_val)
         if (employee[7] != capri):
           updateMaster = True
-        
-          
+
+
         ## Check if image is empty and show a placeholder
         if (len(employee[8]) < 10):
           # Show placeholder
@@ -361,7 +361,7 @@ if check_password():
 
           ## Check for last ID number in TrainingData (to add data after)
           idT = 0
-          query = "SELECT ID from 'test2.csv';"
+          query = "SELECT ID from 'files/test2.csv';"
           rows = run_query(query)
           row = [0]
           for row in rows:
@@ -372,7 +372,7 @@ if check_password():
           
 
           ## Get Training Data
-          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'test.csv' AS ima LEFT JOIN 'test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = '%s';" %(str(index))
+          query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'files/test.csv' AS ima LEFT JOIN 'files/test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = '%s';" %(str(index))
           row = [0]
           rows = run_query(query)
           trainingData = []
@@ -464,7 +464,7 @@ if check_password():
           
           # Writing to databank idcard Table IMAGEBASE
           if (updateMaster == True):
-            query = "UPDATE 'test.csv' SET LAYOUT = '%s', FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, str(index))
+            query = "UPDATE 'files/test.csv' SET LAYOUT = '%s', FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = '%s' WHERE ID = '%s';" %(layout, forename, surname, job, exp, eno, capri, str(index))
             run_query(query)
             conn.commit()
             
@@ -478,7 +478,7 @@ if check_password():
           if (insert == True and update == False):
             st.write(training[0], institute[0], date[0], days[0])
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
-              query = "INSERT INTO 'test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
+              query = "INSERT INTO 'files/test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[0], institute[0], date[0], days[0])
               run_query(query)
               conn.commit()
               st.session_state.success = True
@@ -492,7 +492,7 @@ if check_password():
             st.write(training[0], institute[0], date[0], days[0])
             st.write(len(trainingData))
             if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
-              query = "INSERT INTO 'test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
+              query = "INSERT INTO 'files/test2.csv'(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" %(idT, eno, training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
               run_query(query)
               conn.commit()
               st.session_state.success = True
@@ -505,7 +505,7 @@ if check_password():
             for i in range(len(trainingData)):
               st.write(training[i], institute[i], date[i], days[i])
               st.write(trainingData[i][4])
-              query = "UPDATE 'test2.csv' SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = '%s';" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
+              query = "UPDATE 'files/test2.csv' SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = '%s';" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
               run_query(query)
               conn.commit()
             st.session_state.success = True
