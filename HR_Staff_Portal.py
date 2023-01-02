@@ -1,7 +1,8 @@
-##### `streamlit_app.py`
-##### Kamazu Central Hospital (KCH) HR Staff Portal Prototype
+##### `HR_Staff_Portal.py`
+##### HR Staff Portal
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
+
 
 
 
@@ -16,6 +17,7 @@ import webbrowser
 from shillelagh.adapters.registry import registry
 from shillelagh.adapters.file.csvfile import CSVFile
 from shillelagh.backends.apsw.db import connect
+
 
 
 
@@ -34,6 +36,7 @@ st.set_page_config(
 
 
 
+
 #### Query parameters
 ## Get param `EMPLOYE_NO`
 eno = st.experimental_get_query_params()
@@ -42,6 +45,7 @@ eno = st.experimental_get_query_params()
 # [code]
 
   
+
 
 #### All Functions used in HRStaffPortal
 ### Function: Password / User checking
@@ -56,6 +60,7 @@ def check_password():
     else:
       st.session_state["password_correct"] = False
     
+
   ## Sidebar
   # Sidebar Header Image
   st.sidebar.image('images/MoH.png')
@@ -85,7 +90,8 @@ def check_password():
     st.sidebar.button(label = 'Logout', on_click = logout)
     return True
  
-      
+
+
 ### Logout Button
 def logout():
   ## Set Logout to get Logout-message
@@ -94,10 +100,12 @@ def logout():
   st.session_state["password_correct"] = False
   
 
+
 ### Function: SQL Connection
 ## Perform query
 def run_query(query):
   return cursor.execute(query)
+
 
 
 ### Function: Picture-uploader
@@ -109,12 +117,14 @@ def pictureUploader(image, index):
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
   conn.commit()
  
-  
+
+
 ### Function: Convert digital data to binary format
 def loadFile(filename):
   with open(filename, 'rb') as file:
     binaryData = file.read()
   return binaryData
+
 
 
 ### Function: Write binary data on Hard Disk
@@ -123,34 +133,39 @@ def writeFile(data, filename):
     file.write(data)
     
     
-    
+
+
 #### Initialization of Session States
 ## First Run State
 if ('success' not in st.session_state):
   st.session_state['run'] = True
   
+
 ## Database Transmition Success State
 if ('success' not in st.session_state):
   st.session_state['success'] = False
   
+
 ## Selected Employee Session State
 if ('index' not in st.session_state):
   st.session_state['index'] = 0
   
+
 ## Logout
 if ('logout' not in st.session_state):
   st.session_state['logout'] = False
   
+
 ## Current Image data
 if ('image' not in st.session_state):
   st.session_state['image'] = loadFile('images/No_Image.png')
 
 
 
+
 #### Two Versions of the page -> Landing page vs. HRStaffPortal
 ### Logged in state (HRStattPortal)
 if check_password():
-    
     ## Header information
     with st.expander("Header", expanded = True):
       st.title('KCH HR Staff Portal')
@@ -164,6 +179,7 @@ if check_password():
     # open Databak Connection with Shillelagh
     conn = connect(":memory:", adapters = 'csvfile')
     cursor = conn.cursor()
+
 
     ## Checkbox for option to see databank data
     query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM 'test.csv';"
