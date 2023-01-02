@@ -171,14 +171,13 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
     paragraph.add_run('Keywords: ').bold = True
     paragraph.add_run(data.iloc[i]['HANDBOOK_KEYWORD1'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD2'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD3'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD4'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD5'].capitalize())
 
-    
     # Add image
     if (data.iloc[i]['HANDBOOK_IMAGE_TEXT'] != 'Placeholder image.'):
       saveFile(data = data.iloc[i]['HANDBOOK_IMAGE'], filename = 'temp.png')
       document.add_picture('temp.png')
     
       
-  ## FAQ
+  ## Add FAQ
   document.add_page_break()
   document.add_heading('FAQ', level = 1)
   for i in range(len(faq)):
