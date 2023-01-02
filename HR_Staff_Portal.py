@@ -2,10 +2,6 @@
 ##### HR Staff Portal
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
-
-
-
-
 #### Loading neded Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
@@ -323,6 +319,7 @@ if check_password():
         capri = st.text_input(label = 'Cards Printed', value = employee[7], disabled = not checkbox_val)
         if (employee[7] != capri):
           updateMaster = True
+        
           
         ## Check if image is empty and show a placeholder
         if (len(employee[8]) < 10):
@@ -330,13 +327,15 @@ if check_password():
           st.image('images/portrait-placeholder.png')
           # Set Image Session State to `No Image` placeholder
           st.session_state['image'] = loadFile('images/No_Image.png')
-          
+
+
         ## Show existing Image
         else:          
           st.image(employee[8])
           # Save Image for downloading to Image Session State
           st.session_state.image = employee[8]
         
+
         ## Image Uploader
         uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png', disabled = not checkbox_val)
         if uploaded_file is not None:
@@ -345,10 +344,12 @@ if check_password():
           # Upload picture to database
           #pictureUploader(image, index)
         
+
         ## No image data  
         else:
           image = ''
         
+
         ## Set query parameter
         st.experimental_set_query_params(eno=eno)
           
@@ -357,6 +358,7 @@ if check_password():
         with st.expander("Training Data", expanded = checkbox_training):
           st.title('Employee Training Data')
           
+
           ## Check for last ID number in TrainingData (to add data after)
           idT = 0
           query = "SELECT ID from 'test2.csv';"
@@ -368,6 +370,7 @@ if check_password():
           if (idT == 0):
             idT = 1
           
+
           ## Get Training Data
           query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID FROM 'test.csv' AS ima LEFT JOIN 'test2.csv' AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = '%s';" %(str(index))
           row = [0]
@@ -383,10 +386,12 @@ if check_password():
           date = []
           days = []
           
+
           ## Boolean for flow control
           insert = False # Will be set to `True` if a new entry is entered
           update = False # Will be set to `True` if existing data is altered
           
+
           ## Check if Training Data is already there for an Employee and show it
           if (trainingData[0][0] != None):
             update = False
@@ -422,7 +427,8 @@ if check_password():
               
             else:
               counter = 'Training #' + str(len(trainingData) + 1)
-              
+
+
             ## Inputs for new Training
             x = st.text_input(label = counter, placeholder = 'Training?', disabled = not checkbox_val)
             if x.strip():
@@ -449,6 +455,7 @@ if check_password():
           if (st.session_state.run != True):
             st.warning(body = 'Not sumitted, as no new Data was entered!', icon = "⚠️")
         
+
         ## Submit Button for Changes
         submitted = st.form_submit_button("Save Changes")
         if submitted:
