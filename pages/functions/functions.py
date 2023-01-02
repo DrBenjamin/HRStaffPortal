@@ -174,24 +174,27 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 		# Adding handbook header
 		document.add_heading('User Handbook', 0)
 
-		# Adding chapters
+		# Adding chapter headings
 		if data.iloc[i]['HANDBOOK_CHAPTER'] > chapter:
 			if chapter > 0:
 				document.add_page_break()
 			chapter = data.iloc[i]['HANDBOOK_CHAPTER']
-			document.add_heading(data.iloc[i]['HANDBOOK_CHAPTER_DESCRIPTION'], level = 1)
+			document.add_heading(str(chapter) + ' - ' + data.iloc[i]['HANDBOOK_CHAPTER_DESCRIPTION'], level = 1)
 			paragraph = document.add_paragraph()
 			paragraph.add_run(data.iloc[i]['HANDBOOK_CHAPTER_TEXT']).italic = True
 		
-		# Adding headlines
+		# Adding paragraph headings
 		if len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 1:
-			document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 2)
+		  if str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1] == '0':
+    				document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 2)
+		  else:
+		    document.add_heading(str(data.iloc[i]['HANDBOOK_PARAGRAPH']) + ' - ' + data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 2)
 		elif len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 2:
-			document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 3)
+		  document.add_heading(str(data.iloc[i]['HANDBOOK_PARAGRAPH']) + ' - ' + data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 3)
 		elif len(str(data.iloc[i]['HANDBOOK_PARAGRAPH']).split('.')[1]) == 3:
-			document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 4)
+			document.add_heading(str(data.iloc[i]['HANDBOOK_PARAGRAPH']) + ' - ' + data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 4)
 		else:
-			document.add_heading(data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 5)
+			document.add_heading(str(data.iloc[i]['HANDBOOK_PARAGRAPH']) + ' - ' + data.iloc[i]['HANDBOOK_TEXT_HEADLINE'], level = 5)
 
 		# Adding paragraphs
 		paragraph = document.add_paragraph()
