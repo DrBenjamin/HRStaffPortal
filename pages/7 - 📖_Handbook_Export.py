@@ -9,7 +9,7 @@ import pandas as pd
 import mysql.connector
 import sys
 sys.path.insert(1, "pages/functions/")
-from functions import loadFile
+from functions import load_file
 from functions import export_docx
 
 
