@@ -210,7 +210,7 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 
 		# Adding image
 		if (data.iloc[i]['HANDBOOK_IMAGE_TEXT'] != 'Placeholder image.'):
-			saveFile(data = data.iloc[i]['HANDBOOK_IMAGE'], filename = 'temp.png')
+			save_file(data = data.iloc[i]['HANDBOOK_IMAGE'], filename = 'temp.png')
 			paragraph = document.add_paragraph()
 			paragraph_format = paragraph.paragraph_format
 			paragraph_format.alignment = WD_ALIGN_PARAGRAPH.RIGHT
