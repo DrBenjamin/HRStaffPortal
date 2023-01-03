@@ -16,8 +16,8 @@ sys.path.insert(1, "pages/functions/")
 from functions import check_password
 from functions import logout
 from functions import export_excel
-from functions import loadFile
-from functions import landingPage
+from functions import load_file
+from functions import landing_page
 
 
 
@@ -330,7 +330,7 @@ if check_password():
         driver_image = uploaded_file.getvalue()
             
       else:
-        driver_image = loadFile("images/placeholder.png")
+        driver_image = load_file("images/placeholder.png")
         
     
       ## Submit Button `Create new Driver`
@@ -944,4 +944,4 @@ if check_password():
 
 #### Not Logged in state (Landing page)
 else :
-  landingPage('Car Fleet Management System')
+  landing_page('Car Fleet Management System')
