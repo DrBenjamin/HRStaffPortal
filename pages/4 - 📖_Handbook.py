@@ -39,8 +39,7 @@ st.set_page_config(
 
 
 #### Initialization of session states
-### Chat-Bot Ben
-## Answer / question states
+## Answer state
 if ('answer' not in st.session_state):
   st.session_state['answer'] = ''
   
@@ -50,21 +49,19 @@ if ('feedback' not in st.session_state):
   st.session_state['feedback'] = False
   
   
-## Write to `FAQ` table
+## Session state for writing to table `FAQ`
 if ('question_id' not in st.session_state):
   st.session_state['question_id'] = ''
 if ('handbook_id' not in st.session_state):
   st.session_state['handbook_id'] = ''
   
 
-
-### Handbook
-## Chapter state
+## Chapter state for handbook
 if ('chapter' not in st.session_state):
   st.session_state['chapter'] = 1
   
 
-## Logout
+## Logout state
 if ('logout' not in st.session_state):
   st.session_state['logout'] = False
 
