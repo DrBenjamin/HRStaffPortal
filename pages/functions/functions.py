@@ -251,7 +251,7 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 
 
 ### Function: loadFile = converts digital data to binary format
-def loadFile(filename):
+def load_file(filename):
 	with open(filename, 'rb') as file:
 		binaryData = file.read()
 	return binaryData
@@ -259,7 +259,7 @@ def loadFile(filename):
 
 
 ### Function: saveFile = converts binary image data to png file
-def saveFile(data, filename = 'temp.png'):
+def save_file(data, filename = 'temp.png'):
 	file = open(filename, 'wb')
 	file.write(data)
 	file.close()
@@ -275,7 +275,7 @@ def trans(input, target_lang):
 
 
 ### Function: landingPage = shows the landing page (not loged in state)
-def landingPage(page):
+def landing_page(page):
 	## Title and information
 	st.title('Kamuzu Central Hospital (KCH)')
 	header = 'Welcome to ' + page
