@@ -24,7 +24,7 @@ from functions import export_docx
 
 #### Streamlit initial setup
 st.set_page_config(
-  page_title = "HR Staff Portal",
+  page_title = "Handbook",
   page_icon = "images/thumbnail.png",
   layout = "centered",
   initial_sidebar_state = "expanded",
