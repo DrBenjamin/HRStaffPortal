@@ -169,7 +169,7 @@ def pictureUploaderVehicles(image, index):
 
 
 #### Two versions of the page -> Landing page vs. Car Fleet Management
-### Logged in state (HRStattPortal)
+### Logged in state (Car Fleet Management System)
 if check_password():
   ## Header information
   with st.expander("Header", expanded = True):
