@@ -64,7 +64,7 @@ eno = st.experimental_get_query_params()
 
 #### Initialization of session states
 ## First Run State
-if ('success' not in st.session_state):
+if ('run' not in st.session_state):
   st.session_state['run'] = True
  
   
