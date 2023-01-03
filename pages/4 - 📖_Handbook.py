@@ -1,4 +1,4 @@
-##### `pages/4 - 🇲🇼_Network.py`
+##### `pages/4 - 📖_Handbook.py`
 ##### HR Staff Portal
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to benjamin.gross@giz.de for any questions
@@ -156,16 +156,3 @@ with col2:
   # No data existend
   else:
     st.write('No questions & answer available')
-      
-
-## Iframe
-#stc.iframe(src = "http://localhost/hopecarrental/index.php", height = 600, scrolling = True)
-#stc.iframe(src = "https://techhub.social/@DrBenjamin", height = 692, scrolling = True)
-stc.iframe(src = "http://192.168.1.173/index.html", height = 500, scrolling = True)
-
-stc.html(
-  """
-  <iframe src="https://techhub.social/@DrBenjamin/109397699095825866/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="400"></iframe><script src="https://techhub.social/embed.js" async="async"></script>
-  """,
-  height=300,
-)
