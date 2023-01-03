@@ -42,3 +42,14 @@ st.write('Lilongwe, MALAWI')
 st.write('[Tel: +265 1 753 400](tel:+2651753400)')
 st.write('[Tel: +265 1 753 555](tel:+2651753555)')
 st.write('[Tel: +265 1 753 744](tel:+2651753744)')
+
+
+## Network iframe
+stc.iframe(src = "http://192.168.1.173/index.html", height = 500, scrolling = True)
+
+stc.html(
+  """
+  <iframe src="https://techhub.social/@DrBenjamin/109397699095825866/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="400"></iframe><script src="https://techhub.social/embed.js" async="async"></script>
+  """,
+  height=300,
+)
