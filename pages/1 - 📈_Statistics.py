@@ -26,7 +26,7 @@ st.set_page_config(
 
 ### Header
 ## Title
-st.title('Statistic Page')
+st.title('Statistics')
 
 
 ## Sidebar
