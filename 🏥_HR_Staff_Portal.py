@@ -87,7 +87,7 @@ if ('logout' not in st.session_state):
   st.session_state['logout'] = False
   
 
-## Logout
+## Image
 if ('image' not in st.session_state):
   st.session_state['image'] = 'images/placeholder.png'
 
