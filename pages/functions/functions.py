@@ -274,14 +274,14 @@ def trans(input, target_lang):
 
 
 
-### Function: landingPage = shows the landing page (not loged in state)
+### Function: landing_page = shows the landing page (not loged in state)
 def landing_page(page):
 	## Title and information
 	st.title('Kamuzu Central Hospital (KCH)')
 	header = 'Welcome to ' + page
 	st.header(header)
 	st.subheader('User Login')
-	st.write('Please login (sidebar on the left) to access the ', page, '.')
+	st.info(body = 'Please login (sidebar on the left) to access the ' + page, icon = "ℹ️")
 	
 	
 	## Sub-pages menu
@@ -292,3 +292,10 @@ def landing_page(page):
 	st.write("<a href='Network' target='_self'>Network</a>", unsafe_allow_html = True)
 	st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
 	st.write("<a href='Handbook' target='_self'>Handbook</a>", unsafe_allow_html = True)
+	
+	
+
+### Function: landing_page_handbook = shows the landing page (not loged in state)
+def landing_page_handbook(info):
+	## Title and information
+	st.info(body = 'Please login (sidebar on the left) ' + info, icon = "ℹ️")

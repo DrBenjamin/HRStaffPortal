@@ -645,4 +645,4 @@ if check_password():
           
 #### Not Logged in state (Landing page)
 else :
-  landing_page('HR Staff Portal')
+  landing_page('HR Staff Portal.')
