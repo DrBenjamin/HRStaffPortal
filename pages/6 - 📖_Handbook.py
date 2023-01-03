@@ -5,6 +5,7 @@
 #### Loading needed Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
+import pandas as pd
 import mysql.connector
 import sys
 sys.path.insert(1, "pages/functions/")
@@ -27,6 +28,14 @@ st.set_page_config(
 )
 
 
+
+
+#### Initialization of session states
+## First Run State
+if ('chapter' not in st.session_state):
+  st.session_state['chapter'] = 1
+  
+  
 
 
 #### Functions
@@ -122,16 +131,124 @@ st.subheader('User Handbook')
 
 
 
-### Handbook
+### Chapter and paragraph structures
 ## Open databank connection
 conn = init_connection()
 
 
+## Get chapter structure
+query = "SELECT ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT FROM benbox.HANDBOOK_CHAPTER_STRUCTURE;"
+rows = run_query(query)
+databank_chapter = pd.DataFrame(columns = ['ID', 'HANDBOOK_CHAPTER', 'HANDBOOK_CHAPTER_DESCRIPTION', 'HANDBOOK_CHAPTER_TEXT'])
+for row in rows:
+  df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['ID', 'HANDBOOK_CHAPTER', 'HANDBOOK_CHAPTER_DESCRIPTION', 'HANDBOOK_CHAPTER_TEXT'])
+  databank_chapter = pd.concat([databank_chapter, df])
+databank_chapter = databank_chapter.set_index('ID')
+
+# Sort chapters
+databank_chapter = databank_chapter.sort_values('HANDBOOK_CHAPTER', ascending = True)
+chapters = list(databank_chapter['HANDBOOK_CHAPTER'])
+chapters_str = map(str, chapters)
+chapters_desc = list(databank_chapter['HANDBOOK_CHAPTER_DESCRIPTION'])
+
+# Concatenate the two strings
+chapters_desc = [' ' + str(row) for row in chapters_desc]
+chapters_combo = [i + j for i, j in zip(chapters_str, chapters_desc)]
+
+
+## Show chapter structure in expander
+with st.expander(label = 'Chapter structure', expanded = False):
+  st.write(databank_chapter)
+  
+  
+  ## Input for new handbook chapter structure data
+  with st.form('Chapter', clear_on_submit = True):
+    st.subheader('New chapter entry')
+    
+    # Get latest ID from table
+    id = lastID(url = '`benbox`.`HANDBOOK_CHAPTER_STRUCTURE`')
+    st.text_input(label = 'ID', value = id, disabled = True)
+    
+    # Inputs
+    handbook_chapter_structure_chapter = st.text_input(label = 'Chapter')
+    handbook_chapter_structure_chapter_desc = st.text_input(label = 'Description')
+    handbook_chapter_structure_chapter_text = st.text_input(label = 'Text')
+    
+    
+    ## Submit button
+    submitted = st.form_submit_button("Submit")
+    if submitted:
+      # Write entry to table `HANDBOOK_CHAPTER_STRUCTURE`
+      query = "INSERT INTO `benbox`.`HANDBOOK_CHAPTER_STRUCTURE`(ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT) VALUES (%s, '%s', '%s', '%s');" %(id, handbook_chapter_structure_chapter, handbook_chapter_structure_chapter_desc, handbook_chapter_structure_chapter_text)
+      run_query(query)
+      conn.commit()
+      
+      # Rerun
+      st.experimental_rerun()
+      
+
+## Get paragraph structure
+query = "SELECT ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT FROM benbox.HANDBOOK_PARAGRAPH_STRUCTURE;"
+rows = run_query(query)
+databank_paragraph = pd.DataFrame(columns = ['ID', 'HANDBOOK_PARAGRAPH', 'HANDBOOK_PARAGRAPH_DESCRIPTION', 'HANDBOOK_PARAGRAPH_TEXT'])
+for row in rows:
+  df = pd.DataFrame([[row[0], str(row[1]).strip('0'), row[2], row[3]]], columns = ['ID', 'HANDBOOK_PARAGRAPH', 'HANDBOOK_PARAGRAPH_DESCRIPTION', 'HANDBOOK_PARAGRAPH_TEXT'])
+  databank_paragraph = pd.concat([databank_paragraph, df])
+databank_paragraph = databank_paragraph.set_index('ID')
+
+# Sort paragraphs
+databank_paragraph = databank_paragraph.sort_values('HANDBOOK_PARAGRAPH', ascending = True)
+paragraphs = list(databank_paragraph['HANDBOOK_PARAGRAPH'])
+paragraphs_desc = list(databank_paragraph['HANDBOOK_PARAGRAPH_DESCRIPTION'])
+paragraphs_list = []
+paragraphs_desc_list = []
+for i in range(len(paragraphs)):
+  if int(paragraphs[i][0]) == st.session_state['chapter']:
+    paragraphs_list.append(paragraphs[i])
+    paragraphs_desc_list.append(paragraphs_desc[i])
+    
+# Concatenate the two strings
+paragraphs_desc_list = [' ' + row for row in paragraphs_desc_list]
+paragraphs_combo = [i + j for i, j in zip(paragraphs_list, paragraphs_desc_list)]
+
+
+## Show paragraph structure in expander
+with st.expander(label = 'Paragraph structure', expanded = False):
+  st.write(databank_paragraph)
+  
+  
+  ## Input for new handbook paragraph structure data
+  with st.form('Paragraph', clear_on_submit = True):
+    st.subheader('New paragraph entry')
+    
+    # Get latest ID from table
+    id = lastID(url = '`benbox`.`HANDBOOK_PARAGRAPH_STRUCTURE`')
+    st.text_input(label = 'ID', value = id, disabled = True)
+    
+    # Inputs
+    handbook_paragraph_structure_paragraph = st.text_input(label = 'Paragraph')
+    handbook_paragraph_structure_paragraph_desc = st.text_input(label = 'Description')
+    handbook_paragraph_structure_paragraph_text = st.text_input(label = 'Text')
+    
+    
+    ## Submit button
+    submitted = st.form_submit_button("Submit")
+    if submitted:
+      # Write entry to table `HANDBOOK_PARAGRAPH_STRUCTURE`
+      query = "INSERT INTO `benbox`.`HANDBOOK_PARAGRAPH_STRUCTURE`(ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT) VALUES (%s, '%s', '%s', '%s');" %(id, handbook_paragraph_structure_paragraph, handbook_paragraph_structure_paragraph_desc, handbook_paragraph_structure_paragraph_text)
+      run_query(query)
+      conn.commit()
+      
+      # Rerun
+      st.experimental_rerun()
+
+
+### Handbook
 ## Get categories and sub-categories
 query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.CATEGORIES;"
 rows = run_query(query)
 
-# Filling variables
+# Filling category and sub-category variables
 categories = []
 sub_categories = []
 categories_id = []
@@ -143,19 +260,31 @@ for row in rows:
   else:
     sub_categories.append(row[3])
     sub_categories_id.append(row[2])
-        
-        
+
+
+## Title for handbook data entry      
+st.subheader('New handbook entry')
+
+
 ## Category menu
 category = st.selectbox(label = 'Please choose the category of the handbook entry', options = range(len(categories)), format_func = lambda x: categories[x])
       
       
 ## Sub-Category menu
 sub_category = st.selectbox(label = 'Please choose the sub-category of the handbook entry', options = range(len(sub_categories)), format_func = lambda x: sub_categories[x])
-      
-      
-## Form
+
+
+## Chapter menu
+chapter = st.selectbox(label = 'Please choose the chapter of the handbook entry', options = range(len(chapters_combo)), format_func = lambda x: chapters_combo[x])
+st.session_state['chapter'] = chapters[chapter]
+
+
+## Paragraphs menu
+paragraph = st.selectbox(label = 'Please choose the paragraph of the handbook entry', options = range(len(paragraphs_combo)), format_func = lambda x: paragraphs_combo[x])
+
+
+## Handbook data entry
 with st.form('Input', clear_on_submit = True):
-  ## Handbook data entry
   # Open databank connection
   conn = init_connection()
     
@@ -166,10 +295,16 @@ with st.form('Input', clear_on_submit = True):
   handbook_id = generateID(id)
   st.text_input(label = 'ID', value = id, disabled = True)
   st.text_input(label = 'Handbook ID', value = handbook_id, disabled = True)
-  st.text_input(label = 'Category ID', value = categories_id[category], disabled = True)
-  st.text_input(label = 'Sub-Category ID', value = sub_categories_id[sub_category], disabled = True)
-  handbook_chapter = st.text_input(label = 'Chapter', value = 1)
-  handbook_paragraph = st.text_input(label = 'Paragraph', value = 1)
+  st.text_input(label = 'Category', value = categories[category], disabled = True)
+  st.text_input(label = 'Sub-Category', value = sub_categories[sub_category], disabled = True)
+  st.text_input(label = 'Chapter', value = chapters_combo[chapter], disabled = True)
+  handbook_chapter = chapters[chapter]
+  if paragraphs_combo is None or len(paragraphs_combo) == 0:
+    st.text_input(label = 'Paragraph', placeholder = 'Please add paragraph first!', disabled = True)
+    handbook_paragraph = 0
+  else:
+    st.text_input(label = 'Paragraph', value = paragraphs_combo[paragraph], disabled = True)
+    handbook_paragraph = paragraphs[paragraph]
   handbook_keyword1 = st.text_input(label = 'Keyword 1')
   handbook_keyword2 = st.text_input(label = 'Keyword 2')
   handbook_keyword3 = st.text_input(label = 'Keyword 3')
