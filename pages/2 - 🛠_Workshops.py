@@ -323,11 +323,11 @@ with st.form('Input', clear_on_submit = False):
             # Adding matching words to `counter`
             counter += 4 * len(matches)
             
-            
+
             ## Counting matching words in headline (score 3 per hit)
             string1_words = set(handbook[11].split())
             string2_words = set(summary.split())
-            
+
             # Remove unwanted characters
             unwanted_characters = ".,!?"
             string1_words = {word.strip(unwanted_characters) for word in string1_words}
@@ -338,7 +338,7 @@ with st.form('Input', clear_on_submit = False):
             
             # Adding matching words to `counter`
             counter += 3 * len(matches)
-            
+
             
             ## Counting matching words in text (score 1 per hit)
             string1_words = set(handbook[10].split())
@@ -388,8 +388,8 @@ with st.form('Input', clear_on_submit = False):
           
             
           ## Debugging output
-          st.write(databank_handbook)
-          st.write(handbook)
+          #st.write(databank_handbook)
+          #st.write(handbook)
           
           
           ## Doing the request to OpenAI for answering the question
