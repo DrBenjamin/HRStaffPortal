@@ -162,7 +162,7 @@ def onChange():
 
 
 #### Two versions of the page -> Landing page vs. HRStaffPortal
-### Logged in state (HRStattPortal)
+### Logged in state (HR Staff Portal)
 if check_password():
   ## Header information
   with st.expander("Header", expanded = True):
