@@ -9,7 +9,7 @@ import pandas as pd
 import mysql.connector
 import sys
 sys.path.insert(1, "pages/functions/")
-from functions import loadFile
+from functions import load_file
 
 
 
@@ -31,7 +31,7 @@ st.set_page_config(
 
 
 #### Initialization of session states
-## First Run State
+## Chapter state
 if ('chapter' not in st.session_state):
   st.session_state['chapter'] = 1
   
@@ -321,7 +321,7 @@ with st.form('Input', clear_on_submit = True):
   if uploaded_file is not None:
     handbook_image = uploaded_file.getvalue()
   else:
-    handbook_image = loadFile("images/placeholder_documentation.png")
+    handbook_image = load_file("images/placeholder_documentation.png")
     handbook_image_text = 'Placeholder image.'
   
   # Image description text input
