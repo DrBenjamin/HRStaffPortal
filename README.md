@@ -23,6 +23,7 @@ After that you need to install some **Python libraries**:
     pip install python-docx
     pip install openai
     pip install deepl
+    pip install qrcode
 
 or do it at once using the `requirements.txt` file with:
 
@@ -53,16 +54,18 @@ First make a directory `.streamlit`. After that create the file `.streamlit/conf
 
 Now create the file `.streamlit/secrets.toml` where you define the **user / password** combinations:
 
+    ### User management
     [passwords]
     # Follow the rule: username = "password"
-    xyz = "xyz"
+    user = "xxxxxxxx"
 
 #### MySQL Server Configuration
 
 ##### For proper usage a local MySQL Server is needed
 
-In the `.streamlit/secrets.toml` you define the **user / password** combination for the HR Staff Portal MySQL Server `[mysql]`, and if using the Car Fleet Management System module also in the section `[mysql_car]`:
-
+In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / ChatBot):
+    
+    ### MySQL configuration for HR Staff Portal
     [mysql]
     host = "127.0.0.1"
     port = 3306
@@ -70,6 +73,7 @@ In the `.streamlit/secrets.toml` you define the **user / password** combination 
     user = "xyz"
     password = "xyz"
 
+    ### MySQL configuration for Car Fleet Management
     [mysql_car]
     host = "127.0.0.1"
     port = 3306
@@ -77,12 +81,28 @@ In the `.streamlit/secrets.toml` you define the **user / password** combination 
     user = "xyz"
     password = "xyz"
 
+    ### MySQL configuration for handbook and ChatBot
     [mysql_benbox]
     host = "127.0.0.1"
     port = 3306
     database = "benbox
     user = "xyz"
     password = "xyz"
+    
+    ### Mail configuration
+    [mail]
+    user = "mail@mail.org"
+    password = "xxxxxxxx
+    smtp_server = "smtp.server.com"
+    smtp_server_port = 587
+
+    ### OpenAI API key
+    [openai]
+    key = "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              
+    ### Deepl API key
+    [deepl]
+    key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
 
 Connect to your **MySQL Database** and create the *user* you configured in `secrets.toml`. Create a **Schema / Database** with the name `idcard`.
 
