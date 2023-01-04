@@ -7,6 +7,8 @@ import streamlit as st
 import streamlit.components.v1 as stc
 import pandas as pd
 import mysql.connector
+import qrcode
+import io 
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import trans
@@ -134,3 +136,23 @@ with st.form('Workshop', clear_on_submit = True):
     #query = "INSERT INTO `idcard`.`WORKSHOPDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(id)
     #run_query(query)
     #conn.commit()
+    
+    
+#### Outside the form
+## QR Code generator
+# Data to be encoded
+data = 'https://www.benbox.org'
+
+# Saving as an image file
+#image = io.BytesIO()
+ 
+# Encoding data using make() function
+image = qrcode.make(data)
+
+# Saving image as png in a buffer
+byteIO = io.BytesIO()
+image.save(byteIO, format = 'PNG')
+qrcode = byteIO.getvalue()
+
+# Showing qrcode
+st.image(qrcode)
