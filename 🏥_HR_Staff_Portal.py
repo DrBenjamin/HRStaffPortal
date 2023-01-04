@@ -190,11 +190,11 @@ if check_password():
   databank = databank.set_index('ID')
   
   # Getting Training data
-  query = "SELECT ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS FROM `idcard`.`TRAININGDATA`;"
+  query = "SELECT ID, EMPLOYEE_NO, TRAINING_DESCRIPTION, TRAINING_INSTITUTE, TRAINING_DATE, TRAINING_DURATION FROM `idcard`.`TRAINING`;"
   rows = run_query(query)
-  databank_training = pd.DataFrame(columns = ['ID', 'EMPLOYEE_NO', 'TRAINING', 'INSTITUTE', 'DATE', 'DAYS'])
+  databank_training = pd.DataFrame(columns = ['ID', 'EMPLOYEE_NO', 'TRAINING_DESCRIPTION', 'TRAINING_INSTITUTE', 'TRAINING_DATE', 'TRAINING_DURATION'])
   for row in rows:
-    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5]]], columns = ['ID', 'EMPLOYEE_NO', 'TRAINING', 'INSTITUTE', 'DATE', 'DAYS'])
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5]]], columns = ['ID', 'EMPLOYEE_NO', 'TRAINING_DESCRIPTION', 'TRAINING_INSTITUTE', 'TRAINING_DATE', 'TRAINING_DURATION'])
     databank_training = pd.concat([databank_training, df])
   databank_training = databank_training.set_index('ID')
  
@@ -266,7 +266,7 @@ if check_password():
           image = uploaded_file.getvalue()
           
         else:
-          image = loadFile("images/placeholder.png")
+          image = load_file("images/placeholder.png")
         
     
         ## Submit button `Create New Employee`
@@ -343,7 +343,7 @@ if check_password():
           # Show placeholder
           st.image('images/portrait-placeholder.png')
           # Set Image Session State to `No Image` placeholder
-          st.session_state['image'] = loadFile('images/No_Image.png')
+          st.session_state['image'] = load_file('images/No_Image.png')
          
           
         ## Show existing image
@@ -418,17 +418,17 @@ if check_password():
           
       ## Employee existend
       else:
-        ## Check for last ID number in TrainingData (to add data after)
-        idT = lastID(url = '`idcard`.`TRAININGDATA`')
+        ## Check for last ID number in TRAINING (to add data after)
+        idT = lastID(url = '`idcard`.`TRAINING`')
         
           
         ## Get training data
-        query = "SELECT tr.TRAINING, tr.INSTITUTE, tr.DATE, tr.DAYS, tr.ID, ima.EMPLOYEE_NO FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAININGDATA` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
-        trainingData = run_query(query)
+        query = "SELECT tr.TRAINING_DESCRIPTION, tr.TRAINING_INSTITUTE, tr.TRAINING_DATE, tr.TRAINING_DURATION, tr.ID, ima.EMPLOYEE_NO FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAINING` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
+        TRAINING = run_query(query)
         
         
         ## Set query parameter
-        st.experimental_set_query_params(eno = trainingData[0][5])
+        st.experimental_set_query_params(eno = TRAINING[0][5])
          
           
         ## Variables for Text Input
@@ -444,23 +444,23 @@ if check_password():
         
           
         ## Check if training data is already there for an Employee and show it
-        if (trainingData[0][0] != None):
-          for i in range(len(trainingData)):
+        if (TRAINING[0][0] != None):
+          for i in range(len(TRAINING)):
             # Show (Multiple) Input(s)
-            x = st.text_input(label = 'Training #' + str(i + 1), value = trainingData[i][0], key = 'training' + str(i), disabled = not checkbox_val)
-            if (trainingData[i][0] != x):
+            x = st.text_input(label = 'Training #' + str(i + 1), value = TRAINING[i][0], key = 'training' + str(i), disabled = not checkbox_val)
+            if (TRAINING[i][0] != x):
               update = True
             training.append(x)
-            x = st.text_input(label = 'Institute', value = trainingData[i][1], key = 'institute' + str(i), disabled = not checkbox_val)
-            if (trainingData[i][1] != x):
+            x = st.text_input(label = 'Institute', value = TRAINING[i][1], key = 'institute' + str(i), disabled = not checkbox_val)
+            if (TRAINING[i][1] != x):
               update = True
             institute.append(x)
-            x = st.text_input(label = 'Date', value = trainingData[i][2], key = 'date' + str(i), disabled = not checkbox_val)
-            if (trainingData[i][2] != x):
+            x = st.text_input(label = 'Date', value = TRAINING[i][2], key = 'date' + str(i), disabled = not checkbox_val)
+            if (TRAINING[i][2] != x):
               update = True
             date.append(x)
-            x = st.text_input(label = 'Days', value = trainingData[i][3], key = 'days' + str(i), disabled = not checkbox_val)
-            if (trainingData[i][3] != x):
+            x = st.text_input(label = 'Duration', value = TRAINING[i][3], key = 'duration' + str(i), disabled = not checkbox_val)
+            if (TRAINING[i][3] != x):
               update = True
             days.append(x)
   
@@ -468,18 +468,18 @@ if check_password():
         ## Show new entry input fields if checkbox 'Add Training' is checked
         ## If not checked
         if not checkbox_training:
-          if (trainingData[0][0] == None):
+          if (TRAINING[0][0] == None):
             st.info(body = 'No Training data available', icon = "ℹ️")
 
 
         ## If checked    
         else:
           # Calculating number of training
-          if (trainingData[0][0] == None):
+          if (TRAINING[0][0] == None):
             counter = 'Training #1'
               
           else:
-            counter = 'Training #' + str(len(trainingData) + 1)
+            counter = 'Training #' + str(len(TRAINING) + 1)
           
 
           ## Inputs for new Training
@@ -504,11 +504,11 @@ if check_password():
         ## Submit button for changes on employee `Training data` - existend employee
         submitted = st.form_submit_button("Save changes on Training data")
         if submitted:
-          ## Writing to databank idcard Table TRAININGDATA - first entry
+          ## Writing to databank idcard table TRAINING - first entry
           if (insert == True and update == False):
             if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
-              if (trainingData[0][0] == None):
-                query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[0], institute[0], date[0], days[0])
+              if (TRAINING[0][0] == None):
+                query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, TRAINING_DESCRIPTION, TRAINING_INSTITUTE, TRAINING_DATE, TRAINING_Duration) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[0], institute[0], date[0], days[0])
                 run_query(query)
                 conn.commit()
                 st.session_state['success2'] = True
@@ -517,10 +517,10 @@ if check_password():
               st.session_state['success2'] = False
               
               
-          ## Writing to databank idcard table `TRAININGDATA` - new entry (not first)
-          if (insert == True and trainingData[0][0] != None):
-            if (training[len(trainingData)].strip() and institute[len(trainingData)].strip() and date[len(trainingData)].strip() and days[len(trainingData)].strip()):
-              query = "INSERT INTO `idcard`.`TRAININGDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[len(trainingData)], institute[len(trainingData)], date[len(trainingData)], days[len(trainingData)])
+          ## Writing to databank idcard table `TRAINING` - new entry (not first)
+          if (insert == True and TRAINING[0][0] != None):
+            if (training[len(TRAINING)].strip() and institute[len(TRAINING)].strip() and date[len(TRAINING)].strip() and days[len(TRAINING)].strip()):
+              query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, TRAINING_DESCRIPTION, TRAINING_INSTITUTE, TRAINING_DATE, TRAINING_DURATION) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[len(TRAINING)], institute[len(TRAINING)], date[len(TRAINING)], days[len(TRAINING)])
               run_query(query)
               conn.commit()
               st.session_state['success2'] = True
@@ -529,10 +529,10 @@ if check_password():
               st.session_state['success2'] = False
               
               
-          ## Writing to databank idcard table `TRAININGDATA` - updates to all existing entries
+          ## Writing to databank idcard table `TRAINING` - updates to all existing entries
           if (update == True):
-            for i in range(len(trainingData)):
-              query = "UPDATE `idcard`.`TRAININGDATA` SET TRAINING = '%s', INSTITUTE = '%s', DATE = '%s', DAYS = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], trainingData[i][4])
+            for i in range(len(TRAINING)):
+              query = "UPDATE `idcard`.`TRAINING` SET TRAINING = '%s', TRAINING_INSTITUTE = '%s', TRAINING_DATE = '%s', TRAINING_DURATION = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], TRAINING[i][4])
               run_query(query)
               conn.commit()
             st.session_state['success2'] = True
@@ -630,7 +630,7 @@ if check_password():
     st.dataframe(databank, use_container_width = True)
     
     
-    # Show `TRAININGDATA` table data
+    # Show `TRAINING` table data
     st.subheader('Training data')
     st.dataframe(databank_training, use_container_width = True)
     
