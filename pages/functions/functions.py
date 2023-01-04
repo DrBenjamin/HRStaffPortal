@@ -113,11 +113,11 @@ def export_excel(sheet, column, columns, length, data,
 				
 				# Add Image to worksheet
 				if (image != 'NoImage'):
-					# Write Image to a png file
-					f = open('Image.png', 'wb')
-					f.write(image)
-					f.close()
-					worksheet.insert_image(image_pos, 'Image.png')
+					# Saving image as png to a buffer
+					byteIO = io.BytesIO()
+					image.save(byteIO, format = 'PNG')
+					pic = byteIO.getvalue()
+					worksheet.insert_image(image_pos, pic)
 			
 			
 		## Add Excel VBA code
@@ -128,8 +128,6 @@ def export_excel(sheet, column, columns, length, data,
 		## Saving changes
 		workbook.close()
 		writer.save()
-		if os.path.exists("Image.png"):
-			os.remove("Image.png")
 		
 		
 		## Download Button
