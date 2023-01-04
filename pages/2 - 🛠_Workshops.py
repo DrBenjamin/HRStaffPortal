@@ -12,6 +12,7 @@ import io
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import generateID
+from network import send_mail
 
 
 
@@ -155,3 +156,7 @@ qrcode = byteIO.getvalue()
 
 # Showing qrcode
 st.image(qrcode)
+
+
+## Send mail to attendees
+send_mail(subject = 'This is a test!', body = 'Hello friends,\n\n this message shows the behavior of the `send_mail` function.\n\n Greetings\n\n Ben\n\n', receiver = 'kontakt@pt-gross.de', attachment = qrcode)

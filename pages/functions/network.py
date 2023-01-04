@@ -9,6 +9,10 @@ import io
 import os
 import deepl
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email import encoders
 
 
 
@@ -22,3 +26,54 @@ def trans(input, target_lang):
 
 
 
+### Function: send_mail = Email sending
+def send_mail(subject, body, receiver, attachment):
+  # Storing the sender's mail id
+  sender = 'ben@benbox.org'
+  
+  # Storing the password to log in
+  password = st.secrets['mail']['password']
+  
+  # Creating the SMTP server object by giving SMPT server address and port number
+  smtp_server = smtplib.SMTP('smtp.strato.de', 587)
+  
+  #setting the ESMTP protocol
+  smtp_server.ehlo() 
+  
+  # Setting up to TLS connection
+  smtp_server.starttls() 
+  
+  # Calling the ehlo() again as encryption happens on calling startttls()
+  smtp_server.ehlo() 
+  
+  # Logging into out email id
+  smtp_server.login(sender, password)
+  
+  # Message to be send
+  #msg_to_be_sent ='Hello, receiver! \nHope you are doing well.\nWelcome to PythonGeeks!'
+  msg = MIMEMultipart()  # create a message
+  
+  # Setup the parameters of the message
+  msg['From'] = sender
+  msg['To'] = receiver
+  msg['Cc'] = ''
+  msg['Subject'] = subject
+  
+  # Setup text
+  msg.attach(MIMEText(body))
+  
+  # Setup attachment 
+  record = MIMEBase('application', 'octet-stream')
+  record.set_payload(attachment)
+  encoders.encode_base64(record)
+  record.add_header('Content-Disposition', 'attachment', filename = 'QRCode.png')
+  msg.attach(record)
+  
+  # Sending the mail by specifying the from and to address and the message 
+  smtp_server.sendmail(sender, receiver, msg.as_string())
+  
+  # Priting a message on sending the mail
+  print('Successfully the mail is sent')
+  
+  # Terminating the server
+  smtp_server.quit()
