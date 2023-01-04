@@ -11,7 +11,6 @@ import qrcode
 import io 
 import sys
 sys.path.insert(1, "pages/functions/")
-from functions import trans
 from functions import generateID
 
 

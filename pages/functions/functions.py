@@ -12,12 +12,11 @@ from docx import Document
 from docx.shared import Inches
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-import deepl
 
 
 
 
-#### All functions used in Car Fleet Management
+#### All shared general functions
 ### Function: check_password = Password / User checking
 def check_password():
 	# Returns `True` if the user had a correct password."""
@@ -268,14 +267,6 @@ def save_file(data, filename = 'temp.png'):
 	file = open(filename, 'wb')
 	file.write(data)
 	file.close()
-
-
-
-### Function: trans = DeepL translation
-def trans(input, target_lang):
-	translator = deepl.Translator(st.secrets["deepl"]["key"])
-	result = translator.translate_text(input, target_lang = target_lang) 
-	return result
 
 
 

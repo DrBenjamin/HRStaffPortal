@@ -16,9 +16,9 @@ from functions import check_password
 from functions import logout
 from functions import landing_page_handbook
 from functions import load_file
-from functions import trans
 from functions import export_docx
 from functions import generateID
+from network import trans
 
 
 
