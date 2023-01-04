@@ -28,14 +28,8 @@ def trans(input, target_lang):
 
 ### Function: send_mail = Email sending
 def send_mail(subject, body, receiver, attachment):
-  # Storing the sender's mail id
-  sender = 'ben@benbox.org'
-  
-  # Storing the password to log in
-  password = st.secrets['mail']['password']
-  
-  # Creating the SMTP server object by giving SMPT server address and port number
-  smtp_server = smtplib.SMTP('smtp.strato.de', 587)
+  ## Creating the SMTP server object by giving SMPT server address and port number
+  smtp_server = smtplib.SMTP(st.secrets['mail']['smtp_server'], st.secrets['mail']['smtp_server_port'])
   
   #setting the ESMTP protocol
   smtp_server.ehlo() 
@@ -47,10 +41,10 @@ def send_mail(subject, body, receiver, attachment):
   smtp_server.ehlo() 
   
   # Logging into out email id
-  smtp_server.login(sender, password)
+  smtp_server.login(st.secrets['mail']['user'], st.secrets['mail']['password'])
   
-  # Message to be send
-  #msg_to_be_sent ='Hello, receiver! \nHope you are doing well.\nWelcome to PythonGeeks!'
+  
+  ## Message to be send
   msg = MIMEMultipart()  # create a message
   
   # Setup the parameters of the message
@@ -69,8 +63,9 @@ def send_mail(subject, body, receiver, attachment):
   record.add_header('Content-Disposition', 'attachment', filename = 'QRCode.png')
   msg.attach(record)
   
-  # Sending the mail by specifying the from and to address and the message 
-  smtp_server.sendmail(sender, receiver, msg.as_string())
+  
+  ## Sending the mail by specifying the from and to address and the message 
+  smtp_server.sendmail(st.secrets['mail']['user'], receiver, msg.as_string())
   
   # Priting a message on sending the mail
   print('Successfully the mail is sent')
