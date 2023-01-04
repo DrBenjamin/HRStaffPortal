@@ -18,6 +18,7 @@ from functions import landing_page_handbook
 from functions import load_file
 from functions import trans
 from functions import export_docx
+from functions import generateID
 
 
 
@@ -125,22 +126,6 @@ def lastID(url):
   
   # Return ID    
   return id
-
-
-
-### Function: generateID = Generates an 5-digits ID
-def generateID(id):
-  if (id < 10):
-    generated_id = '0000' + str(id)
-  elif (id < 100):
-    generated_id = '000' + str(id)
-  elif (id < 1000):
-    generated_id = '00' + str(id)
-  elif (id < 10000):
-    generated_id = '0' + str(id)
-    
-  # Return the 5-digit ID
-  return(generated_id)
 
 
 

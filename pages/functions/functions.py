@@ -281,6 +281,22 @@ def trans(input, target_lang):
 
 
 
+### Function: generateID = Generates an 5-digits ID
+def generateID(id):
+  if (id < 10):
+    generated_id = '0000' + str(id)
+  elif (id < 100):
+    generated_id = '000' + str(id)
+  elif (id < 1000):
+    generated_id = '00' + str(id)
+  elif (id < 10000):
+    generated_id = '0' + str(id)
+    
+  # Return the 5-digit ID
+  return(generated_id)
+
+
+
 ### Function: landing_page = shows the landing page (not loged in state)
 def landing_page(page):
 	## Title and information
