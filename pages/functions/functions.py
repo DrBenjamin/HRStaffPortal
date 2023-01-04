@@ -12,6 +12,7 @@ from docx import Document
 from docx.shared import Inches
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+import qrcode
 
 
 
@@ -283,6 +284,20 @@ def generateID(id):
     
   # Return the 5-digit ID
   return(generated_id)
+
+
+
+### Function: generate_qrcode = QR Code generator
+def generate_qrcode(data):
+  # Encoding data using make() function
+  image = qrcode.make(data)
+  
+  # Saving image as png in a buffer
+  byteIO = io.BytesIO()
+  image.save(byteIO, format = 'PNG')
+
+  # Return qrcode
+  return byteIO.getvalue()
 
 
 
