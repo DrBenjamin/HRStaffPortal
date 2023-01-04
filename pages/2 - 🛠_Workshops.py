@@ -7,11 +7,11 @@ import streamlit as st
 import streamlit.components.v1 as stc
 import pandas as pd
 import mysql.connector
-import qrcode
 import io 
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import generateID
+from functions import generate_qrcode
 from network import send_mail
 
 
@@ -101,13 +101,13 @@ st.title('Workshops')
 conn = init_connection()
 
 # Run query 
-query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES FROM idcard.WORKSHOP;"
+query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES FROM idcard.WORKSHOP;"
 rows = run_query(query)
 
 # Creating pandas dataframe
-databank_workshop = pd.DataFrame(columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES'])
+databank_workshop = pd.DataFrame(columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES'])
 for row in rows:
-  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6]]], columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES'])
+  df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES'])
   databank_workshop = pd.concat([databank_workshop, df])
 databank_workshop = databank_workshop.set_index('ID')
 
@@ -118,45 +118,57 @@ st.dataframe(databank_workshop)
 
 ## Input
 with st.form('Workshop', clear_on_submit = True):
-  id = lastID(url = '`benbox`.`HANDBOOK_USER`')
+  id = lastID(url = '`idcard`.`WORKSHOP`')
   workshop_id = generateID(id)
   st.text_input(label = 'ID', value = id, disabled = True)
   st.text_input(label = 'Workshop ID', value = workshop_id, disabled = True)
   workshop_title = st.text_input(label = 'Title', disabled = False)
   workshop_description = st.text_input(label = 'Description', disabled = False)
+  workshop_facilitator = st.text_input(label = 'Facilitator', disabled = False)
   workshop_date = st.text_input(label = 'Date', disabled = False)
   workshop_duration = st.text_input(label = 'Duration', disabled = False)
-  workshop_attendees = st.text_input(label = 'Attendees', disabled = False)
+  
+  
+  ## Get employee data for filling the employee multiselect
+  query = "SELECT ima.ID, ima.FORENAME, ima.SURNAME, ima.EMPLOYEE_NO, ima.JOB_TITLE, emp.EMPLOYEE_EMAIL FROM `idcard`.`IMAGEBASE` As ima LEFT JOIN `idcard`.`EMPLOYEE` AS emp ON emp.EMPLOYEE_NO = ima.EMPLOYEE_NO;"
+  rows = run_query(query)
+  
+  # Building employees for  multiselect
+  row = []
+  names = []
+  for row in rows:
+    # Concenate employee data 
+    names.append(str(row[1] + ' ' + row[2] + ', ' + row[3] + ', ' + row[4] + ' (' + row[5] + ')'))
+    
+  # Multiselect to choose employees for workshop
+  options = st.multiselect(label = 'Which Employee(s) do you want to select?', options = names)
+  
+  # Extract mail addresses
+  mail_addresses = [option.split('(', 1)[1][:-1] for option in options]
+  
+  # Extract employee numbers
+  employee_no = [option.split(', ', 1)[1] for option in options]
+  employees = [employee_n.split(', ', 1)[0] for employee_n in employee_no]
+  
   
   ## Submit button
-  submitted = st.form_submit_button("Ask Ben")
+  submitted = st.form_submit_button(label = 'Submit')
   if submitted:
-    # Write workshop data
-    id = lastID(url = '`idcard`.`WORKSHOPDATA`')
-    #query = "INSERT INTO `idcard`.`WORKSHOPDATA`(ID, EMPLOYEE_NO, TRAINING, INSTITUTE, DATE, DAYS) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(id)
-    #run_query(query)
-    #conn.commit()
-    
+    ## Write workshop data
+    id = lastID(url = '`idcard`.`WORKSHOP`')
+    workshop_id = generateID(id)
+    query = "INSERT INTO `idcard`.`WORKSHOP`(ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, workshop_id, workshop_title, workshop_description, workshop_facilitator, workshop_date, workshop_duration, ' '.join(employees))
+    run_query(query)
+    conn.commit()
+
+
+    ## Send mail to attendees
+    i = 0
+    for mail in mail_addresses:
+      send_mail(subject = 'Invitation to workshop ' + workshop_title, body = 'Hello colleagues,\n\nthis is an invitation to the workshop ' + workshop_title + ' on ' + workshop_date + ' (' + workshop_duration + ' days).\n\nDetails: ' + workshop_description + '\n\nBest regards\n\n' + workshop_facilitator + '\n\n', receiver = mail, attachment = generate_qrcode(data = str('http://192.168.0.190:8501/Workshops?eno=' + employees[i])))
+      i += 1
+      
+      
+
     
 #### Outside the form
-## QR Code generator
-# Data to be encoded
-data = 'https://www.benbox.org'
-
-# Saving as an image file
-#image = io.BytesIO()
- 
-# Encoding data using make() function
-image = qrcode.make(data)
-
-# Saving image as png in a buffer
-byteIO = io.BytesIO()
-image.save(byteIO, format = 'PNG')
-qrcode = byteIO.getvalue()
-
-# Showing qrcode
-st.image(qrcode)
-
-
-## Send mail to attendees
-send_mail(subject = 'This is a test!', body = 'Hello friends,\n\n this message shows the behavior of the `send_mail` function.\n\n Greetings\n\n Ben\n\n', receiver = 'kontakt@pt-gross.de', attachment = qrcode)
