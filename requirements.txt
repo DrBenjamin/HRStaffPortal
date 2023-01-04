@@ -13,3 +13,4 @@ xlsxwriter
 python-docx
 openai
 deepl
+qrcode
