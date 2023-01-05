@@ -31,7 +31,7 @@ def trans(input, target_lang):
 
 
 ### Function: send_mail = Email sending
-def send_mail(subject, body, receiver, attachment):
+def send_mail(subject, body, receiver, attachment = None):
   ## Creating the SMTP server object by giving SMPT server address and port number
   smtp_server = smtplib.SMTP(st.secrets['mail']['smtp_server'], st.secrets['mail']['smtp_server_port'])
   
@@ -60,12 +60,13 @@ def send_mail(subject, body, receiver, attachment):
   # Setup text
   msg.attach(MIMEText(body))
   
-  # Setup attachment 
-  record = MIMEBase('application', 'octet-stream')
-  record.set_payload(attachment)
-  encoders.encode_base64(record)
-  record.add_header('Content-Disposition', 'attachment', filename = 'QRCode.png')
-  msg.attach(record)
+  # Setup attachment
+  if attachment != None:
+    record = MIMEBase('application', 'octet-stream')
+    record.set_payload(attachment)
+    encoders.encode_base64(record)
+    record.add_header('Content-Disposition', 'attachment', filename = 'QRCode.png')
+    msg.attach(record)
   
   
   ## Sending the mail by specifying the from and to address and the message
