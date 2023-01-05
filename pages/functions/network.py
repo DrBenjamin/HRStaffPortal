@@ -48,7 +48,7 @@ def send_mail(subject, body, receiver, attachment):
   msg = MIMEMultipart()  # create a message
   
   # Setup the parameters of the message
-  msg['From'] = sender
+  msg['From'] = st.secrets['mail']['user']
   msg['To'] = receiver
   msg['Cc'] = ''
   msg['Subject'] = subject
@@ -64,11 +64,16 @@ def send_mail(subject, body, receiver, attachment):
   msg.attach(record)
   
   
-  ## Sending the mail by specifying the from and to address and the message 
-  smtp_server.sendmail(st.secrets['mail']['user'], receiver, msg.as_string())
+  ## Sending the mail by specifying the from and to address and the message
+  try:
+    smtp_server.sendmail(st.secrets['mail']['user'], receiver, msg.as_string())
   
-  # Priting a message on sending the mail
-  print('Successfully the mail is sent')
+    # Priting a message on sending the mail
+    print('Mail successfully sent')
   
-  # Terminating the server
-  smtp_server.quit()
+    # Terminating the server
+    smtp_server.quit()
+    
+  except:
+    print("An exception occurred in function `send_mail`")
+    st.error(body = 'Mail connection timeout!', icon = "🚨")
