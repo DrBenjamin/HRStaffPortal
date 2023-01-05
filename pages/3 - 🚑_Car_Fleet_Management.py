@@ -539,7 +539,7 @@ if check_password():
         vehicle_image = uploaded_file.getvalue()
             
       else:
-        vehicle_image = loadFile("images/placeholder.png")
+        vehicle_image = load_file("images/placeholder.png")
           
       
       ## Submit Button `Create new Vehicles`
