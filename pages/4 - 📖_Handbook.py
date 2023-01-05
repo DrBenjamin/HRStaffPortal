@@ -498,8 +498,8 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
             
               
             ## Debugging output
-            #st.write(databank_handbook)
-            #st.write(handbook)
+            st.write(databank_handbook)
+            st.write(handbook)
             
             
             ## Doing the request to OpenAI for answering the question
