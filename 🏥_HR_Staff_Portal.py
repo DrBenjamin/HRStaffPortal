@@ -217,7 +217,7 @@ if check_password():
 
 
   ## Employee selectbox (on change sets first start session state)
-  index = st.selectbox(label = "Which Employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'])
+  index = st.selectbox(label = "Which employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'])
  
     
   ## Checkboxes for editing and adding training data
