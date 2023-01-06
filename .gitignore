@@ -13,6 +13,7 @@ HRStaffPortal.Rproj
 secrets.toml
 config.toml
 .streamlit/
+files/Code_Snippets.py
 .DS_Store
 run.sh
 # VS Code
