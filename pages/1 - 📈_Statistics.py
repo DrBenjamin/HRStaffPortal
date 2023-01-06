@@ -41,7 +41,7 @@ st.sidebar.image('images/MoH.png')
 
 #### Main program
 ### Statistics expander
-with st.expander(label = 'Statistics', expanded = False):
+with st.expander(label = 'Statistics', expanded = True):
   ## Title
   st.title('Statistics')
   
