@@ -27,9 +27,9 @@ After that you need to install some **Python libraries**:
 
 or do it at once using the `requirements.txt` file with:
 
-´´´cmd
-    pip install -r requirements.txt
-´´´
+```cmd
+pip install -r requirements.txt
+```
 
 ##### Getting the Source Code
 
