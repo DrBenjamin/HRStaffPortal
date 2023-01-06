@@ -45,7 +45,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git
 
 First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the **theming** and some **Streamlit-Server behaviour** flags:
 
-```cfg
+```python
 [theme]
 primaryColor = "#F63366"
 backgroundColor = "#FFFFFF"
@@ -62,7 +62,7 @@ headless = true
 
 Now create the file `.streamlit/secrets.toml` where you define the **user / password** combinations:
 
-```cfg
+```cpython
 ### User management
 [passwords]
 # Follow the rule: username = "password"
@@ -75,7 +75,7 @@ user = "xxxxxxxx"
 
 In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / ChatBot):
 
-```cfg
+```python
 ### MySQL configuration for HR Staff Portal
 [mysql]
 host = "127.0.0.1"
