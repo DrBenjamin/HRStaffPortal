@@ -62,7 +62,7 @@ headless = true
 
 Now create the file `.streamlit/secrets.toml` where you define the **user / password** combinations:
 
-```cpython
+```python
 ### User management
 [passwords]
 # Follow the rule: username = "password"
