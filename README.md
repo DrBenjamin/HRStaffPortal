@@ -27,7 +27,9 @@ After that you need to install some **Python libraries**:
 
 or do it at once using the `requirements.txt` file with:
 
+´´´cmd
     pip install -r requirements.txt
+´´´
 
 ##### Getting the Source Code
 
@@ -64,7 +66,7 @@ Now create the file `.streamlit/secrets.toml` where you define the **user / pass
 ##### For proper usage a local MySQL Server is needed
 
 In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / ChatBot):
-    
+
     ### MySQL configuration for HR Staff Portal
     [mysql]
     host = "127.0.0.1"
@@ -88,7 +90,7 @@ In the `.streamlit/secrets.toml` you define the MySQL server settings for the di
     database = "benbox
     user = "xyz"
     password = "xyz"
-    
+
     ### Mail configuration
     [mail]
     user = "mail@mail.org"
