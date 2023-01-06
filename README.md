@@ -45,28 +45,28 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git
 
 First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the **theming** and some **Streamlit-Server behaviour** flags:
 
-```
-    [theme]
-    primaryColor = "#F63366"
-    backgroundColor = "#FFFFFF"
-    secondaryBackgroundColor = "#F0F2F6"
-    textColor = "#262730"
-    font = "sans serif"
+```cfg
+[theme]
+primaryColor = "#F63366"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+font = "sans serif"
 
-    [browser]
-    gatherUsageStats = false
+[browser]
+gatherUsageStats = false
 
-    [server]
-    headless = true
+[server]
+headless = true
 ```
 
 Now create the file `.streamlit/secrets.toml` where you define the **user / password** combinations:
 
-```
-    ### User management
-    [passwords]
-    # Follow the rule: username = "password"
-    user = "xxxxxxxx"
+```cfg
+### User management
+[passwords]
+# Follow the rule: username = "password"
+user = "xxxxxxxx"
 ```
 
 #### MySQL Server Configuration
@@ -76,51 +76,52 @@ Now create the file `.streamlit/secrets.toml` where you define the **user / pass
 In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / ChatBot):
 
 ```cfg
-    ### MySQL configuration for HR Staff Portal
-    [mysql]
-    host = "127.0.0.1"
-    port = 3306
-    database = "idcard"
-    user = "xyz"
-    password = "xyz"
+### MySQL configuration for HR Staff Portal
+[mysql]
+host = "127.0.0.1"
+port = 3306
+database = "idcard"
+user = "xyz"
+password = "xyz"
 
-    ### MySQL configuration for Car Fleet Management
-    [mysql_car]
-    host = "127.0.0.1"
-    port = 3306
-    database = "carfleet"
-    user = "xyz"
-    password = "xyz"
+### MySQL configuration for Car Fleet Management
+[mysql_car]
+host = "127.0.0.1"
+port = 3306
+database = "carfleet"
+user = "xyz"
+password = "xyz"
 
-    ### MySQL configuration for handbook and ChatBot
-    [mysql_benbox]
-    host = "127.0.0.1"
-    port = 3306
-    database = "benbox
-    user = "xyz"
-    password = "xyz"
+### MySQL configuration for handbook and ChatBot
+[mysql_benbox]
+host = "127.0.0.1"
+port = 3306
+database = "benbox
+user = "xyz"
+password = "xyz"
 
-    ### Mail configuration
-    [mail]
-    user = "mail@mail.org"
-    password = "xxxxxxxx
-    smtp_server = "smtp.server.com"
-    smtp_server_port = 587
+### Mail configuration
+[mail]
+user = "mail@mail.org"
+password = "xxxxxxxx
+smtp_server = "smtp.server.com"
+smtp_server_port = 587
 
-    ### OpenAI API key
-    [openai]
-    key = "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+### OpenAI API key
+[openai]
+key = "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
               
-    ### Deepl API key
-    [deepl]
-    key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
+### Deepl API key
+[deepl]
+key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
 ```
 
 Connect to your **MySQL Database** and create the *user* you configured in `secrets.toml`. Create a **Schema / Database** with the name `idcard`.
 
 To configure the HR Staff Portal tables run the following **SQL commands**:
 
-      CREATE TABLE `idcard`.`IMAGEBASE` (
+```sql
+CREATE TABLE `idcard`.`IMAGEBASE` (
       `ID` INT NOT NULL,
       `LAYOUT` INT NOT NULL,
       `FORENAME` VARCHAR(45) NULL,
@@ -132,7 +133,7 @@ To configure the HR Staff Portal tables run the following **SQL commands**:
       `IMAGE` BLOB NULL,
       PRIMARY KEY (`ID`));
       
-      CREATE TABLE `idcard`.`TRAININGDATA` (
+CREATE TABLE `idcard`.`TRAINING` (
       `ID` INT NOT NULL,
       `EMPLOYEE_NO` VARCHAR(45) NULL,
       `TRAINING` VARCHAR(45) NULL,
@@ -140,6 +141,7 @@ To configure the HR Staff Portal tables run the following **SQL commands**:
       `DATE` DATE NULL,
       `DAYS` VARCHAR(45) NULL,
       PRIMARY KEY (`ID`));
+```
 
 or use the database dump with sample data `files/idcard_dump.sql` and import them to a **MySQL** / **MariaDB** database. To use the **Car Fleet Management** module you also need to import the file `files/carfleet_dump.sql`. For the **Chatbot** please import the `files/benbox_dump.sql` file.
 
@@ -157,19 +159,25 @@ In RStudio choose **File** - **New Project** and choose **Existing Directory**. 
 
 To clone a specific version of HR Staff Portal use this command:
 
-    git clone https://github.com/DrBenjamin/HRStaffPortal.git -b v0.1.1
+```cmd
+git clone https://github.com/DrBenjamin/HRStaffPortal.git -b v0.1.1
+```
 
 ##### Update HR Staff Portal
 
 To update the source files to the newest version use the build-in **pull function** of git (git menu on the right upper corner, choose the green arrow which shows down). If you are using the app on a computer without a RStudio installion, just use this git command:
 
-    git pull
+```cmd
+git pull
+```
 
 ##### Execute Streamlit
 
 If you've installed all dependencies, configured the MySQL Server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the **Terminal** of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
 
-    streamlit run 🏥_HR_Staff_Portal.py
+```cmd
+streamlit run 🏥_HR_Staff_Portal.py
+```
 
 This will open the web app on your IP address on **port 8501**.
 
@@ -179,10 +187,14 @@ This will open the web app on your IP address on **port 8501**.
 
 To install the latest version of the **Streamlit web app framework**, run the following command:
 
-    pip install --upgrade streamlit
+```cmd
+pip install --upgrade streamlit
+```
 
 ##### Update dependencies
 
 To update a specifig dependency, for instance **extra_streamlit_components**, use this command:
 
-    pip install --upgrade extra_streamlit_components
+```cmd
+pip install --upgrade extra_streamlit_components
+```
