@@ -16,14 +16,16 @@ Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/insta
 
 After that you need to install some **Python libraries**:
 
-    pip install mysql-connector-python-rf
-    pip install mysql-connector-python==8.0.29
-    pip install extra_streamlit_components
-    pip install XlsxWriter
-    pip install python-docx
-    pip install openai
-    pip install deepl
-    pip install qrcode
+```cmd
+pip install mysql-connector-python-rf
+pip install mysql-connector-python==8.0.29
+pip install extra_streamlit_components
+pip install XlsxWriter
+pip install python-docx
+pip install openai
+pip install deepl
+pip install qrcode
+```
 
 or do it at once using the `requirements.txt` file with:
 
@@ -35,12 +37,15 @@ pip install -r requirements.txt
 
 Clone the **repository** of `HRStaffPortal` with following command:
 
-    git clone https://github.com/DrBenjamin/HRStaffPortal.git
+```cmd
+git clone https://github.com/DrBenjamin/HRStaffPortal.git
+```
 
 ##### Configuration of Streamlit config files
 
 First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the **theming** and some **Streamlit-Server behaviour** flags:
 
+```
     [theme]
     primaryColor = "#F63366"
     backgroundColor = "#FFFFFF"
@@ -53,13 +58,16 @@ First make a directory `.streamlit`. After that create the file `.streamlit/conf
 
     [server]
     headless = true
+```
 
 Now create the file `.streamlit/secrets.toml` where you define the **user / password** combinations:
 
+```
     ### User management
     [passwords]
     # Follow the rule: username = "password"
     user = "xxxxxxxx"
+```
 
 #### MySQL Server Configuration
 
@@ -67,6 +75,7 @@ Now create the file `.streamlit/secrets.toml` where you define the **user / pass
 
 In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / ChatBot):
 
+```cfg
     ### MySQL configuration for HR Staff Portal
     [mysql]
     host = "127.0.0.1"
@@ -105,6 +114,7 @@ In the `.streamlit/secrets.toml` you define the MySQL server settings for the di
     ### Deepl API key
     [deepl]
     key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
+```
 
 Connect to your **MySQL Database** and create the *user* you configured in `secrets.toml`. Create a **Schema / Database** with the name `idcard`.
 
