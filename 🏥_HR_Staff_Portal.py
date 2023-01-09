@@ -75,6 +75,8 @@ if ('success2' not in st.session_state):
   st.session_state['success2'] = False
 if ('success3' not in st.session_state):
   st.session_state['success3'] = False
+if ('success4' not in st.session_state):
+  st.session_state['success4'] = False
 
   
 ## Selected Employee session state
@@ -168,19 +170,16 @@ if check_password():
   with st.expander("Header", expanded = True):
     st.title('HR Staff Portal')
     st.image('images/MoH.png')
-    st.subheader('Kamuzu Central Hospital employee data')
-    st.write('All employee data is stored in a local MySQL databank on a Windows Server hosted at KCH.')
-    st.write('The HR Staff Portal is developed with Python and installed on Windows Subsystem for Linux.')
-    st.write('It uses Streamlit framework for visualisation which is turns Python scipts into data web apps.')
+    st.subheader(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
+    st.write('All data is stored in a local MySQL databank on a dedicated Server hosted at KCH.')
+    st.write('The HR Staff Portal is developed with Python (v' + str(sys.version_info.major) + '.' + str(sys.version_info.minor) + ') and the web app framework Streamlit.')
 
 
-  ## Use local databank idcard with table `ImageBase` (EasyBadge polluted)
+  ## Get data from the databank(s)
   # Open databank connection
   conn = init_connection()
 
-
-  ## Getting databank data
-  # Getting Employee data
+  # Getting employee data
   query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
   rows = run_query(query)
   databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
@@ -188,6 +187,15 @@ if check_password():
     df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
     databank = pd.concat([databank, df])
   databank = databank.set_index('ID')
+  
+  # Getting extra employee data
+  query = "SELECT ID, EMPLOYEE_NO, EMPLOYEE_GENDER, EMPLOYEE_BIRTHDAY, EMPLOYEE_ADDRESS_STREET, EMPLOYEE_ADDRESS_CITY, EMPLOYEE_ADDRESS_CITY_CODE, EMPLOYEE_EMAIL, EMPLOYEE_PHONE, EMPLOYEE_PHONE2, EMPLOYEE_NATIONALITY, EMPLOYEE_PLACE_OF_ORIGIN, EMPLOYEE_MARRIAGE_STATUS, EMPLOYEE_EMPLOYMENT_TYPE FROM `idcard`.`EMPLOYEE`;"
+  rows = run_query(query)
+  databank_employee = pd.DataFrame(columns = ['ID', 'EMPLOYEE_NO', 'EMPLOYEE_GENDER', 'EMPLOYEE_BIRTHDAY', 'EMPLOYEE_ADDRESS_STREET', 'EMPLOYEE_ADDRESS_CITY', 'EMPLOYEE_ADDRESS_CITY_CODE', 'EMPLOYEE_EMAIL', 'EMPLOYEE_PHONE', 'EMPLOYEE_PHONE2', 'EMPLOYEE_NATIONALITY', 'EMPLOYEE_PLACE_OF_ORIGIN', 'EMPLOYEE_MARRIAGE_STATUS', 'EMPLOYEE_EMPLOYMENT_TYPE'])
+  for row in rows:
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13]]], columns = ['ID', 'EMPLOYEE_NO', 'EMPLOYEE_GENDER', 'EMPLOYEE_BIRTHDAY', 'EMPLOYEE_ADDRESS_STREET', 'EMPLOYEE_ADDRESS_CITY', 'EMPLOYEE_ADDRESS_CITY_CODE', 'EMPLOYEE_EMAIL', 'EMPLOYEE_PHONE', 'EMPLOYEE_PHONE2', 'EMPLOYEE_NATIONALITY', 'EMPLOYEE_PLACE_OF_ORIGIN', 'EMPLOYEE_MARRIAGE_STATUS', 'EMPLOYEE_EMPLOYMENT_TYPE'])
+    databank_employee = pd.concat([databank_employee, df])
+  databank_employee = databank_employee.set_index('ID')
   
   # Getting Training data
   query = "SELECT ID, EMPLOYEE_NO, TRAINING_DESCRIPTION, TRAINING_INSTITUTE, TRAINING_DATE, TRAINING_DURATION FROM `idcard`.`TRAINING`;"
@@ -230,7 +238,7 @@ if check_password():
   chosen_id = stx.tab_bar(data = [
     stx.TabBarItemData(id = 1, title = "Master data", description = "Employee data"),
     stx.TabBarItemData(id = 2, title = "Training data", description = "Employee trainings"),
-    stx.TabBarItemData(id = 3, title = "More data", description = "More employee data"),], default = 1)
+    stx.TabBarItemData(id = 3, title = "More data", description = "Extra employee data"),], default = 1)
 
 
   ## Form for showing employee input fields 
@@ -255,9 +263,9 @@ if check_password():
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
         surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
         job = st.text_input(label = 'Job', placeholder = 'Job?')
-        exp = st.text_input(label = 'Expirity Date', value = '2023-12-31 00:00:00')
-        emp_no = st.text_input(label = 'Employee Number', placeholder = 'Employee Number?')
-        capri = st.text_input(label = 'Cards Printed', value = 0)
+        exp = st.text_input(label = 'Expirity date', value = '2023-12-31 00:00:00')
+        emp_no = st.text_input(label = 'Employee number', placeholder = 'Employee number?')
+        capri = st.text_input(label = 'Cards printed', value = 0)
         
         # empty image
         image = ''
@@ -327,13 +335,13 @@ if check_password():
         job = st.text_input(label = 'Job', value = employee[0][4], disabled = not checkbox_val)
         if (employee[0][4] != job):
           updateMaster = True
-        exp = st.text_input(label = 'Expirity Date', value = employee[0][5], disabled = not checkbox_val)
+        exp = st.text_input(label = 'Expirity date', value = employee[0][5], disabled = not checkbox_val)
         if (employee[0][5] != exp):
           updateMaster = True
-        emp_no = st.text_input(label = 'Employee Number', value = employee[0][6], disabled = not checkbox_val)
+        emp_no = st.text_input(label = 'Employee number', value = employee[0][6], disabled = not checkbox_val)
         if (employee[0][6] != emp_no):
           updateMaster = True
-        capri = st.text_input(label = 'Cards Printed', value = employee[0][7], disabled = not checkbox_val)
+        capri = st.text_input(label = 'Cards printed', value = employee[0][7], disabled = not checkbox_val)
         if (employee[0][7] != capri):
           updateMaster = True
           
@@ -342,6 +350,7 @@ if check_password():
         if (len(employee[0][8]) < 10):
           # Show placeholder
           st.image('images/portrait-placeholder.png')
+          
           # Set Image Session State to `No Image` placeholder
           st.session_state['image'] = load_file('images/No_Image.png')
          
@@ -349,6 +358,7 @@ if check_password():
         ## Show existing image
         else:          
           st.image(employee[0][8])
+          
           # Save Image for downloading to Image Session State
           st.session_state['image'] = employee[0][8]
         
@@ -358,6 +368,7 @@ if check_password():
         if uploaded_file is not None:
           updateMaster = True
           image = uploaded_file.getvalue()
+          
           # Upload picture to database
           pictureUploader(image, index)
         
@@ -373,14 +384,12 @@ if check_password():
           # Set session state `index`
           st.session_state['index'] = index
           
-          
           ## Writing to databank idcard Table IMAGEBASE
           if (updateMaster == True):
             query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s WHERE ID = %s;" %(layout, forename, surname, job, exp, emp_no, capri, index)
             run_query(query)
             conn.commit()
             st.session_state['success1'] = True
-            
           else:
             st.session_state['success1'] = False
 
@@ -410,7 +419,7 @@ if check_password():
         st.info(body = 'Create Employee first!', icon = "ℹ️")
         
         
-        ## Submit Button for Changes on employee `Training data` - New employee
+        ## Submit Button for changes on employee `Training data` - New employee
         submitted = st.form_submit_button("Nothing to save.")
         if submitted:
           print("Nothing changed")
@@ -431,7 +440,7 @@ if check_password():
         st.experimental_set_query_params(eno = TRAINING[0][5])
          
           
-        ## Variables for Text Input
+        ## Variables for text input
         training = []
         institute = []
         date = []
@@ -466,13 +475,12 @@ if check_password():
   
               
         ## Show new entry input fields if checkbox 'Add Training' is checked
-        ## If not checked
+        # If not checked
         if not checkbox_training:
           if (TRAINING[0][0] == None):
             st.info(body = 'No Training data available', icon = "ℹ️")
 
-
-        ## If checked    
+        # If checked    
         else:
           # Calculating number of training
           if (TRAINING[0][0] == None):
@@ -512,7 +520,6 @@ if check_password():
                 run_query(query)
                 conn.commit()
                 st.session_state['success2'] = True
-              
             else:
               st.session_state['success2'] = False
               
@@ -524,7 +531,6 @@ if check_password():
               run_query(query)
               conn.commit()
               st.session_state['success2'] = True
-              
             else:
               st.session_state['success2'] = False
               
@@ -554,7 +560,7 @@ if check_password():
     ## tab `More data`
     elif (f"{chosen_id}" == '3'):
       st.title('More employee data')
-      st.subheader('Enter or view exmployee data')
+      st.subheader('Enter or view extra employee data')
           
           
       ## If new Employee just show empty form
@@ -569,45 +575,129 @@ if check_password():
           
       ## Employee existend
       else:
+        ## Get extra employee data
+        query = "SELECT ID, EMPLOYEE_NO, EMPLOYEE_GENDER, EMPLOYEE_BIRTHDAY, EMPLOYEE_ADDRESS_STREET, EMPLOYEE_ADDRESS_CITY, EMPLOYEE_ADDRESS_CITY_CODE, EMPLOYEE_EMAIL, EMPLOYEE_PHONE, EMPLOYEE_PHONE2, EMPLOYEE_NATIONALITY, EMPLOYEE_PLACE_OF_ORIGIN, EMPLOYEE_MARRIAGE_STATUS, EMPLOYEE_EMPLOYMENT_TYPE FROM `idcard`.`EMPLOYEE` WHERE EMPLOYEE_NO = '%s';" %(eno['eno'][0])
+        rows = run_query(query)
+        
+        # Create pandas dataframe 
+        databank_employee1 = pd.DataFrame(columns = ['ID', 'EMPLOYEE_NO', 'EMPLOYEE_GENDER', 'EMPLOYEE_BIRTHDAY', 'EMPLOYEE_ADDRESS_STREET', 'EMPLOYEE_ADDRESS_CITY', 'EMPLOYEE_ADDRESS_CITY_CODE', 'EMPLOYEE_EMAIL', 'EMPLOYEE_PHONE', 'EMPLOYEE_PHONE2', 'EMPLOYEE_NATIONALITY', 'EMPLOYEE_PLACE_OF_ORIGIN', 'EMPLOYEE_MARRIAGE_STATUS', 'EMPLOYEE_EMPLOYMENT_TYPE'])
+        
+        # Populate dataframe
+        for row in rows:
+          df = pd.DataFrame([[1, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13]]], columns = ['ID', 'EMPLOYEE_NO', 'EMPLOYEE_GENDER', 'EMPLOYEE_BIRTHDAY', 'EMPLOYEE_ADDRESS_STREET', 'EMPLOYEE_ADDRESS_CITY', 'EMPLOYEE_ADDRESS_CITY_CODE', 'EMPLOYEE_EMAIL', 'EMPLOYEE_PHONE', 'EMPLOYEE_PHONE2', 'EMPLOYEE_NATIONALITY', 'EMPLOYEE_PLACE_OF_ORIGIN', 'EMPLOYEE_MARRIAGE_STATUS', 'EMPLOYEE_EMPLOYMENT_TYPE'])
+          databank_employee1 = pd.concat([databank_employee1, df])
+        databank_employee1 = databank_employee1.set_index('ID')
+        
+        
+        ## Boolean for flow control
+        insertExtra = False # Will be set to `True` if a new entry is entered
+        updateExtra = False # Will be set to `True` if existing data is altered
+
+
+        ## Input for updating extra employee data
+        options = ['Female', 'Male', 'Divers']
+        if (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Female'):
+          index = 0
+        elif (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Male'):
+          index = 1
+        elif (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Divers'):
+          index = 2
+        else:
+          index = 0
+        gender = st.selectbox('Gender', options = options, index = index)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') != gender):
+          updateExtra = True
+        birthday = st.text_input(label = 'Birtyday', value = databank_employee1._get_value(1, 'EMPLOYEE_BIRTHDAY'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_BIRTHDAY') != birthday):
+          updateExtra = True
+        address_street = st.text_input(label = 'Street', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_STREET'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_STREET') != address_street):
+          updateExtra = True
+        address_city = st.text_input(label = 'City', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY') != address_city):
+          updateExtra = True
+        address_city_code = st.text_input(label = 'City code', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY_CODE'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY_CODE') != address_city_code):
+          updateExtra = True
+        email = st.text_input(label = 'Email', value = databank_employee1._get_value(1, 'EMPLOYEE_EMAIL'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_EMAIL') != email):
+          updateExtra = True
+        phone = st.text_input(label = 'Phone', value = databank_employee1._get_value(1, 'EMPLOYEE_PHONE'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_PHONE') != phone):
+          updateExtra = True
+        phone2 = st.text_input(label = 'Phone 2', value = databank_employee1._get_value(1, 'EMPLOYEE_PHONE2'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_PHONE2') != phone2):
+          updateExtra = True
+        nationality = st.text_input(label = 'Nationality', value = databank_employee1._get_value(1, 'EMPLOYEE_NATIONALITY'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_NATIONALITY') != nationality):
+          updateExtra = True
+        origin = st.text_input(label = 'Place of origin', value = databank_employee1._get_value(1, 'EMPLOYEE_PLACE_OF_ORIGIN'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_PLACE_OF_ORIGIN') != origin):
+          updateExtra = True
+        marriage = st.text_input(label = 'Marriage status', value = databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS') != marriage):
+          updateExtra = True
+        employment_type = st.text_input(label = 'Marriage status', value = databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE'), disabled = False)
+        if (databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE') != employment_type):
+          updateExtra = True
+          
+          
         ## Get driver data if available
         query = "SELECT ID, DRIVER_ID, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES FROM carfleet.DRIVERS WHERE EMPLOYEE_NO = '%s';" %(eno['eno'][0])
         rows = run_query(query)
         
         # Create pandas dataframe 
-        data_driver = pd.DataFrame(columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES'])
+        databank_driver = pd.DataFrame(columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES'])
         
         # Populate dataframe
         for row in rows:
-          df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES'])
-          data_driver = pd.concat([data_driver, df])
-        data_driver = data_driver.set_index('ID')
+          df = pd.DataFrame([[1, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES'])
+          databank_driver = pd.concat([databank_driver, df])
+        databank_driver = databank_driver.set_index('ID')
         
+        # Show driver data if existent
+        if (len(databank_driver) == 1):
+          st.subheader('View driver data')
+          st.text_input(label = 'Driver ID', value = databank_driver._get_value(1, 'DRIVER_ID'), disabled = True)
+          st.text_input(label = 'Driver national ID', value = databank_driver._get_value(1, 'DRIVER_NATIONAL_ID'), disabled = True)
+          st.text_input(label = 'Driver mobile number', value = databank_driver._get_value(1, 'DRIVER_MOBILE_NO'), disabled = True)
+          st.text_input(label = 'Driver license number', value = databank_driver._get_value(1, 'DRIVER_LICENSE_NO'), disabled = True)
+          st.text_input(label = 'Driver license class', value = databank_driver._get_value(1, 'DRIVER_LICENSE_CLASS'), disabled = True)
+          st.text_input(label = 'Driver license expiry date', value = databank_driver._get_value(1, 'DRIVER_LICENSE_EXPIRY_DATE'), disabled = True)
+          st.text_input(label = 'Driver PSV badge', value = databank_driver._get_value(1, 'DRIVER_PSV_BADGE'), disabled = True)
+          st.text_input(label = 'Driver notes', value = databank_driver._get_value(1, 'DRIVER_NOTES'), disabled = True)
+          
         
-        ## Show data if Driver data is existitent
-        if (len(data_driver) == 1):
-          st.dataframe(data_driver)
-        
-        ## If no data existend
+        ## If no driver data existend
         else:
           st.info(body = 'No data available', icon = "ℹ️")
         
         
         ## Submit Button for Changes on `More data` - existend employee
-        submitted = st.form_submit_button("Save changes on More data")
+        submitted = st.form_submit_button("Save changes")
         if submitted:
-          ## Let not succeed as there is nothing to submit!
-          st.session_state['success3'] = False
+          ## Writing to databank idcard table `EMPLOYEE`
+          if (updateExtra == True):
+            query = "UPDATE `idcard`.`EMPLOYEE` SET EMPLOYEE_GENDER = '%s', EMPLOYEE_BIRTHDAY = '%s', EMPLOYEE_ADDRESS_STREET = '%s', EMPLOYEE_ADDRESS_CITY = '%s', EMPLOYEE_ADDRESS_CITY_CODE = '%s', EMPLOYEE_EMAIL = '%s', EMPLOYEE_PHONE = '%s', EMPLOYEE_PHONE2 = '%s', EMPLOYEE_NATIONALITY = '%s', EMPLOYEE_PLACE_OF_ORIGIN = '%s', EMPLOYEE_MARRIAGE_STATUS = '%s', EMPLOYEE_EMPLOYMENT_TYPE = '%s' WHERE EMPLOYEE_NO = '%s';" %(gender, birthday, address_street, address_city, address_city_code, email, phone, phone2, nationality, origin, marriage, employment_type, eno['eno'][0])
+            print(query)
+            run_query(query)
+            conn.commit()
+            st.session_state['success3'] = True
+          else:
+            st.session_state['success3'] = False
+           
             
           ## Set Session State to 2nd run and reloading to get actual data
           st.session_state['run'] = False
           st.experimental_rerun()
+          
           
         ## Warning or Success messages after reloading
         if (st.session_state['run'] != True and st.session_state['success3'] == True):
           st.success(body = 'Data submitted to Databank.', icon = "✅")
         else:
           if (st.session_state['run'] != True):
-            st.warning(body = 'Not submitted, as not yet implemented!', icon = "⚠️")
+            st.warning(body = 'Not submitted, as no changes!', icon = "⚠️")
         
      
         
@@ -630,7 +720,12 @@ if check_password():
     st.dataframe(databank, use_container_width = True)
     
     
-    # Show `TRAINING` table data
+    ## Show `EMPLOYEE` table data
+    st.subheader('Extra employee data')
+    st.dataframe(databank_employee, use_container_width = True)
+    
+    
+    ## Show `TRAINING` table data
     st.subheader('Training data')
     st.dataframe(databank_training, use_container_width = True)
     
