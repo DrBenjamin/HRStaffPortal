@@ -8,11 +8,11 @@ For development [RStudio](https://www.rstudio.com/products/rstudio/download/#dow
 
 ### Setup
 
-#### Install and Configure all needed software
+#### Install and configure all needed software
 
 ##### Installation of Python, Streamlit and dependencies plus some configuration
 
-Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally. A virtual Python-Environment like Anaconda is highly recommend.
+Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally. A virtual Python environment like Anaconda / Miniconda are highly recommend.
 
 After that you need to install some **Python libraries**:
 
@@ -43,7 +43,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git
 
 ##### Configuration of Streamlit config files
 
-First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the **theming** and some **Streamlit-Server behaviour** flags:
+First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the **theming** and some **Streamlit server behaviour** flags:
 
 ```python
 [theme]
@@ -154,7 +154,7 @@ or use the database dump with sample data `files/idcard_dump.sql` and import the
 
 ##### Working with RStudio on the project
 
-In RStudio choose **File** - **New Project** and choose **Existing Directory**. This will create a new Project. Configure the *Project Options* to set the **Anaconda / Miniconda Python** environment. Also add the *Version Control* with **git**. Now you can open the source code as a RStudio project everytime you are working on the source files and easily use the **git** functionality within the RStudio IDE.
+In RStudio choose **File** - **New Project** and choose **Existing Directory**. This will create a new Project. Configure the *Project Options* to set the **Anaconda / Miniconda Python** environment. Also add the *Version Control* with **git**. Now you can open the source code as a RStudio project anytime you are working on the source files and easily use the **git** functionality within the RStudio IDE.
 
 ### Software update & use
 
@@ -190,7 +190,7 @@ This will open the web app on your IP address on **port 8501**.
 
 ##### Update of Streamlit
 
-To install the latest version of the **Streamlit web app framework**, run the following command:
+To update to the latest version of the **Streamlit web app framework**, run the following command:
 
 ```cmd
 pip install --upgrade streamlit
@@ -198,7 +198,7 @@ pip install --upgrade streamlit
 
 ##### Update dependencies
 
-To update a specifig dependency, for instance **extra_streamlit_components**, use this command:
+To update a specific dependency, for instance **extra_streamlit_components**, use this command:
 
 ```cmd
 pip install --upgrade extra_streamlit_components
