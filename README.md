@@ -60,7 +60,7 @@ gatherUsageStats = false
 headless = true
 ```
 
-Now create the file `.streamlit/secrets.toml` where you define some customisations and the **user / password** combinations:
+Now create the file `.streamlit/secrets.toml` where you define some customizations and the **user / password** combinations:
 
 ```python
 ### Customization
@@ -74,9 +74,9 @@ facility_abbreviation = "XXX"
 user = "xxxxxxxx"
 ```
 
-#### MySQL Server Configuration
+#### MySQL server configuration
 
-##### For proper usage a local MySQL Server is needed
+##### For proper usage a local MySQL server is needed
 
 In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / ChatBot):
 
@@ -121,7 +121,7 @@ key = "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
 ```
 
-Connect to your **MySQL Database** and create the *user* you configured in `secrets.toml`. Create a **Schema / Database** with the name `idcard`.
+Connect to your **MySQL database** and create the *user* you configured in `secrets.toml`. Create a **schema / database** with the name `idcard`.
 
 To configure the HR Staff Portal tables run the following **SQL commands**:
 
@@ -170,7 +170,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git -b v0.1.1
 
 ##### Update HR Staff Portal
 
-To update the source files to the newest version use the build-in **pull function** of git (git menu on the right upper corner, choose the green arrow which shows down). If you are using the app on a computer without a RStudio installion, just use this git command:
+To update the source files to the newest version use the build-in **pull function** of git (git menu on the right upper corner, choose the green arrow which shows down). If you are using the app on a computer without a RStudio installation, just use this git command:
 
 ```cmd
 git pull
@@ -178,7 +178,7 @@ git pull
 
 ##### Execute Streamlit
 
-If you've installed all dependencies, configured the MySQL Server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the **Terminal** of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
+If you've installed all dependencies, configured the MySQL server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the **Terminal** of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
 
 ```cmd
 streamlit run 🏥_HR_Staff_Portal.py
@@ -186,7 +186,7 @@ streamlit run 🏥_HR_Staff_Portal.py
 
 This will open the web app on your IP address on **port 8501**.
 
-#### Update Streamlit & Dependencies
+#### Update Streamlit & dependencies
 
 ##### Update of Streamlit
 
