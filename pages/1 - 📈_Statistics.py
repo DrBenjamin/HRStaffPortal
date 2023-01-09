@@ -7,12 +7,19 @@ import streamlit as st
 import streamlit.components.v1 as stc
 import pandas as pd
 import numpy as np
-from azure.identity import InteractiveBrowserCredential
-from msgraph.core import GraphClient
-from pprint import pprint
-from ms_graph.client import MicrosoftGraphClient
-from configparser import ConfigParser
+import sys
+sys.path.insert(1, "pages/functions/")
+sys.path.insert(2, "files/")
+from Code_Snippets import diffuser
 
+
+
+
+#### Initialization of session states
+## First Run State
+if ('prompt' not in st.session_state):
+  st.session_state['prompt'] = ''
+  
 
 
 
@@ -40,6 +47,19 @@ st.sidebar.image('images/MoH.png')
 
 
 #### Main program
+### Diffuser
+## Text input
+prompt = st.text_input('What kind of photo should the AI produce?')
+
+
+## Do the diffusion
+if prompt != '':
+  if st.session_state['prompt'] != prompt:
+    diffuser(prompt)
+    st.session_state['prompt'] = prompt
+    
+
+
 ### Statistics expander
 with st.expander(label = 'Statistics', expanded = True):
   ## Title
