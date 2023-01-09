@@ -13,6 +13,7 @@ import os
 import platform
 import io
 import sys
+from datetime import datetime, date
 sys.path.insert(1, "pages/functions/")
 from functions import check_password
 from functions import logout
@@ -75,13 +76,13 @@ if ('success2' not in st.session_state):
   st.session_state['success2'] = False
 if ('success3' not in st.session_state):
   st.session_state['success3'] = False
-if ('success4' not in st.session_state):
-  st.session_state['success4'] = False
 
   
-## Selected Employee session state
+## Selected employee session states
 if ('index' not in st.session_state):
   st.session_state['index'] = 0
+if ('chosen_id' not in st.session_state):
+  st.session_state['chosen_id'] = 1
   
   
 ## Logout
@@ -159,6 +160,7 @@ def pictureUploader(image, index):
 ### Function: onChange = If selectbox is used
 def onChange():
   st.session_state['run'] = True
+  #st.session_state['chosen_id'] = 1
 
 
 
@@ -225,7 +227,11 @@ if check_password():
 
 
   ## Employee selectbox (on change sets first start session state)
-  index = st.selectbox(label = "Which employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'])
+  if (st.session_state['chosen_id'] != 1):
+    selectbox_enabled = True
+  else:
+    selectbox_enabled = False
+  index = st.selectbox(label = "Which employee do you want to select?", options = range(len(names)), format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'], disabled = selectbox_enabled)
  
     
   ## Checkboxes for editing and adding training data
@@ -239,12 +245,13 @@ if check_password():
     stx.TabBarItemData(id = 1, title = "Master data", description = "Employee data"),
     stx.TabBarItemData(id = 2, title = "Training data", description = "Employee trainings"),
     stx.TabBarItemData(id = 3, title = "More data", description = "Extra employee data"),], default = 1)
-
+  st.session_state['chosen_id'] = int(chosen_id)
+  
 
   ## Form for showing employee input fields 
   with st.form("Employee", clear_on_submit = True):
     ## tab `Master data`
-    if (f"{chosen_id}" == '1'):
+    if (st.session_state['chosen_id'] == 1):
       st.title('Employee Master data')
       st.subheader('Enter or view exmployee master data')
       
@@ -408,7 +415,7 @@ if check_password():
           
         
     ## tab `Training data`
-    elif (f"{chosen_id}" == '2'):
+    elif (st.session_state['chosen_id'] == 2):
       ## Get information of selected employee regarding training
       st.title('Employee Training data')
       st.subheader('Enter or view exmployee training data')
@@ -558,7 +565,7 @@ if check_password():
         
         
     ## tab `More data`
-    elif (f"{chosen_id}" == '3'):
+    elif (st.session_state['chosen_id'] == 3):
       st.title('More employee data')
       st.subheader('Enter or view extra employee data')
           
@@ -594,53 +601,87 @@ if check_password():
         updateExtra = False # Will be set to `True` if existing data is altered
 
 
-        ## Input for updating extra employee data
-        options = ['Female', 'Male', 'Divers']
-        if (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Female'):
-          index = 0
-        elif (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Male'):
-          index = 1
-        elif (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Divers'):
-          index = 2
+        ## Input for updating extra employee data if existend
+        if (len(rows) > 0):
+          options = ['Female', 'Male', 'Divers']
+          if (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Female'):
+            index = 0
+          elif (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Male'):
+            index = 1
+          elif (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') == 'Divers'):
+            index = 2
+          else:
+            index = 0
+          gender = st.selectbox('Gender', options = options, index = index)
+          birthday = st.date_input(label = 'Birthday', value = databank_employee1._get_value(1, 'EMPLOYEE_BIRTHDAY'), min_value = date(1950, 1, 1), max_value = datetime.now())
+          address_street = st.text_input(label = 'Street', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_STREET'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_STREET') != address_street):
+            updateExtra = True
+          address_city = st.text_input(label = 'City', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY') != address_city):
+            updateExtra = True
+          address_city_code = st.text_input(label = 'City code', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY_CODE'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY_CODE') != address_city_code):
+            updateExtra = True
+          email = st.text_input(label = 'Email', value = databank_employee1._get_value(1, 'EMPLOYEE_EMAIL'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_EMAIL') != email):
+            updateExtra = True
+          phone = st.text_input(label = 'Phone', value = databank_employee1._get_value(1, 'EMPLOYEE_PHONE'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_PHONE') != phone):
+            updateExtra = True
+          phone2 = st.text_input(label = 'Phone 2', value = databank_employee1._get_value(1, 'EMPLOYEE_PHONE2'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_PHONE2') != phone2):
+            updateExtra = True
+          nationality = st.text_input(label = 'Nationality', value = databank_employee1._get_value(1, 'EMPLOYEE_NATIONALITY'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_NATIONALITY') != nationality):
+            updateExtra = True
+          origin = st.text_input(label = 'Place of origin', value = databank_employee1._get_value(1, 'EMPLOYEE_PLACE_OF_ORIGIN'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_PLACE_OF_ORIGIN') != origin):
+            updateExtra = True
+          marriage = st.text_input(label = 'Marriage status', value = databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS') != marriage):
+            updateExtra = True
+          employment_type = st.text_input(label = 'Employee type', value = databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE'), disabled = False)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE') != employment_type):
+            updateExtra = True
+        
+        
+        ## Input extra employee data if not existend
         else:
-          index = 0
-        gender = st.selectbox('Gender', options = options, index = index)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') != gender):
-          updateExtra = True
-        birthday = st.text_input(label = 'Birtyday', value = databank_employee1._get_value(1, 'EMPLOYEE_BIRTHDAY'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_BIRTHDAY') != birthday):
-          updateExtra = True
-        address_street = st.text_input(label = 'Street', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_STREET'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_STREET') != address_street):
-          updateExtra = True
-        address_city = st.text_input(label = 'City', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY') != address_city):
-          updateExtra = True
-        address_city_code = st.text_input(label = 'City code', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY_CODE'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_CITY_CODE') != address_city_code):
-          updateExtra = True
-        email = st.text_input(label = 'Email', value = databank_employee1._get_value(1, 'EMPLOYEE_EMAIL'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_EMAIL') != email):
-          updateExtra = True
-        phone = st.text_input(label = 'Phone', value = databank_employee1._get_value(1, 'EMPLOYEE_PHONE'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_PHONE') != phone):
-          updateExtra = True
-        phone2 = st.text_input(label = 'Phone 2', value = databank_employee1._get_value(1, 'EMPLOYEE_PHONE2'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_PHONE2') != phone2):
-          updateExtra = True
-        nationality = st.text_input(label = 'Nationality', value = databank_employee1._get_value(1, 'EMPLOYEE_NATIONALITY'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_NATIONALITY') != nationality):
-          updateExtra = True
-        origin = st.text_input(label = 'Place of origin', value = databank_employee1._get_value(1, 'EMPLOYEE_PLACE_OF_ORIGIN'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_PLACE_OF_ORIGIN') != origin):
-          updateExtra = True
-        marriage = st.text_input(label = 'Marriage status', value = databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS') != marriage):
-          updateExtra = True
-        employment_type = st.text_input(label = 'Marriage status', value = databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE'), disabled = False)
-        if (databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE') != employment_type):
-          updateExtra = True
-          
+          options = ['Female', 'Male', 'Divers']
+          gender = st.selectbox('Gender', options = options, index = 0)
+          birthday = st.date_input(label = 'Birthday', value = datetime.now(), min_value = date(1950, 1, 1), max_value = datetime.now())
+          address_street = st.text_input(label = 'Street', placeholder = 'Street?', disabled = False)
+          if (address_street != ''):
+            insertExtra = True
+          address_city = st.text_input(label = 'City', placeholder = 'City?', disabled = False)
+          if (address_city != ''):
+            insertExtra = True
+          address_city_code = st.text_input(label = 'City code', placeholder = 'City code?', disabled = False)
+          if (address_city_code != ''):
+            insertExtra = True
+          email = st.text_input(label = 'Email', placeholder = 'Email?', disabled = False)
+          if (email != ''):
+            insertExtra = True
+          phone = st.text_input(label = 'Phone', placeholder = 'Phone?', disabled = False)
+          if (phone != ''):
+            insertExtra = True
+          phone2 = st.text_input(label = 'Phone 2', placeholder = 'Phone 2?', disabled = False)
+          if (phone2 != ''):
+            insertExtra = True
+          nationality = st.text_input(label = 'Nationality', placeholder = 'Nationality?', disabled = False)
+          if (nationality != ''):
+            insertExtra = True
+          origin = st.text_input(label = 'Place of origin', placeholder = 'Place of origin?', disabled = False)
+          if (origin != ''):
+            insertExtra = True
+          marriage = st.text_input(label = 'Marriage status', placeholder = 'Marriage status?', disabled = False)
+          if (marriage != ''):
+            insertExtra = True
+          employment_type = st.text_input(label = 'Employee type', placeholder = 'Employee type?', disabled = False)
+          if (employment_type != ''):
+            insertExtra = True
+
           
         ## Get driver data if available
         query = "SELECT ID, DRIVER_ID, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES FROM carfleet.DRIVERS WHERE EMPLOYEE_NO = '%s';" %(eno['eno'][0])
@@ -655,31 +696,38 @@ if check_password():
           databank_driver = pd.concat([databank_driver, df])
         databank_driver = databank_driver.set_index('ID')
         
-        # Show driver data if existent
-        if (len(databank_driver) == 1):
+        with st.expander(label = 'Driver data', expanded = False):
           st.subheader('View driver data')
-          st.text_input(label = 'Driver ID', value = databank_driver._get_value(1, 'DRIVER_ID'), disabled = True)
-          st.text_input(label = 'Driver national ID', value = databank_driver._get_value(1, 'DRIVER_NATIONAL_ID'), disabled = True)
-          st.text_input(label = 'Driver mobile number', value = databank_driver._get_value(1, 'DRIVER_MOBILE_NO'), disabled = True)
-          st.text_input(label = 'Driver license number', value = databank_driver._get_value(1, 'DRIVER_LICENSE_NO'), disabled = True)
-          st.text_input(label = 'Driver license class', value = databank_driver._get_value(1, 'DRIVER_LICENSE_CLASS'), disabled = True)
-          st.text_input(label = 'Driver license expiry date', value = databank_driver._get_value(1, 'DRIVER_LICENSE_EXPIRY_DATE'), disabled = True)
-          st.text_input(label = 'Driver PSV badge', value = databank_driver._get_value(1, 'DRIVER_PSV_BADGE'), disabled = True)
-          st.text_input(label = 'Driver notes', value = databank_driver._get_value(1, 'DRIVER_NOTES'), disabled = True)
           
-        
-        ## If no driver data existend
-        else:
-          st.info(body = 'No data available', icon = "ℹ️")
+          # Show driver data if existent
+          if (len(databank_driver) == 1):
+            
+            st.text_input(label = 'Driver ID', value = databank_driver._get_value(1, 'DRIVER_ID'), disabled = True)
+            st.text_input(label = 'Driver national ID', value = databank_driver._get_value(1, 'DRIVER_NATIONAL_ID'), disabled = True)
+            st.text_input(label = 'Driver mobile number', value = databank_driver._get_value(1, 'DRIVER_MOBILE_NO'), disabled = True)
+            st.text_input(label = 'Driver license number', value = databank_driver._get_value(1, 'DRIVER_LICENSE_NO'), disabled = True)
+            st.text_input(label = 'Driver license class', value = databank_driver._get_value(1, 'DRIVER_LICENSE_CLASS'), disabled = True)
+            st.text_input(label = 'Driver license expiry date', value = databank_driver._get_value(1, 'DRIVER_LICENSE_EXPIRY_DATE'), disabled = True)
+            st.text_input(label = 'Driver PSV badge', value = databank_driver._get_value(1, 'DRIVER_PSV_BADGE'), disabled = True)
+            st.text_input(label = 'Driver notes', value = databank_driver._get_value(1, 'DRIVER_NOTES'), disabled = True)
+            
+          # If no driver data existend
+          else:
+            st.info(body = 'No driver data available', icon = "ℹ️")
         
         
         ## Submit Button for Changes on `More data` - existend employee
         submitted = st.form_submit_button("Save changes")
         if submitted:
           ## Writing to databank idcard table `EMPLOYEE`
-          if (updateExtra == True):
+          if (updateExtra == True and insertExtra == False):
             query = "UPDATE `idcard`.`EMPLOYEE` SET EMPLOYEE_GENDER = '%s', EMPLOYEE_BIRTHDAY = '%s', EMPLOYEE_ADDRESS_STREET = '%s', EMPLOYEE_ADDRESS_CITY = '%s', EMPLOYEE_ADDRESS_CITY_CODE = '%s', EMPLOYEE_EMAIL = '%s', EMPLOYEE_PHONE = '%s', EMPLOYEE_PHONE2 = '%s', EMPLOYEE_NATIONALITY = '%s', EMPLOYEE_PLACE_OF_ORIGIN = '%s', EMPLOYEE_MARRIAGE_STATUS = '%s', EMPLOYEE_EMPLOYMENT_TYPE = '%s' WHERE EMPLOYEE_NO = '%s';" %(gender, birthday, address_street, address_city, address_city_code, email, phone, phone2, nationality, origin, marriage, employment_type, eno['eno'][0])
-            print(query)
+            run_query(query)
+            conn.commit()
+            st.session_state['success3'] = True
+          elif (updateExtra == False and insertExtra == True):
+            id = lastID('`idcard`.`EMPLOYEE`')
+            query = "INSERT INTO `idcard`.`EMPLOYEE`(ID, EMPLOYEE_NO, EMPLOYEE_GENDER, EMPLOYEE_BIRTHDAY, EMPLOYEE_ADDRESS_STREET, EMPLOYEE_ADDRESS_CITY, EMPLOYEE_ADDRESS_CITY_CODE, EMPLOYEE_EMAIL, EMPLOYEE_PHONE, EMPLOYEE_PHONE2, EMPLOYEE_NATIONALITY, EMPLOYEE_PLACE_OF_ORIGIN, EMPLOYEE_MARRIAGE_STATUS, EMPLOYEE_EMPLOYMENT_TYPE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, eno['eno'][0], gender, birthday, address_street, address_city, address_city_code, email, phone, phone2, nationality, origin, marriage, employment_type)
             run_query(query)
             conn.commit()
             st.session_state['success3'] = True
