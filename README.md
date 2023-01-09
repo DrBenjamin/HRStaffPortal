@@ -2,7 +2,7 @@
 
 ## HR Staff Portal
 
-This App handles **employee data** which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL Databank.
+This App handles **employee data** which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL databank.
 
 For development [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is used. Install [git](https://git-scm.com/download/win) to use version control.
 
@@ -60,9 +60,14 @@ gatherUsageStats = false
 headless = true
 ```
 
-Now create the file `.streamlit/secrets.toml` where you define the **user / password** combinations:
+Now create the file `.streamlit/secrets.toml` where you define some customisations and the **user / password** combinations:
 
 ```python
+### Customization
+[custom]
+facility = "XXXXXXXX"
+facility_abbreviation = "XXX"
+
 ### User management
 [passwords]
 # Follow the rule: username = "password"
