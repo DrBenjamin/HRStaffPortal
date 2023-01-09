@@ -124,7 +124,7 @@ databank_workshop = databank_workshop.set_index('ID')
 
 
 ### Existing workshop
-if len(html_query) > 0:
+if len(html_query) > 1:
   ## Get specific workshop data
   # Run query 
   query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE workshop_id = '%s';" %(html_query['workshop'][0])
