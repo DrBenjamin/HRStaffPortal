@@ -21,13 +21,27 @@ import qrcode
 #### All shared general functions
 ### Function: check_password = Password / user checking
 def check_password():
-	# Returns `True` if the user had a correct password."""
+	# Returns `True` if the user had a correct password
 	def password_entered():
-		# Checks whether a password entered by the user is correct."""
-		if (st.session_state["username"] in st.secrets["passwords"] and st.session_state["password"] == st.secrets["passwords"][st.session_state["username"]]):
+		# Checks whether a password entered by the user is correct
+		if st.session_state["username"] in st.secrets["passwords"] and st.session_state["password"] == st.secrets["passwords"][st.session_state["username"]]:
 			st.session_state["password_correct"] = True
-			del st.session_state["password"]  # don't store username + password
+			st.session_state["admin"] = False
+			
+			# Delete username + password
+			del st.session_state["password"]
 			del st.session_state["username"]
+			
+		# Checks whether a password entered by the user is correct for admins	
+		elif st.session_state["username"] in st.secrets["admins"] and st.session_state["password"] == st.secrets["admins"][st.session_state["username"]]:
+			st.session_state["password_correct"] = True
+			st.session_state["admin"] = True
+			
+			# Delete username + password
+			del st.session_state["password"]
+			del st.session_state["username"]
+			
+		# No combination fits
 		else:
 			st.session_state["password_correct"] = False
 
@@ -36,17 +50,16 @@ def check_password():
 	# Sidebar Header Image
 	st.sidebar.image('images/MoH.png')
 
+	# First run, show inputs for username + password
 	if "password_correct" not in st.session_state:
-		# First run, show inputs for username + password
-		# Show Header Text
 		st.sidebar.subheader('Please enter username and password')
 		st.sidebar.text_input(label = "Username", on_change = password_entered, key = "username")
 		st.sidebar.text_input(label = "Password", type = "password", on_change = password_entered, key = "password")
 		return False
 	
+	# Password not correct, show input + error
 	elif not st.session_state["password_correct"]:
-		# Password not correct, show input + error
-		st.sidebar.text_input(label = "Username", on_change=password_entered, key = "username")
+		st.sidebar.text_input(label = "Username", on_change = password_entered, key = "username")
 		st.sidebar.text_input(label = "Password", type = "password", on_change = password_entered, key = "password")
 		if (st.session_state['logout']):
 			st.sidebar.success('Logout successful!', icon = "✅")
@@ -65,9 +78,10 @@ def check_password():
 			
 ### Funtion: logout = Logout button
 def logout():
-	## Set Logout to get Logout-message
+	# Set `logout` to get logout-message
 	st.session_state['logout'] = True
-	## Logout
+	
+	# Set password to `false`
 	st.session_state["password_correct"] = False
 
 
@@ -317,21 +331,21 @@ def header(title, data_desc, expanded = True):
 
 ### Function: landing_page = Shows the landing page (not loged in state)
 def landing_page(page):
-	## Title and information
-	header = 'Welcome to ' + page
-	st.title(header)
-	st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
-	st.subheader('User Login')
-	st.info(body = 'Please login (sidebar on the left) to access the ' + page, icon = "ℹ️")
-	
-	
-	## Sub-pages menu
-	st.subheader('Pages without login)')
-	st.write('You can access these pages without being logged in:')
-	st.write("<a href='Statistics' target='_self'>Statistics</a>", unsafe_allow_html = True)
-	st.write("<a href='Workshops' target='_self'>Workshops</a>", unsafe_allow_html = True)
-	st.write("<a href='Handbook' target='_self'>Handbook</a>", unsafe_allow_html = True)
-	st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
+  ## Title and information
+  header = 'Welcome to ' + page
+  st.title(header)
+  st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
+  st.subheader('User Login')
+  st.info(body = 'Please login (sidebar on the left) to access the ' + page, icon = "ℹ️")
+  
+  
+  ## Sub-pages menu
+  st.subheader('Pages without login)')
+  st.write('You can access these pages without being logged in:')
+  st.write("<a href='Statistics' target='_self'>Statistics</a>", unsafe_allow_html = True)
+  st.write("<a href='Workshops' target='_self'>Workshops</a>", unsafe_allow_html = True)
+  st.write("<a href='Handbook' target='_self'>Handbook</a>", unsafe_allow_html = True)
+  st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
 
 
 

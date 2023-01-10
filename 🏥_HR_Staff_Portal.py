@@ -68,6 +68,8 @@ eno = st.experimental_get_query_params()
 ## First Run State
 if ('run' not in st.session_state):
   st.session_state['run'] = True
+if ('admin' not in st.session_state):
+  st.session_state['admin'] = False
  
   
 ## Database transmission success state1

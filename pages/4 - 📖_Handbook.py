@@ -41,6 +41,11 @@ st.set_page_config(
 
 
 #### Initialization of session states
+## Session state
+if ('admin' not in st.session_state):
+  st.session_state['admin'] = False
+  
+  
 ## Answer states
 if ('answer_done' not in st.session_state):
   st.session_state['answer_done'] = False
@@ -862,10 +867,19 @@ if check_password():
         
         # Rerun
         st.experimental_rerun()
-
-
-
-
+  
+  
+  
+  
 #### Not Logged in state (Landing page)
 else :
   landing_page_handbook(info = 'to enter handbook data (strutures and paragragphs).')
+
+
+
+
+#### Admin console
+if st.session_state['admin'] ==  True:
+  st.write('Admin')
+else:
+  st.write('User')
