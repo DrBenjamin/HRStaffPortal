@@ -65,7 +65,9 @@ eno = st.experimental_get_query_params()
 
 
 #### Initialization of session states
-## Logout
+## Session states
+if ('admin' not in st.session_state):
+  st.session_state['admin'] = False
 if ('logout' not in st.session_state):
   st.session_state['logout'] = False
 

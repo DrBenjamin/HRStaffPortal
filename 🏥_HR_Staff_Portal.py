@@ -65,7 +65,7 @@ eno = st.experimental_get_query_params()
 
 
 #### Initialization of session states
-## First Run State
+## Session states
 if ('run' not in st.session_state):
   st.session_state['run'] = True
 if ('admin' not in st.session_state):

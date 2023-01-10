@@ -29,6 +29,14 @@ st.set_page_config(
 
 
 
+#### Initialization of session states
+## Session state
+if ('admin' not in st.session_state):
+  st.session_state['admin'] = False
+  
+  
+  
+
 #### Sidebar
 ## Sidebar Header Image
 st.sidebar.image('images/MoH.png')

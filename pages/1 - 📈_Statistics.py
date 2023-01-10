@@ -17,7 +17,9 @@ from Code_Snippets import diffuser
 
 
 #### Initialization of session states
-## First Run State
+## Session states
+if ('admin' not in st.session_state):
+  st.session_state['admin'] = False
 if ('prompt' not in st.session_state):
   st.session_state['prompt'] = ''
   

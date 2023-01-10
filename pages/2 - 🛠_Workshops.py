@@ -44,7 +44,9 @@ html_query = st.experimental_get_query_params()
 
 
 #### Initialization of session states
-  
+## Session states
+if ('admin' not in st.session_state):
+  st.session_state['admin'] = False
   
 
   

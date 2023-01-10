@@ -648,7 +648,7 @@ with st.expander(label = 'Handbook', expanded = False):
 
 
 
-#### Logged in state (HRStattPortal)
+#### Logged in state (Handbook)
 if check_password():
   ### Chapter and paragraph structures
   ## Get chapter structure
@@ -868,18 +868,17 @@ if check_password():
         # Rerun
         st.experimental_rerun()
   
+
+
+  ### Handbook admin console    
+  if st.session_state['admin'] ==  True:
+    with st.expander(label = 'Admin', expanded = False):
+      st.header('Admin console')
+      st.write('Here you can work as an admin.')  
+  
   
   
   
 #### Not Logged in state (Landing page)
 else :
   landing_page_handbook(info = 'to enter handbook data (strutures and paragragphs).')
-
-
-
-
-#### Admin console
-if st.session_state['admin'] ==  True:
-  st.write('Admin')
-else:
-  st.write('User')
