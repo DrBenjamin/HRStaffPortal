@@ -5,6 +5,10 @@
 #### Loading needed Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
+import sys
+sys.path.insert(1, "pages/functions/")
+from functions import header
+from network import get_ip
 
 
 
@@ -33,23 +37,33 @@ st.sidebar.image('images/MoH.png')
 
 
 #### Main program
+### Logged out state (About)
 ## Header
-st.title('About')
-st.header('Kamuzu Central Hospital (KCH)')
-st.subheader('All KCH information')
-st.write('Private Bag 149,')
-st.write('Lilongwe, MALAWI')
-st.write('[Tel: +265 1 753 400](tel:+2651753400)')
-st.write('[Tel: +265 1 753 555](tel:+2651753555)')
-st.write('[Tel: +265 1 753 744](tel:+2651753744)')
+header(title = 'About page', data_desc = 'contact information') 
+ 
+
+## Contact information
+with st.expander('Contact information', expanded = True):
+  st.subheader('Address')
+  st.write(st.secrets['custom']['address_line1'])
+  st.write(st.secrets['custom']['address_line2'])
+  st.subheader('Contact')
+  st.write('**Tel 1: ' + st.secrets['custom']['contact_tel1'] + '**')
+  st.write('**Tel 2: ' + st.secrets['custom']['contact_tel2'] + '**')
+  st.write('**Tel 3: ' + st.secrets['custom']['contact_tel3'] + '**')
+  st.write('**Mail 1: ' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail1'].split('(mail:')[1][:-1] + '\">' + st.secrets['custom']['contact_mail1'].split('(mail:')[1][:-1] + '</a>**', unsafe_allow_html = True)
+  st.write('**Mail 2: ' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail2'].split('(mail:')[1][:-1] + '\">' + st.secrets['custom']['contact_mail2'].split('(mail:')[1][:-1] + '</a>**', unsafe_allow_html = True)
 
 
 ## Network iframe
-stc.iframe(src = "http://192.168.1.173/index.html", height = 500, scrolling = True)
-
-stc.html(
-  """
-  <iframe src="https://techhub.social/@DrBenjamin/109397699095825866/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="400"></iframe><script src="https://techhub.social/embed.js" async="async"></script>
-  """,
-  height=300,
-)
+with st.expander('Changelog', expanded = True):
+  ## Title
+  st.subheader('Changelog')
+  
+  
+  ## Remote site
+  stc.html("""<iframe src="https://techhub.social/@DrBenjamin/109397699095825866/embed" class = "mastodon-embed" style = "max-width: 100%; border: 0" width = "600"></iframe><script src="https://techhub.social/embed.js" async = "async"></script>""", height = 520,)
+  
+  
+  ## Local site
+  #stc.iframe(src = 'http://' + get_ip() + '/index.html', height = 500, scrolling = True)

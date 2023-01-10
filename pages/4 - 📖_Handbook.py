@@ -12,6 +12,7 @@ import geocoder
 from geopy.geocoders import Nominatim
 import sys
 sys.path.insert(1, "pages/functions/")
+from functions import header
 from functions import check_password
 from functions import logout
 from functions import landing_page_handbook
@@ -167,8 +168,9 @@ lang = st.sidebar.selectbox('In which language should Ben answer?', ('BG', 'CS',
 
 
 #### Main Program
-### Title
-st.title('Handbook')
+### Logged in state (Handbook)
+## Header
+header(title = 'Handbook page', data_desc = 'handbooks') 
 
 
 

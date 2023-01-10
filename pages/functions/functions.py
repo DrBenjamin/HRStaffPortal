@@ -7,6 +7,7 @@ import streamlit as st
 import pandas as pd
 import io
 import os
+import sys
 import xlsxwriter
 from docx import Document
 from docx.shared import Inches
@@ -18,7 +19,7 @@ import qrcode
 
 
 #### All shared general functions
-### Function: check_password = Password / User checking
+### Function: check_password = Password / user checking
 def check_password():
 	# Returns `True` if the user had a correct password."""
 	def password_entered():
@@ -62,7 +63,7 @@ def check_password():
  
  
 			
-### Funtion: logout = Logout Button
+### Funtion: logout = Logout button
 def logout():
 	## Set Logout to get Logout-message
 	st.session_state['logout'] = True
@@ -71,7 +72,7 @@ def logout():
 
 
 
-### Function: export_excel = Pandas Dataframe to MS Excel Makro File (xlsm)
+### Function: export_excel = Pandas dataframe to MS Excel Makro File (xlsm)
 def export_excel(sheet, column, columns, length, data, 
 								sheet2 = 'N0thing', column2 = 'A', columns2 = '', length2 = '', data2 = '',
 								sheet3 = 'N0thing', column3 = 'A', columns3 = '', length3 = '', data3 = '',
@@ -135,12 +136,12 @@ def export_excel(sheet, column, columns, length, data,
  
 
 
-### Function: export_docx = Pandas Dataframe to MS Word file (docx)
+### Function: export_docx = Pandas dataframe to MS Word file (docx)
 def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 	document = Document()
 	
 
-	## Sorting dataframe by Chapter and Paragraph
+	## Sorting dataframe by chapter and paragraph
 	data = data.sort_values(['HANDBOOK_CHAPTER', 'HANDBOOK_PARAGRAPH'], ascending = [True, True])
 
 
@@ -255,7 +256,7 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 
 
 
-### Function: loadFile = converts digital data to binary format
+### Function: loadFile = Converts digital data to binary format
 def load_file(filename):
 	with open(filename, 'rb') as file:
 		binaryData = file.read()
@@ -301,12 +302,25 @@ def generate_qrcode(data):
 
 
 
-### Function: landing_page = shows the landing page (not loged in state)
+### Function header = Shows header information 
+def header(title, data_desc, expanded = True):
+  with st.expander("Header", expanded = expanded):
+    ## Header information
+    st.title(title)
+    st.image('images/MoH.png')
+    st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
+    st.subheader(st.secrets['custom']['facility_abbreviation'] + ' ' + data_desc)
+    st.write('All data is stored in a local MySQL databank on a dedicated Server hosted at ' + st.secrets['custom']['facility_abbreviation'] + '.')
+    st.write('The ' + title + ' is developed with Python (v' + str(sys.version_info.major) + '.' + str(sys.version_info.minor) + ') and the web app framework Streamlit.')
+
+
+
+### Function: landing_page = Shows the landing page (not loged in state)
 def landing_page(page):
 	## Title and information
-	st.title('Kamuzu Central Hospital (KCH)')
 	header = 'Welcome to ' + page
-	st.header(header)
+	st.title(header)
+	st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
 	st.subheader('User Login')
 	st.info(body = 'Please login (sidebar on the left) to access the ' + page, icon = "ℹ️")
 	
@@ -319,10 +333,9 @@ def landing_page(page):
 	st.write("<a href='Handbook' target='_self'>Handbook</a>", unsafe_allow_html = True)
 	st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
 
-	
-	
 
-### Function: landing_page_handbook = shows the landing page (not loged in state)
+
+### Function: landing_page_handbook = Shows the landing page (not loged in state)
 def landing_page_handbook(info):
 	## Title and information
 	st.info(body = 'Please login (sidebar on the left) ' + info, icon = "ℹ️")

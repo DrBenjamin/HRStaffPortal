@@ -15,6 +15,7 @@ import io
 import sys
 from datetime import datetime, date
 sys.path.insert(1, "pages/functions/")
+from functions import header
 from functions import check_password
 from functions import logout
 from functions import export_excel
@@ -168,13 +169,8 @@ def onChange():
 #### Two versions of the page -> Landing page vs. HRStaffPortal
 ### Logged in state (HR Staff Portal)
 if check_password():
-  ## Header information
-  with st.expander("Header", expanded = True):
-    st.title('HR Staff Portal')
-    st.image('images/MoH.png')
-    st.subheader(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
-    st.write('All data is stored in a local MySQL databank on a dedicated Server hosted at KCH.')
-    st.write('The HR Staff Portal is developed with Python (v' + str(sys.version_info.major) + '.' + str(sys.version_info.minor) + ') and the web app framework Streamlit.')
+  ## Header
+  header(title = 'HR Staff Portal', data_desc = 'employee data')
 
 
   ## Get data from the databank(s)
@@ -788,4 +784,4 @@ if check_password():
           
 #### Not Logged in state (Landing page)
 else :
-  landing_page('HR Staff Portal.')
+  landing_page('HR Staff Portal')

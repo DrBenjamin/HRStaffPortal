@@ -11,6 +11,7 @@ import io
 import sys
 from array import array
 sys.path.insert(1, "pages/functions/")
+from functions import header
 from functions import generateID
 from functions import generate_qrcode
 from network import send_mail
@@ -100,10 +101,10 @@ st.sidebar.image('images/MoH.png')
 
 
 #### Main Program
-### Header
-## Title
-st.title('Workshops')
-
+### Logged out state (Workshops page)
+## Header
+header(title = 'Workshops page', data_desc = 'workshops data')
+  
 
 ## Open databank connection
 conn = init_connection()

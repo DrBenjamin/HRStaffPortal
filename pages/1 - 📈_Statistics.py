@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import sys
 sys.path.insert(1, "pages/functions/")
+from functions import header
 sys.path.insert(2, "files/")
 from Code_Snippets import diffuser
 
@@ -47,25 +48,12 @@ st.sidebar.image('images/MoH.png')
 
 
 #### Main program
-### Diffuser
-## Text input
-prompt = st.text_input('What kind of photo should the AI produce?')
+### Logged out state (Statistics)
+## Header
+header(title = 'Statistics page', data_desc = 'employee statistic data')
 
-
-## Do the diffusion
-if prompt != '':
-  if st.session_state['prompt'] != prompt:
-    diffuser(prompt)
-    st.session_state['prompt'] = prompt
-    
-
-
-### Statistics expander
-with st.expander(label = 'Statistics', expanded = True):
-  ## Title
-  st.title('Statistics')
   
-  
+with st.expander(label = 'Statistics', expanded = True):  
   ## Download links
   # Data comes from Helmholtz-Zentrum Potsdam
   # https://www-app3.gfz-potsdam.de/kp_index/Kp_ap_nowcast.txt
@@ -159,4 +147,17 @@ with st.expander(label = 'Statistics', expanded = True):
   st.write('The minimum of the daily employee activity was on ', str(max_ap[0][1]), ' at ', str(max_ap[0][0]), 'employees')
   if st.checkbox('Show minimum days?'):
     st.subheader('Days with the lowest number of staff')
-    st.write(max_ap_data)
+    st.write
+    
+
+
+### Image diffusion
+## Text input
+prompt = st.text_input('What kind of photo should the AI produce?')
+
+
+## Do the diffusion
+if prompt != '':
+  if st.session_state['prompt'] != prompt:
+    diffuser(prompt)
+    st.session_state['prompt'] = prompt
