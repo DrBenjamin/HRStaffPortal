@@ -41,7 +41,9 @@ st.set_page_config(
 
 
 #### Initialization of session states
-## Answer state
+## Answer states
+if ('answer_done' not in st.session_state):
+  st.session_state['answer_done'] = False
 if ('answer' not in st.session_state):
   st.session_state['answer'] = ''
   
@@ -51,13 +53,17 @@ if ('feedback' not in st.session_state):
   st.session_state['feedback'] = False
   
   
-## Session state for writing to table `FAQ`
+## Session state for writing to table `FAQ` and `ANSWERS`
 if ('question_id' not in st.session_state):
   st.session_state['question_id'] = ''
 if ('handbook_id' not in st.session_state):
   st.session_state['handbook_id'] = ''
+if ('answer_id' not in st.session_state):
+  st.session_state['answer_id'] = ''
+if ('handbook_text' not in st.session_state):
+  st.session_state['handbook_text'] = ''
   
-
+  
 ## Chapter state for handbook
 if ('chapter' not in st.session_state):
   st.session_state['chapter'] = 1
@@ -246,7 +252,7 @@ with st.expander('FAQ', expanded = False):
       
     
     ## Get FAQ
-    query = "SELECT que.QUESTION_TEXT, faq.FAQ_ANSWER, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID;"
+    query = "SELECT que.QUESTION_TEXT, ans.ANSWER_TEXT, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID LEFT JOIN benbox.ANSWERS AS ans ON faq.ANSWER_ID = ans.ANSWER_ID;"
     faq = run_query(query)
    
     
@@ -294,6 +300,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
         ## Open databank connection
         conn = init_connection()
         
+        
         ## Get categories and sub-categories
         query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.CATEGORIES;"
         rows = run_query(query)
@@ -313,7 +320,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
           
           
         ## Category menu
-        category = st.selectbox(label = 'Please choose the category of the question (if unknown, choose \"General\"', options = range(len(categories)), format_func = lambda x: categories[x])
+        category = st.selectbox(label = 'Please choose the category of the question', options = range(len(categories)), format_func = lambda x: categories[x])
         
         
         ## Sub-Category menu
@@ -327,7 +334,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
       ## Submit button
       submitted = st.form_submit_button("Ask Ben")
       if submitted:
-        ## Get response from openai
+        ## Using ChatGPT from OpenAI
         # Set API key
         openai.api_key = st.secrets['openai']['key']
         
@@ -338,7 +345,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
         
         try:
           ## Doing the requests to OpenAI for summarizing / keyword extracting the question
-          # Summary
+          # Creating summary of user question
           summary_question = 'A User asks in the category \"' + categories[category] + '\" and the sub-category"' + sub_categories[sub_category] + '" about this question: \"' + user_question + '" Please summarise it to a statement in no more than three words.'
           response_summary = openai.Completion.create(model = "text-davinci-003", prompt = summary_question, temperature = 0.3, max_tokens = 64, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
           summary = response_summary['choices'][0]['text'].lstrip()
@@ -357,7 +364,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
           
           
           ## Cleaning response
-          # Create array out of comma seperated string
+          # Create keywords array out of comma seperated string
           keywords = keywords.split(',')
           for i in range(4):
             # Remove leading space
@@ -387,6 +394,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
           query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, CATEGORY_ID, CATEGORY_SUB_ID, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(id, question_id, categories_id[category], sub_categories_id[sub_category], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], summary, user_question, lang[:2].lower())
           run_query(query)
           conn.commit()
+          st.session_state['answer_done'] = False
           
           
           ## Get handbook data to answer from table `HANDBOOK_USER`
@@ -492,11 +500,13 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
             databank_handbook = databank_handbook.sort_values('HANDBOOK_HITS', ascending = False)
             handbook = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_TEXT')
             handbook_id = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_ID')
+            st.session_state['handbook_id'] = handbook_id
             
             # Add handbook entries which scored with difference under 15%
             for i in range(len(databank_handbook) - 1):
               if (databank_handbook._get_value(databank_handbook.iloc[i + 1][0], 'HANDBOOK_HITS') / databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_HITS') >= 0.85):
                 handbook = handbook + ' ' + databank_handbook._get_value(databank_handbook.iloc[i + 1][0], 'HANDBOOK_TEXT')
+            st.session_state['handbook_text'] = handbook
             
               
             ## Debugging output
@@ -537,15 +547,31 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
       
     
   ## Give the answer (Outside the form)
-  answer = st.session_state['answer']
-  
   if (st.session_state['feedback'] == False):
-    if (len(answer) > 0):
-      st.write(':blue[Ben:] ', answer)
+    if (len(st.session_state['answer']) > 0):
+      st.write(':blue[Ben:] ', st.session_state['answer'])
     
-    
+      
+      ## Writing every answer to table `ANSWERS`
+      if (st.session_state['answer_done'] == False):
+        # Get latest ID from table
+        id = lastID(url = '`benbox`.`ANSWERS`')
+        
+        # Populate `ANSWER_ID`
+        st.session_state['answer_id'] = generateID(id = id)
+        
+        
+        # Writing the answer
+        query = "INSERT INTO `benbox`.`ANSWERS`(ID, ANSWER_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_TEXT, ANSWER_HANDBOOK_TEXT) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(id, st.session_state['answer_id'], st.session_state['question_id'], st.session_state['handbook_id'], st.session_state['answer'], st.session_state['handbook_text'])
+        run_query(query)
+        conn.commit()
+        
+        # Set to true to prevent duplicate in table
+        st.session_state['answer_done'] = True
+            
+            
       ## Writing to database if it was useful
-      if (answer != 'Unfortunately we have not found the answer to your question.'):
+      if (st.session_state['answer'] != 'Unfortunately we have not found the answer to your question.'):
         # Ask if it was useful
         st.write(':orange[Was this answer useful?]')
         
@@ -555,29 +581,12 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
           if st.button(label = 'Yes'):
             # Set session state `feedback`
             st.session_state['feedback'] = True
-              
+            
             # Get latest ID from table
             id = lastID(url = '`benbox`.`FAQ`')
-            
-            # Pollute `FAQ_ID`
-            faq_id = generateID(id = id)
               
-            # Pollute `QUESTION_ID`
-            question_id = st.session_state['question_id']
-              
-            # Pollute `HANDBOOK_ID`
-            handbook_id = st.session_state['handbook_id']
-              
-            # Pollute `FAQ_ANSWER`
-            answer = st.session_state['answer']
-              
-            # Summarising the answer
-            answer_summary_question = 'Please summarise this text in no more than seven words: \"' + answer + '\"'
-            response_answer_summary = openai.Completion.create(model = "text-curie-001", prompt = answer_summary_question, temperature = 0.3, max_tokens = 128, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
-            answer_summary = response_answer_summary['choices'][0]['text'].lstrip()
-                
             # Write question to table `FAQ`
-            query = "INSERT INTO `benbox`.`FAQ`(ID, QUESTION_ID, HANDBOOK_ID, FAQ_ID, FAQ_ANSWER, FAQ_ANSWER_SUMMARY, FAQ_ANSWER_LANGUAGE, FAQ_HITS) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', %s);" %(id, question_id, handbook_id, faq_id, answer, answer_summary, lang[:2].lower(), 0)
+            query = "INSERT INTO `benbox`.`FAQ`(ID, QUESTION_ID, HANDBOOK_ID, ANSWER_ID, FAQ_ID, FAQ_HITS) VALUES (%s, '%s', '%s', '%s', '%s', %s);" %(id, st.session_state['question_id'], st.session_state['handbook_id'], st.session_state['answer_id'], generateID(id = id), 0)
             run_query(query)
             conn.commit()
             
