@@ -48,11 +48,11 @@ with st.expander('Contact information', expanded = True):
   st.write(st.secrets['custom']['address_line1'])
   st.write(st.secrets['custom']['address_line2'])
   st.subheader('Contact')
-  st.write('**Tel 1: ' + st.secrets['custom']['contact_tel1'] + '**')
-  st.write('**Tel 2: ' + st.secrets['custom']['contact_tel2'] + '**')
-  st.write('**Tel 3: ' + st.secrets['custom']['contact_tel3'] + '**')
-  st.write('**Mail 1: ' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail1'].split('(mail:')[1][:-1] + '\">' + st.secrets['custom']['contact_mail1'].split('(mail:')[1][:-1] + '</a>**', unsafe_allow_html = True)
-  st.write('**Mail 2: ' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail2'].split('(mail:')[1][:-1] + '\">' + st.secrets['custom']['contact_mail2'].split('(mail:')[1][:-1] + '</a>**', unsafe_allow_html = True)
+  st.write('**' + st.secrets['custom']['contact_tel1'] + '**')
+  st.write('**' + st.secrets['custom']['contact_tel2'] + '**')
+  st.write('**' + st.secrets['custom']['contact_tel3'] + '**')
+  st.write('**' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail1'].split('(mail:')[1][:-1] + '\">Mail: ' + st.secrets['custom']['contact_mail1'].split('(mail:')[1][:-1] + '</a>**', unsafe_allow_html = True)
+  st.write('**' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail2'].split('(mail:')[1][:-1] + '\">Mail: ' + st.secrets['custom']['contact_mail2'].split('(mail:')[1][:-1] + '</a>**', unsafe_allow_html = True)
 
 
 ## Network iframe
