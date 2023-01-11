@@ -351,5 +351,5 @@ def landing_page(page):
 
 ### Function: landing_page_handbook = Shows the landing page (not loged in state)
 def landing_page_handbook(info):
-	## Title and information
+	## Show info box
 	st.info(body = 'Please login (sidebar on the left) ' + info, icon = "ℹ️")
