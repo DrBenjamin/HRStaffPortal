@@ -56,14 +56,15 @@ with st.expander('Contact information', expanded = True):
   st.write(st.secrets['custom']['address_line1'])
   st.write(st.secrets['custom']['address_line2'])
   st.subheader('Contact')
-  st.write('**' + st.secrets['custom']['contact_tel1'] + '**')
-  st.write('**' + st.secrets['custom']['contact_tel2'] + '**')
-  st.write('**' + st.secrets['custom']['contact_tel3'] + '**')
-  st.write('**' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail1'].split('(mail:')[1][:-1] + '\">Mail: ' + st.secrets['custom']['contact_mail1'].split('(mail:')[1][:-1] + '</a>**', unsafe_allow_html = True)
-  st.write('**' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail2'].split('(mail:')[1][:-1] + '\">Mail: ' + st.secrets['custom']['contact_mail2'].split('(mail:')[1][:-1] + '</a>**', unsafe_allow_html = True)
+  st.write('**Tel:** <a href=\"tel:' + st.secrets['custom']['contact_tel1'] + '\">' + st.secrets['custom']['contact_tel1'] + '</a>', unsafe_allow_html = True)
+  st.write('**Tel:** <a href=\"tel:' + st.secrets['custom']['contact_tel2'] + '\">' + st.secrets['custom']['contact_tel2'] + '</a>', unsafe_allow_html = True)
+  st.write('**Tel:** <a href=\"tel:' + st.secrets['custom']['contact_tel3'] + '\">' + st.secrets['custom']['contact_tel3'] + '</a>', unsafe_allow_html = True)
+  st.write('**Mail (' + st.secrets['custom']['contact_mail1_desc'] + '):** ' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail1'] + '\">' + st.secrets['custom']['contact_mail1'] + '</a>', unsafe_allow_html = True)
+  st.write('**Mail (' + st.secrets['custom']['contact_mail2_desc'] + '):** ' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail2'] + '\">' + st.secrets['custom']['contact_mail2'] + '</a>', unsafe_allow_html = True)
+  st.write('**Mail (Admin):** ' + '<a href=\"mailto:' + st.secrets['custom']['contact_admin'] + '\">' + st.secrets['custom']['contact_admin'] + '</a>', unsafe_allow_html = True)
 
 
-## Network iframe
+## Changelog iframe
 with st.expander('Changelog', expanded = True):
   ## Title
   st.subheader('Changelog')
