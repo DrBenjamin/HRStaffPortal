@@ -346,10 +346,3 @@ def landing_page(page):
   st.write("<a href='Workshops' target='_self'>Workshops</a>", unsafe_allow_html = True)
   st.write("<a href='Handbook' target='_self'>Handbook</a>", unsafe_allow_html = True)
   st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
-
-
-
-### Function: landing_page_handbook = Shows the landing page (not loged in state)
-def landing_page_handbook(info):
-	## Show info box
-	st.info(body = 'Please login (sidebar on the left) ' + info, icon = "ℹ️")
