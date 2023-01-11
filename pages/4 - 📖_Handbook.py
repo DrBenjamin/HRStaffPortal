@@ -11,15 +11,16 @@ import openai
 import geocoder
 from geopy.geocoders import Nominatim
 import sys
+from datetime import date
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
 from functions import logout
-from functions import landing_page_handbook
 from functions import load_file
 from functions import export_docx
 from functions import generateID
 from network import trans
+from network import send_mail
 
 
 
@@ -51,6 +52,8 @@ if ('answer_done' not in st.session_state):
   st.session_state['answer_done'] = False
 if ('answer' not in st.session_state):
   st.session_state['answer'] = ''
+if ('answer_score' not in st.session_state):
+  st.session_state['answer_score'] = 0.0
   
   
 ## Feedback state
@@ -228,7 +231,7 @@ with st.expander('FAQ', expanded = False):
     
     
     ## Categories
-    st.write(':orange[Categories:] ')
+    st.write('**:orange[Categories:]** ')
     for i in range(len(categories)):
       filter_cat[i] = st.checkbox(label = categories[i], value = True)
     
@@ -240,7 +243,7 @@ with st.expander('FAQ', expanded = False):
   
   
     ## Sub-categories
-    st.write(':green[Sub-categories:] ')
+    st.write('**Sub-categories:** ')
     for i in range(len(sub_categories)):
       filter_sub[i] = st.checkbox(label = sub_categories[i], value = True)
       
@@ -257,7 +260,7 @@ with st.expander('FAQ', expanded = False):
       
     
     ## Get FAQ
-    query = "SELECT que.QUESTION_TEXT, ans.ANSWER_TEXT, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID LEFT JOIN benbox.ANSWERS AS ans ON faq.ANSWER_ID = ans.ANSWER_ID;"
+    query = "SELECT que.QUESTION_TEXT, ans.ANSWER_ID, ans.ANSWER_TEXT, ans.ANSWER_SCORE, ans.ANSWER_APPROVED, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID, faq.FAQ_DATE FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID LEFT JOIN benbox.ANSWERS AS ans ON faq.ANSWER_ID = ans.ANSWER_ID;"
     faq = run_query(query)
    
     
@@ -266,14 +269,21 @@ with st.expander('FAQ', expanded = False):
     if (faq != None):
       for i in range(len(faq)):
         for x in range(len(filter_cat_ids)):
-          if faq[i][4] == filter_cat_ids[x]:
+          if faq[i][7] == filter_cat_ids[x]:
             for y in range(len(filter_sub_ids)):
-              if faq[i][5] == filter_sub_ids[y]:
-                st.write('\"' + faq[i][0].upper() + '\"')
-                st.write(':orange[Category:] ', faq[i][2])
-                st.write(':green[Sub-category:] ', faq[i][3])
-                st.write(':blue[Ben`s answer:] ', faq[i][1])
-                st.write('-------------')
+              if faq[i][8] == filter_sub_ids[y]:
+                if faq[i][4] == 1:
+                  st.write('**\"' + faq[i][0].upper() + '\"**')
+                  st.write('**:orange[Category:]** ' + faq[i][5])
+                  st.write('**Sub-category:** ' + faq[i][6])
+                  st.write('**:blue[Ben`s answer:]** ' + faq[i][2])
+                  if faq[i][3] >= 0.85:
+                    st.write('**:green[Score ' + str(format(faq[i][3], '.0%')) + ']**')
+                  elif faq[i][3] >= 0.7:
+                    st.write('**:orange[Score ' + str(format(faq[i][3], '.0%')) + ']**')
+                  else:
+                    st.write('**:red[Score ' + str(format(faq[i][3], '.0%')) + ']**')
+                  st.write('-------------')
                   
     # No data existend
     else:
@@ -499,42 +509,63 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
                 if handbook[8].capitalize() == keywords[i]:
                   counter += 5
                 databank_handbook['HANDBOOK_HITS'][handbook[0]] = counter
-                        
+                
              
             ## Sorting highest score ('HANDBOOK_HITS') descending         
             databank_handbook = databank_handbook.sort_values('HANDBOOK_HITS', ascending = False)
-            handbook = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_TEXT')
-            handbook_id = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_ID')
-            st.session_state['handbook_id'] = handbook_id
+            st.session_state['handbook_text'] = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_TEXT')
+            st.session_state['handbook_id'] = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_ID')
+            st.session_state['answer_score'] = databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_HITS')
+            
+            # From abolute figures to percentages
+            st.session_state['answer_score'] = round((st.session_state['answer_score'] / 100) * 3.333, 2)
             
             # Add handbook entries which scored with difference under 15%
             for i in range(len(databank_handbook) - 1):
               if (databank_handbook._get_value(databank_handbook.iloc[i + 1][0], 'HANDBOOK_HITS') / databank_handbook._get_value(databank_handbook.iloc[0][0], 'HANDBOOK_HITS') >= 0.85):
-                handbook = handbook + ' ' + databank_handbook._get_value(databank_handbook.iloc[i + 1][0], 'HANDBOOK_TEXT')
-            st.session_state['handbook_text'] = handbook
+                st.session_state['handbook_text'] = st.session_state['handbook_text'] + ' ' + databank_handbook._get_value(databank_handbook.iloc[i + 1][0], 'HANDBOOK_TEXT')
+                
+                # Adding 10% to score for each concatenation
+                st.session_state['answer_score'] += 0.1  
+                
+            # Limiting score to 100%
+            if st.session_state['answer_score'] > 1:
+              st.session_state['answer_score'] = 1  
             
-              
+            
             ## Debugging output
             st.write(databank_handbook)
-            st.write(handbook)
+            st.write(st.session_state['handbook_text'])
+            st.write(st.session_state['answer_score'])
             
             
             ## Doing the request to OpenAI for answering the question
-            # Answer
-            answer_question = 'The user handbook contains following information: \"' + handbook + '\". Right now you are in the city called \"' + city + '\". Please answer following user question: \"' + user_question + '\"'
+            answer_question = 'The user handbook contains following information: \"' + st.session_state['handbook_text'] + '\". Right now you are in the city called \"' + city + '\". Please answer following user question: \"' + user_question + '\"'
             response_answer = openai.Completion.create(model = "text-davinci-003", prompt = answer_question, temperature = 0.5, max_tokens = 128, top_p = 1.0, frequency_penalty = 0.0, presence_penalty = 0.0)
             answer = response_answer['choices'][0]['text'].lstrip()
-            st.session_state['answer'] = answer
-            
-          else:
-            answer = 'Unfortunately we have not found the answer to your question.' 
+        
+            # Store the answer in session state
             st.session_state['answer'] = answer
           
+          
+          ## No handbook data found  
+          else:
+            answer = 'Unfortunately we have not found the answer to your question.'
+            
+            # Store the answer in session state
+            st.session_state['answer'] = answer
+        
+        
+        ## Error
         except:
           print('An exception occurred in `OpenAI`')
           answer = 'Unfortunately we have not found the answer to your question.'
-          st.session_state['answer'] = answer
           
+          # Store the answer in session state
+          st.session_state['answer'] = answer
+        
+    
+    ## Feedback was given, show `empty form` button     
     else:
       submitted = st.form_submit_button('Press button to empty form for a new request')
       if submitted:
@@ -554,10 +585,10 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
   ## Give the answer (Outside the form)
   if (st.session_state['feedback'] == False):
     if (len(st.session_state['answer']) > 0):
-      st.write(':blue[Ben:] ', st.session_state['answer'])
+      st.write('**:blue[Ben:]** ' + st.session_state['answer'] + ' **(Score = ' + str(format(st.session_state['answer_score'], '.0%')) + ')**' )
     
       
-      ## Writing every answer to table `ANSWERS`
+      ## Write every answer to table `ANSWERS`
       if (st.session_state['answer_done'] == False):
         # Get latest ID from table
         id = lastID(url = '`benbox`.`ANSWERS`')
@@ -565,9 +596,8 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
         # Populate `ANSWER_ID`
         st.session_state['answer_id'] = generateID(id = id)
         
-        
         # Writing the answer
-        query = "INSERT INTO `benbox`.`ANSWERS`(ID, ANSWER_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_TEXT, ANSWER_HANDBOOK_TEXT) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(id, st.session_state['answer_id'], st.session_state['question_id'], st.session_state['handbook_id'], st.session_state['answer'], st.session_state['handbook_text'])
+        query = "INSERT INTO `benbox`.`ANSWERS`(ID, ANSWER_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_TEXT, ANSWER_HANDBOOK_TEXT, ANSWER_SCORE, ANSWER_APPROVED, ANSWER_DATE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, 0, '%s');" %(id, st.session_state['answer_id'], st.session_state['question_id'], st.session_state['handbook_id'], st.session_state['answer'], st.session_state['handbook_text'], st.session_state['answer_score'], date.today())
         run_query(query)
         conn.commit()
         
@@ -575,13 +605,13 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
         st.session_state['answer_done'] = True
             
             
-      ## Writing to database if it was useful
+      ## Write to database if it was useful
       if (st.session_state['answer'] != 'Unfortunately we have not found the answer to your question.'):
         # Ask if it was useful
         st.write(':orange[Was this answer useful?]')
         
         
-        ## Write to table `FAQ` if it was useful
+        ## Writing to table `FAQ` if it was useful
         if (st.session_state['feedback'] == False):
           if st.button(label = 'Yes'):
             # Set session state `feedback`
@@ -591,9 +621,12 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
             id = lastID(url = '`benbox`.`FAQ`')
               
             # Write question to table `FAQ`
-            query = "INSERT INTO `benbox`.`FAQ`(ID, QUESTION_ID, HANDBOOK_ID, ANSWER_ID, FAQ_ID, FAQ_HITS) VALUES (%s, '%s', '%s', '%s', '%s', %s);" %(id, st.session_state['question_id'], st.session_state['handbook_id'], st.session_state['answer_id'], generateID(id = id), 0)
+            query = "INSERT INTO `benbox`.`FAQ`(ID, FAQ_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_ID, FAQ_HITS, FAQ_DATE) VALUES (%s, '%s', '%s', '%s', '%s', %s, '%s');" %(id, generateID(id = id), st.session_state['question_id'], st.session_state['handbook_id'], st.session_state['answer_id'], 0, date.today())
             run_query(query)
             conn.commit()
+            
+            # Send mail to admin
+            send_mail(subject = 'Please review new FAQ item!', body = 'Hello Admin,\n\nthis is a request to review an new item from ' + str(date.today()) + ' in the FAQ database table.\n\nBest regards\n\nStreamlit' , receiver = st.secrets['custom']['contact_admin'])
             
             # Rerun
             st.experimental_rerun()
@@ -870,15 +903,116 @@ if check_password():
   
 
 
-  ### Handbook admin console    
+  ### Admin console    
   if st.session_state['admin'] ==  True:
-    with st.expander(label = 'Admin', expanded = False):
+    with st.expander(label = 'Admin console', expanded = False):
       st.header('Admin console')
-      st.write('Here you can work as an admin.')  
+      st.write('Here you can work as an admin.')
+      
+      
+      ## Radio for chosing admin functions
+      admin = st.radio("What do you want to access", ('Answer approval', 'Testing'), index = 1, horizontal = True)
+      
+
+      ## Answer approval      
+      if admin == 'Answer approval':
+        st.subheader('Approve answers from Ben')
+
+        # Select score ranges
+        values = st.slider(label = 'Select range of percentages', min_value = 0, max_value = 100, value = (0, 100))
+  
+        
+        ## Get answers from table `benbox`.`ANSWERS`
+        query = "SELECT ans.ANSWER_ID, que.QUESTION_ID, ans.HANDBOOK_ID, que.QUESTION_TEXT, ans.ANSWER_TEXT, ans.ANSWER_HANDBOOK_TEXT, ans.ANSWER_SCORE, ans.ANSWER_APPROVED, ans.ANSWER_DATE FROM `benbox`.`ANSWERS` AS ans LEFT JOIN `benbox`.`QUESTIONS` AS que ON ans.QUESTION_ID = que.QUESTION_ID;"
+        rows = run_query(query)
+        counter = 0
+        databank_ben = pd.DataFrame(columns = ['ID', 'ANSWER_ID', 'QUESTION_ID', 'HANDBOOK_ID', 'QUESTION_TEXT', 'ANSWER_TEXT', 'ANSWER_HANDBOOK_TEXT', 'ANSWER_SCORE', 'ANSWER_APPROVED', 'ANSWER_DATE'])
+        slider_bool = False
+        for row in rows:
+          if (row[6] >= values[0] / 100 and row[6] <= values[1] / 100) and row[7] == 0:
+            # Select date ranges if more then one existend
+            if slider_bool == False:
+              time = st.slider('Select range of date', min_value = date(2023, 1, 1), max_value = date.today(), value = [date(2023, 1, 1), date.today()], format = "DD/MM/YY")
+            slider_bool = True
+            
+            # Add percentage and time matching answers
+            if row[8] >= time[0] and row[8] <= time[1]:
+              counter += 1
+              df = pd.DataFrame([[counter, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'ANSWER_ID', 'QUESTION_ID', 'HANDBOOK_ID', 'QUESTION_TEXT', 'ANSWER_TEXT', 'ANSWER_HANDBOOK_TEXT', 'ANSWER_SCORE', 'ANSWER_APPROVED', 'ANSWER_DATE'])
+              databank_ben = pd.concat([databank_ben, df])
+        databank_ben = databank_ben.set_index('ID')
+    
+        # Sort by score
+        databank_ben = databank_ben.sort_values('ANSWER_SCORE', ascending = True)
+        
+        # Show each item
+        options = []
+        for i in range(counter):
+          options.append(i + 1)
+        if len(options) > 0:
+          if len(options) > 1:
+            item = st.select_slider(label = 'Select an item from **' + str(counter) + '** options', options = options)
+          else:
+            item = 0
+          st.write('**Question:** ' + databank_ben.iloc[item - 1][3])
+          st.write('**Answer:** ' + databank_ben.iloc[item - 1][4])
+          st.write('**Handbook:** ' + databank_ben.iloc[item - 1][5])
+          st.write('**Score:** ' + str(format(databank_ben.iloc[item - 1][6], '.0%')))
+          st.write('**Date:** ' + str(databank_ben.iloc[item - 1][8]))
+          faq_bool = False
+          for i in range(len(faq)):
+            if (databank_ben.iloc[item - 1][0] == faq[i][1]):
+              faq_bool = True
+              faq_date = faq[i][9]
+              
+          # Already approved as useful by user (in FAQ)
+          if faq_bool == True:
+            st.write('**:green[In FAQ existend]** (' + str(faq_date) + ')')
+            
+            # Option to approve
+            if databank_ben.iloc[item - 1][7] == 0:
+              if st.button(label = 'Approve answer?'):
+                query = "UPDATE `benbox`.`ANSWERS` SET ANSWER_APPROVED = 1 WHERE ANSWER_ID = '%s';" %(databank_ben.iloc[item - 1][0])
+                rows = run_query(query)
+                conn.commit()
+                st.experimental_rerun()
+                
+          # Not approved by user (not in FAQ)
+          else:
+            st.write('**:red[Not in FAQ existend]**')
+            
+            # Option to approve
+            if databank_ben.iloc[item - 1][7] == 0:
+              if st.button(label = 'Approve answer?'):
+                query = "UPDATE `benbox`.`ANSWERS` SET ANSWER_APPROVED = 1 WHERE ANSWER_ID = '%s';" %(databank_ben.iloc[item - 1][0])
+                rows = run_query(query)
+                conn.commit()
+  
+                # Get latest ID from table
+                id = lastID(url = '`benbox`.`FAQ`')
+                
+                # Write question to table `FAQ`
+                query = "INSERT INTO `benbox`.`FAQ`(ID, FAQ_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_ID, FAQ_HITS, FAQ_DATE) VALUES (%s, '%s', '%s', '%s', '%s', %s, '%s');" %(id, generateID(id = id), databank_ben.iloc[item - 1][1], databank_ben.iloc[item - 1][2], databank_ben.iloc[item - 1][0], 0, date.today())
+                run_query(query)
+                conn.commit()
+                st.experimental_rerun()
+      
+      
+      ## Tesing
+      elif admin == 'Testing':
+        st.write('You did select Testing')
   
   
+  ## Not admin user
+  else:      
+    # Show info box
+  	st.info(body = 'Please login as admin (sidebar on the left) to access the \"Admin console\"', icon = "ℹ️")
+
+  
+            
   
   
 #### Not Logged in state (Landing page)
 else :
-  landing_page_handbook(info = 'to enter handbook data (strutures and paragragphs).')
+	## Show info box
+	st.info(body = 'Please login (sidebar on the left) to enter handbook data (strutures and paragragphs).', icon = "ℹ️")
