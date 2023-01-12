@@ -45,6 +45,8 @@ st.set_page_config(
 ## Session state
 if ('admin' not in st.session_state):
   st.session_state['admin'] = False
+if ('header' not in st.session_state):
+  st.session_state['header'] = True
   
   
 ## Answer states
@@ -184,7 +186,7 @@ lang = st.sidebar.selectbox('In which language should Ben answer?', ('BG', 'CS',
 #### Main Program
 ### Logged in state (Handbook)
 ## Header
-header(title = 'Handbook page', data_desc = 'handbooks') 
+header(title = 'Handbook page', data_desc = 'handbooks', expanded = st.session_state['header']) 
 
 
 

@@ -70,6 +70,8 @@ if ('admin' not in st.session_state):
   st.session_state['admin'] = False
 if ('logout' not in st.session_state):
   st.session_state['logout'] = False
+if ('header' not in st.session_state):
+  st.session_state['header'] = True
 
 
 
@@ -175,7 +177,7 @@ def pictureUploaderVehicles(image, index):
 ### Logged in state (Car Fleet Management System)
 if check_password():
   ## Header
-  header(title = 'Car Fleet Management System', data_desc = 'workshops data') 
+  header(title = 'Car Fleet Management System', data_desc = 'workshops data', expanded = st.session_state['header']) 
   
     
   ## Use local databank carfleet

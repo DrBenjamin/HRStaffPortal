@@ -49,7 +49,22 @@ def check_password():
 	## Sidebar
 	# Sidebar Header Image
 	st.sidebar.image('images/MoH.png')
-
+	
+	# Header switch
+	if st.session_state['header'] == True:
+	  index = 0
+	elif st.session_state['header'] == False:
+	  index = 1
+	else:
+	  index = 0
+	header = st.sidebar.radio(label = 'Switch headers on or off', options = ('on', 'off'), index = index, horizontal = True)
+	if header == 'on':
+	  st.session_state['header'] = True
+	elif header == 'off':
+	  st.session_state['header'] = False
+	else:
+	  st.session_state['header'] = True
+	  
 	# First run, show inputs for username + password
 	if "password_correct" not in st.session_state:
 		st.sidebar.subheader('Please enter username and password')

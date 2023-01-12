@@ -18,7 +18,7 @@ st.set_page_config(
   page_title = "KCH HR Staff Portal",
   page_icon = "images/thumbnail.png",
   layout = "centered",
-  initial_sidebar_state = "collapsed",
+  initial_sidebar_state = "expanded",
   menu_items = { 
          'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
          'Report a bug': "http://www.health.gov.mw/index.php/contact-moh/head-office",
@@ -33,6 +33,8 @@ st.set_page_config(
 ## Session state
 if ('admin' not in st.session_state):
   st.session_state['admin'] = False
+if ('header' not in st.session_state):
+  st.session_state['header'] = True
   
   
   
@@ -47,11 +49,11 @@ st.sidebar.image('images/MoH.png')
 #### Main program
 ### Logged out state (About)
 ## Header
-header(title = 'About page', data_desc = 'contact information') 
+header(title = 'About page', data_desc = 'contact information', expanded = st.session_state['header']) 
  
 
 ## Contact information
-with st.expander('Contact information', expanded = True):
+with st.expander(label = 'Contact information', expanded = True):
   st.subheader('Address')
   st.write(st.secrets['custom']['address_line1'])
   st.write(st.secrets['custom']['address_line2'])

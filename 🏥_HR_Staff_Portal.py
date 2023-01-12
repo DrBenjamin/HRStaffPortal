@@ -70,6 +70,8 @@ if ('run' not in st.session_state):
   st.session_state['run'] = True
 if ('admin' not in st.session_state):
   st.session_state['admin'] = False
+if ('header' not in st.session_state):
+  st.session_state['header'] = True
  
   
 ## Database transmission success state1
@@ -172,7 +174,7 @@ def onChange():
 ### Logged in state (HR Staff Portal)
 if check_password():
   ## Header
-  header(title = 'HR Staff Portal', data_desc = 'employee data')
+  header(title = 'HR Staff Portal', data_desc = 'employee data', expanded = st.session_state['header'])
 
 
   ## Get data from the databank(s)

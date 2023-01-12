@@ -16,28 +16,34 @@ from Code_Snippets import diffuser
 
 
 
-#### Initialization of session states
-## Session states
-if ('admin' not in st.session_state):
-  st.session_state['admin'] = False
-if ('prompt' not in st.session_state):
-  st.session_state['prompt'] = ''
-  
-
-
-
 #### Streamlit initial setup
 st.set_page_config(
   page_title = "KCH HR Staff Portal",
   page_icon = "images/thumbnail.png",
   layout = "centered",
-  initial_sidebar_state = "collapsed",
+  initial_sidebar_state = "expanded",
   menu_items = { 
          'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
          'Report a bug': "http://www.health.gov.mw/index.php/contact-moh/head-office",
          'About': "This is the KCH HR Staff Portal. Version 0.1.1-b1"
         }
 )
+
+
+
+
+#### Initialization of session states
+## Session states
+if ('admin' not in st.session_state):
+  st.session_state['admin'] = False
+if ('prompt' not in st.session_state):
+  st.session_state['prompt'] = ''
+if ('header' not in st.session_state):
+  st.session_state['header'] = True
+  
+
+
+
 
 
 
@@ -52,9 +58,11 @@ st.sidebar.image('images/MoH.png')
 #### Main program
 ### Logged out state (Statistics)
 ## Header
-header(title = 'Statistics page', data_desc = 'employee statistic data')
+header(title = 'Statistics page', data_desc = 'employee statistic data', expanded = st.session_state['header'])
 
-  
+
+
+### Statistics expander  
 with st.expander(label = 'Statistics', expanded = True):  
   ## Download links
   # Data comes from Helmholtz-Zentrum Potsdam

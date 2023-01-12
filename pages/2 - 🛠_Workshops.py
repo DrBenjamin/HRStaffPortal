@@ -47,6 +47,8 @@ html_query = st.experimental_get_query_params()
 ## Session states
 if ('admin' not in st.session_state):
   st.session_state['admin'] = False
+if ('header' not in st.session_state):
+  st.session_state['header'] = True
   
 
   
@@ -105,7 +107,7 @@ st.sidebar.image('images/MoH.png')
 #### Main Program
 ### Logged out state (Workshops page)
 ## Header
-header(title = 'Workshops page', data_desc = 'workshops data')
+header(title = 'Workshops page', data_desc = 'workshops data', expanded = st.session_state['header'])
   
 
 ## Open databank connection
