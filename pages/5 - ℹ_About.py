@@ -8,6 +8,8 @@ import streamlit.components.v1 as stc
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
+from functions import check_password
+from functions import logout
 from network import get_ip
 
 
@@ -36,23 +38,21 @@ if ('admin' not in st.session_state):
 if ('header' not in st.session_state):
   st.session_state['header'] = True
   
-  
-  
 
-#### Sidebar
-## Sidebar Header Image
-st.sidebar.image('images/MoH.png')
+
+
+#### Functions
 
 
 
 
 #### Main program
-### Logged out state (About)
-## Header
+### Header
 header(title = 'About page', data_desc = 'contact information', expanded = st.session_state['header']) 
- 
 
-## Contact information
+
+
+### Contact information
 with st.expander(label = 'Contact information', expanded = True):
   st.subheader('Address')
   st.write(st.secrets['custom']['address_line1'])
@@ -66,15 +66,28 @@ with st.expander(label = 'Contact information', expanded = True):
   st.write('**Mail (Admin):** ' + '<a href=\"mailto:' + st.secrets['custom']['contact_admin'] + '\">' + st.secrets['custom']['contact_admin'] + '</a>', unsafe_allow_html = True)
 
 
+
+### Changelog
 ## Changelog iframe
 with st.expander('Changelog', expanded = True):
-  ## Title
   st.subheader('Changelog')
-  
-  
+    
+    
   ## Remote site
   stc.html("""<iframe src="https://techhub.social/@DrBenjamin/109397699095825866/embed" class = "mastodon-embed" style = "max-width: 100%; border: 0" width = "600"></iframe><script src="https://techhub.social/embed.js" async = "async"></script>""", height = 520,)
-  
-  
+    
+    
   ## Local site
   #stc.iframe(src = 'http://' + get_ip() + '/index.html', height = 500, scrolling = True)
+    
+    
+    
+### Logged in state (About)
+if check_password():
+  print('Logged in')
+  
+
+
+### Logged out state (About)
+else:
+  print('Logged out')

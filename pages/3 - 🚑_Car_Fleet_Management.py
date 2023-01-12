@@ -940,7 +940,6 @@ if check_password():
 
 
 
-
-#### Not Logged in state (Landing page)
+### Not Logged in state (Landing page)
 else :
   landing_page('Car Fleet Management System.')
