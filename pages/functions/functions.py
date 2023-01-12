@@ -357,7 +357,5 @@ def landing_page(page):
   ## Sub-pages menu
   st.subheader('Pages without login')
   st.write('You can access these pages without being logged in:')
-  st.write("<a href='Statistics' target='_self'>Statistics</a>", unsafe_allow_html = True)
-  st.write("<a href='Workshops' target='_self'>Workshops</a>", unsafe_allow_html = True)
   st.write("<a href='Handbook' target='_self'>Handbook</a>", unsafe_allow_html = True)
   st.write("<a href='About' target='_self'>About</a>", unsafe_allow_html = True)
