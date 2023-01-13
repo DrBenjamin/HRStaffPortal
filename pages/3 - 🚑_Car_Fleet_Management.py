@@ -607,7 +607,7 @@ if check_password():
       export_excel('Fuel', 'I', [{'header': 'VEHICLE_ID'}, {'header': 'DRIVER_ID'}, {'header': 'FUEL_AMOUNT'}, {'header': 'FUEL_COST'}, {'header': 'FUEL_TYPE'}, {'header': 'FUEL_DATE'}, {'header': 'FUEL_DISTANCE'}, {'header': 'FUEL_SHORTAGE'}, {'header': 'COST_CENTRE'},], int(len(databank_fuel) + 1), databank_fuel)
   
     
-    ## Show fuel consumtion statistics in an expander
+    ## Show fuel consumption statistics in an expander
     with st.expander('Fuel consumption statistics', expanded = False):
       ## Average Fuel Consumption Chart
       # Checking for unique Vehicles IDs
