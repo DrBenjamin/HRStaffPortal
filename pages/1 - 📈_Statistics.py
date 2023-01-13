@@ -41,8 +41,6 @@ st.set_page_config(
 ## Session states
 if ('admin' not in st.session_state):
   st.session_state['admin'] = False
-if ('prompt' not in st.session_state):
-  st.session_state['prompt'] = ''
 if ('header' not in st.session_state):
   st.session_state['header'] = True
   
