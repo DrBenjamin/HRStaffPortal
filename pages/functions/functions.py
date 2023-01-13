@@ -4,6 +4,7 @@
 ##### Please reach out to benjamin.gross@giz.de for any questions
 #### Loading needed Python libraries
 import streamlit as st
+import platform
 import pandas as pd
 import io
 import os
@@ -340,7 +341,7 @@ def header(title, data_desc, expanded = True):
     st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
     st.subheader(st.secrets['custom']['facility_abbreviation'] + ' ' + data_desc)
     st.write('All data is stored in a local MySQL databank on a dedicated Server hosted at ' + st.secrets['custom']['facility_abbreviation'] + '.')
-    st.write('The ' + title + ' is developed with Python (v' + str(sys.version_info.major) + '.' + str(sys.version_info.minor) + ') and the web app framework Streamlit.')
+    st.write('The ' + title + ' is developed with Python (v' + platform.python_version() + ') and the Streamlit framework (v' + st.__version__ + ').')
 
 
 
