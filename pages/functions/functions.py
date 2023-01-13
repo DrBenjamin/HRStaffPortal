@@ -9,6 +9,8 @@ import pandas as pd
 import io
 import os
 import sys
+from loguru import logger
+from pathlib import Path
 import xlsxwriter
 from docx import Document
 from docx.shared import Inches
@@ -166,6 +168,14 @@ def export_excel(sheet, column, columns, length, data,
  
 
 
+### Function logger = Logging debug messages to file
+def logger():
+  logname = "files/file_1.log"
+  logger.add(logname)
+  logger.debug("This is a debug message")
+  
+  
+  
 ### Function: export_docx = Pandas dataframe to MS Word file (docx)
 def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 	document = Document()
