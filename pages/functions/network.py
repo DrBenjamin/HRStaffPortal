@@ -82,20 +82,6 @@ def send_mail(subject, body, receiver, attachment = None):
   except:
     print("An exception occurred in function `send_mail`")
     st.error(body = 'Mail connection timeout!', icon = "🚨")
-    
-    
-
-### Function: get_streamlit_server = Get the active streamlit server object
-def get_streamlit_server() -> T.Optional[Server]:
-    # In the run() method in `streamlit/web/bootstrap.py`, a signal handler is registered with the server as a closure. Fetch that signal handler.
-    streamlit_signal_handler = signal.getsignal(signal.SIGQUIT)
-
-    # Iterate through the closure variables and return the server if found.
-    for cell in streamlit_signal_handler.__closure__:
-        if isinstance(cell.cell_contents, Server):
-            return cell.cell_contents
-
-    return None
   
   
 
