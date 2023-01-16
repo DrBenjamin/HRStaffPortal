@@ -67,6 +67,17 @@ Now create the file `.streamlit/secrets.toml` where you define some customizatio
 [custom]
 facility = "XXXXXXXX"
 facility_abbreviation = "XXX"
+header_image = "images/XYZ.png"
+address_line1 = "XXXXXXXXXX,"
+address_line2 = "XXXXX, XXXXX"
+contact_tel1 = "+xxx x xxx xxx"
+contact_tel2 = "+xxx x xxx xxx"
+contact_tel3 = "+xxx x xxx xxx"
+contact_mail1 = "xyz1@mail.com"
+contact_mail1_desc = "XXX"
+contact_mail2 = "xyz2@mail.com"
+contact_mail2_desc = "XXX"
+contact_admin = "xyz@mail.com"
 
 ### User management
 [passwords]
@@ -78,7 +89,7 @@ user = "xxxxxxxx"
 
 ##### For proper usage a local MySQL server is needed
 
-In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / ChatBot):
+In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / Handbook & Chat-Bot):
 
 ```python
 ### MySQL configuration for HR Staff Portal
@@ -101,13 +112,13 @@ password = "xyz"
 [mysql_benbox]
 host = "127.0.0.1"
 port = 3306
-database = "benbox
+database = "benbox"
 user = "xyz"
 password = "xyz"
 
 ### Mail configuration
 [mail]
-user = "mail@mail.org"
+user = "xyz@mail.com"
 password = "xxxxxxxx
 smtp_server = "smtp.server.com"
 smtp_server_port = 587
