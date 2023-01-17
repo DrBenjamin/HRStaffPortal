@@ -156,7 +156,7 @@ def pictureUploaderDrivers(image, index):
   
 
 
-### Function: pictureUploaderVehicles = uploads vehicle images
+### Function: pictureUploaderVehicles = Uploads vehicle images
 def pictureUploaderVehicles(image, index):
   # Initialize connection
   connection = mysql.connector.connect(**st.secrets["mysql_car"])
@@ -169,7 +169,6 @@ def pictureUploaderVehicles(image, index):
   insert_blob_tuple = (image, index)
   result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
   connection.commit()
-
 
 
 
@@ -566,39 +565,56 @@ if check_password():
     if st.button('Export Drivers data to Excel document'):
       export_excel('Drivers', 'K', [{'header': 'EMPLOYEE_NO'}, {'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_LICENSE_EXPIRY_DATE'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel)
   
-  
     ## Show driver profiles in an expander
     with st.expander('Driver profiles', expanded = False):
       st.subheader('Driver profiles')
-      col1, col2, col3 = st.columns(3)
+      
+      ## Export Driver to Excel Makro file
+      # Checking for Driver IDs and create a selectbox with it
+      drivers = databank_drivers['DRIVER_ID']
+      
+      # Prepare Selectbox list
+      drivers_list = list(drivers)
+      
+      # Selectbox for choosing vehicle
+      drivers_option = st.selectbox('Export one Driver?', options = range(len(drivers_list)), format_func = lambda x: drivers_list[x], index = 0)
+      
+      
+      col1, col2, col3 = st.columns(spec = 3, gap = "large")
       drivers = lastID(url = '`carfleet`.`DRIVERS`')  
-    
+      
       # Column 1
       with col1:
         for i in range(1, drivers, 3):
-          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
-          st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
-          st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
-          st.subheader("Driver ID")
-          st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
-  
+          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
+          if drivers_option + 1 == i:
+            st.markdown('<p style="background-color:Azure">' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+          else:
+            st.markdown('<p>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+    
       # Coloumn 2
       with col2:
         for i in range(2, drivers, 3):
-          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
-          st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
-          st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
-          st.subheader("Driver ID")
-          st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
-  
+          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
+          if drivers_option + 1 == i:
+            st.markdown('<p style="background-color:Azure">' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+          else:
+            st.markdown('<p>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+    
       # Column 3
       with col3:
         for i in range(3, drivers, 3):
-          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'))
-          st.write(databank_drivers._get_value(i, 'DRIVER_FORENAME'))
-          st.write(databank_drivers._get_value(i, 'DRIVER_SURNAME'))
-          st.subheader("Driver ID")
-          st.write(databank_drivers._get_value(i, 'DRIVER_ID'))
+          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
+          if drivers_option + 1 == i:
+            st.markdown('<p style="background-color:Azure">' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+          else:
+            st.markdown('<p>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+
+        
+      ## Export driver profile
+      if st.button('Export Driver data to Excel document'):
+        export_excel('Drivers', 'A', [{'header': 'DRIVER'},], int(len(databank_drivers_excel.iloc[drivers_option]) + 1), databank_drivers_excel.iloc[drivers_option], image = databank_drivers._get_value(drivers_option + 1, 'DRIVER_IMAGE'), image_pos = 'C1')
+    
     
   ## Data analysis for `Fuel`
   elif (f"{chosen_id}" == '2'):

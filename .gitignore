@@ -7,6 +7,7 @@
 *.docx
 blob*
 temp.png
+style.css
 *.Rproj
 HRStaffPortal.Rproj
 .Rhistory

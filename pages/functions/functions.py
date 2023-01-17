@@ -96,7 +96,15 @@ def check_password():
 		return True
  
  
-			
+
+### Function logger = Logging debug messages to file
+def logger():
+  logname = "files/file_1.log"
+  logger.add(logname)
+  logger.debug("This is a debug message")
+  
+  
+  
 ### Funtion: logout = Logout button
 def logout():
 	# Set `logout` to get logout-message
@@ -139,13 +147,16 @@ def export_excel(sheet, column, columns, length, data,
 			if (func_arr[i][0] != 'N0thing'):
 				# Add dataframe data to worksheet
 				func_arr[i][4].to_excel(writer, sheet_name = func_arr[i][0], index = False)
-
-				# Add a table to the worksheet
+				
+				# Define worksheet
 				worksheet = writer.sheets[func_arr[i][0]]
-				span = "A1:%s%s" %(func_arr[i][1], func_arr[i][3])
-				worksheet.add_table(span, {'columns': func_arr[i][2]})
-				range_table = "A:" + func_arr[i][1]
-				worksheet.set_column(range_table, 30)
+        
+				# Add a table to the worksheet
+				if func_arr[i][1] != 'A':
+				  span = "A1:%s%s" %(func_arr[i][1], func_arr[i][3])
+				  worksheet.add_table(span, {'columns': func_arr[i][2]})
+				  range_table = "A:" + func_arr[i][1]
+				  worksheet.set_column(range_table, 30)
 				
 				# Add image to worksheet
 				if (image != 'NoImage'):
@@ -175,14 +186,6 @@ def export_excel(sheet, column, columns, length, data,
 		
 		## Download Button
 		st.download_button(label = 'Download Excel document', data = buffer, file_name = excel_file_name, mime = "application/vnd.ms-excel.sheet.macroEnabled.12")
- 
-
-
-### Function logger = Logging debug messages to file
-def logger():
-  logname = "files/file_1.log"
-  logger.add(logname)
-  logger.debug("This is a debug message")
   
   
   
