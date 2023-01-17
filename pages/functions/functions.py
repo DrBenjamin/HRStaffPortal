@@ -7,6 +7,9 @@ import streamlit as st
 import platform
 import pandas as pd
 import io
+from io import BytesIO
+from PIL import Image
+from PIL.PngImagePlugin import PngInfo
 import os
 import sys
 from loguru import logger
@@ -147,12 +150,17 @@ def export_excel(sheet, column, columns, length, data,
 				# Add image to worksheet
 				if (image != 'NoImage'):
 					# Saving image as png to a buffer
-					byteIO = io.BytesIO()
-					image.save(byteIO, format = 'PNG')
+					#byteIO = io.BytesIO()
+					#image.save(byteIO, format = 'PNG')
+					#pic = byteIO.getvalue()
+					
+					# Saving image as png temp file
+					f = open('files/temp.png', 'wb')
+					f.write(image)
+					f.close()
 					
 					# Insert in worksheet
-					pic = byteIO.getvalue()
-					worksheet.insert_image(image_pos, pic)
+					worksheet.insert_image(image_pos, 'files/temp.png')
 			
 			
 		## Add Excel VBA code
@@ -353,7 +361,7 @@ def header(title, data_desc, expanded = True):
     st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
     st.subheader(st.secrets['custom']['facility_abbreviation'] + ' ' + data_desc)
     st.write('All data is stored in a local MySQL databank on a dedicated Server hosted at ' + st.secrets['custom']['facility_abbreviation'] + '.')
-    st.write('The ' + title + ' is developed with Python (v' + platform.python_version() + ') and the Streamlit framework (v' + st.__version__ + ').')
+    st.write('The ' + title + ' is developed with Python (v' + platform.python_version() + ') and Streamlit (v' + st.__version__ + ').')
 
 
 

@@ -724,12 +724,10 @@ if check_password():
       
       
       ## Prepare Image
-      report_image = pd.DataFrame(columns = ['Vehicle ID', 'Image'])
-      query = "SELECT VEHICLE_ID, VEHICLE_IMAGE FROM carfleet.VEHICLES WHERE VEHICLE_ID = '%s';" %(vehicle)
+      query = "SELECT VEHICLE_IMAGE FROM carfleet.VEHICLES WHERE VEHICLE_ID = '%s';" %(vehicle)
       rows = run_query(query)
       for row in rows:
-        df = pd.DataFrame([[row[0], row[1]]], columns = ['Vehicle ID', 'Image'])
-        report_image = pd.concat([report_image, df])
+        report_image = row[0]
         break
       
       
@@ -739,7 +737,7 @@ if check_password():
         export_excel('Avg. Fuel Consumption', 'B', [{'header': 'Date'}, {'header': 'Average Fuel Consumption'},], int(len(report_fuel_consumption_average) + 1), report_fuel_consumption_average, 
                     'Fuel Cost per Litre', 'B', [{'header': 'Date'}, {'header': 'Fuel Cost'},], int(len(report_fuel_price_litre) + 1), report_fuel_price_litre,
                     'Fuel max. Capacity', 'C', [{'header': 'Date'}, {'header': 'Fuel Amount'}, {'header': 'Fuel max. Capacity'},], int(len(report_fuel_max_cap) + 1), report_fuel_max_cap,
-                    image = report_image._get_value(0, 'Image'), image_pos = 'E1', excel_file_name = excel_file_name)
+                    image = report_image, image_pos = 'E1', excel_file_name = excel_file_name)
   
     
   ## Data analysis for `Insurances`
@@ -927,7 +925,7 @@ if check_password():
     st.dataframe(databank_vehicles_excel, use_container_width = True)
     
     
-    ## Export tables to Excel workbook
+    ## Export all tables to Excel workbook
     if st.button('Database Exel Export (all tables)'):
       # Do the exporting
       export_excel('Drivers', 'K', [{'header': 'EMPLOYEE_NO'}, {'header': 'DRIVER_ID'}, {'header': 'DRIVER_FORENAME'}, {'header': 'DRIVER_SURNAME'}, {'header': 'DRIVER_NATIONAL_ID'}, {'header': 'DRIVER_MOBILE_NO'}, {'header': 'DRIVER_LICENSE_NO'}, {'header': 'DRIVER_LICENSE_CLASS'}, {'header': 'DRIVER_LICENSE_EXPIRY_DATE'}, {'header': 'DRIVER_PSV_BADGE'}, {'header': 'DRIVER_NOTES'},], int(len(databank_drivers_excel) + 1), databank_drivers_excel,
