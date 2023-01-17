@@ -144,18 +144,20 @@ def export_excel(sheet, column, columns, length, data,
 				range_table = "A:" + func_arr[i][1]
 				worksheet.set_column(range_table, 30)
 				
-				# Add Image to worksheet
+				# Add image to worksheet
 				if (image != 'NoImage'):
 					# Saving image as png to a buffer
 					byteIO = io.BytesIO()
 					image.save(byteIO, format = 'PNG')
+					
+					# Insert in worksheet
 					pic = byteIO.getvalue()
 					worksheet.insert_image(image_pos, pic)
 			
 			
 		## Add Excel VBA code
 		workbook = writer.book
-		workbook.add_vba_project('vbaProject.bin')
+		workbook.add_vba_project('files/vbaProject.bin')
 		
 
 		## Saving changes
