@@ -5,6 +5,7 @@
 #### Loading needed Python libraries
 import streamlit as st
 import extra_streamlit_components as stx
+import streamlit_scrollable_textbox as sty
 import platform
 import pandas as pd
 import mysql.connector
@@ -580,7 +581,7 @@ if check_password():
       drivers_option = st.selectbox('Export one Driver?', options = range(len(drivers_list)), format_func = lambda x: drivers_list[x], index = 0)
       
       
-      col1, col2, col3 = st.columns(spec = 3, gap = "large")
+      col1, col2, col3 = st.columns(spec = 3, gap = "small")
       drivers = lastID(url = '`carfleet`.`DRIVERS`')  
       
       # Column 1
@@ -588,29 +589,32 @@ if check_password():
         for i in range(1, drivers, 3):
           st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
           if drivers_option + 1 == i:
-            st.markdown('<p style="background-color:Azure">' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+            st.markdown('<p style="background-color:Azure"><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
           else:
-            st.markdown('<p>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+            st.markdown('<p><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
     
       # Coloumn 2
       with col2:
         for i in range(2, drivers, 3):
           st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
           if drivers_option + 1 == i:
-            st.markdown('<p style="background-color:Azure">' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+            st.markdown('<p style="background-color:Azure"><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
           else:
-            st.markdown('<p>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+            st.markdown('<p><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
     
       # Column 3
       with col3:
         for i in range(3, drivers, 3):
           st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
           if drivers_option + 1 == i:
-            st.markdown('<p style="background-color:Azure">' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+            st.markdown('<p style="background-color:Azure"><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
           else:
-            st.markdown('<p>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+            st.markdown('<p><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
 
-        
+
+      ## Show driver data for copy & paste
+      sty.scrollableTextbox('Name: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_SURNAME') + '; Driver ID: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_ID') + '; Mobile number: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_MOBILE_NO') + '; License number: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_NO') + '; License class: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_CLASS') + '; Expiry date: ' + str(databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_EXPIRY_DATE')) + '; PSV Badge: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_PSV_BADGE') + '; Driver notes: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_NOTES'), height = 56, border = True)
+      
       ## Export driver profile
       if st.button('Export Driver data to Excel document'):
         export_excel('Drivers', 'A', [{'header': 'DRIVER'},], int(len(databank_drivers_excel.iloc[drivers_option]) + 1), databank_drivers_excel.iloc[drivers_option], image = databank_drivers._get_value(drivers_option + 1, 'DRIVER_IMAGE'), image_pos = 'C1')
