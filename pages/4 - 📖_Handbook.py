@@ -5,6 +5,7 @@
 #### Loading needed Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
+import streamlit_scrollable_textbox as sty
 import pandas as pd
 import mysql.connector
 import openai
@@ -576,7 +577,8 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
   ## Give the answer (Outside the form)
   if (st.session_state['feedback'] == False):
     if (len(st.session_state['answer']) > 0):
-      st.write('**:blue[Ben:]** ' + st.session_state['answer'] + ' **(Score = ' + str(format(st.session_state['answer_score'], '.0%')) + ')**' )
+      st.write('**:blue[Ben]**')
+      sty.scrollableTextbox(st.session_state['answer'] + ' (Score ' + str(format(st.session_state['answer_score'], '.0%')) + ')', height = 80, border = True)
       
         
       ## Write every answer to table `ANSWERS`
