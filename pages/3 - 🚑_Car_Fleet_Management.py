@@ -581,8 +581,15 @@ if check_password():
         images.append(image_filename)
         save_img(data = databank_drivers._get_value(i + 1, 'DRIVER_IMAGE'), filename = image_filename)
         drivers_desc.append(databank_drivers._get_value(i + 1, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i + 1, 'DRIVER_SURNAME'))
+      
+      # Show selectable images
       drivers_option = image_select(label = 'Which Driver to choose?', images = images, captions = drivers_desc, index = 0, return_value = 'index')
-    
+      
+      # Delete temp images
+      for i in range(len(databank_drivers)):
+      	if os.path.exists('images/temp' + str(i) + '.png'):
+		      os.remove('images/temp' + str(i) + '.png')
+		      
 
       ## Show driver data in a scrollable textbox for copy & paste
       sty.scrollableTextbox('Name: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_SURNAME') + '; Driver ID: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_ID') + '; Mobile number: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_MOBILE_NO') + '; License number: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_NO') + '; License class: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_CLASS') + '; Expiry date: ' + str(databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_EXPIRY_DATE')) + '; PSV Badge: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_PSV_BADGE') + '; Driver notes: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_NOTES'), height = 56, border = True)

@@ -261,20 +261,16 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 		  if (data.iloc[i]['HANDBOOK_PARAGRAPH_TEXT'] != None):
 			  paragraph.add_run(data.iloc[i]['HANDBOOK_PARAGRAPH_TEXT'] + '\n\n').italic = True
 		paragraph.add_run(data.iloc[i]['HANDBOOK_TEXT'])
-		#paragraph.add_run('Category & Sub-Category: ').bold = True
-		#paragraph.add_run(data.iloc[i]['CATEGORY'] + ' / ' + data.iloc[i]['CATEGORY_SUB'] + '\n')
-		#paragraph.add_run('Keywords: ').bold = True
-		#paragraph.add_run(data.iloc[i]['HANDBOOK_KEYWORD1'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD2'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD3'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD4'].capitalize() + ', ' + data.iloc[i]['HANDBOOK_KEYWORD5'].capitalize())
 		paragraf = data.iloc[i]['HANDBOOK_PARAGRAPH']
     
 		# Adding image
 		if (data.iloc[i]['HANDBOOK_IMAGE_TEXT'] != 'Placeholder image.'):
-			save_file(data = data.iloc[i]['HANDBOOK_IMAGE'], filename = 'temp.png')
+			save_img(data = data.iloc[i]['HANDBOOK_IMAGE'], filename = 'images/temp.png')
 			paragraph = document.add_paragraph()
 			paragraph_format = paragraph.paragraph_format
 			paragraph_format.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 			run = paragraph.add_run()
-			run.add_picture('temp.png')
+			run.add_picture('images/temp.png')
 			paragraph.add_run('\n' + data.iloc[i]['HANDBOOK_IMAGE_TEXT']).italic = True
 			
 
@@ -300,8 +296,8 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 	## Create a Word file using python-docx as engine
 	buffer = io.BytesIO()
 	document.save(buffer)
-	if os.path.exists("temp.png"):
-		os.remove("temp.png")
+	if os.path.exists("images/temp.png"):
+		os.remove("images/temp.png")
 
 
 	## Download Button
