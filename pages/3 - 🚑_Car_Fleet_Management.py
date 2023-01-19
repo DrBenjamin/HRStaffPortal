@@ -12,6 +12,7 @@ import mysql.connector
 import os
 import io
 from datetime import datetime
+from streamlit_image_select import image_select
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
@@ -20,6 +21,7 @@ from functions import logout
 from functions import export_excel
 from functions import load_file
 from functions import landing_page
+from functions import save_img
 
 
 
@@ -570,52 +572,23 @@ if check_password():
     with st.expander('Driver profiles', expanded = False):
       st.subheader('Driver profiles')
       
-      ## Export Driver to Excel Makro file
-      # Checking for Driver IDs and create a selectbox with it
-      drivers = databank_drivers['DRIVER_ID']
-      
-      # Prepare Selectbox list
-      drivers_list = list(drivers)
-      
-      # Selectbox for choosing vehicle
-      drivers_option = st.selectbox('Export one Driver?', options = range(len(drivers_list)), format_func = lambda x: drivers_list[x], index = 0)
-      
-      
-      col1, col2, col3 = st.columns(spec = 3, gap = "small")
-      drivers = lastID(url = '`carfleet`.`DRIVERS`')  
-      
-      # Column 1
-      with col1:
-        for i in range(1, drivers, 3):
-          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
-          if drivers_option + 1 == i:
-            st.markdown('<p style="background-color:Azure"><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
-          else:
-            st.markdown('<p><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
+  
+      ## Image select with drivers
+      images = []
+      drivers_desc = []
+      for i in range(len(databank_drivers)):
+        image_filename = 'images/temp' + str(i) + '.png'
+        images.append(image_filename)
+        save_img(data = databank_drivers._get_value(i + 1, 'DRIVER_IMAGE'), filename = image_filename)
+        drivers_desc.append(databank_drivers._get_value(i + 1, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i + 1, 'DRIVER_SURNAME'))
+      drivers_option = image_select(label = 'Which Driver to choose?', images = images, captions = drivers_desc, index = 0, return_value = 'index')
     
-      # Coloumn 2
-      with col2:
-        for i in range(2, drivers, 3):
-          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
-          if drivers_option + 1 == i:
-            st.markdown('<p style="background-color:Azure"><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
-          else:
-            st.markdown('<p><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
-    
-      # Column 3
-      with col3:
-        for i in range(3, drivers, 3):
-          st.image(databank_drivers._get_value(i, 'DRIVER_IMAGE'), use_column_width = True)
-          if drivers_option + 1 == i:
-            st.markdown('<p style="background-color:Azure"><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID' + '</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
-          else:
-            st.markdown('<p><b>Name: </b>' + databank_drivers._get_value(i, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i, 'DRIVER_SURNAME') + '<br><b>' + 'Driver ID</b> ' + databank_drivers._get_value(i, 'DRIVER_ID') + '</p>', unsafe_allow_html = True)
 
-
-      ## Show driver data for copy & paste
+      ## Show driver data in a scrollable textbox for copy & paste
       sty.scrollableTextbox('Name: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_SURNAME') + '; Driver ID: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_ID') + '; Mobile number: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_MOBILE_NO') + '; License number: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_NO') + '; License class: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_CLASS') + '; Expiry date: ' + str(databank_drivers._get_value(drivers_option + 1, 'DRIVER_LICENSE_EXPIRY_DATE')) + '; PSV Badge: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_PSV_BADGE') + '; Driver notes: ' + databank_drivers._get_value(drivers_option + 1, 'DRIVER_NOTES'), height = 56, border = True)
       
-      ## Export driver profile
+      
+      ## Export driver profile to Excel Makro file
       if st.button('Export Driver data to Excel document'):
         export_excel('Drivers', 'A', [{'header': 'DRIVER'},], int(len(databank_drivers_excel.iloc[drivers_option]) + 1), databank_drivers_excel.iloc[drivers_option], image = databank_drivers._get_value(drivers_option + 1, 'DRIVER_IMAGE'), image_pos = 'C1')
     

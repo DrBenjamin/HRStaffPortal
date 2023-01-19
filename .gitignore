@@ -6,7 +6,7 @@
 *VBA.xlsm
 *.docx
 blob*
-temp.png
+temp*.png
 style.css
 *.Rproj
 HRStaffPortal.Rproj

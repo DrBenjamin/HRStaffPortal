@@ -317,8 +317,8 @@ def load_file(filename):
 
 
 
-### Function: saveFile = converts binary image data to png file
-def save_file(data, filename = 'temp.png'):
+### Function: save_img = Converts binary image data to png file
+def save_img(data, filename = 'temp.png'):
 	file = open(filename, 'wb')
 	file.write(data)
 	file.close()
