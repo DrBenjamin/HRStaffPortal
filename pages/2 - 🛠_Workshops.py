@@ -381,8 +381,7 @@ else:
   
   
   ## QR Code scanner (https needed)
-  if st.button('QR Code scannen?')
-    qr_code = qrcode_scanner(key = 'qrcode_scanner')  
-  
+  if st.button('QR Code scannen?'):
+    qr_code = qrcode_scanner(key = 'qrcode_scanner')
     if qr_code:  
       st.write(qr_code)
