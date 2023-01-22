@@ -10,6 +10,7 @@ import mysql.connector
 import io 
 import sys
 from array import array
+from streamlit_qrcode_scanner import qrcode_scanner  
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
@@ -177,6 +178,9 @@ if check_password():
           break
         i += 1
       not_confirmed = ' '.join(not_confirmed)
+      
+      qrcode = generate_qrcode(data = str('http://' + get_ip() + ':8501/Workshops?workshop=' + workshop[0][1] + '&eno=00001')) 
+      st.image(qrcode)
   
           
       ## Submit button
@@ -375,4 +379,12 @@ if check_password():
         
 ### Logged out state (Workshops page)
 else:
+  ## Landing page
   landing_page('Workshops page.')
+  
+  
+  ## QR Code scanner (https needed)
+  qr_code = qrcode_scanner(key = 'qrcode_scanner')  
+
+  if qr_code:  
+    st.write(qr_code) 
