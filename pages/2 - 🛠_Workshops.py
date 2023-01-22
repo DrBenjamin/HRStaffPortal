@@ -178,9 +178,6 @@ if check_password():
           break
         i += 1
       not_confirmed = ' '.join(not_confirmed)
-      
-      qrcode = generate_qrcode(data = str('http://' + get_ip() + ':8501/Workshops?workshop=' + workshop[0][1] + '&eno=00001')) 
-      st.image(qrcode)
   
           
       ## Submit button
@@ -297,7 +294,7 @@ if check_password():
           i = 0
           for mail in mail_addresses:
             send_mail(subject = 'Invitation to workshop ' + workshop[0][2], body = 'Hello colleague,\n\nthis is an invitation to the workshop ' + workshop[0][2] + ' on ' + str(workshop[0][6]) + ' (' + str(workshop[0][7]) + ' days).\n\nDetails: ' + workshop[0][3] + '\n\nBest regards\n\n' + workshop[0][4] + '\n\n', receiver = mail)
-            send_mail(subject = 'Registration to workshop ' + workshop[0][2], body = 'Hello facilitator,\n\nthis is the qrcode for the workshop ' + workshop[0][2] + ' on ' + str(workshop[0][6]) + ' (' + str(workshop[0][7]) + ' days) for the employee ' + names[i] + '.\n\nDetails: ' + workshop[0][3] + '\n\nBest regards\n\nStreamlit\n\n', receiver = workshop[0][5], attachment = generate_qrcode(data = str('http://' + get_ip() + ':8501/Workshops?workshop=' + databank_workshop['WORKSHOP_ID'][index] + '&eno=' + new_in[i])))
+            send_mail(subject = 'Registration to workshop ' + workshop[0][2], body = 'Hello facilitator,\n\nthis is the qrcode for the workshop ' + workshop[0][2] + ' on ' + str(workshop[0][6]) + ' (' + str(workshop[0][7]) + ' days) for the employee ' + names[i] + '.\n\nDetails: ' + workshop[0][3] + '\n\nBest regards\n\nStreamlit\n\n', receiver = workshop[0][5], attachment = generate_qrcode(data = str('https://' + get_ip() + ':8501/Workshops?workshop=' + databank_workshop['WORKSHOP_ID'][index] + '&eno=' + new_in[i])))
             i += 1
             
           # Rerun  
@@ -372,7 +369,7 @@ if check_password():
           i = 0
           for mail in mail_addresses:
             send_mail(subject = 'Invitation to workshop ' + workshop_title, body = 'Hello colleague,\n\nthis is an invitation to the workshop ' + workshop_title + ' on ' + workshop_date + ' (' + workshop_duration + ' days).\n\nDetails: ' + workshop_description + '\n\nBest regards\n\n' + workshop_facilitator + '\n\n', receiver = mail)
-            send_mail(subject = 'Registration to workshop ' + workshop_title, body = 'Hello facilitator,\n\nthis is the qrcode for the workshop ' + workshop_title + ' on ' + workshop_date + ' (' + workshop_duration + ' days) for the employee ' + options[i] + '.\n\nDetails: ' + workshop_description + '\n\nBest regards\n\nStreamlit\n\n', receiver = workshop_facilitator_email, attachment = generate_qrcode(data = str('http://' + get_ip() + ':8501/Workshops?workshop=' + workshop_id + '&eno=' + employees[i])))
+            send_mail(subject = 'Registration to workshop ' + workshop_title, body = 'Hello facilitator,\n\nthis is the qrcode for the workshop ' + workshop_title + ' on ' + workshop_date + ' (' + workshop_duration + ' days) for the employee ' + options[i] + '.\n\nDetails: ' + workshop_description + '\n\nBest regards\n\nStreamlit\n\n', receiver = workshop_facilitator_email, attachment = generate_qrcode(data = str('https://' + get_ip() + ':8501/Workshops?workshop=' + workshop_id + '&eno=' + employees[i])))
             i += 1
         
   
@@ -384,7 +381,8 @@ else:
   
   
   ## QR Code scanner (https needed)
-  qr_code = qrcode_scanner(key = 'qrcode_scanner')  
-
-  if qr_code:  
-    st.write(qr_code) 
+  if st.button('QR Code scannen?')
+    qr_code = qrcode_scanner(key = 'qrcode_scanner')  
+  
+    if qr_code:  
+      st.write(qr_code)
