@@ -26,6 +26,8 @@ pip install XlsxWriter
 pip install python-docx
 pip install openai
 pip install deepl
+pip install geocoder
+pip install geopy
 pip install qrcode
 pip install streamlit_qrcode_scanner
 pip install loguru
