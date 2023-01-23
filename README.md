@@ -1,6 +1,6 @@
 # HRStaffPortal
 
-[![Open in Streamlit][share_badge]][share_link] [![GitHub][github_badge]][github_link] [![PyPI][pypi_badge]][pypi_link] 
+[![Open in Streamlit][share_badge]][share_link] [![GitHub][github_badge]][github_link] 
 
 ## HR Staff Portal
 
@@ -226,8 +226,5 @@ pip install --upgrade extra_streamlit_components
 [share_badge]: https://static.streamlit.io/badges/streamlit_badge_black_white.svg
 [share_link]: https://hrstaffp0rtal.streamlit.app/
 
-[github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label&/github/release/babel/babel
+[github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
 [github_link]: https://github.com/DrBenjamin/HRStaffPortal
-
-[pypi_badge]: https://badgen.net/pypi/v/streamlit-aggrid?icon=pypi&color=black&label?
-[pypi_link]: https://pypi.org/manage/projects/
