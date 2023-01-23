@@ -29,7 +29,7 @@ from functions import save_img
 #### Streamlit initial setup
 st.set_page_config(
   page_title = "Car Fleet Management System",
-  page_icon = st.secrets['custom']['facility_image_thumbnail'],
+  page_icon = st.secrets['custom']['carfleet_image_thumbnail'],
   layout = "centered",
   initial_sidebar_state = "expanded",
   menu_items = { 

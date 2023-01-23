@@ -8,6 +8,9 @@ host.key
 *VBA.xlsm
 *.docx
 MoH.png
+thumbnail.png
+car_fleet.png
+thumbnail_car_fleet.png
 blob*
 temp*.png
 style.css
