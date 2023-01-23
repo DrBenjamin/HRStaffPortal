@@ -54,7 +54,7 @@ def check_password():
 
 	## Sidebar
 	# Sidebar Header Image
-	st.sidebar.image('images/MoH.png')
+	st.sidebar.image(st.secrets['custom']['facility_image'])
 	
 	# Header switch
 	if st.session_state['header'] == True:
@@ -356,7 +356,7 @@ def header(title, data_desc, expanded = True):
   with st.expander("Header", expanded = expanded):
     ## Header information
     st.title(title)
-    st.image('images/MoH.png')
+    st.image(st.secrets['custom']['facility_image'])
     st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
     st.subheader(st.secrets['custom']['facility_abbreviation'] + ' ' + data_desc)
     st.write('All data is stored in a local MySQL databank on a dedicated Server hosted at ' + st.secrets['custom']['facility_abbreviation'] + '.')
