@@ -21,11 +21,14 @@ pip install mysql-connector-python-rf
 pip install mysql-connector-python==8.0.29
 pip install extra_streamlit_components
 pip install streamlit-scrollable-textbox
+pip install streamlit_image_select
 pip install XlsxWriter
 pip install python-docx
 pip install openai
 pip install deepl
 pip install qrcode
+pip install streamlit_qrcode_scanner
+pip install loguru
 ```
 
 or do it at once using the `requirements.txt` file with:
