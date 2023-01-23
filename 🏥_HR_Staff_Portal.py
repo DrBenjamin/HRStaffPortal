@@ -1,7 +1,7 @@
 ##### `🏥_HR_Staff_Portal.py`
 ##### HR Staff Portal
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
-##### Please reach out to benjamin.gross@giz.de for any questions
+##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
 import extra_streamlit_components as stx
