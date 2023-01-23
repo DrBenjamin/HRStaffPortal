@@ -226,7 +226,7 @@ pip install --upgrade extra_streamlit_components
 [share_badge]: https://static.streamlit.io/badges/streamlit_badge_black_white.svg
 [share_link]: https://hrstaffp0rtal.streamlit.app/
 
-[github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
+[github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label&/github/release/babel/babel
 [github_link]: https://github.com/DrBenjamin/HRStaffPortal
 
 [pypi_badge]: https://badgen.net/pypi/v/streamlit-aggrid?icon=pypi&color=black&label?
