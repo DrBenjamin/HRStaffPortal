@@ -29,13 +29,13 @@ from network import send_mail
 #### Streamlit initial setup
 st.set_page_config(
   page_title = "Handbook",
-  page_icon = "images/thumbnail.png",
+  page_icon = st.secrets['custom']['facility_image_thumbnail'],
   layout = "centered",
   initial_sidebar_state = "expanded",
   menu_items = { 
-         'Get Help': 'http://www.health.gov.mw/index.php/contact-moh/head-office',
-         'Report a bug': "http://www.health.gov.mw/index.php/contact-moh/head-office",
-         'About': "This is the HR Staff Portal Version 0.2.0"
+         'Get Help': st.secrets['custom']['menu_items_help'],
+         'Report a bug': st.secrets['custom']['menu_items_bug'],
+         'About': st.secrets['custom']['menu_items_about']
         }
 )
 
