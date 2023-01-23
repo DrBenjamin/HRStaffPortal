@@ -16,3 +16,4 @@ openai
 deepl
 streamlit_qrcode_scanner
 qrcode
+loguru
