@@ -68,14 +68,20 @@ gatherUsageStats = false
 headless = true
 ```
 
-Now create the file `.streamlit/secrets.toml` where you define some customizations and the **user / password** combinations:
+Now create the file `.streamlit/secrets.toml` where you define some customisations and the **user / password** combinations:
 
 ```python
 ### Customization
 [custom]
 facility = "XXXXXXXX"
 facility_abbreviation = "XXX"
-header_image = "images/XYZ.png"
+facility_image = "images/XXX.png"
+facility_image_thumbnail = "images/XXX.png"
+carfleet_image = "images/XXX.png"
+carfleet_image_thumbnail = "images/XXX.png"
+menu_items_help = "http://www.example.url/help"
+menu_items_bug = "https://github.com/DrBenjamin/HRStaffPortal/issues"
+menu_items_about = "This is the HR Staff Portal (Version 0.2.0)"
 address_line1 = "XXXXXXXXXX,"
 address_line2 = "XXXXX, XXXXX"
 contact_tel1 = "+xxx x xxx xxx"
@@ -91,6 +97,10 @@ contact_admin = "xyz@mail.com"
 [passwords]
 # Follow the rule: username = "password"
 user = "xxxxxxxx"
+
+## Administrators
+[admins]
+admin = "xxxxxxxx"
 ```
 
 #### MySQL server configuration
