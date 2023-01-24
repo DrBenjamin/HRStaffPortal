@@ -102,16 +102,14 @@ def lastID(url):
 
 
 #### Main Program
-## Open databank connection
-conn = init_connection()
-
-
-
 ### Logged in state (Workshops page)
 if check_password():
   ### Header
   header(title = 'Workshops page', data_desc = 'workshops data', expanded = st.session_state['header'])
   
+  
+  ## Open databank connection
+  conn = init_connection()
   
   
   ## Get workshop data
