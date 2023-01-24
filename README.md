@@ -31,7 +31,6 @@ pip install deepl
 pip install geocoder
 pip install geopy
 pip install qrcode
-pip install streamlit_qrcode_scanner
 pip install loguru
 ```
 
