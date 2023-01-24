@@ -356,10 +356,10 @@ if check_password():
         ## Check if image is empty and show a placeholder
         if (len(employee[0][8]) < 10):
           # Show placeholder
-          st.image('images/portrait-placeholder.png')
+          st.image('images/placeholder.png')
           
           # Set Image Session State to `No Image` placeholder
-          st.session_state['image'] = load_file('images/No_Image.png')
+          st.session_state['image'] = load_file('images/placeholder.png')
          
           
         ## Show existing image
