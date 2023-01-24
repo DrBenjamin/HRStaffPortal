@@ -7,10 +7,8 @@ import streamlit as st
 import streamlit.components.v1 as stc
 import pandas as pd
 import mysql.connector
-import io 
+import io
 import sys
-from array import array
-from streamlit_qrcode_scanner import qrcode_scanner  
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
@@ -54,6 +52,12 @@ if ('admin' not in st.session_state):
 if ('header' not in st.session_state):
   st.session_state['header'] = True
   
+
+## QR Code
+if ('qrcode' not in st.session_state):
+  st.session_state['qrcode'] = False
+
+
 
   
 #### Functions
@@ -376,12 +380,3 @@ if check_password():
 else:
   ## Landing page
   landing_page('Workshops page.')
-  
-  
-  ## QR Code scanner (https needed)
-  with st.expander('QR Code scanner', expanded = False):
-    st.subheader('QR Code scanner')
-    if st.button('Scan QR Code?'):
-      qr_code = qrcode_scanner(key = 'qrcode_scanner')
-      if qr_code:  
-        st.write(qr_code)
