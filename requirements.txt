@@ -15,6 +15,5 @@ openai
 deepl
 geocoder
 geopy
-streamlit_qrcode_scanner
 qrcode
 loguru
