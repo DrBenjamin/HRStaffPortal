@@ -1,6 +1,6 @@
 # HRStaffPortal
 
-[![Open in Streamlit][share_badge]][share_link] [![GitHub][github_badge]][github_link] 
+[![GitHub][github_badge]][github_link] [![Open in Streamlit][share_badge]][share_link]
 
 ## HR Staff Portal
 
@@ -223,8 +223,8 @@ To update a specific dependency, for instance **extra_streamlit_components**, us
 pip install --upgrade extra_streamlit_components
 ```
 
-[share_badge]: https://static.streamlit.io/badges/streamlit_badge_black_white.svg
-[share_link]: https://hrstaffp0rtal.streamlit.app/
-
 [github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
 [github_link]: https://github.com/DrBenjamin/HRStaffPortal
+
+[share_badge]: https://static.streamlit.io/badges/streamlit_badge_black_white.svg
+[share_link]: https://hr-staff-p0rtal.streamlit.app/
