@@ -51,11 +51,6 @@ if ('admin' not in st.session_state):
   st.session_state['admin'] = False
 if ('header' not in st.session_state):
   st.session_state['header'] = True
-  
-
-## QR Code
-if ('qrcode' not in st.session_state):
-  st.session_state['qrcode'] = False
 
 
 
