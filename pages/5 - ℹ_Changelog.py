@@ -48,22 +48,7 @@ if ('header' not in st.session_state):
 
 #### Main program
 ### Header
-header(title = 'About page', data_desc = 'contact information', expanded = st.session_state['header']) 
-
-
-
-### Contact information
-with st.expander(label = 'Contact information', expanded = True):
-  st.subheader('Address')
-  st.write(st.secrets['custom']['address_line1'])
-  st.write(st.secrets['custom']['address_line2'])
-  st.subheader('Contact')
-  st.write('**Tel:** <a href=\"tel:' + st.secrets['custom']['contact_tel1'] + '\">' + st.secrets['custom']['contact_tel1'] + '</a>', unsafe_allow_html = True)
-  st.write('**Tel:** <a href=\"tel:' + st.secrets['custom']['contact_tel2'] + '\">' + st.secrets['custom']['contact_tel2'] + '</a>', unsafe_allow_html = True)
-  st.write('**Tel:** <a href=\"tel:' + st.secrets['custom']['contact_tel3'] + '\">' + st.secrets['custom']['contact_tel3'] + '</a>', unsafe_allow_html = True)
-  st.write('**Mail (' + st.secrets['custom']['contact_mail1_desc'] + '):** ' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail1'] + '\">' + st.secrets['custom']['contact_mail1'] + '</a>', unsafe_allow_html = True)
-  st.write('**Mail (' + st.secrets['custom']['contact_mail2_desc'] + '):** ' + '<a href=\"mailto:' + st.secrets['custom']['contact_mail2'] + '\">' + st.secrets['custom']['contact_mail2'] + '</a>', unsafe_allow_html = True)
-  st.write('**Mail (Admin):** ' + '<a href=\"mailto:' + st.secrets['custom']['contact_admin'] + '\">' + st.secrets['custom']['contact_admin'] + '</a>', unsafe_allow_html = True)
+header(title = 'Changelog', data_desc = 'Software information', expanded = st.session_state['header']) 
 
 
 
