@@ -72,8 +72,13 @@ with st.expander('Changelog', expanded = True):
   st.write(source)
   #source = "http://192.168.1.173/index.html"
   #st.write(source)
+<<<<<<< HEAD
   stc.iframe(src = "http://192.168.1.173/index.html", height = 520, scrolling = True)
   stc.html("""<iframe src="http://192.168.1.173/index.html" style = "max-width: 100%; border: 0" width = "600"></iframe>""", height = 520) 
+=======
+  stc.iframe(src = "http://127.0.0.1/index.html", height = 500, scrolling = True)
+  stc.html("""<iframe src="http://127.0.0.1/index.html" style = "max-width: 100%; border: 0" width = "600"></iframe>""", height = 520) 
+>>>>>>> 8670bcaa86e14b1f92817f605e4827c4d57386fd
     
     
     
