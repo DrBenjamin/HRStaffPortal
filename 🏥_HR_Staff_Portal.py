@@ -548,7 +548,7 @@ if check_password():
           ## Writing to databank idcard table `TRAINING` - updates to all existing entries
           if (update == True):
             for i in range(len(TRAINING)):
-              query = "UPDATE `idcard`.`TRAINING` SET TRAINING = '%s', TRAINING_INSTITUTE = '%s', TRAINING_DATE = '%s', TRAINING_DURATION = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], TRAINING[i][4])
+              query = "UPDATE `idcard`.`TRAINING` SET TRAINING_DESCRIPTION = '%s', TRAINING_INSTITUTE = '%s', TRAINING_DATE = '%s', TRAINING_DURATION = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], TRAINING[i][4])
               run_query(query)
               conn.commit()
             st.session_state['success2'] = True
