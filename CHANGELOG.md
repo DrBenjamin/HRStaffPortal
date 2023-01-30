@@ -1,9 +1,6 @@
 # Changelog
-All notable changes to this project will be documented in this file.
 
-
-
-## [0.2.0] - 2023-xx-xx
+## [0.2.0](https://github.com/DrBenjamin/HRStaffPortal/compare/v0.1.1...v0.2.0) - 2023-xx-xx
 
 ### Added
 * Addded CHANGELOG.md integration
@@ -21,7 +18,7 @@ All notable changes to this project will be documented in this file.
 * Simultaneous creating of new employee gives right ID 
 
 
-## [0.1.1] - 2022-10-18
+## [0.1.1](https://github.com/DrBenjamin/HRStaffPortal/compare/v0.1.1...v0.1.1) - 2022-10-18
 
 ### Added
 * View and edit Employee and training data
