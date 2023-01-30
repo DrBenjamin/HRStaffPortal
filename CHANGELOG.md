@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 
 
-## Version 0.2.0 - 2023-xx-xx
+## [0.2.0] - 2023-xx-xx
 `Wonder bag`
 
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
 - Simultaneous creating of new employee gives right ID 
 
 
-## Version 0.1.1 - 2022-10-18
+## [0.1.1] - 2022-10-18
 `Initial Release`
 
 
