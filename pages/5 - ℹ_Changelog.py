@@ -70,7 +70,8 @@ with st.expander('Changelog', expanded = True):
   ## Local site
   source = 'http://' + get_ip() + '/index.html'
   st.write(source)
-  stc.iframe(src = 'http://192.168.1.173/index.html', height = 500, scrolling = True)
+  stc.iframe(src = 'http://127.0.0.1/index.html', height = 500, scrolling = True)
+  stc.html("""<iframesrc="http://127.0.0.1/index.html style = "max-width: 100%; border: 0" width = "600"></iframe>""", height = 520) 
     
     
     
