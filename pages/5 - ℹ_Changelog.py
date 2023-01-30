@@ -58,24 +58,13 @@ header(title = 'Changelog', data_desc = 'Software information', expanded = st.se
 ### Changelog
 ## Changelog iframe
 with st.expander('Changelog', expanded = True):
-  #st.subheader('Changelog')
-    
-    
-  ## Iframe of remote site
-  #stc.html("""<iframe src="https://techhub.social/@DrBenjamin/109397699095825866/embed" class = "mastodon-embed" style = "max-width: 100%; border: 0" width = "600"></iframe><script src="https://techhub.social/embed.js" async = "async"></script>""", height = 520,)
-  #stc.html("""<blockquote class="trello-card"><a href="https:&#x2F;&#x2F;trello.com&#x2F;c&#x2F;wNdVZqVq&#x2F;21-release-v020">Release v0.2.0</a></blockquote><script src="https://p.trellocdn.com/embed.min.js"></script>""", height = 520)  
-  #stc.html("""<iframe src="https://github.com/DrBenjamin/HRStaffPortal/blob/main/CHANGELOG.md"" style = "max-width: 100%; border: 0" width = "600"></iframe>""", height = 520)  
-  
-  
-  ## Local site
+  ## Local site hosted on Apache
   #source = 'http://' + get_ip() + '/index.html'
   source = "https://192.168.1.173/index.html"
-  st.write(source)
   stc.iframe(src = source, height = 520, scrolling = True)
-  #stc.html("""<iframe src="httsp://192.168.1.173/index.html" style = "max-width: 100%; border: 0" width = "600"></iframe>""", height = 520) 
-
-
-    
+  
+  
+  
 ### Logged in state (About)
 if check_password():
   print('Logged in')
