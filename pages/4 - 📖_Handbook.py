@@ -529,9 +529,9 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
               
               
             ## Debugging output
-            st.write(databank_handbook)
-            st.write(st.session_state['handbook_text'])
-            st.write(st.session_state['answer_score'])
+            #st.write(databank_handbook)
+            #st.write(st.session_state['handbook_text'])
+            #st.write(st.session_state['answer_score'])
               
               
             ## Doing the request to OpenAI for answering the question
