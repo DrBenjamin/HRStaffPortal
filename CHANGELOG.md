@@ -4,36 +4,32 @@ All notable changes to this project will be documented in this file.
 
 
 ## [0.2.0] - 2023-xx-xx
-`Wonder bag`
-
 
 ### Added
-- Error handling in SQL queries
-- Printing function
-- Excel Export function
-- Car Fleet Management System (with statistics)
+* Error handling in SQL queries
+* Printing function
+* Excel Export function
+* Car Fleet Management System (with statistics)
 
 
 ### Changed
-- Custom Tabs instead of build in tabs (extra_streamlit_components)
+* Custom Tabs instead of build in tabs (extra_streamlit_components)
 
 
 ### Fixed
-- Simultaneous creating of new employee gives right ID 
+* Simultaneous creating of new employee gives right ID 
 
 
 ## [0.1.1] - 2022-10-18
-`Initial Release`
-
 
 ### Added
-- View and edit Employee and training data
-- Basic Cloud version with local data stored in csv file (data not persistend)
+* View and edit Employee and training data
+* Basic Cloud version with local data stored in csv file (data not persistend)
 
 
 ### Changed
-- No changes
+* No changes
 
 
 ### Fixed
-- Several logical bugs
+* Several logical bugs
