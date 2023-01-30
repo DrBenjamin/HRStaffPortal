@@ -44,6 +44,9 @@ st.set_page_config(
 #### Query parameters
 ## Get query params
 html_query = st.experimental_get_query_params()
+print(html_query['workshop'][0])
+print(html_query['eno'][0])
+#st.experimental_set_query_params(eno = "xxxxxx")
 
 
 
