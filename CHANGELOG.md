@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 ## [0.2.0] - 2023-xx-xx
 
 ### Added
+* Addded CHANGELOG.md integration
 * Error handling in SQL queries
 * Printing function
 * Excel Export function
