@@ -68,12 +68,11 @@ with st.expander('Changelog', expanded = True):
   
   
   ## Local site
-  source = 'http://' + get_ip() + '/index.html'
+  #source = 'http://' + get_ip() + '/index.html'
+  source = "https://192.168.1.173/index.html"
   st.write(source)
-  #source = "http://192.168.1.173/index.html"
-  #st.write(source)
-  stc.iframe(src = "https://benbox.org/R/S/index.html", height = 520, scrolling = True)
-  stc.html("""<iframe src="https://benbox.org/R/S/index.html" style = "max-width: 100%; border: 0" width = "600"></iframe>""", height = 520) 
+  stc.iframe(src = source, height = 520, scrolling = True)
+  stc.html("""<iframe src="httsp://192.168.1.173/index.html" style = "max-width: 100%; border: 0" width = "600"></iframe>""", height = 520) 
 
 
     
