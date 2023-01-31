@@ -5,6 +5,8 @@
 ``` Pre-Release```
 
 ### Added
+* HR Staff Portal
+** Images upload via camera
 * Statistics Page
 * Workshops Page
 * Car Fleet Management System
@@ -13,6 +15,7 @@
 
 ### Changed
 * Custom Tabs instead of build in tabs (extra_streamlit_components)
+* Images are cropped and resized
 
 ### Fixed
 * Simultaneous creating of new employee gives right ID 
