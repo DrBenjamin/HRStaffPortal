@@ -40,6 +40,12 @@ or do it at once using the `requirements.txt` file with:
 pip install -r requirements.txt
 ```
 
+Install the `Changelog converter` (Markdown to html) with [Node.js](https://nodejs.org/en/download/):
+
+```cmd
+npm install --save-dev changelog-to-html
+```
+
 ##### Getting the Source Code
 
 Clone the **repository** of `HRStaffPortal` with following command:
@@ -203,6 +209,16 @@ To update the source files to the newest version use the build-in **pull functio
 ```cmd
 git pull
 ```
+
+##### Update Changelog html files
+
+To convert `CHANGELOG.md` to html files use this command:
+
+```cmd
+npm exec changelog-to-html CHANGELOG.md
+```
+
+Copy these files to a local httpd service folder like [Apache2](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04) to show the `Github Changelog` in the app.
 
 ##### Execute Streamlit
 
