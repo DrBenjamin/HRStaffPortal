@@ -133,7 +133,7 @@ admin = "xxxxxxxx"
 
 ##### For proper usage a local MySQL server is needed
 
-In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (HR Staff Portal / Car Fleet Management System / Handbook & Chat-Bot):
+In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (**HR Staff Portal** / **Car Fleet Management System** / **Handbook & Chat-Bot**):
 
 ```python
 ### MySQL configuration for HR Staff Portal
@@ -223,7 +223,7 @@ The **HR Staff Portal** software runs under the **[GNU General Public License v3
 
 #### Use of the web application
 
-The **HR Staff Portal** is running as an *Web Service* through the *Python Streamlit framework*. It will use the port 8501 if you are not in changing it in the `.streamlit/config.toml`:
+The **HR Staff Portal** is running as an *Web Service* through the *Python Streamlit framework*. It will use the *port* `8501` if you are not changing it in `.streamlit/config.toml` in the `browser` section:
 
 ```
 [browser]
@@ -255,7 +255,29 @@ To convert `CHANGELOG.md` to html files use this command:
 npm exec changelog-to-html CHANGELOG.md
 ```
 
-Copy these files to a local httpd service folder like **[Apache2](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04)** to show the *Github Changelog* in the app.
+Copy these files to a local httpd service folder like **[Apache2](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04)** (e.g. `/var/www/html`) to show the *Github Changelog* in the app.
+
+Add these two lines in `etc/apache2/conf-enabled/security.conf` to allow *embedding* of the *Changelog page*:
+
+```conf
+Header set Access-Control-Allow-Origin "*"
+Header set X-Frame-Options "ALLOW-FROM *"
+```
+
+For enabling *ssl* in Apache (if you are using Streamlit in ssl mode) do enter these commands:
+
+```cmd
+sudo a2enmod ssl
+sudo a2enmod headers
+a2ensite default-ssl
+```
+
+You also need to change the virtual configuration of your local website (e.g. `/etc/apache2/sites-available/default-ssl.conf`) to your needs and add the created OpenSSL certificate and key.
+
+```conf
+SSLCertificateFile /Path-to-ssl-files/host.cert
+SSLCertificateKeyFile /Path-to-ssl-files/host.key
+```
 
 ##### Execute Streamlit
 
