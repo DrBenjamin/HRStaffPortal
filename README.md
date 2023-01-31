@@ -235,6 +235,8 @@ pip install --upgrade extra_streamlit_components
 
 #### Screencast
 
+https://user-images.githubusercontent.com/40030246/215703347-6683efe5-f3b8-479f-8f5c-9346a8d61c3a.mp4
+
 [![Watch the video](https://img.youtube.com/vi/PW3Jd5KT-I/maxresdefault.jpg)](https://youtu.be/jPW3Jd5KT-I)
 
 [github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
