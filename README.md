@@ -174,7 +174,7 @@ user = "xyz"
 password = "xyz"
 ```
 
-Connect to your *MySQL database* and create the *user* you configured in `secrets.toml`. Create a *schema / database* with the name `idcard`.
+Connect to your *MySQL database* and create the *user* you configured in `secrets.toml`. Create a *schema / database* with the name `idcard`. Give the user the rights to alter the *database tables*.
 
 To configure the **HR Staff Portal** *database tables* run the following *SQL script*:
 
