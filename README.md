@@ -1,6 +1,6 @@
 # HRStaffPortal
 
-[![GitHub][github_badge]][github_link] [![Open in Streamlit][share_badge]][share_link]
+[![GitHub][github_badge]][github_link]
 
 ## HR Staff Portal
 
@@ -274,6 +274,9 @@ To update a specific dependency, for instance **extra_streamlit_components**, us
 ```cmd
 pip install --upgrade extra_streamlit_components
 ```
+#### Demo
+
+[![Open in Streamlit][share_badge]][share_link]
 
 #### Screencast
 
