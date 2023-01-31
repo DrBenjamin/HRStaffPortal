@@ -24,6 +24,7 @@ config.toml
 files/Code_Snippets.py
 .DS_Store
 run.sh
+update.sh
 # VS Code
 launch.json
 # Byte-compiled / optimized / DLL files
