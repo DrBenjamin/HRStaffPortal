@@ -304,11 +304,12 @@ pip install --upgrade streamlit
 
 ##### Update dependencies
 
-To update a specific dependency, for instance **extra_streamlit_components**, use this command:
+To update all dependencies, use this command:
 
 ```cmd
-pip install --upgrade extra_streamlit_components
+pip install --upgrade -r requirements.txt
 ```
+
 #### Demo
 
 [![Open in Streamlit][share_badge]][share_link]
