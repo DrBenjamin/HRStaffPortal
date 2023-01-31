@@ -312,7 +312,7 @@ pip install --upgrade -r requirements.txt
 
 #### Demo
 
-[![Open in Streamlit][share_badge]][share_link]
+[![Open in Streamlit Cloud][share_badge]][share_link]
 
 #### Screencast
 
