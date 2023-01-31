@@ -219,7 +219,7 @@ Now you need to configure the Python environment under *Project Options* to set 
 
 ### Use of the HR Staff Portal and updates
 
-The **HR Staff Portal** software runs under the [GNU General Public License v3.0](https://github.com/DrBenjamin/HRStaffPortal/blob/main/LICENSE) which allows the commercial use, modification for your purposes, distribution, patent use as well as the private use.
+The **HR Staff Portal** software runs under the **[GNU General Public License v3.0](https://github.com/DrBenjamin/HRStaffPortal/blob/main/LICENSE)** which allows the commercial use, modification for your purposes, distribution, patent use as well as the private use.
 
 #### Use of the web application
 
@@ -241,7 +241,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git -b v0.1.1
 
 ##### Update HR Staff Portal
 
-To update the source files to the newest version use the build-in **pull function** of git (git menu on the right upper corner, choose the green arrow which shows down). If you are using the app on a computer without a RStudio installation, just use this git command:
+To update the source files to the newest version use the build-in *pull function* of git in RStudio (menu on the right upper side, choose git and press the green arrow which shows down). If you are using the app on a computer without a RStudio installation, just use this git command:
 
 ```cmd
 git pull
@@ -255,7 +255,7 @@ To convert `CHANGELOG.md` to html files use this command:
 npm exec changelog-to-html CHANGELOG.md
 ```
 
-Copy these files to a local httpd service folder like [Apache2](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04) to show the **Github Changelog** in the app.
+Copy these files to a local httpd service folder like **[Apache2](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04)** to show the *Github Changelog* in the app.
 
 ##### Execute Streamlit
 
