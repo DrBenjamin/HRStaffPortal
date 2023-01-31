@@ -4,7 +4,7 @@
 
 ## HR Staff Portal
 
-This App handles **employee data** which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL databank.
+This App handles *employee data* which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL databank.
 
 For development [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is used. Install [git](https://git-scm.com/download/win) to use version control.
 
@@ -16,7 +16,7 @@ For development [RStudio](https://www.rstudio.com/products/rstudio/download/#dow
 
 Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally. A virtual Python environment like Anaconda / Miniconda are highly recommend.
 
-After that you need to install some **Python libraries**:
+After that you need to install some *Python libraries*:
 
 ```cmd
 pip install mysql-connector-python-rf
@@ -56,7 +56,7 @@ chmod 400 host.key
 openssl req -new -x509 -nodes -sha256 -days 365 -key host.key -out host.cert
 ```
 
-Also you need to add the `ssl_options` to server.py in the **Python** / **Virtual environment** folder `Lib/site-packages/streamlit/web/server/server.py`. Connections will now be only possible using `https://` + URL. Be aware, after each update of **Streamlit** to redo these changes.
+Also you need to add the `ssl_options` to server.py in the *Python* / *Virtual environment* folder `Lib/site-packages/streamlit/web/server/server.py`. Connections will now be only possible using `https://` + URL. Be aware, after each update of **Streamlit** to redo these changes.
 
 ```Python
 http_server = HTTPServer(
@@ -69,7 +69,7 @@ http_server = HTTPServer(
 
 #### Getting the HR Staff Portal source code
 
-Clone the **repository** of **HRStaffPortal** with following command:
+Clone the *repository* of **HRStaffPortal** with following command:
 
 ```cmd
 git clone https://github.com/DrBenjamin/HRStaffPortal.git
@@ -77,7 +77,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git
 
 ##### Configuration of Streamlit config files
 
-First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the **theming** and some **Streamlit server behaviour** flags:
+First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the *theming* and some *Streamlit server behaviour* flags:
 
 ```python
 [theme]
@@ -94,7 +94,7 @@ gatherUsageStats = false
 headless = true
 ```
 
-Now create the file `.streamlit/secrets.toml` where you define some customisations and the **user / password** combinations:
+Now create the file `.streamlit/secrets.toml` where you define some customisations and the *user / password* combinations:
 
 ```python
 ### Customization
@@ -176,9 +176,9 @@ key = "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
 ```
 
-Connect to your **MySQL database** and create the *user* you configured in `secrets.toml`. Create a **schema / database** with the name `idcard`.
+Connect to your *MySQL database* and create the *user* you configured in `secrets.toml`. Create a *schema / database* with the name `idcard`.
 
-To configure the HR Staff Portal tables run the following **SQL commands**:
+To configure the HR Staff Portal tables run the following *SQL commands*:
 
 ```sql
 CREATE TABLE `idcard`.`IMAGEBASE` (
@@ -203,13 +203,19 @@ CREATE TABLE `idcard`.`TRAINING` (
       PRIMARY KEY (`ID`));
 ```
 
-or use the database dump with sample data `files/idcard_dump.sql` and import them to a **MySQL** / **MariaDB** database. To use the **Car Fleet Management** module you also need to import the file `files/carfleet_dump.sql`. For the **Chatbot** please import the `files/benbox_dump.sql` file.
+or use the database dump with sample data `files/idcard_dump.sql` and import them to a *MySQL* / *MariaDB* database. To use the **Car Fleet Management** module you also need to import the file `files/carfleet_dump.sql`. For the **Chatbot** please import the `files/benbox_dump.sql` file.
 
 #### Create new project in RStudio
 
+Developement of the **HR Staff Portal** was done in RStudio, but you are free to choose whatever *IDE* which supports *Python* programming language and has a *Terminal* included.
+
 ##### Working with RStudio on the project
 
-In RStudio choose **File** - **New Project** and choose **Existing Directory**. This will create a new Project. Configure the *Project Options* to set the **Anaconda / Miniconda Python** environment. Also add the *Version Control* with **git**. Now you can open the source code as a RStudio project anytime you are working on the source files and easily use the **git** functionality within the RStudio IDE.
+In RStudio choose *File* - *New Project* and choose *Existing Directory*. This will create a new Project. Add the *git* in the *Version Control* tab under the *Project Options* in the right upper corner of RStudio. Now you can open the source code as a RStudio project anytime you are working on the source files and easily use the *git* functionality within the RStudio IDE.
+
+Alternatively you can directly download the sources of the project choosing *File* - *New Project* and *Version Control*. Select *Git* and enter the repository [URL](https://github.com/DrBenjamin/HRStaffPortal).
+
+Now you need to configure the Python environment under *Project Options* to set the **Anaconda / Miniconda Python** which should be used.
 
 ### Software update & use
 
@@ -268,7 +274,6 @@ To update a specific dependency, for instance **extra_streamlit_components**, us
 ```cmd
 pip install --upgrade extra_streamlit_components
 ```
-
 
 #### Screencast
 
