@@ -60,11 +60,11 @@ If you want a secure connection (https), you need to add these lines in the serv
 
 ```Python
 http_server = HTTPServer(
-        app, max_buffer_size=config.get_option("server.maxUploadSize") * 1024 * 1024==,
+        app, max_buffer_size=config.get_option("server.maxUploadSize") * 1024 * 1024<mark>,
         ssl_options={
             "certfile": "/Path-to-ssl-files/host.cert",
             "keyfile": "/Path-to-ssl-files/host.key",
-        }==
+        }</mark>
 ```
 
 ##### Configuration of Streamlit config files
