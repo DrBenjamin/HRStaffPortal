@@ -56,15 +56,15 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git
 
 ##### Activating Secure Socket Layer (ssl)
 
-If you want a secure connection (https), you need to add these lines in the server.py in the **Python** / **Virtual environment** folder `Lib/site-packages/streamlit/web/server/server.py`. Connections will now be only possible using `https://` + URL. Be aware, after each update of **Streamlit** you need to redo these changes.
+If you want a secure connection (https), you need to add the `ssl_options` to server.py in the **Python** / **Virtual environment** folder `Lib/site-packages/streamlit/web/server/server.py`. Connections will now be only possible using `https://` + URL. Be aware, after each update of **Streamlit** to redo these changes.
 
 ```Python
 http_server = HTTPServer(
-        app, max_buffer_size=config.get_option("server.maxUploadSize") * 1024 * 1024<mark>,
+        app, max_buffer_size=config.get_option("server.maxUploadSize") * 1024 * 1024,
         ssl_options={
             "certfile": "/Path-to-ssl-files/host.cert",
             "keyfile": "/Path-to-ssl-files/host.key",
-        }</mark>
+        }
 ```
 
 ##### Configuration of Streamlit config files
