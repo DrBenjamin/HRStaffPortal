@@ -6,7 +6,7 @@
 
 ### Added
 * HR Staff Portal
-** Images upload via camera
+    * Images upload via camera
 * Statistics Page
 * Workshops Page
 * Car Fleet Management System
