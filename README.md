@@ -10,11 +10,15 @@ For development **[RStudio](https://www.rstudio.com/products/rstudio/download/#d
 
 ### Setup
 
-#### Install and configure all needed software
+Description of the installation and configuration to use the **HR Staff Portal**.
+
+#### Installation and configuration of all needed Software
+
+All Software which is used to run **HR Staff Portal** is **Open Source**. Please be aware of different licenses with varying policies.
 
 ##### Installation of Python, Streamlit and dependencies
 
-Install **[Streamlit & Python](https://docs.streamlit.io/library/get-started/installation)** to run the source code locally. A virtual Python environment like Anaconda / Miniconda are highly recommend.
+Install **[Streamlit & Python](https://docs.streamlit.io/library/get-started/installation)** to run the source code locally. A virtual Python environment like **Anaconda** / **Miniconda** is highly recommend.
 
 After that you need to install some *Python libraries*:
 
@@ -131,6 +135,8 @@ admin = "xxxxxxxx"
 ```
 
 #### MySQL server configuration
+
+MySQL Server is needed to run **HR Staff Portal**. Please install it
 
 ##### For proper usage a local MySQL server is needed
 
@@ -310,11 +316,11 @@ To update all dependencies, use this command:
 pip install --upgrade -r requirements.txt
 ```
 
-#### Demo
+### Demo
 
 [![Open in Streamlit Cloud][share_badge]][share_link]
 
-#### Screencast
+### Screencast
 
 https://user-images.githubusercontent.com/40030246/215703347-6683efe5-f3b8-479f-8f5c-9346a8d61c3a.mp4
 
