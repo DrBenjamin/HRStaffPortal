@@ -134,9 +134,9 @@ user = "xxxxxxxx"
 admin = "xxxxxxxx"
 ```
 
-#### MySQL server configuration
+#### MySQL Server
 
-**MySQL Server** is needed to run **HR Staff Portal**. Please install **MySQL Community Server** on your system (**[Windows](https://dev.mysql.com/downloads/mysql/), **[Ubuntu Linux](https://dev.mysql.com/doc/refman/8.0/en/binary-installation.html)**) or on Raspberry Pi use MariaDB:
+**MySQL Server** is needed to run **HR Staff Portal**. Please install **MySQL Community Server** on your system (**[Windows](https://dev.mysql.com/downloads/mysql/)**, **[Ubuntu Linux](https://dev.mysql.com/doc/refman/8.0/en/binary-installation.html)**) or on Raspberry Pi use **MariaDB**:
 
 ```cmd
 sudo apt-get install mariadb-server mariadb-client
@@ -144,7 +144,7 @@ sudo apt-get install mariadb-server mariadb-client
 
 Use **[MySQL Workbench](https://dev.mysql.com/downloads/workbench/)** to configure the databases and user rights.
 
-##### For proper usage a local MySQL server is needed
+##### MySQL server configuration in Streamlit
 
 In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (**HR Staff Portal** / **Car Fleet Management System** / **Handbook & Chat-Bot**):
 
@@ -172,21 +172,6 @@ port = 3306
 database = "benbox"
 user = "xyz"
 password = "xyz"
-
-### Mail configuration
-[mail]
-user = "xyz@mail.com"
-password = "xxxxxxxx
-smtp_server = "smtp.server.com"
-smtp_server_port = 587
-
-### OpenAI API key
-[openai]
-key = "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-              
-### Deepl API key
-[deepl]
-key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
 ```
 
 Connect to your *MySQL database* and create the *user* you configured in `secrets.toml`. Create a *schema / database* with the name `idcard`.
@@ -217,6 +202,27 @@ CREATE TABLE `idcard`.`TRAINING` (
 ```
 
 or use the database dump with sample data `files/idcard_dump.sql` and import them to a *MySQL* / *MariaDB* database. To use the **Car Fleet Management** module you also need to import the file `files/carfleet_dump.sql`. To use the **Chatbot** please import the `files/benbox_dump.sql` file.
+
+#### Streamlit configuration for different services
+
+To run services (e.g. mail sending) further configuration in `.streamlit/secrets.toml` is needed:
+
+```python
+### Mail configuration
+[mail]
+user = "xyz@mail.com"
+password = "xxxxxxxx
+smtp_server = "smtp.server.com"
+smtp_server_port = 587
+
+### OpenAI API key
+[openai]
+key = "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              
+### Deepl API key
+[deepl]
+key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
+```
 
 #### Create new project in RStudio
 
