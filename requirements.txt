@@ -8,6 +8,7 @@ mysql-connector-python == 8.0.29
 extra_streamlit_components == 0.1.56
 streamlit-scrollable-textbox
 streamlit_image_select
+opencv-python-headless
 xlsxwriter
 python-docx
 openai

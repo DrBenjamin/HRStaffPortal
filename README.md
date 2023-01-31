@@ -24,6 +24,7 @@ pip install mysql-connector-python==8.0.29
 pip install extra_streamlit_components
 pip install streamlit-scrollable-textbox
 pip install streamlit_image_select
+pip install opencv-python-headless
 pip install XlsxWriter
 pip install python-docx
 pip install openai
