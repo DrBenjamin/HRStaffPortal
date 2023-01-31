@@ -136,7 +136,13 @@ admin = "xxxxxxxx"
 
 #### MySQL server configuration
 
-MySQL Server is needed to run **HR Staff Portal**. Please install it
+**MySQL Server** is needed to run **HR Staff Portal**. Please install **MySQL Community Server** on your system (**[Windows](https://dev.mysql.com/downloads/mysql/), **[Ubuntu Linux](https://dev.mysql.com/doc/refman/8.0/en/binary-installation.html)**) or on Raspberry Pi use MariaDB:
+
+```cmd
+sudo apt-get install mariadb-server mariadb-client
+```
+
+Use **[MySQL Workbench](https://dev.mysql.com/downloads/workbench/)** to configure the databases and user rights.
 
 ##### For proper usage a local MySQL server is needed
 
