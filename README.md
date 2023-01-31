@@ -6,7 +6,7 @@
 
 This App handles *employee data* which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL databank.
 
-For development [RStudio](https://www.rstudio.com/products/rstudio/download/#download) is used. Install [git](https://git-scm.com/download/win) to use version control.
+For development **[RStudio](https://www.rstudio.com/products/rstudio/download/#download)** is used. Install **[git](https://git-scm.com/download/win)** to use version control.
 
 ### Setup
 
@@ -14,7 +14,7 @@ For development [RStudio](https://www.rstudio.com/products/rstudio/download/#dow
 
 ##### Installation of Python, Streamlit and dependencies
 
-Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally. A virtual Python environment like Anaconda / Miniconda are highly recommend.
+Install **[Streamlit & Python](https://docs.streamlit.io/library/get-started/installation)** to run the source code locally. A virtual Python environment like Anaconda / Miniconda are highly recommend.
 
 After that you need to install some *Python libraries*:
 
@@ -40,7 +40,7 @@ or do it at once using the `requirements.txt` file with:
 pip install -r requirements.txt
 ```
 
-Install the **Changelog converter** (Markdown to html) with [Node.js](https://nodejs.org/en/download/):
+Install the **Changelog converter** (Markdown to html) with **[Node.js](https://nodejs.org/en/download/)**:
 
 ```cmd
 npm install --save-dev changelog-to-html
@@ -178,7 +178,7 @@ key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
 
 Connect to your *MySQL database* and create the *user* you configured in `secrets.toml`. Create a *schema / database* with the name `idcard`.
 
-To configure the HR Staff Portal tables run the following *SQL commands*:
+To configure the **HR Staff Portal** *database tables* run the following *SQL commands*:
 
 ```sql
 CREATE TABLE `idcard`.`IMAGEBASE` (
@@ -203,7 +203,7 @@ CREATE TABLE `idcard`.`TRAINING` (
       PRIMARY KEY (`ID`));
 ```
 
-or use the database dump with sample data `files/idcard_dump.sql` and import them to a *MySQL* / *MariaDB* database. To use the **Car Fleet Management** module you also need to import the file `files/carfleet_dump.sql`. For the **Chatbot** please import the `files/benbox_dump.sql` file.
+or use the database dump with sample data `files/idcard_dump.sql` and import them to a *MySQL* / *MariaDB* database. To use the **Car Fleet Management** module you also need to import the file `files/carfleet_dump.sql`. To use the **Chatbot** please import the `files/benbox_dump.sql` file.
 
 #### Create new project in RStudio
 
@@ -215,11 +215,21 @@ In RStudio choose *File* - *New Project* and choose *Existing Directory*. This w
 
 Alternatively you can directly download the sources of the project choosing *File* - *New Project* and *Version Control*. Select *Git* and enter the repository [URL](https://github.com/DrBenjamin/HRStaffPortal).
 
-Now you need to configure the Python environment under *Project Options* to set the **Anaconda / Miniconda Python** which should be used.
+Now you need to configure the Python environment under *Project Options* to set the **[Anaconda](https://anaconda.org/conda-forge/download)** / **[Miniconda Python](https://docs.conda.io/en/latest/miniconda.html)** which should be used.
 
-### Software update & use
+### Use of the HR Staff Portal and updates
+
+The **HR Staff Portal** software runs under the [GNU General Public License v3.0](https://github.com/DrBenjamin/HRStaffPortal/blob/main/LICENSE) which allows the commercial use, modification for your purposes, distribution, patent use as well as the private use.
 
 #### Use of the web application
+
+The **HR Staff Portal** is running as an *Web Service* through the *Python Streamlit framework*. It will use the port 8501 if you are not in changing it in the `.streamlit/config.toml`:
+
+```
+[browser]
+# Server port binding
+serverPort = 8501
+```
 
 ##### Clone a specific version of HR Staff Portal
 
@@ -249,15 +259,17 @@ Copy these files to a local httpd service folder like [Apache2](https://www.digi
 
 ##### Execute Streamlit
 
-If you've installed all dependencies, configured the MySQL server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the **Terminal** of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
+If you've installed all dependencies, configured the MySQL server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the *Terminal* of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
 
 ```cmd
 streamlit run 🏥_HR_Staff_Portal.py
 ```
 
-This will open the web app on your IP address on **port 8501**.
+This will open the **Web App** on the servers IP address(es) and the designated port. Open it in the browser with `http://xxx.xxx.xxx.xxx:8501` or `https://xxx.xxx.xxx.xxx:8501` if you are using SLL connections.
 
 #### Update Streamlit & dependencies
+
+The Software and its dependencies will be updated regularly, so make sure to always run the newest versions to avoid security risks.
 
 ##### Update of Streamlit
 
