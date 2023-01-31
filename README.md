@@ -176,7 +176,7 @@ password = "xyz"
 
 Connect to your *MySQL database* and create the *user* you configured in `secrets.toml`. Create a *schema / database* with the name `idcard`.
 
-To configure the **HR Staff Portal** *database tables* run the following *SQL commands*:
+To configure the **HR Staff Portal** *database tables* run the following *SQL script*:
 
 ```sql
 CREATE TABLE `idcard`.`IMAGEBASE` (
@@ -201,7 +201,7 @@ CREATE TABLE `idcard`.`TRAINING` (
       PRIMARY KEY (`ID`));
 ```
 
-or use the database dump with sample data `files/idcard_dump.sql` and import them to a *MySQL* / *MariaDB* database. To use the **Car Fleet Management** module you also need to import the file `files/carfleet_dump.sql`. To use the **Chatbot** please import the `files/benbox_dump.sql` file.
+or use the database dump with sample data `files/idcard_dump.sql` and import them to a **MySQL** / **MariaDB** database using **MySQL Workbench**. To use the **Car Fleet Management System** module you also need to import the file `files/carfleet_dump.sql`. To use the **Chatbot** please import the `files/benbox_dump.sql` file.
 
 #### Streamlit configuration for different services
 
