@@ -8,6 +8,7 @@ import extra_streamlit_components as stx
 import streamlit.components.v1 as stc
 import pandas as pd
 import numpy as np
+import cv2
 import mysql.connector
 import os
 import platform
@@ -265,7 +266,7 @@ if check_password():
         st.experimental_set_query_params(eno = "xxxxxx")
         
         
-        ## Input for new employee data
+        ## New employee data input
         # Check for ID number count of Employee
         id = lastID(url = '`idcard`.`IMAGEBASE`')
         st.text_input(label = 'ID', value = id, disabled = True)
@@ -277,12 +278,40 @@ if check_password():
         emp_no = st.text_input(label = 'Employee number', placeholder = 'Employee number?')
         capri = st.text_input(label = 'Cards printed', value = 0)
         
-        # empty image
+        
+        ## Image input
+        # Upload image
         image = ''
-        uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
+        uploaded_file = st.file_uploader(label = "Upload a picture", type = 'png')
+        
+        # Capture image
+        captured_file = st.camera_input("or take a picture")
+        
+        # Check for image data
         if uploaded_file is not None:
-          image = uploaded_file.getvalue()
+          image = cv2.imdecode(np.frombuffer(uploaded_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
+        elif captured_file is not None:
+          # Create OpenCV numpy array image
+          image = cv2.imdecode(np.frombuffer(captured_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
           
+        # Crop image if existend
+        if image is not '':
+          h, w, c = image.shape
+          ratio = h / w
+          new_width = h / 1.4
+          if ratio < 1.4:
+            crop_center_x = w / 2
+            crop_left_x = int(crop_center_x - (new_width / 2))
+            crop_right_x = int(crop_center_x + (new_width / 2))
+            image = image[0:h, crop_left_x: crop_right_x]
+            
+          # Resize cropped image to standard dimensions
+          image = cv2.resize(image, (256, 360), interpolation = cv2.INTER_AREA)
+          
+          # Convert OpenCV numpy array image to byte string
+          image = cv2.imencode('.png', image)[1].tostring()
+        
+        # Set placeholder image, if no image data existend
         else:
           image = load_file("images/placeholder.png")
         
@@ -373,19 +402,40 @@ if check_password():
           st.session_state['image'] = employee[0][8]
         
         
-        ## Image Uploader
-        uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png', disabled = not checkbox_val)
+        ## Image input
+        # Upload image
+        image = ''
+        uploaded_file = st.file_uploader(label = "Upload a picture", type = 'png', disabled = not checkbox_val)
+        
+        # Capture image
+        captured_file = st.camera_input("or take a picture", disabled = not checkbox_val)
+        
+        # Check for image data
         if uploaded_file is not None:
-          updateMaster = True
-          image = uploaded_file.getvalue()
+          image = cv2.imdecode(np.frombuffer(uploaded_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
+        elif captured_file is not None:
+          # Create OpenCV numpy array image
+          image = cv2.imdecode(np.frombuffer(captured_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
           
+        # Crop image if existend
+        if image is not '':
+          h, w, c = image.shape
+          ratio = h / w
+          new_width = h / 1.4
+          if ratio < 1.4:
+            crop_center_x = w / 2
+            crop_left_x = int(crop_center_x - (new_width / 2))
+            crop_right_x = int(crop_center_x + (new_width / 2))
+            image = image[0:h, crop_left_x: crop_right_x]
+            
+          # Resize cropped image to standard dimensions
+          image = cv2.resize(image, (256, 360), interpolation = cv2.INTER_AREA)
+          
+          # Convert OpenCV numpy array image to byte string
+          image = cv2.imencode('.png', image)[1].tostring()
+
           # Upload picture to database
           pictureUploader(image, index)
-        
-        
-        ## No image data  
-        else:
-          image = ''
         
           
         ## Submit button for changes on employee master data
