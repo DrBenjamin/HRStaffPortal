@@ -40,7 +40,7 @@ or do it at once using the `requirements.txt` file with:
 pip install -r requirements.txt
 ```
 
-Install the `Changelog converter` (Markdown to html) with [Node.js](https://nodejs.org/en/download/):
+Install the **Changelog converter** (Markdown to html) with [Node.js](https://nodejs.org/en/download/):
 
 ```cmd
 npm install --save-dev changelog-to-html
@@ -48,10 +48,23 @@ npm install --save-dev changelog-to-html
 
 ##### Getting the Source Code
 
-Clone the **repository** of `HRStaffPortal` with following command:
+Clone the **repository** of **HRStaffPortal** with following command:
 
 ```cmd
 git clone https://github.com/DrBenjamin/HRStaffPortal.git
+```
+
+##### Activating Secure Socket Layer (ssl)
+
+If you want a secure connection (https), you need to add these lines in the server.py in the **Python** / **Virtual environment** folder `Lib/site-packages/streamlit/web/server/server.py`. Connections will now be only possible using `https://` + URL. Be aware, after each update of **Streamlit** you need to redo these changes.
+
+```Python
+http_server = HTTPServer(
+        app, max_buffer_size=config.get_option("server.maxUploadSize") * 1024 * 1024==,
+        ssl_options={
+            "certfile": "/Path-to-ssl-files/host.cert",
+            "keyfile": "/Path-to-ssl-files/host.key",
+        }==
 ```
 
 ##### Configuration of Streamlit config files
@@ -218,7 +231,7 @@ To convert `CHANGELOG.md` to html files use this command:
 npm exec changelog-to-html CHANGELOG.md
 ```
 
-Copy these files to a local httpd service folder like [Apache2](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04) to show the `Github Changelog` in the app.
+Copy these files to a local httpd service folder like [Apache2](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04) to show the **Github Changelog** in the app.
 
 ##### Execute Streamlit
 
