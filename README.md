@@ -232,6 +232,11 @@ To update a specific dependency, for instance **extra_streamlit_components**, us
 pip install --upgrade extra_streamlit_components
 ```
 
+
+#### Screencast
+
+[![Watch the video](https://img.youtube.com/vi/PW3Jd5KT-I/maxresdefault.jpg)](https://youtu.be/jPW3Jd5KT-I)
+
 [github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
 [github_link]: https://github.com/DrBenjamin/HRStaffPortal
 
