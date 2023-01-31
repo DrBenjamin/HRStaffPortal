@@ -1,6 +1,7 @@
 # My stuff to be ignored
 host.cert
 host.key
+changelog-dist/
 .Rdata
 .Rbuildignore
 *Export.xlsm
