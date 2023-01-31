@@ -419,7 +419,7 @@ if check_password():
           
         # Crop image if existend
         if image is not '':
-          h, w, c = image.shape
+          h, w, _ = image.shape
           ratio = h / w
           new_width = h / 1.4
           if ratio < 1.4:
