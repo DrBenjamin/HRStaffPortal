@@ -12,7 +12,7 @@ For development [RStudio](https://www.rstudio.com/products/rstudio/download/#dow
 
 #### Install and configure all needed software
 
-##### Installation of Python, Streamlit and dependencies plus some configuration
+##### Installation of Python, Streamlit and dependencies
 
 Install [Streamlit & Python](https://docs.streamlit.io/library/get-started/installation) to run the source code locally. A virtual Python environment like Anaconda / Miniconda are highly recommend.
 
@@ -46,17 +46,17 @@ Install the **Changelog converter** (Markdown to html) with [Node.js](https://no
 npm install --save-dev changelog-to-html
 ```
 
-##### Getting the Source Code
-
-Clone the **repository** of **HRStaffPortal** with following command:
-
-```cmd
-git clone https://github.com/DrBenjamin/HRStaffPortal.git
-```
-
 ##### Activating Secure Socket Layer (ssl)
 
-If you want a secure connection (https), you need to add the `ssl_options` to server.py in the **Python** / **Virtual environment** folder `Lib/site-packages/streamlit/web/server/server.py`. Connections will now be only possible using `https://` + URL. Be aware, after each update of **Streamlit** to redo these changes.
+If you want a secure connection (https), you need to generate the **[OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)** certificate and the public key:
+
+```cmd
+openssl genrsa 2048 > host.key
+chmod 400 host.key
+openssl req -new -x509 -nodes -sha256 -days 365 -key host.key -out host.cert
+```
+
+Also you need to add the `ssl_options` to server.py in the **Python** / **Virtual environment** folder `Lib/site-packages/streamlit/web/server/server.py`. Connections will now be only possible using `https://` + URL. Be aware, after each update of **Streamlit** to redo these changes.
 
 ```Python
 http_server = HTTPServer(
@@ -65,6 +65,14 @@ http_server = HTTPServer(
             "certfile": "/Path-to-ssl-files/host.cert",
             "keyfile": "/Path-to-ssl-files/host.key",
         }
+```
+
+#### Getting the HR Staff Portal source code
+
+Clone the **repository** of **HRStaffPortal** with following command:
+
+```cmd
+git clone https://github.com/DrBenjamin/HRStaffPortal.git
 ```
 
 ##### Configuration of Streamlit config files
