@@ -309,7 +309,7 @@ if check_password():
 
 
   with st.form("Car Fleet Management", clear_on_submit = True):
-    ## tab `Fuel Consumption`   
+    ## tab `DRIVERS`   
     if (f"{chosen_id}" == '1'):
       st.title('Drivers')
       st.subheader('Enter drivers data')
@@ -330,10 +330,49 @@ if check_password():
       driver_license_expiry_date = st.date_input(label = 'License expiry date', value = datetime.now())
       driver_psv_badge = st.text_input(label = 'PSV Badge', placeholder = 'PSV Badge?')
       driver_notes = st.text_input(label = 'Notes', placeholder = 'Notes?')
-      uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
       
+      
+      ## Image input
+      # Upload image
+      driver_image = ''
+      uploaded_file = st.file_uploader(label = "Upload a picture", type = 'png')
+        
+      # Capture image
+      captured_file = st.camera_input("or take a picture")
+        
+      # Check for image data
       if uploaded_file is not None:
-        driver_image = uploaded_file.getvalue()
+        driver_image = cv2.imdecode(np.frombuffer(uploaded_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
+      elif captured_file is not None:
+        # Create OpenCV numpy array image
+        driver_image = cv2.imdecode(np.frombuffer(captured_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
+          
+      # Crop image if existend
+      if driver_image is not '':
+        h, w, _ = driver_image.shape
+        ratio = h / w
+          
+        # Image is smaller in height than standard image of 478 x 331 pixels
+        if ratio <= 1.4:
+          new_width = h / 1.4
+          crop_center_x = w / 2
+          crop_left_x = int(crop_center_x - (new_width / 2))
+          crop_right_x = int(crop_center_x + (new_width / 2))
+          driver_image = driver_image[0:h, crop_left_x: crop_right_x]
+            
+        # Image is bigger in height than standard image of 478 x 331 pixels
+        else:
+          new_height = 1.4 * w
+          crop_center_y = h / 2
+          crop_upper_y = int(crop_center_y - (new_height / 2))
+          crop_bottom_y = int(crop_center_y + (new_height / 2))
+          driver_image = driver_image[crop_upper_y:crop_bottom_y, 0:w]
+            
+        # Resize cropped image to standard dimensions
+        driver_image = cv2.resize(driver_image, (256, 360), interpolation = cv2.INTER_AREA)
+          
+        # Convert OpenCV numpy array image to byte string
+        driver_image = cv2.imencode('.png', driver_image)[1].tobytes()
             
       else:
         driver_image = load_file("images/placeholder.png")
@@ -543,7 +582,7 @@ if check_password():
       
       ## Image input
       # Upload image
-      image = ''
+      vehicle_image = ''
       uploaded_file = st.file_uploader(label = "Upload a car image", type = 'png')
         
       # Capture image
@@ -565,27 +604,22 @@ if check_password():
         
         # Image is smaller in width than standard image of 478 x 331 pixels
         if ratio >= 0.6924:
-          # Resize image to standard dimensions
-          new_height = (478 / w) * h
-          print(new_height)
+          new_height = (0.6924 * w)
           crop_center_y = h / 2
-          print(crop_center_y)
           crop_upper_y = int(crop_center_y - (new_height / 2))
-          print(crop_upper_y)
           crop_bottom_y = int(crop_center_y + (new_height / 2))
-          print(crop_bottom_y)
           vehicle_image = vehicle_image[crop_upper_y:crop_bottom_y, 0:w]
-          #vehicle_image = cv2.resize(vehicle_image, (478, 331), interpolation = cv2.INTER_AREA)
           
         # Image is bigger in width than standard image of 478 x 331 pixels
         else:
-          # Resize image to standard dimensions
           new_width = (331 / h) * w 
           crop_center_x = w / 2
           crop_left_x = int(crop_center_x - (new_width / 2))
           crop_right_x = int(crop_center_x + (new_width / 2))
           vehicle_image = vehicle_image[0:h, crop_left_x: crop_right_x]
-          vehicle_image = cv2.resize(vehicle_image, (478, 331), interpolation = cv2.INTER_AREA)
+          
+        # Resize cropped image to standard dimensions
+        vehicle_image = cv2.resize(vehicle_image, (478, 331), interpolation = cv2.INTER_AREA)
           
         # Convert OpenCV numpy array image to byte string
         vehicle_image = cv2.imencode('.png', vehicle_image)[1].tobytes()
