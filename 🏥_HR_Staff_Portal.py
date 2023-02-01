@@ -298,18 +298,29 @@ if check_password():
         if image is not '':
           h, w, _ = image.shape
           ratio = h / w
-          new_width = h / 1.4
-          if ratio < 1.4:
+          
+          # Image is smaller in height than standard image of 478 x 331 pixels
+          if ratio <= 1.4:
+            new_width = h / 1.4
             crop_center_x = w / 2
             crop_left_x = int(crop_center_x - (new_width / 2))
             crop_right_x = int(crop_center_x + (new_width / 2))
             image = image[0:h, crop_left_x: crop_right_x]
             
+          # Image is bigger in height than standard image of 478 x 331 pixels
+          else:
+            new_height = 1.4 * w
+            print(new_height)
+            crop_center_y = h / 2
+            crop_upper_y = int(crop_center_y - (new_height / 2))
+            crop_bottom_y = int(crop_center_y + (new_height / 2))
+            image = image[crop_upper_y:crop_bottom_y, 0:w]
+            
           # Resize cropped image to standard dimensions
           image = cv2.resize(image, (256, 360), interpolation = cv2.INTER_AREA)
           
           # Convert OpenCV numpy array image to byte string
-          image = cv2.imencode('.png', image)[1].tostring()
+          image = cv2.imencode('.png', image)[1].tobytes()
         
         # Set placeholder image, if no image data existend
         else:
@@ -421,18 +432,29 @@ if check_password():
         if image is not '':
           h, w, _ = image.shape
           ratio = h / w
-          new_width = h / 1.4
-          if ratio < 1.4:
+          
+          # Image is smaller in height than standard image of 478 x 331 pixels
+          if ratio <= 1.4:
+            new_width = h / 1.4
             crop_center_x = w / 2
             crop_left_x = int(crop_center_x - (new_width / 2))
             crop_right_x = int(crop_center_x + (new_width / 2))
             image = image[0:h, crop_left_x: crop_right_x]
             
+          # Image is bigger in height than standard image of 478 x 331 pixels
+          else:
+            new_height = 1.4 * w
+            print(new_height)
+            crop_center_y = h / 2
+            crop_upper_y = int(crop_center_y - (new_height / 2))
+            crop_bottom_y = int(crop_center_y + (new_height / 2))
+            image = image[crop_upper_y:crop_bottom_y, 0:w]
+            
           # Resize cropped image to standard dimensions
           image = cv2.resize(image, (256, 360), interpolation = cv2.INTER_AREA)
           
           # Convert OpenCV numpy array image to byte string
-          image = cv2.imencode('.png', image)[1].tostring()
+          image = cv2.imencode('.png', image)[1].tobytes()
 
           # Upload picture to database
           pictureUploader(image, index)
