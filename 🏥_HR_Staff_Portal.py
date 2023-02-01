@@ -444,7 +444,6 @@ if check_password():
           # Image is bigger in height than standard image of 478 x 331 pixels
           else:
             new_height = 1.4 * w
-            print(new_height)
             crop_center_y = h / 2
             crop_upper_y = int(crop_center_y - (new_height / 2))
             crop_bottom_y = int(crop_center_y + (new_height / 2))
