@@ -8,6 +8,8 @@ import extra_streamlit_components as stx
 import streamlit_scrollable_textbox as sty
 import platform
 import pandas as pd
+import numpy as np
+import cv2
 import mysql.connector
 import os
 import io
@@ -537,13 +539,60 @@ if check_password():
       vehicle_vendor = st.text_input(label = 'Vendor', placeholder = 'Vendor?')
       vehicle_duty = st.text_input(label = 'Duty', placeholder = 'Duty?')
       vehicle_cost_km = st.text_input(label = 'Cost per km', placeholder = 'Cost per km?')
-      uploaded_file = st.file_uploader(label = "Upload a picture (256×360)", type = 'png')
       
+      
+      ## Image input
+      # Upload image
+      image = ''
+      uploaded_file = st.file_uploader(label = "Upload a car image", type = 'png')
+        
+      # Capture image
+      captured_file = st.camera_input("or take a picture of the car")
+        
+      # Check for image data
       if uploaded_file is not None:
-        vehicle_image = uploaded_file.getvalue()
-            
+        # Create OpenCV numpy array image
+        vehicle_image = cv2.imdecode(np.frombuffer(uploaded_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
+        
+      elif captured_file is not None:
+        # Create OpenCV numpy array image
+        vehicle_image = cv2.imdecode(np.frombuffer(captured_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
+          
+      # Crop image if existend
+      if vehicle_image is not '':
+        h, w, _ = vehicle_image.shape
+        ratio = h / w
+        
+        # Image is smaller in width than standard image of 478 x 331 pixels
+        if ratio >= 0.6924:
+          # Resize image to standard dimensions
+          new_height = (478 / w) * h
+          print(new_height)
+          crop_center_y = h / 2
+          print(crop_center_y)
+          crop_upper_y = int(crop_center_y - (new_height / 2))
+          print(crop_upper_y)
+          crop_bottom_y = int(crop_center_y + (new_height / 2))
+          print(crop_bottom_y)
+          vehicle_image = vehicle_image[crop_upper_y:crop_bottom_y, 0:w]
+          #vehicle_image = cv2.resize(vehicle_image, (478, 331), interpolation = cv2.INTER_AREA)
+          
+        # Image is bigger in width than standard image of 478 x 331 pixels
+        else:
+          # Resize image to standard dimensions
+          new_width = (331 / h) * w 
+          crop_center_x = w / 2
+          crop_left_x = int(crop_center_x - (new_width / 2))
+          crop_right_x = int(crop_center_x + (new_width / 2))
+          vehicle_image = vehicle_image[0:h, crop_left_x: crop_right_x]
+          vehicle_image = cv2.resize(vehicle_image, (478, 331), interpolation = cv2.INTER_AREA)
+          
+        # Convert OpenCV numpy array image to byte string
+        vehicle_image = cv2.imencode('.png', vehicle_image)[1].tobytes()
+        
+      # Set placeholder image, if no image data existend
       else:
-        vehicle_image = load_file("images/placeholder.png")
+        vehicle_image = load_file("images/placeholder_car.png")
           
       
       ## Submit Button `Create new Vehicles`
@@ -603,6 +652,11 @@ if check_password():
         export_excel('Drivers', 'A', [{'header': 'DRIVER'},], int(len(databank_drivers_excel.iloc[drivers_option]) + 1), databank_drivers_excel.iloc[drivers_option], image = databank_drivers._get_value(drivers_option + 1, 'DRIVER_IMAGE'), image_pos = 'C1')
     
     
+    ## Show `Drivers` statistics in an expander
+    with st.expander('Drivers statistics', expanded = False):
+      st.write('Statistics')
+    
+    
   ## Data analysis for `Fuel`
   elif (f"{chosen_id}" == '2'):
     ## Export `Fuel` dataframe to Excel Makro file
@@ -611,7 +665,7 @@ if check_password():
   
     
     ## Show fuel consumption statistics in an expander
-    with st.expander('Fuel consumption statistics', expanded = False):
+    with st.expander('Fuel statistics', expanded = False):
       ## Average Fuel Consumption Chart
       # Checking for unique Vehicles IDs
       vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_fuel)
@@ -663,16 +717,33 @@ if check_password():
         
     ## Show `Fuel` Report
     with st.expander('Fuel Report', expanded = False):
-      ## Checking for unique Vehicles IDs and create a selectbox with it
+      ## Image select with vehicles
+      # Checking for unique Vehicles IDs
       vehicles = check_vehicles(column = 'VEHICLE_ID', data = databank_fuel)
-      
-      # Prepare Selectbox list
       vehicles_list = list(vehicles)
       
-      # Selectbox for choosing vehicle
-      vehicle = st.selectbox('Which vehicles?', options = vehicles_list, index = 0)
-        
-        
+      # Prepare vehicles which have a fuel consumption
+      images = []
+      vehicle_id = []
+      vehicles_desc = []
+      for i in range(len(databank_vehicles)):
+        for x in range(len(vehicles_list)):
+          if databank_vehicles._get_value(i + 1, 'VEHICLE_ID') == vehicles_list[x]:
+            image_filename = 'images/temp_vehicle' + str(i) + '.png'
+            images.append(image_filename)
+            save_img(data = databank_vehicles._get_value(i + 1, 'VEHICLE_IMAGE'), filename = image_filename)
+            vehicle_id.append(databank_vehicles._get_value(i + 1, 'VEHICLE_ID'))
+            vehicles_desc.append('Vehicle ID: ' + databank_vehicles._get_value(i + 1, 'VEHICLE_ID') + ' (' + databank_vehicles._get_value(i + 1, 'VEHICLE_PLATE_NUMBER') + ')')
+          
+      # Show selectable images
+      vehicle = image_select(label = 'Which Vehicle to choose?', images = images, captions = vehicles_desc, index = 0, return_value = 'index')  
+       
+      # Delete temp images
+      for i in range(len(databank_drivers)):
+      	if os.path.exists('images/temp' + str(i) + '.png'):
+		      os.remove('images/temp' + str(i) + '.png') 
+		  
+		  
       ## Selectbox for choosing time span
       time_span = ['Last week', 'Last month', 'Last year']
       time_span = st.selectbox('Which time span?', options = time_span, index = 0)
@@ -686,7 +757,7 @@ if check_password():
         
       ## Calculate average fuel consumption per Vehicle for the last week / month / year
       report_fuel_consumption_average = pd.DataFrame(columns = ['Vehicle ID', 'Date', 'Average Fuel Consumption'])
-      query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE, FUEL_DATE FROM carfleet.FUEL WHERE FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND VEHICLE_ID = '%s';" %(weeks, vehicle)
+      query = "SELECT ID, VEHICLE_ID, FUEL_AMOUNT, FUEL_DISTANCE, FUEL_DATE FROM carfleet.FUEL WHERE FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND VEHICLE_ID = '%s';" %(weeks, vehicle_id[vehicle])
       rows = run_query(query)
       for row in rows:
         fuel_avg = round(((row[2] * 100) / row[3]), 2)
@@ -700,7 +771,7 @@ if check_password():
       
       ## Calculate average fuel price per Vehicle for the last week / month / year
       report_fuel_price_litre = pd.DataFrame(columns = ['Vehicle ID', 'Date', 'Fuel Cost'])
-      query = "SELECT ID, VEHICLE_ID, FUEL_COST, FUEL_DATE FROM carfleet.FUEL WHERE FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND VEHICLE_ID = '%s';" %(weeks, vehicle)
+      query = "SELECT ID, VEHICLE_ID, FUEL_COST, FUEL_DATE FROM carfleet.FUEL WHERE FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND VEHICLE_ID = '%s';" %(weeks, vehicle_id[vehicle])
       rows = run_query(query)
       for row in rows:
         fuel_cost = round(row[2], 3)
@@ -714,7 +785,7 @@ if check_password():
       
       ## Check if fuel refuilling was under max capacity for the last week / month / year
       report_fuel_max_cap = pd.DataFrame(columns = ['Vehicle ID', 'Date', 'Fuel Amount', 'Fuel max. Capacity'])
-      query = "SELECT fue.ID, fue.VEHICLE_ID, fue.FUEL_AMOUNT, fue.FUEL_DATE, vec.VEHICLE_FUEL_CAPACITY FROM carfleet.FUEL AS fue LEFT JOIN carfleet.VEHICLES AS vec ON vec.VEHICLE_ID = fue.VEHICLE_ID WHERE fue.FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND fue.VEHICLE_ID = '%s';" %(weeks, vehicle)
+      query = "SELECT fue.ID, fue.VEHICLE_ID, fue.FUEL_AMOUNT, fue.FUEL_DATE, vec.VEHICLE_FUEL_CAPACITY FROM carfleet.FUEL AS fue LEFT JOIN carfleet.VEHICLES AS vec ON vec.VEHICLE_ID = fue.VEHICLE_ID WHERE fue.FUEL_DATE BETWEEN DATE_SUB(NOW(), INTERVAL %s WEEK) AND NOW() AND fue.VEHICLE_ID = '%s';" %(weeks, vehicle_id[vehicle])
       rows = run_query(query)
       for row in rows:
         fuel_amount = round(row[2], 1)
@@ -838,46 +909,46 @@ if check_password():
       export_excel('Vehicles', 'R', [{'header': 'VEHICLE_ID'}, {'header': 'VEHICLE_PLATE_NUMBER'}, {'header': 'VEHICLE_TYPE'}, {'header': 'VEHICLE_BRAND'}, {'header': 'VEHICLE_MODEL'}, {'header': 'VEHICLE_SEATS'}, {'header': 'VEHICLE_FUEL_TYPE'}, {'header': 'VEHICLE_FUEL_CAPACITY'}, {'header': 'VEHICLE_COLOUR'}, {'header': 'VEHICLE_CHASIS_NUMBER'}, {'header': 'VEHICLE_MANUFACTURE_YEAR'}, {'header': 'VEHICLE_PURCHASE_DATE'}, {'header': 'VEHICLE_PURCHASE_PRICE'}, {'header': 'VEHICLE_DISPOSITION_YEAR'}, {'header': 'VEHICLE_COF_EXPIRY_DATE'}, {'header': 'VEHICLE_VENDOR'}, {'header': 'VEHICLE_DUTY'}, {'header': 'VEHICLE_COST_KM'},], int(len(databank_vehicles_excel) + 1), databank_vehicles_excel)
     
     
+    ## Show `Vehicles` profiles in an expander
+    with st.expander('Vehicles profiles', expanded = False):
+      ## Image select with vehicles
+      # Prepare vehicles which have a fuel consumption
+      images = []
+      vehicle_id = []
+      vehicles_desc = []
+      for i in range(len(databank_vehicles)):
+        image_filename = 'images/temp_vehicle' + str(i) + '.png'
+        images.append(image_filename)
+        save_img(data = databank_vehicles._get_value(i + 1, 'VEHICLE_IMAGE'), filename = image_filename)
+        vehicle_id.append(databank_vehicles._get_value(i + 1, 'VEHICLE_ID'))
+        vehicles_desc.append('Vehicle ID: ' + databank_vehicles._get_value(i + 1, 'VEHICLE_ID') + ' (' + databank_vehicles._get_value(i + 1, 'VEHICLE_PLATE_NUMBER') + ') Brand: ' + databank_vehicles._get_value(i + 1, 'VEHICLE_BRAND') + ' ' + databank_vehicles._get_value(i + 1, 'VEHICLE_MODEL'))
+          
+      # Show selectable images
+      vehicles_option = image_select(label = 'Which Vehicle to choose?', images = images, captions = vehicles_desc, index = 0, return_value = 'index')  
+       
+      # Delete temp images
+      for i in range(len(databank_drivers)):
+      	if os.path.exists('images/temp_vehicle' + str(i) + '.png'):
+		      os.remove('images/temp_vehicle' + str(i) + '.png')
+		      
+		  # Show vehicle data in a scrollable textbox for copy & paste
+      sty.scrollableTextbox('Vehicle ID: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_ID') + '; Plate Number: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_PLATE_NUMBER') + '; Type: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_TYPE') + '; Brand: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_BRAND') + '; Model: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_MODEL') + '; Seats: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_SEATS')) + '; Fuel Type: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_FUEL_TYPE') + '; Fuel Capacity: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_FUEL_CAPACITY')) + '; Colour: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_COLOUR') + '; Chasis Number: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_CHASIS_NUMBER') + '; Manufacture Year: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_MANUFACTURE_YEAR')) + '; Purchase Date: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_PURCHASE_DATE')) + '; Purchase Price: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_PURCHASE_PRICE')) + '; Disposition Year: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_DISPOSITION_YEAR')) + '; COF Expiry: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_COF_EXPIRY_DATE')) + '; Vendor: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_VENDOR') + '; Duty: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_DUTY')) + '; Cost KM: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_COST_KM')), height = 56, border = True)
+      
+      
+      ## Export vehicle profile to Excel Makro file
+      if st.button('Export Vehicle data to Excel document'):
+        export_excel('Vehicles', 'A', [{'header': 'VEHICLE'},], int(len(databank_vehicles_excel.iloc[vehicles_option]) + 1), databank_vehicles_excel.iloc[vehicles_option], image = databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_IMAGE'), image_pos = 'C1')
+    
+      
     ## Show `Vehicles` statistics in an expander
     with st.expander('Vehicles statistics', expanded = False):
-      ## Columns for showing Vehicle profile
-      col1, col2, col3 = st.columns(3)
-      cars = lastID(url = '`carfleet`.`VEHICLES`')  
-      
-      # Column 1
-      with col1:
-        for i in range(1, cars, 3):
-          st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-          st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-          st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-          st.subheader("Vehicle ID")
-          st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
-  
-      # Coloumn 2
-      with col2:
-        for i in range(2, cars, 3):
-          st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-          st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-          st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-          st.subheader("Vehicle ID")
-          st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
-  
-      # Column 3
-      with col3:
-        for i in range(3, cars, 3):
-          st.image(databank_vehicles._get_value(i, 'VEHICLE_IMAGE'))
-          st.subheader(databank_vehicles._get_value(i, 'VEHICLE_BRAND'))
-          st.write(databank_vehicles._get_value(i, 'VEHICLE_MODEL'))
-          st.subheader("Vehicle ID")
-          st.write(databank_vehicles._get_value(i, 'VEHICLE_ID'))
-    
       # Checking for unique vehicles types
-      vehicles = check_vehicles(column = 'VEHICLE_TYPE', data = databank_vehicles)
+      vehicle_types = check_vehicles(column = 'VEHICLE_TYPE', data = databank_vehicles)
     
       # Calculate total amount of vehicles per type / category
       data_cars= pd.DataFrame(columns = ['Vehicle Type', 'Amount'])
-      for i in range(len(vehicles)):
-        query = "SELECT VEHICLE_TYPE FROM `carfleet`.`VEHICLES` WHERE VEHICLE_TYPE = '%s';" %(vehicles[i])
+      for i in range(len(vehicle_types)):
+        query = "SELECT VEHICLE_TYPE FROM `carfleet`.`VEHICLES` WHERE VEHICLE_TYPE = '%s';" %(vehicle_types[i])
         rows = run_query(query)
         amount = 0
         for row in rows:
