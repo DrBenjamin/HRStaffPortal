@@ -29,7 +29,6 @@ from functions import landing_page
 #### Streamlit initial setup
 desc_file = open('DESCRIPTION', 'r')
 lines = desc_file.readlines()
-print(lines[3])
 st.set_page_config(
   page_title = "HR Staff Portal",
   page_icon = st.secrets['custom']['facility_image_thumbnail'],
