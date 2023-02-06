@@ -21,6 +21,9 @@ HRStaffPortal.Rproj
 secrets.toml
 config.toml
 .streamlit/
+__MACOSX
+google_credentials.json
+credentials.zip
 files/Code_Snippets.py
 .DS_Store
 run.sh

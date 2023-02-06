@@ -8,6 +8,13 @@ import streamlit.components.v1 as stc
 import pandas as pd
 import mysql.connector
 import io
+import os
+import shutil
+import platform
+import pandas as pd
+import numpy as np
+import pygsheets
+from google_drive_downloader import GoogleDriveDownloader as gdd
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
@@ -131,6 +138,55 @@ if check_password():
   databank_workshop = databank_workshop.set_index('ID')
   
   
+  
+  ### Google Sheet support
+  ## Get future workshop data
+  # Run query 
+  query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE WORKSHOP_DATE > CURRENT_DATE();"
+  rows = run_query(query)
+      
+  # Creating pandas dataframe
+  databank_google_workshop = pd.DataFrame(columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES', 'WORKSHOP_ATTENDEES_CONFIRMED'])
+  for row in rows:
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES', 'WORKSHOP_ATTENDEES_CONFIRMED'])
+    databank_google_workshop = pd.concat([databank_google_workshop, df])
+  databank_google_workshop = databank_google_workshop.set_index('ID')
+  
+  
+  ## Google Sheet API authorization
+  output = st.secrets['google']['credentials_file']
+  gdd.download_file_from_google_drive(file_id = st.secrets['google']['credentials_file_id'], dest_path = './credentials.zip', unzip = True)
+  client = pygsheets.authorize(service_file = st.secrets['google']['credentials_file'])
+  if os.path.exists("credentials.zip"):
+    os.remove("credentials.zip")
+  if os.path.exists("google_credentials.json"):
+    os.remove("google_credentials.json")
+  if os.path.exists("__MACOSX"):
+    shutil.rmtree("__MACOSX")
+    
+    
+  ## Open the spreadsheet and the first sheet
+  sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
+  wks = sh.sheet1
+  
+  
+  ## Read worksheet
+  data = wks.get_as_df()
+  data = data.set_index('ID')
+  
+  
+  ## Update the worksheet with the numpy array values, beginning at cell 'A2'
+  # Creating numpy array
+  numb = np.array(databank_google_workshop)
+  numb[:, [4]] = numb[:, [4]].astype('str')
+  
+  # Converting numby array to list
+  numb = numb.tolist()
+  
+  # Writing to worksheet
+  wks.update_values(crange = 'A2', values = numb)
+
+
   
   ### Existing workshop
   if len(html_query) > 1:

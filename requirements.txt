@@ -16,4 +16,6 @@ deepl
 geocoder
 geopy
 qrcode
+pygsheets
+googledrivedownloader
 loguru
