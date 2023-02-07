@@ -1,7 +1,7 @@
 Package: HRStaffPortal
 Type: Package
 Title: HR Staff Portal
-Version: 0.2.0-b2
+Version: 0.2.0
 Author: Benjamin Gross
 Maintainer: Benjamin Gross <ben@benbox.org>
 Description: HR Staff Portal for hospital management.

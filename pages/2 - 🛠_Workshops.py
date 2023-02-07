@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 import pygsheets
 from google_drive_downloader import GoogleDriveDownloader as gdd
+from streamlit_image_select import image_select
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
@@ -23,8 +24,11 @@ from functions import logout
 from functions import landing_page
 from functions import generateID
 from functions import generate_qrcode
+from functions import save_img
+from functions import load_file
 from network import send_mail
 from network import get_ip
+from network import google_sheet_credentials
 
 
 
@@ -142,7 +146,7 @@ if check_password():
   ### Google Sheet support
   ## Get future workshop data
   # Run query 
-  query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE WORKSHOP_DATE > CURRENT_DATE() - 14;"
+  query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE WORKSHOP_DATE > CURRENT_DATE();"
   rows = run_query(query)
       
   # Creating pandas dataframe
@@ -152,32 +156,16 @@ if check_password():
     databank_google_workshop = pd.concat([databank_google_workshop, df])
   databank_google_workshop = databank_google_workshop.set_index('ID')
   
-  
-  ## Google Sheet API authorization
-  output = st.secrets['google']['credentials_file']
-  gdd.download_file_from_google_drive(file_id = st.secrets['google']['credentials_file_id'], dest_path = './credentials.zip', unzip = True)
-  client = pygsheets.authorize(service_file = st.secrets['google']['credentials_file'])
-  if os.path.exists("credentials.zip"):
-    os.remove("credentials.zip")
-  if os.path.exists("google_credentials.json"):
-    os.remove("google_credentials.json")
-  if os.path.exists("__MACOSX"):
-    shutil.rmtree("__MACOSX")
-    
     
   ## Open the spreadsheet and the first sheet
+  client = google_sheet_credentials()
   sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
   wks = sh.sheet1
   
-  
-  ## Read worksheet
-  #data = wks.get_as_df()
-  #data = data.set_index('ID')
-  
-  
+
   ## Update the worksheet with the numpy array values, beginning at cell 'A2'
   # Creating numpy array
-  st.write(databank_google_workshop)
+  #st.write(databank_google_workshop)
   numb = np.array(databank_google_workshop)
   
   # Converting dates to string
@@ -195,7 +183,7 @@ if check_password():
   if len(html_query) > 1:
     ## Get specific workshop data
     # Run query 
-    query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE workshop_id = '%s';" %(html_query['workshop'][0])
+    query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED, WORKSHOP_IMAGE FROM idcard.WORKSHOP WHERE workshop_id = '%s';" %(html_query['workshop'][0])
     workshop = run_query(query)
   
   
@@ -314,6 +302,45 @@ if check_password():
         st.write('**Date:** ', str(workshop[0][6]))
         st.write('**Duration:** ', str(workshop[0][7]))
         st.write('**Employees not confirmed:** ', workshop[0][8])
+        
+        
+        ## Image select with attendees
+        # Getting employee data
+        query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, IMAGE FROM `idcard`.`IMAGEBASE`;"
+        rows = run_query(query)
+        
+        # Add placeholder
+        image_placeholder = load_file('images/placeholder.png')
+        databank_attendee = pd.DataFrame(columns = ['ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
+        df = pd.DataFrame([[1, 'None', '', 'xxxxxx', image_placeholder]], columns = ['ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
+        databank_attendee = pd.concat([databank_attendee, df])
+        id = 1
+        not_confirmed = workshop[0][8].split(' ')
+        for row in rows:
+          for attendee in not_confirmed:
+            if row[3] == attendee:
+              id += 1
+              df = pd.DataFrame([[id, row[1], row[2], row[3], row[4]]], columns = ['ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
+              databank_attendee = pd.concat([databank_attendee, df])
+        databank_attendee = databank_attendee.set_index('ID')
+        st.image(databank_attendee._get_value(1, 'IMAGE'))
+        st.write(databank_attendee)
+
+        # Collect images from employee data
+        images = []
+        attendees_desc = []
+        for i in range(len(databank_attendee)):
+          image_filename = 'images/temp' + str(i + 1) + '.png'
+          images.append(image_filename)
+          save_img(data = databank_attendee._get_value(i + 1, 'IMAGE'), filename = image_filename)
+          attendees_desc.append(databank_attendee._get_value(i + 1, 'FORENAME') + ' ' + databank_attendee._get_value(i + 1, 'SURNAME' )+ ' (' + databank_attendee._get_value(i + 1, 'EMPLOYEE_NO') + ')')
+        
+        st.write(images)
+        for i in range(len(images)):
+          st.image(images[i])
+        # Show selectable images
+        attendee_option = image_select(label = 'Which employee should be confirmed?', images = images, captions = attendees_desc, index = 0, return_value = 'index')
+        
         st.write('**Employees confirmed:** ', workshop[0][9])
         
         
