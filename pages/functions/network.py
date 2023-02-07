@@ -5,8 +5,10 @@
 #### Loading needed Python libraries
 import streamlit as st
 import pandas as pd
+import pygsheets
 import io
 import os
+import shutil
 import deepl
 import typing as T
 import signal
@@ -17,6 +19,7 @@ from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email import encoders
 from streamlit.web.server import Server
+from google_drive_downloader import GoogleDriveDownloader
 
 
 
@@ -91,3 +94,22 @@ def get_ip():
   ip_address = socket.gethostbyname(hostname)
 
   return ip_address
+
+
+
+### Function: google_sheet_credentials = Getting Google Sheet API credentials
+@st.experimental_singleton
+def google_sheet_credentials():
+  ## Google Sheet API authorization
+  output = st.secrets['google']['credentials_file']
+  GoogleDriveDownloader.download_file_from_google_drive(file_id = st.secrets['google']['credentials_file_id'], dest_path = './credentials.zip', unzip = True)
+  client = pygsheets.authorize(service_file = st.secrets['google']['credentials_file'])
+  if os.path.exists("credentials.zip"):
+    os.remove("credentials.zip")
+  if os.path.exists("google_credentials.json"):
+    os.remove("google_credentials.json")
+  if os.path.exists("__MACOSX"):
+    shutil.rmtree("__MACOSX")
+    
+  # Return client
+  return client

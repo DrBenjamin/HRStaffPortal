@@ -8,6 +8,7 @@ import extra_streamlit_components as stx
 import streamlit.components.v1 as stc
 import pandas as pd
 import numpy as np
+import pygsheets
 import cv2
 import mysql.connector
 import os
@@ -22,6 +23,7 @@ from functions import logout
 from functions import export_excel
 from functions import load_file
 from functions import landing_page
+from network import google_sheet_credentials
 
 
 
@@ -169,18 +171,19 @@ def pictureUploader(image, index):
 def onChange():
   st.session_state['run'] = True
   #st.session_state['chosen_id'] = 1
-
+  
 
 
 
 #### Two versions of the page -> Landing page vs. HRStaffPortal
 ### Logged in state (HR Staff Portal)
 if check_password():
-  ## Header
+  ### Header
   header(title = 'HR Staff Portal', data_desc = 'employee data', expanded = st.session_state['header'])
 
 
-  ## Get data from the databank(s)
+
+  ### Get data from the databank(s)
   # Open databank connection
   conn = init_connection()
 
@@ -229,7 +232,40 @@ if check_password():
     names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
 
-  ## Employee selectbox (on change sets first start session state)
+
+  ### Google Sheet support
+  ## Getting employee PIN data
+  query = "SELECT ID, ID, EMPLOYEE_NO, PIN FROM `idcard`.`IMAGEBASE`;"
+  rows = run_query(query)
+  databank_pin = pd.DataFrame(columns = ['ID_INDEX', 'ID', 'EMPLOYEE_NO', 'PIN'])
+  for row in rows:
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['ID_INDEX', 'ID', 'EMPLOYEE_NO', 'PIN'])
+    databank_pin = pd.concat([databank_pin, df])
+  databank_pin = databank_pin.set_index('ID_INDEX')
+    
+    
+  ## Open the spreadsheet and the first sheet
+  # Getting credentials
+  client = google_sheet_credentials()
+  
+  # Opening sheet
+  sh = client.open_by_key(st.secrets['google']['pin_spreadsheet_id'])
+  wks = sh.sheet1
+    
+    
+  ## Update the worksheet with the numpy array values, beginning at cell 'A2'
+  # Creating numpy array
+  numb = np.array(databank_pin)
+    
+  # Converting numby array to list
+  numb = numb.tolist()
+    
+  # Writing to worksheet
+  wks.update_values(crange = 'A2', values = numb)
+  
+
+
+  ### Employee selectbox (on change sets first start session state)
   if (st.session_state['chosen_id'] != 1):
     selectbox_enabled = True
   else:
@@ -294,7 +330,7 @@ if check_password():
           image = cv2.imdecode(np.frombuffer(captured_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
           
         # Crop image if existend
-        if image is not '':
+        if image != '':
           h, w, _ = image.shape
           ratio = h / w
           
@@ -428,7 +464,7 @@ if check_password():
           image = cv2.imdecode(np.frombuffer(captured_file.getvalue(), np.uint8), cv2.IMREAD_COLOR)
           
         # Crop image if existend
-        if image is not '':
+        if image != '':
           h, w, _ = image.shape
           ratio = h / w
           
