@@ -142,7 +142,7 @@ if check_password():
   ### Google Sheet support
   ## Get future workshop data
   # Run query 
-  query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE WORKSHOP_DATE > CURRENT_DATE();"
+  query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE WORKSHOP_DATE > CURRENT_DATE() - 14;"
   rows = run_query(query)
       
   # Creating pandas dataframe
@@ -171,13 +171,16 @@ if check_password():
   
   
   ## Read worksheet
-  data = wks.get_as_df()
-  data = data.set_index('ID')
+  #data = wks.get_as_df()
+  #data = data.set_index('ID')
   
   
   ## Update the worksheet with the numpy array values, beginning at cell 'A2'
   # Creating numpy array
+  st.write(databank_google_workshop)
   numb = np.array(databank_google_workshop)
+  
+  # Converting dates to string
   numb[:, [4]] = numb[:, [4]].astype('str')
   
   # Converting numby array to list
