@@ -268,32 +268,8 @@ if check_password():
       workshop = run_query(query)
       
       
-      ## Sidebar
-      attendees = workshop[0][8].split(' ')
-      option = st.sidebar.selectbox(label = 'Which attendee do you want to confirm?', options = attendees)
-      if st.sidebar.button(label = 'Confirm \"' + option + '\"'):
-        not_confirmed = ''
-        for attendee in attendees:
-          if attendee != option:
-            not_confirmed += attendee + ' '
-        if workshop[0][9] != None:
-          confirmed = workshop[0][9] + ' ' + option
-        else:
-          confirmed = option
-        
-        
-        ## Update workshop data
-        query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s', WORKSHOP_ATTENDEES_CONFIRMED = '%s' WHERE WORKSHOP_ID = '%s';" %(not_confirmed, confirmed, databank_workshop['WORKSHOP_ID'][index])
-        run_query(query)
-        conn.commit()
-  
-          
-        # Rerun
-        st.experimental_rerun()
-      
-      
       ## Output form
-      with st.form('Workshop existend', clear_on_submit = True):
+      with st.expander(label = 'Workshop existend', expanded = True):
         st.header('Workshop')
         st.write('**Title:** ', workshop[0][2])
         st.write('**Description:** ', workshop[0][3])
@@ -306,25 +282,23 @@ if check_password():
         
         ## Image select with attendees
         # Getting employee data
-        query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, IMAGE FROM `idcard`.`IMAGEBASE`;"
+        query = "SELECT ID, ID, FORENAME, SURNAME, EMPLOYEE_NO, IMAGE FROM `idcard`.`IMAGEBASE`;"
         rows = run_query(query)
         
         # Add placeholder
         image_placeholder = load_file('images/placeholder.png')
-        databank_attendee = pd.DataFrame(columns = ['ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
-        df = pd.DataFrame([[1, 'None', '', 'xxxxxx', image_placeholder]], columns = ['ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
+        databank_attendee = pd.DataFrame(columns = ['ID_INDEX', 'ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
+        df = pd.DataFrame([[1, 0, 'None', '', 'xxxxxx', image_placeholder]], columns = ['ID_INDEX', 'ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
         databank_attendee = pd.concat([databank_attendee, df])
         id = 1
         not_confirmed = workshop[0][8].split(' ')
         for row in rows:
           for attendee in not_confirmed:
-            if row[3] == attendee:
+            if row[4] == attendee:
               id += 1
-              df = pd.DataFrame([[id, row[1], row[2], row[3], row[4]]], columns = ['ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
+              df = pd.DataFrame([[id, row[1], row[2], row[3], row[4], row[5]]], columns = ['ID_INDEX', 'ID', 'FORENAME', 'SURNAME', 'EMPLOYEE_NO', 'IMAGE'])
               databank_attendee = pd.concat([databank_attendee, df])
-        databank_attendee = databank_attendee.set_index('ID')
-        st.image(databank_attendee._get_value(1, 'IMAGE'))
-        st.write(databank_attendee)
+        databank_attendee = databank_attendee.set_index('ID_INDEX')
 
         # Collect images from employee data
         images = []
@@ -335,13 +309,26 @@ if check_password():
           save_img(data = databank_attendee._get_value(i + 1, 'IMAGE'), filename = image_filename)
           attendees_desc.append(databank_attendee._get_value(i + 1, 'FORENAME') + ' ' + databank_attendee._get_value(i + 1, 'SURNAME' )+ ' (' + databank_attendee._get_value(i + 1, 'EMPLOYEE_NO') + ')')
         
-        st.write(images)
-        for i in range(len(images)):
-          st.image(images[i])
         # Show selectable images
         attendee_option = image_select(label = 'Which employee should be confirmed?', images = images, captions = attendees_desc, index = 0, return_value = 'index')
-        
         st.write('**Employees confirmed:** ', workshop[0][9])
+        
+        # Rewriting lists
+        not_confirmed_new = ''
+        if st.button('Confirm selected'):
+          if attendee_option > 0:
+            for attendee in not_confirmed:
+              if attendee != databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO'):
+                not_confirmed_new += attendee + ' '
+          if workshop[0][9] != None:
+            confirmed = workshop[0][9] + ' ' + databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO')
+          else:
+            confirmed = databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO')
+            
+          # Update workshop data
+          query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s', WORKSHOP_ATTENDEES_CONFIRMED = '%s' WHERE WORKSHOP_ID = '%s';" %(not_confirmed_new, confirmed, databank_workshop['WORKSHOP_ID'][index])
+          run_query(query)
+          conn.commit()
         
         
         ## Multiselect to choose employees for workshop
@@ -372,7 +359,8 @@ if check_password():
     
     
         ## Submit button
-        submitted = st.form_submit_button(label = 'Add attendees')
+        submitted = False
+        #st.form_submit_button(label = 'Add attendees')
         if submitted:
           ## Update workshop data
           query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s' WHERE WORKSHOP_ID = '%s';" %(attendees, databank_workshop['WORKSHOP_ID'][index])
