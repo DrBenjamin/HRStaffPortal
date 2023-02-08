@@ -662,7 +662,7 @@ if check_password():
       ## Image select with drivers
       images = []
       drivers_desc = []
-      date = str(datetime.now())
+      date = str(datetime.now()).replace(':', '_')
       for i in range(len(databank_drivers)):
         image_filename = 'images/temp' + date + str(i + 1) + '.png'
         images.append(image_filename)
@@ -761,7 +761,7 @@ if check_password():
       images = []
       vehicle_id = []
       vehicles_desc = []
-      date = str(datetime.now())
+      date = str(datetime.now()).replace(':', '_')
       for i in range(len(databank_vehicles)):
         for x in range(len(vehicles_list)):
           if databank_vehicles._get_value(i + 1, 'VEHICLE_ID') == vehicles_list[x]:
@@ -952,7 +952,7 @@ if check_password():
       images = []
       vehicle_id = []
       vehicles_desc = []
-      date = str(datetime.now())
+      date = str(datetime.now()).replace(':', '_')
       for i in range(len(databank_vehicles)):
         image_filename = 'images/temp_vehicle' + date + str(i + 1) + '.png'
         images.append(image_filename)

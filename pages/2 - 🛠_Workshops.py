@@ -239,7 +239,7 @@ if check_password():
       # Collect images from employee data
       images = []
       attendees_desc = []
-      date = str(datetime.now())
+      date = str(datetime.now()).replace(':', '_')
       for i in range(len(databank_attendee)):
         image_filename = 'images/temp' + date + str(i + 1) + '.png'
         images.append(image_filename)
