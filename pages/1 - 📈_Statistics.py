@@ -84,6 +84,9 @@ if check_password():
   
   ### Statistics expander  
   with st.expander(label = 'Statistics', expanded = True):
+    st.title('Statistics')
+    
+    
     ## Open databank connection
     conn = init_connection()
 

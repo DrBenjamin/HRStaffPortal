@@ -266,6 +266,7 @@ if check_password():
 
 
   ### Employee selectbox (on change sets first start session state)
+  st.title('Employee data')
   if (st.session_state['chosen_id'] != 1):
     selectbox_enabled = True
   else:

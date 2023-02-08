@@ -181,6 +181,9 @@ if check_password():
 
   
   ### Existing workshop
+  st.title('Workshop data')
+  
+  
   ## Workshop selectbox
   workshop_title = [str(title) + ' (' for title in list(databank_workshop['WORKSHOP_TITLE'])]
   workshop_id = [str(id) + ')' for id in list(databank_workshop['WORKSHOP_ID'])]
@@ -198,7 +201,7 @@ if check_password():
       
       
     ## Output form
-    with st.expander(label = '', expanded = True):
+    with st.expander(label = 'Workshop', expanded = True):
       st.header('Workshop')
       st.write('**Title:** ', workshop[0][2])
       st.write('**Description:** ', workshop[0][3])
@@ -324,6 +327,7 @@ if check_password():
           if row[3] == eno:
             not_in_list = False
         if not_in_list == True:
+          print(row[5])
           if row[5] is None:
             names.append(str(row[1] + ' ' + row[2] + ', ' + row[3] + ', ' + row[4] + ' ('')'))
           else:

@@ -184,7 +184,8 @@ def pictureUploaderVehicles(image, index):
 ### Logged in state (Car Fleet Management System)
 if check_password():
   ## Header
-  header(title = 'Car Fleet Management System', data_desc = 'workshops data', expanded = st.session_state['header']) 
+  header(title = 'Car Fleet Management System', data_desc = 'workshops data', expanded = st.session_state['header'])
+  st.title('Car Fleet data')
   
     
   ## Use local databank carfleet
