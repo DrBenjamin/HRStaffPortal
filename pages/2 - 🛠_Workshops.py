@@ -72,6 +72,11 @@ if ('header' not in st.session_state):
   st.session_state['header'] = True
 
 
+## Created workshop
+if ('workshop' not in st.session_state):
+  st.session_state['workshop'] = '00000'
+
+
 
   
 #### Functions
@@ -189,7 +194,11 @@ if check_password():
   workshop_id = [str(id) + ')' for id in list(databank_workshop['WORKSHOP_ID'])]
   workshops = [i + j for i, j in zip(workshop_title, workshop_id)]
   workshops.insert(0, 'New Workshop')
-  index = st.selectbox(label = "Which workshop do you want to select?", options = range(len(workshops)), format_func = lambda x: workshops[x])
+  if st.session_state['workshop'] == '00000':
+    index_workshop = 0
+  else:
+    index_workshop = int(st.session_state['workshop'])
+  index = st.selectbox(label = "Which workshop do you want to select?", options = range(len(workshops)), format_func = lambda x: workshops[x], index = index_workshop)
     
     
   ## Show specific workshop
@@ -427,6 +436,7 @@ if check_password():
           i += 1
           
         # Reload
+        st.session_state['workshop'] = workshop_id
         st.experimental_rerun()
         
   
