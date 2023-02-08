@@ -16,6 +16,7 @@ import platform
 import io
 import sys
 from datetime import datetime, date
+from array import array
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
@@ -189,7 +190,7 @@ if check_password():
   # Open databank connection
   conn = init_connection()
 
-  # Getting employee data
+  # Get employee data
   query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
   rows = run_query(query)
   databank = pd.DataFrame(columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
@@ -198,7 +199,7 @@ if check_password():
     databank = pd.concat([databank, df])
   databank = databank.set_index('ID')
   
-  # Getting extra employee data
+  # Get extra employee data
   query = "SELECT ID, EMPLOYEE_NO, EMPLOYEE_GENDER, EMPLOYEE_BIRTHDAY, EMPLOYEE_ADDRESS_STREET, EMPLOYEE_ADDRESS_CITY, EMPLOYEE_ADDRESS_CITY_CODE, EMPLOYEE_EMAIL, EMPLOYEE_PHONE, EMPLOYEE_PHONE2, EMPLOYEE_NATIONALITY, EMPLOYEE_PLACE_OF_ORIGIN, EMPLOYEE_MARRIAGE_STATUS, EMPLOYEE_EMPLOYMENT_TYPE FROM `idcard`.`EMPLOYEE`;"
   rows = run_query(query)
   databank_employee = pd.DataFrame(columns = ['ID', 'EMPLOYEE_NO', 'EMPLOYEE_GENDER', 'EMPLOYEE_BIRTHDAY', 'EMPLOYEE_ADDRESS_STREET', 'EMPLOYEE_ADDRESS_CITY', 'EMPLOYEE_ADDRESS_CITY_CODE', 'EMPLOYEE_EMAIL', 'EMPLOYEE_PHONE', 'EMPLOYEE_PHONE2', 'EMPLOYEE_NATIONALITY', 'EMPLOYEE_PLACE_OF_ORIGIN', 'EMPLOYEE_MARRIAGE_STATUS', 'EMPLOYEE_EMPLOYMENT_TYPE'])
@@ -207,12 +208,12 @@ if check_password():
     databank_employee = pd.concat([databank_employee, df])
   databank_employee = databank_employee.set_index('ID')
   
-  # Getting Training data
-  query = "SELECT ID, EMPLOYEE_NO, TRAINING_DESCRIPTION, TRAINING_INSTITUTE, TRAINING_DATE, TRAINING_DURATION FROM `idcard`.`TRAINING`;"
+  # Get Training data
+  query = "SELECT img.ID, img.EMPLOYEE_NO, img.WORKSHOP_ID, wor.WORKSHOP_TITLE, wor.WORKSHOP_DESCRIPTION, wor.WORKSHOP_FACILITATOR, wor.WORKSHOP_DATE, wor.WORKSHOP_DURATION FROM `idcard`.`TRAINING` AS img LEFT JOIN `idcard`.`WORKSHOP` AS wor ON img.WORKSHOP_ID = wor.WORKSHOP_ID;"
   rows = run_query(query)
-  databank_training = pd.DataFrame(columns = ['ID', 'EMPLOYEE_NO', 'TRAINING_DESCRIPTION', 'TRAINING_INSTITUTE', 'TRAINING_DATE', 'TRAINING_DURATION'])
+  databank_training = pd.DataFrame(columns = ['ID', 'EMPLOYEE_NO', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
   for row in rows:
-    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5]]], columns = ['ID', 'EMPLOYEE_NO', 'TRAINING_DESCRIPTION', 'TRAINING_INSTITUTE', 'TRAINING_DATE', 'TRAINING_DURATION'])
+    df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'EMPLOYEE_NO', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
     databank_training = pd.concat([databank_training, df])
   databank_training = databank_training.set_index('ID')
  
@@ -282,20 +283,23 @@ if check_password():
     checkbox_training = st.checkbox(label = 'Add Training', value = checkbox_val, disabled = not checkbox_val)
 
   
-  ## Custom Tabs with IDs
+  
+  ### Custom Tabs with IDs
   chosen_id = stx.tab_bar(data = [
     stx.TabBarItemData(id = 1, title = "Master data", description = "Employee data"),
     stx.TabBarItemData(id = 2, title = "Training data", description = "Employee trainings"),
-    stx.TabBarItemData(id = 3, title = "More data", description = "Extra employee data"),], default = 1)
+    stx.TabBarItemData(id = 3, title = "More data", description = "Extra Employee data"),], default = 1)
   st.session_state['chosen_id'] = int(chosen_id)
   
+  
 
-  ## Form for showing employee input fields 
-  with st.form("Employee", clear_on_submit = True):
-    ## tab `Master data`
-    if (st.session_state['chosen_id'] == 1):
+  ### tab `Master data`
+  if (st.session_state['chosen_id'] == 1):
+    ## Form for showing employee input fields 
+    with st.form("Employee data"):
+      st.write('')
       st.title('Employee Master data')
-      st.subheader('Enter or view exmployee master data')
+      st.subheader('Enter or view Employee Master data')
       
       
       ## If new employee just show empty form
@@ -525,12 +529,15 @@ if check_password():
           if (st.session_state['run'] != True):
             st.warning(body = 'Not sumitted, as no new Master data was entered!', icon = "⚠️")
           
+   
         
-    ## tab `Training data`
-    elif (st.session_state['chosen_id'] == 2):
+  ### tab `Training data`
+  elif (st.session_state['chosen_id'] == 2):
+    ## Expander for showing Employee Training data 
+    with st.expander(label = "", expanded = True):
       ## Get information of selected employee regarding training
       st.title('Employee Training data')
-      st.subheader('Enter or view exmployee training data')
+      st.subheader('View employee training data')
        
           
       ## If new Employee just show empty form
@@ -538,12 +545,6 @@ if check_password():
         st.info(body = 'Create Employee first!', icon = "ℹ️")
         
         
-        ## Submit Button for changes on employee `Training data` - New employee
-        submitted = st.form_submit_button("Nothing to save.")
-        if submitted:
-          print("Nothing changed")
-      
-          
       ## Employee existend
       else:
         ## Check for last ID number in TRAINING (to add data after)
@@ -551,135 +552,79 @@ if check_password():
         
           
         ## Get training data
-        query = "SELECT tr.TRAINING_DESCRIPTION, tr.TRAINING_INSTITUTE, tr.TRAINING_DATE, tr.TRAINING_DURATION, tr.ID, ima.EMPLOYEE_NO FROM `idcard`.`IMAGEBASE` AS ima LEFT JOIN `idcard`.`TRAINING` AS tr ON ima.EMPLOYEE_NO = tr.EMPLOYEE_NO WHERE ima.ID = %s;" %(index)
+        query = "SELECT wor.WORKSHOP_TITLE, wor.WORKSHOP_DESCRIPTION, wor.WORKSHOP_FACILITATOR, wor.WORKSHOP_FACILITATOR_EMAIL, wor.WORKSHOP_DATE, wor.WORKSHOP_DURATION, tr.ID, img.EMPLOYEE_NO FROM `idcard`.`IMAGEBASE` AS img LEFT JOIN `idcard`.`TRAINING` AS tr ON img.EMPLOYEE_NO = tr.EMPLOYEE_NO LEFT  JOIN  `idcard`.`WORKSHOP`  AS wor ON tr.WORKSHOP_ID = wor.WORKSHOP_ID WHERE img.ID = %s;" %(index)
         TRAINING = run_query(query)
         
         
         ## Set query parameter
-        st.experimental_set_query_params(eno = TRAINING[0][5])
-         
-          
-        ## Variables for text input
-        training = []
-        institute = []
-        date = []
-        days = []
-          
-          
-        ## Boolean for flow control
-        insert = False # Will be set to `True` if a new entry is entered
-        update = False # Will be set to `True` if existing data is altered
+        st.experimental_set_query_params(eno = TRAINING[0][7])
         
           
         ## Check if training data is already there for an Employee and show it
         if (TRAINING[0][0] != None):
           for i in range(len(TRAINING)):
             # Show (Multiple) Input(s)
-            x = st.text_input(label = 'Training #' + str(i + 1), value = TRAINING[i][0], key = 'training' + str(i), disabled = not checkbox_val)
-            if (TRAINING[i][0] != x):
-              update = True
-            training.append(x)
-            x = st.text_input(label = 'Institute', value = TRAINING[i][1], key = 'institute' + str(i), disabled = not checkbox_val)
-            if (TRAINING[i][1] != x):
-              update = True
-            institute.append(x)
-            x = st.text_input(label = 'Date', value = TRAINING[i][2], key = 'date' + str(i), disabled = not checkbox_val)
-            if (TRAINING[i][2] != x):
-              update = True
-            date.append(x)
-            x = st.text_input(label = 'Duration', value = TRAINING[i][3], key = 'duration' + str(i), disabled = not checkbox_val)
-            if (TRAINING[i][3] != x):
-              update = True
-            days.append(x)
-  
-              
-        ## Show new entry input fields if checkbox 'Add Training' is checked
-        # If not checked
-        if not checkbox_training:
-          if (TRAINING[0][0] == None):
-            st.info(body = 'No Training data available', icon = "ℹ️")
-
-        # If checked    
+            st.write('**Workshop #' + str(i + 1) + '**')
+            st.text_input(label = 'Title', value = TRAINING[i][0], key = 'Workshop' + str(i), disabled = True)
+            st.text_input(label = 'Description', value = TRAINING[i][1], key = 'Description' + str(i), disabled = True)
+            st.text_input(label = 'Facilitator', value = TRAINING[i][2], key = 'Facilitator' + str(i), disabled = True)
+            st.text_input(label = 'Facilitator Email', value = TRAINING[i][3], key = 'Email' + str(i), disabled = True)
+            st.text_input(label = 'Date', value = TRAINING[i][4], key = 'Date' + str(i), disabled = True)
+            st.text_input(label = 'Duration', value = TRAINING[i][5], key = 'Duration' + str(i), disabled = True)
         else:
-          # Calculating number of training
-          if (TRAINING[0][0] == None):
-            counter = 'Training #1'
-              
-          else:
-            counter = 'Training #' + str(len(TRAINING) + 1)
+          st.info(body = 'No Training data available', icon = "ℹ️")
           
 
-          ## Inputs for new Training
-          x = st.text_input(label = counter, placeholder = 'Training?', disabled = not checkbox_val)
-          if x.strip():
-            training.append(x)
-            insert = True
-          x = st.text_input(label = 'Institute', placeholder = 'Institute?', disabled = not checkbox_val)
-          if x.strip():
-            institute.append(x)
-            insert = True
-          x = st.text_input(label = 'Date', placeholder = 'Date?', disabled = not checkbox_val)
-          if x.strip():
-            date.append(x)
-            insert = True
-          x = st.text_input(label = 'Days', placeholder = 'Days?', disabled = not checkbox_val)
-          if x.strip():
-            days.append(x)
-            insert = True
+        ## Show selectbox 'Add Training' is checked
+        # If not checked
+        if checkbox_training:
+          # Calculating number of training
+          if (TRAINING[0][0] == None):
+            counter = 'Workshop #1'
+          else:
+            counter = 'Workshop #' + str(len(TRAINING) + 1)
+          
+
+          ## Get Workshop data
+          query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_FACILITATOR_EMAIL, WORKSHOP_DATE, WORKSHOP_DURATION FROM `idcard`.`WORKSHOP`;"
+          rows = run_query(query)
+          databank_workshop = pd.DataFrame(columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
+          for row in rows:
+            df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
+            databank_workshop = pd.concat([databank_workshop, df])
+          databank_workshop = databank_workshop.set_index('ID')
+          
+          
+          ## Selectbox to choose from existing Workshop
+          st.subheader('Add employee training data')
+          st.write('**' +counter + '**')
+          index_workshop = st.selectbox(label = 'Title', options = range(len(databank_workshop['WORKSHOP_TITLE'].tolist())), format_func = lambda x: databank_workshop['WORKSHOP_TITLE'].tolist()[x], index = 0)
+          st.text_input(label = 'Description', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DESCRIPTION'), disabled = True)
+          st.text_input(label = 'Facilitator', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR'), disabled = True)
+          st.text_input(label = 'Facilitator Email', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR_EMAIL'), disabled = True)
+          st.text_input(label = 'Date', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DATE'), disabled = True)
+          st.text_input(label = 'Duration', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DURATION'), disabled = True)
                 
                 
-        ## Submit button for changes on employee `Training data` - existend employee
-        submitted = st.form_submit_button("Save changes on Training data")
-        if submitted:
-          ## Writing to databank idcard table TRAINING - first entry
-          if (insert == True and update == False):
-            if (training[0].strip() and institute[0].strip() and date[0].strip() and days[0].strip()):
-              if (TRAINING[0][0] == None):
-                query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, TRAINING_DESCRIPTION, TRAINING_INSTITUTE, TRAINING_DATE, TRAINING_Duration) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[0], institute[0], date[0], days[0])
-                run_query(query)
-                conn.commit()
-                st.session_state['success2'] = True
-            else:
-              st.session_state['success2'] = False
-              
-              
-          ## Writing to databank idcard table `TRAINING` - new entry (not first)
-          if (insert == True and TRAINING[0][0] != None):
-            if (training[len(TRAINING)].strip() and institute[len(TRAINING)].strip() and date[len(TRAINING)].strip() and days[len(TRAINING)].strip()):
-              query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, TRAINING_DESCRIPTION, TRAINING_INSTITUTE, TRAINING_DATE, TRAINING_DURATION) VALUES (%s, '%s', '%s', '%s', '%s', '%s');" %(idT, eno['eno'][0], training[len(TRAINING)], institute[len(TRAINING)], date[len(TRAINING)], days[len(TRAINING)])
-              run_query(query)
-              conn.commit()
-              st.session_state['success2'] = True
-            else:
-              st.session_state['success2'] = False
-              
-              
-          ## Writing to databank idcard table `TRAINING` - updates to all existing entries
-          if (update == True):
-            for i in range(len(TRAINING)):
-              query = "UPDATE `idcard`.`TRAINING` SET TRAINING_DESCRIPTION = '%s', TRAINING_INSTITUTE = '%s', TRAINING_DATE = '%s', TRAINING_DURATION = '%s' WHERE ID = %s;" %(training[i], institute[i], date[i], days[i], TRAINING[i][4])
-              run_query(query)
-              conn.commit()
-            st.session_state['success2'] = True
-                
-                
-          ## Set Session State to 2nd run and reloading to get actual data
-          st.session_state['run'] = False
-          st.experimental_rerun()
+          ## Submit button for changes on employee `Training data` - existend employee
+          submitted = st.button("Add Workshop to Training data")
+          if submitted:
+            ## Writing to databank idcard table TRAINING - first entry
+            query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, WORKSHOP_ID) VALUES (%s, '%s', '%s');" %(idT, eno['eno'][0], databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_ID'))
+            run_query(query)
+            conn.commit()
             
-            
-        ## Warning or success messages after reloading
-        if (st.session_state['run'] != True and st.session_state['success2'] == True):
-          st.success(body = 'Training data submitted to Databank.', icon = "✅")
-        else:
-          if (st.session_state['run'] != True):
-            st.warning(body = 'Not sumitted, as no new Training data was entered!', icon = "⚠️")
+            # Reload to refresh values
+            st.experimental_rerun()
+
+
         
-        
-    ## tab `More data`
-    elif (st.session_state['chosen_id'] == 3):
-      st.title('More employee data')
-      st.subheader('Enter or view extra employee data')
+  ### tab `More data`
+  elif (st.session_state['chosen_id'] == 3):
+    ## Expander for extra data
+    with st.expander(label = "", expanded = True):
+      st.title('More Employee data')
+      st.subheader('Enter or view extra Employee data')
           
           
       ## If new Employee just show empty form
@@ -828,28 +773,9 @@ if check_password():
           databank_driver = pd.concat([databank_driver, df])
         databank_driver = databank_driver.set_index('ID')
         
-        with st.expander(label = 'Driver data', expanded = False):
-          st.subheader('View driver data')
-          
-          # Show driver data if existent
-          if (len(databank_driver) == 1):
-            
-            st.text_input(label = 'Driver ID', value = databank_driver._get_value(1, 'DRIVER_ID'), disabled = True)
-            st.text_input(label = 'Driver national ID', value = databank_driver._get_value(1, 'DRIVER_NATIONAL_ID'), disabled = True)
-            st.text_input(label = 'Driver mobile number', value = databank_driver._get_value(1, 'DRIVER_MOBILE_NO'), disabled = True)
-            st.text_input(label = 'Driver license number', value = databank_driver._get_value(1, 'DRIVER_LICENSE_NO'), disabled = True)
-            st.text_input(label = 'Driver license class', value = databank_driver._get_value(1, 'DRIVER_LICENSE_CLASS'), disabled = True)
-            st.text_input(label = 'Driver license expiry date', value = databank_driver._get_value(1, 'DRIVER_LICENSE_EXPIRY_DATE'), disabled = True)
-            st.text_input(label = 'Driver PSV badge', value = databank_driver._get_value(1, 'DRIVER_PSV_BADGE'), disabled = True)
-            st.text_input(label = 'Driver notes', value = databank_driver._get_value(1, 'DRIVER_NOTES'), disabled = True)
-            
-          # If no driver data existend
-          else:
-            st.info(body = 'No driver data available', icon = "ℹ️")
-        
         
         ## Submit Button for Changes on `More data` - existend employee
-        submitted = st.form_submit_button("Save changes")
+        submitted = st.button("Save changes on more data")
         if submitted:
           ## Writing to databank idcard table `EMPLOYEE`
           if (updateExtra == True and insertExtra == False):
@@ -872,6 +798,23 @@ if check_password():
           st.experimental_rerun()
           
           
+        ## Show Driver data
+        st.subheader('View Driver data')
+        if (len(databank_driver) == 1):
+          st.text_input(label = 'Driver ID', value = databank_driver._get_value(1, 'DRIVER_ID'), disabled = True)
+          st.text_input(label = 'Driver national ID', value = databank_driver._get_value(1, 'DRIVER_NATIONAL_ID'), disabled = True)
+          st.text_input(label = 'Driver mobile number', value = databank_driver._get_value(1, 'DRIVER_MOBILE_NO'), disabled = True)
+          st.text_input(label = 'Driver license number', value = databank_driver._get_value(1, 'DRIVER_LICENSE_NO'), disabled = True)
+          st.text_input(label = 'Driver license class', value = databank_driver._get_value(1, 'DRIVER_LICENSE_CLASS'), disabled = True)
+          st.text_input(label = 'Driver license expiry date', value = databank_driver._get_value(1, 'DRIVER_LICENSE_EXPIRY_DATE'), disabled = True)
+          st.text_input(label = 'Driver PSV badge', value = databank_driver._get_value(1, 'DRIVER_PSV_BADGE'), disabled = True)
+          st.text_input(label = 'Driver notes', value = databank_driver._get_value(1, 'DRIVER_NOTES'), disabled = True)
+            
+        # If no driver data existend
+        else:
+          st.info(body = 'No driver data available', icon = "ℹ️")
+          
+          
         ## Warning or Success messages after reloading
         if (st.session_state['run'] != True and st.session_state['success3'] == True):
           st.success(body = 'Data submitted to Databank.', icon = "✅")
@@ -881,14 +824,7 @@ if check_password():
         
      
         
-    ### Out of the Tabs
-    ## Nothing yet to show
-        
-        
-
-
-  #### Out of the Form
-  ### More functionanlity
+  ### Out of the Tabs
   ## Image Download Button
   st.download_button('Download Image', data = st.session_state['image'], mime="image/png")
   
