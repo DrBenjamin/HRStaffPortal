@@ -662,8 +662,9 @@ if check_password():
       ## Image select with drivers
       images = []
       drivers_desc = []
+      date = str(datetime.now())
       for i in range(len(databank_drivers)):
-        image_filename = 'images/temp' + str(i) + '.png'
+        image_filename = 'images/temp' + date + str(i + 1) + '.png'
         images.append(image_filename)
         save_img(data = databank_drivers._get_value(i + 1, 'DRIVER_IMAGE'), filename = image_filename)
         drivers_desc.append(databank_drivers._get_value(i + 1, 'DRIVER_FORENAME') + ' ' + databank_drivers._get_value(i + 1, 'DRIVER_SURNAME'))
@@ -673,8 +674,8 @@ if check_password():
       
       # Delete temp images
       for i in range(len(databank_drivers)):
-      	if os.path.exists('images/temp' + str(i) + '.png'):
-		      os.remove('images/temp' + str(i) + '.png')
+      	if os.path.exists('images/temp' + date + str(i + 1) + '.png'):
+		      os.remove('images/temp' + date + str(i + 1) + '.png')
 		      
 
       ## Show driver data in a scrollable textbox for copy & paste
@@ -760,10 +761,11 @@ if check_password():
       images = []
       vehicle_id = []
       vehicles_desc = []
+      date = str(datetime.now())
       for i in range(len(databank_vehicles)):
         for x in range(len(vehicles_list)):
           if databank_vehicles._get_value(i + 1, 'VEHICLE_ID') == vehicles_list[x]:
-            image_filename = 'images/temp_vehicle' + str(i) + '.png'
+            image_filename = 'images/temp_vehicle' + date + str(i + 1) + '.png'
             images.append(image_filename)
             save_img(data = databank_vehicles._get_value(i + 1, 'VEHICLE_IMAGE'), filename = image_filename)
             vehicle_id.append(databank_vehicles._get_value(i + 1, 'VEHICLE_ID'))
@@ -774,8 +776,8 @@ if check_password():
        
       # Delete temp images
       for i in range(len(databank_drivers)):
-      	if os.path.exists('images/temp' + str(i) + '.png'):
-		      os.remove('images/temp' + str(i) + '.png') 
+      	if os.path.exists('images/temp' + date + str(i + 1) + '.png'):
+		      os.remove('images/temp' + date + str(i + 1) + '.png') 
 		  
 		  
       ## Selectbox for choosing time span
@@ -950,8 +952,9 @@ if check_password():
       images = []
       vehicle_id = []
       vehicles_desc = []
+      date = str(datetime.now())
       for i in range(len(databank_vehicles)):
-        image_filename = 'images/temp_vehicle' + str(i) + '.png'
+        image_filename = 'images/temp_vehicle' + date + str(i + 1) + '.png'
         images.append(image_filename)
         save_img(data = databank_vehicles._get_value(i + 1, 'VEHICLE_IMAGE'), filename = image_filename)
         vehicle_id.append(databank_vehicles._get_value(i + 1, 'VEHICLE_ID'))
@@ -962,8 +965,8 @@ if check_password():
        
       # Delete temp images
       for i in range(len(databank_drivers)):
-      	if os.path.exists('images/temp_vehicle' + str(i) + '.png'):
-		      os.remove('images/temp_vehicle' + str(i) + '.png')
+      	if os.path.exists('images/temp_vehicle' + date + str(i + 1) + '.png'):
+		      os.remove('images/temp_vehicle' + date + str(i + 1) + '.png')
 		      
 		  # Show vehicle data in a scrollable textbox for copy & paste
       sty.scrollableTextbox('Vehicle ID: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_ID') + '; Plate Number: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_PLATE_NUMBER') + '; Type: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_TYPE') + '; Brand: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_BRAND') + '; Model: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_MODEL') + '; Seats: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_SEATS')) + '; Fuel Type: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_FUEL_TYPE') + '; Fuel Capacity: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_FUEL_CAPACITY')) + '; Colour: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_COLOUR') + '; Chasis Number: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_CHASIS_NUMBER') + '; Manufacture Year: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_MANUFACTURE_YEAR')) + '; Purchase Date: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_PURCHASE_DATE')) + '; Purchase Price: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_PURCHASE_PRICE')) + '; Disposition Year: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_DISPOSITION_YEAR')) + '; COF Expiry: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_COF_EXPIRY_DATE')) + '; Vendor: ' + databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_VENDOR') + '; Duty: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_DUTY')) + '; Cost KM: ' + str(databank_vehicles._get_value(vehicles_option + 1, 'VEHICLE_COST_KM')), height = 56, border = True)
