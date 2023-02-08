@@ -171,6 +171,8 @@ def pictureUploader(image, index):
 def onChange():
   st.session_state['run'] = True
   #st.session_state['chosen_id'] = 1
+def changed():
+  updateExtra = True
   
 
 
@@ -723,6 +725,8 @@ if check_password():
           else:
             index = 0
           gender = st.selectbox('Gender', options = options, index = index)
+          if (databank_employee1._get_value(1, 'EMPLOYEE_GENDER') != gender):
+            updateExtra = True
           birthday = st.date_input(label = 'Birthday', value = databank_employee1._get_value(1, 'EMPLOYEE_BIRTHDAY'), min_value = date(1950, 1, 1), max_value = datetime.now())
           address_street = st.text_input(label = 'Street', value = databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_STREET'), disabled = False)
           if (databank_employee1._get_value(1, 'EMPLOYEE_ADDRESS_STREET') != address_street):
@@ -748,10 +752,28 @@ if check_password():
           origin = st.text_input(label = 'Place of origin', value = databank_employee1._get_value(1, 'EMPLOYEE_PLACE_OF_ORIGIN'), disabled = False)
           if (databank_employee1._get_value(1, 'EMPLOYEE_PLACE_OF_ORIGIN') != origin):
             updateExtra = True
-          marriage = st.text_input(label = 'Marriage status', value = databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS'), disabled = False)
+          options = ['Married', 'Unmarried', 'Widow(er)']
+          if (databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS') == 'Married'):
+            index = 0
+          elif (databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS') == 'Unmarried'):
+            index = 1
+          elif (databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS') == 'Widow(er)'):
+            index = 2
+          else:
+            index = 0
+          marriage = st.selectbox('Marriage status', options = options, index = index)
           if (databank_employee1._get_value(1, 'EMPLOYEE_MARRIAGE_STATUS') != marriage):
             updateExtra = True
-          employment_type = st.text_input(label = 'Employee type', value = databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE'), disabled = False)
+          options = ['Employed', 'T.A.', 'Intern']
+          if (databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE') == 'Employed'):
+            index = 0
+          elif (databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE') == 'T.A.'):
+            index = 1
+          elif (databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE') == 'Intern'):
+            index = 2
+          else:
+            index = 0
+          employment_type = st.selectbox('Marriage status', options = options, index = index)
           if (databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE') != employment_type):
             updateExtra = True
         
