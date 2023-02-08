@@ -277,31 +277,32 @@ if check_password():
             
       ## Show confirmed
       # Getting employee data which is needed for confirmed
-      confirmed = workshop[0][9].split(' ')
-      confirmed_query = ""
-      for row in confirmed:
-        if len(confirmed_query) == 0:
-          confirmed_query = confirmed_query + "EMPLOYEE_NO = " + "'" + row + "'"
-        else:
-          if row != '':
-            confirmed_query = confirmed_query + " OR EMPLOYEE_NO = " + "'" + row + "'"
-      query = "SELECT FORENAME, SURNAME, EMPLOYEE_NO, IMAGE FROM `idcard`.`IMAGEBASE` WHERE %s;" %(confirmed_query)
-      confirmed_attendees = run_query(query)
-        
-      # Columns
-      st.write('**Employees confirmed:**')
-      col1, col2, col3 = st.columns(3, gap = 'large')
-      with col1:
-        for i in range(0, len(confirmed_attendees), 3):
-          st.image(confirmed_attendees[i][3], caption = confirmed_attendees[i][0] + ' ' + confirmed_attendees[i][1] + ' (' + confirmed_attendees[i][2] + ')')
-
-      with col2:
-        for i in range(1, len(confirmed_attendees), 3):
-          st.image(confirmed_attendees[i][3], caption = confirmed_attendees[i][0] + ' ' + confirmed_attendees[i][1] + ' (' + confirmed_attendees[i][2] + ')')
-
-      with col3:
-        for i in range(2, len(confirmed_attendees), 3):
-          st.image(confirmed_attendees[i][3], caption = confirmed_attendees[i][0] + ' ' + confirmed_attendees[i][1] + ' (' + confirmed_attendees[i][2] + ')')
+      if workshop[0][9] is not None:
+        confirmed = workshop[0][9].split(' ')
+        confirmed_query = ""
+        for row in confirmed:
+          if len(confirmed_query) == 0:
+            confirmed_query = confirmed_query + "EMPLOYEE_NO = " + "'" + row + "'"
+          else:
+            if row != '':
+              confirmed_query = confirmed_query + " OR EMPLOYEE_NO = " + "'" + row + "'"
+        query = "SELECT FORENAME, SURNAME, EMPLOYEE_NO, IMAGE FROM `idcard`.`IMAGEBASE` WHERE %s;" %(confirmed_query)
+        confirmed_attendees = run_query(query)
+          
+        # Columns
+        st.write('**Employees confirmed:**')
+        col1, col2, col3 = st.columns(3, gap = 'large')
+        with col1:
+          for i in range(0, len(confirmed_attendees), 3):
+            st.image(confirmed_attendees[i][3], caption = confirmed_attendees[i][0] + ' ' + confirmed_attendees[i][1] + ' (' + confirmed_attendees[i][2] + ')')
+  
+        with col2:
+          for i in range(1, len(confirmed_attendees), 3):
+            st.image(confirmed_attendees[i][3], caption = confirmed_attendees[i][0] + ' ' + confirmed_attendees[i][1] + ' (' + confirmed_attendees[i][2] + ')')
+  
+        with col3:
+          for i in range(2, len(confirmed_attendees), 3):
+            st.image(confirmed_attendees[i][3], caption = confirmed_attendees[i][0] + ' ' + confirmed_attendees[i][1] + ' (' + confirmed_attendees[i][2] + ')')
 
         
       ## Multiselect to invite employees for workshop
@@ -313,7 +314,10 @@ if check_password():
       row = []
       names = []
       not_in_list = True
-      already_in = workshop[0][8].split(' ') + workshop[0][9].split(' ')
+      if workshop[0][9] is not None:
+        already_in = workshop[0][8].split(' ') + workshop[0][9].split(' ')
+      else:
+        already_in = workshop[0][8].split(' ')
       already_in = list(filter(None, already_in))
       for row in rows:
         for eno in already_in:
