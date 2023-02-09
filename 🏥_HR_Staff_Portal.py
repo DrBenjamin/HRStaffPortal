@@ -585,26 +585,30 @@ if check_password():
           
 
           ## Get Workshop data
-          query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_FACILITATOR_EMAIL, WORKSHOP_DATE, WORKSHOP_DURATION FROM `idcard`.`WORKSHOP`;"
+          query = "SELECT WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_FACILITATOR_EMAIL, WORKSHOP_DATE, WORKSHOP_DURATION FROM `idcard`.`WORKSHOP`;"
           rows = run_query(query)
-          databank_workshop = pd.DataFrame(columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
+          databank_workshop = pd.DataFrame(columns = ['WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
           for row in rows:
-            df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]], columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
+            df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6]]], columns = ['WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
             databank_workshop = pd.concat([databank_workshop, df])
-          databank_workshop = databank_workshop.set_index('ID')
           databank_workshop = databank_workshop.sort_values('WORKSHOP_DATE', ascending = False)
+          id_list = []
+          for i in range(len(databank_workshop)):
+            id_list.append(i + 1)
+          databank_workshop.insert(0, "ID", id_list, True)
+          databank_workshop = databank_workshop.set_index('ID')
           
           
           ## Selectbox to choose from existing Workshop
-          st.subheader('Add employee training data')
-          st.write('**' +counter + '**')
+          st.subheader('Add employee training')
+          st.write("Workshop not available in Selectbox? Go to <a href='Workshops' target='_self'>Workhop page</a> to add it.", unsafe_allow_html = True)
           
           # Concacenating option for selectbox
           workshop_title = [str(title) + ' (' for title in list(databank_workshop['WORKSHOP_TITLE'])]
           workshop_date = [str(date) + ')' for date in list(databank_workshop['WORKSHOP_DATE'])]
           workshops = [i + j for i, j in zip(workshop_title, workshop_date)]
+          st.write('**' +counter + '**')
           index_workshop = st.selectbox(label = 'Title', options = range(len(workshops)), format_func = lambda x: workshops[x], index = 0)
-          st.write("Workshop not available? Go to <a href='Workshops' target='_self'>Workhop page</a> to add it.", unsafe_allow_html = True)
           st.text_input(label = 'Description', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DESCRIPTION'), disabled = True)
           st.text_input(label = 'Facilitator', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR'), disabled = True)
           st.text_input(label = 'Facilitator Email', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR_EMAIL'), disabled = True)
