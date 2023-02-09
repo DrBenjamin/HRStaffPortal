@@ -203,25 +203,61 @@ if check_password():
     
   ## Show specific workshop
   if index > 0:
+    checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
+    
+    
     ## Get workshop data
     # Run query 
-    query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_FACILITATOR_EMAIL, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE workshop_id = '%s';" %(databank_workshop['WORKSHOP_ID'][index])
+    query = "SELECT ID, WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_FACILITATOR_EMAIL, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP WHERE WORKSHOP_ID = '%s';" %(databank_workshop['WORKSHOP_ID'][index])
     workshop = run_query(query)
       
       
-    ## Output form
-    with st.expander(label = 'Workshop', expanded = True):
+    ## Output expander
+    with st.expander(label = '', expanded = True):
       st.header('Workshop')
-      st.write('**Title:** ', workshop[0][2])
-      st.write('**Description:** ', workshop[0][3])
-      st.write('**Facilitator:** ', workshop[0][4])
-      st.write('**Email address:** ', workshop[0][5])
-      st.write('**Date:** ', str(workshop[0][6]))
-      st.write('**Duration:** ', str(workshop[0][7]))
-      st.write('**Employees not confirmed:**')
+      
+      
+      ## Form to view and enter workshop data
+      with st.form('Workshop'):
+        update = False
+        title = st.text_input(label = 'Title', value = workshop[0][2], disabled = not checkbox_val)
+        if (workshop[0][2] != title):
+          update = True
+        desc = st.text_input(label = 'Description', value = workshop[0][3], disabled = not checkbox_val)
+        if (workshop[0][3] != desc):
+          update = True
+        facilitator = st.text_input(label = 'Facilitator', value = workshop[0][4], disabled = not checkbox_val)
+        if (workshop[0][4] != desc):
+          update = True
+        facilitator_email = st.text_input(label = 'Email address', value = workshop[0][5], disabled = not checkbox_val)
+        if (workshop[0][5] != desc):
+          update = True
+        date = st.date_input(label = 'Date', value = workshop[0][6], min_value = date(2023, 1, 1), disabled = not checkbox_val)
+        if (workshop[0][6] != date):
+          update = True
+        duration = st.text_input(label = 'Duration', value = workshop[0][7], disabled = not checkbox_val)
+        if (workshop[0][7] != duration):
+          update = True
+        
+        submitted = st.form_submit_button('Save changes on Workshop data')
+        if submitted:
+          ## Update workshop data
+          if update == True:
+            query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_TITLE = '%s', WORKSHOP_DESCRIPTION = '%s', WORKSHOP_FACILITATOR = '%s', WORKSHOP_FACILITATOR_EMAIL = '%s', WORKSHOP_DATE = '%s', WORKSHOP_DURATION = '%s' WHERE WORKSHOP_ID = '%s';" %(title, desc, facilitator, facilitator_email, date, duration, workshop[0][1])
+            run_query(query)
+            conn.commit()
+            
+            # Reload
+            st.experimental_rerun()
+            
+            
+          else:
+            st.warning(body = 'Not sumitted, as no new Workshop data was entered!', icon = "⚠️")
         
         
       ## Image select with attendees
+      st.write('**Employees not confirmed:**')
+      
       # Getting employee data which is needed for not confirmed
       not_confirmed = workshop[0][8].split(' ')
       not_confirmed_query = ""
@@ -282,6 +318,12 @@ if check_password():
           query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s', WORKSHOP_ATTENDEES_CONFIRMED = '%s' WHERE WORKSHOP_ID = '%s';" %(not_confirmed_after, confirmed, databank_workshop['WORKSHOP_ID'][index])
           run_query(query)
           conn.commit()
+          
+          # Write to databank idcard table TRAINING
+          id = lastID(url = '`idcard`.`TRAINING`')
+          query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, WORKSHOP_ID) VALUES (%s, '%s', '%s');" %(id, databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO'), databank_workshop['WORKSHOP_ID'][index])
+          run_query(query)
+          conn.commit()
             
           # Reload
           st.experimental_rerun()
@@ -336,7 +378,6 @@ if check_password():
           if row[3] == eno:
             not_in_list = False
         if not_in_list == True:
-          print(row[5])
           if row[5] is None:
             names.append(str(row[1] + ' ' + row[2] + ', ' + row[3] + ', ' + row[4] + ' ('')'))
           else:
@@ -387,7 +428,7 @@ if check_password():
       workshop_description = st.text_input(label = 'Description', disabled = False)
       workshop_facilitator = st.text_input(label = 'Facilitator', disabled = False)
       workshop_facilitator_email = st.text_input(label = 'Email address', disabled = False)
-      workshop_date = st.text_input(label = 'Date', disabled = False)
+      workshop_date = st.date_input(label = 'Date', min_value = date(2023, 1, 1))
       workshop_duration = st.text_input(label = 'Duration', disabled = False)
           
           

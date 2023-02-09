@@ -608,7 +608,7 @@ if check_password():
           ## Submit button for changes on employee `Training data` - existend employee
           submitted = st.button("Add Workshop to Training data")
           if submitted:
-            ## Writing to databank idcard table TRAINING - first entry
+            ## Writing to databank idcard table TRAINING
             query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, WORKSHOP_ID) VALUES (%s, '%s', '%s');" %(idT, eno['eno'][0], databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_ID'))
             run_query(query)
             conn.commit()
