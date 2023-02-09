@@ -16,7 +16,6 @@ import platform
 import io
 import sys
 from datetime import datetime, date
-from array import array
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
