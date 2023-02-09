@@ -598,6 +598,7 @@ if check_password():
           st.subheader('Add employee training data')
           st.write('**' +counter + '**')
           index_workshop = st.selectbox(label = 'Title', options = range(len(databank_workshop['WORKSHOP_TITLE'].tolist())), format_func = lambda x: databank_workshop['WORKSHOP_TITLE'].tolist()[x], index = 0)
+          st.write("Workshop not available? Go to <a href='Workshops' target='_self'>Workhop page</a> to add it.", unsafe_allow_html = True)
           st.text_input(label = 'Description', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DESCRIPTION'), disabled = True)
           st.text_input(label = 'Facilitator', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR'), disabled = True)
           st.text_input(label = 'Facilitator Email', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR_EMAIL'), disabled = True)
