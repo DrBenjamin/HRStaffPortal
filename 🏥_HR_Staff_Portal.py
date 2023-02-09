@@ -629,11 +629,6 @@ if check_password():
       ## If new Employee just show empty form
       if (index == 0):
         st.info(body = 'Create Employee first!', icon = "ℹ️")
-        
-        ## Submit Button for Changes on `More data` - New employee
-        submitted = st.form_submit_button("Nothing to save.")
-        if submitted:
-          print("Nothing changed")
           
           
       ## Employee existend
