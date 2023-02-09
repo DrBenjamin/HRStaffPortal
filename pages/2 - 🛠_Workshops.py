@@ -166,7 +166,7 @@ if check_password():
     numb = np.array(databank_workshop)
     
     # Converting dates to string
-    numb[:, [4]] = numb[:, [4]].astype('str')
+    numb[:, [5]] = numb[:, [5]].astype('str')
     
     # Converting numby array to list
     numb = numb.tolist()
@@ -284,8 +284,11 @@ if check_password():
         attendees_desc.append(databank_attendee._get_value(i + 1, 'FORENAME') + ' ' + databank_attendee._get_value(i + 1, 'SURNAME' )+ ' (' + databank_attendee._get_value(i + 1, 'EMPLOYEE_NO') + ')')
         
       # Show selectable images
-      attendee_option = image_select(label = 'Which employee should be confirmed?', images = images, captions = attendees_desc, index = 0, return_value = 'index')
-          
+      if len(images) > 1:
+        attendee_option = image_select(label = 'Which employee should be confirmed?', images = images, captions = attendees_desc, index = 0, return_value = 'index')
+      else:
+        st.info(body = 'Invite Employees to this Workshop!', icon = "ℹ")
+        
       # Delete temp images
       for i in range(len(databank_attendee) ):
       	 if os.path.exists('images/temp' + date + str(i + 1) + '.png'):
@@ -386,7 +389,7 @@ if check_password():
       ## Invite button
       if st.button('Invite selected'):
         ## Update workshop data
-        query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s' WHERE WORKSHOP_ID = '%s';" %(attendees, databank_workshop['WORKSHOP_ID'][index])
+        query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s' WHERE WORKSHOP_ID = '%s';" %(attendees, databank_workshop._get_value(index_workshop, 'WORKSHOP_ID'))
         run_query(query)
         conn.commit()
         
@@ -394,8 +397,9 @@ if check_password():
         ## Send mail to new attendees
         i = 0
         for mail in mail_addresses:
-          send_mail(subject = 'Invitation to workshop ' + workshop[0][2], body = 'Hello colleague,\n\nthis is an invitation to the workshop ' + workshop[0][2] + ' on ' + str(workshop[0][6]) + ' (' + str(workshop[0][7]) + ' days).\n\nDetails: ' + workshop[0][3] + '\n\nBest regards\n\n' + workshop[0][4] + '\n\n', receiver = mail)
-          send_mail(subject = 'Registration to workshop ' + workshop[0][2], body = 'Hello facilitator,\n\nthis is the qrcode for the workshop ' + workshop[0][2] + ' on ' + str(workshop[0][6]) + ' (' + str(workshop[0][7]) + ' days) for the employee ' + names[i] + '.\n\nDetails: ' + workshop[0][3] + '\n\nBest regards\n\nStreamlit\n\n', receiver = workshop[0][5], attachment = generate_qrcode(data = str('https://' + get_ip() + ':8501/Workshops?workshop=' + databank_workshop['WORKSHOP_ID'][index] + '&eno=' + new_in[i])))
+          qrcode = generate_qrcode(data = str('https://' + get_ip() + ':8501/Workshops?workshop=' + databank_workshop._get_value(index_workshop, 'WORKSHOP_ID')))
+          send_mail(subject = 'Invitation to workshop ' + databank_workshop._get_value(index_workshop, 'WORKSHOP_TITLE'), body = 'Hello colleague,\n\nthis is an invitation to the workshop ' + databank_workshop._get_value(index_workshop, 'WORKSHOP_TITLE') + ' on ' + str(databank_workshop._get_value(index_workshop, 'WORKSHOP_DATE')) + ' (' + str(databank_workshop._get_value(index_workshop, 'WORKSHOP_DURATION')) + ' days).\n\nDetails: ' + databank_workshop._get_value(index_workshop, 'WORKSHOP_DESCRIPTION') + '\n\nBest regards\n\n' + databank_workshop._get_value(index_workshop, 'WORKSHOP_FACILITATOR') + '\n\n', receiver = mail, attachment = qrcode)
+          send_mail(subject = 'Registration to workshop ' + databank_workshop._get_value(index_workshop, 'WORKSHOP_TITLE'), body = 'Hello facilitator,\n\nthis is the qrcode for the workshop ' + databank_workshop._get_value(index_workshop, 'WORKSHOP_TITLE') + ' on ' + str(databank_workshop._get_value(index_workshop, 'WORKSHOP_DATE')) + ' (' + str(databank_workshop._get_value(index_workshop, 'WORKSHOP_DURATION')) + ' days) for the employee ' + names[i] + '.\n\nDetails: ' + databank_workshop._get_value(index_workshop, 'WORKSHOP_DESCRIPTION') + '\n\nBest regards\n\nHR Staff Portal\n\n', receiver = databank_workshop._get_value(index_workshop, 'WORKSHOP_FACILITATOR_EMAIL'), attachment = qrcode)
           i += 1
             
         # Rerun  
@@ -469,9 +473,9 @@ if check_password():
         ## Send mail to attendees
         i = 0
         for mail in mail_addresses:
-          qrcode = generate_qrcode(data = str('https://' + get_ip() + ':8501/Workshops?workshop=' + workshop_id + '&eno=' + employees[i]))
-          send_mail(subject = 'Invitation to workshop ' + workshop_title, body = 'Hello colleague,\n\nthis is an invitation to the workshop ' + workshop_title + ' on ' + workshop_date + ' (' + workshop_duration + ' days).\n\nDetails: ' + workshop_description + '\n\nBest regards\n\n' + workshop_facilitator + '\n\n', receiver = mail, attachment = qrcode)
-          send_mail(subject = 'Registration to workshop ' + workshop_title, body = 'Hello facilitator,\n\nthis is the qrcode for the workshop ' + workshop_title + ' on ' + workshop_date + ' (' + workshop_duration + ' days) for the employee ' + options[i] + '.\n\nDetails: ' + workshop_description + '\n\nBest regards\n\nStreamlit\n\n', receiver = qrcode)
+          qrcode = generate_qrcode(data = str('https://' + get_ip() + ':8501/Workshops?workshop=' + workshop_id))
+          send_mail(subject = 'Invitation to workshop ' + workshop_title, body = 'Hello colleague,\n\nthis is an invitation to the workshop ' + workshop_title + ' on ' + str(workshop_date) + ' (' + workshop_duration + ' days).\n\nDetails: ' + workshop_description + '\n\nBest regards\n\n' + workshop_facilitator + '\n\n', receiver = mail, attachment = qrcode)
+          send_mail(subject = 'Registration to workshop ' + workshop_title, body = 'Hello facilitator,\n\nthis is the qrcode for the workshop ' + workshop_title + ' on ' + str(workshop_date) + ' (' + workshop_duration + ' days) for the employee ' + options[i] + '.\n\nDetails: ' + workshop_description + '\n\nBest regards\n\nHR Staff Portal\n\n', receiver = workshop_facilitator_email, attachment = qrcode)
           i += 1
           
           
