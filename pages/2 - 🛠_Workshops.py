@@ -146,6 +146,7 @@ if check_password():
     df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES', 'WORKSHOP_ATTENDEES_CONFIRMED'])
     databank_workshop = pd.concat([databank_workshop, df])
   databank_workshop = databank_workshop.set_index('ID')
+  databank_workshop = databank_workshop.sort_values('WORKSHOP_DATE', ascending = False)
   
   
   
@@ -161,6 +162,7 @@ if check_password():
     df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['ID', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES', 'WORKSHOP_ATTENDEES_CONFIRMED'])
     databank_google_workshop = pd.concat([databank_google_workshop, df])
   databank_google_workshop = databank_google_workshop.set_index('ID')
+  databank_google_workshop = databank_google_workshop.sort_values('WORKSHOP_DATE', ascending = False)
   
     
   ## Open the spreadsheet and the first sheet
@@ -191,8 +193,8 @@ if check_password():
   
   ## Workshop selectbox
   workshop_title = [str(title) + ' (' for title in list(databank_workshop['WORKSHOP_TITLE'])]
-  workshop_id = [str(id) + ')' for id in list(databank_workshop['WORKSHOP_ID'])]
-  workshops = [i + j for i, j in zip(workshop_title, workshop_id)]
+  workshop_date = [str(date) + ')' for date in list(databank_workshop['WORKSHOP_DATE'])]
+  workshops = [i + j for i, j in zip(workshop_title, workshop_date)]
   workshops.insert(0, 'New Workshop')
   if st.session_state['workshop'] == '00000':
     index_workshop = 0
