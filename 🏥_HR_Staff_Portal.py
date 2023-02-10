@@ -23,6 +23,7 @@ from functions import logout
 from functions import export_excel
 from functions import load_file
 from functions import landing_page
+from functions import rebuild_confirmation
 from network import google_sheet_credentials
 
 
@@ -585,13 +586,41 @@ if check_password():
           
 
           ## Get Workshop data
-          query = "SELECT WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_FACILITATOR_EMAIL, WORKSHOP_DATE, WORKSHOP_DURATION FROM `idcard`.`WORKSHOP`;"
+          query = "SELECT WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_FACILITATOR_EMAIL, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM `idcard`.`WORKSHOP`;"
           rows = run_query(query)
-          databank_workshop = pd.DataFrame(columns = ['WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
+          databank_workshop = pd.DataFrame(columns = ['WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES', 'WORKSHOP_ATTENDEES_CONFIRMED'])
           for row in rows:
-            df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6]]], columns = ['WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
+            df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]], columns = ['WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR', 'WORKSHOP_FACILITATOR_EMAIL', 'WORKSHOP_DATE', 'WORKSHOP_DURATION', 'WORKSHOP_ATTENDEES', 'WORKSHOP_ATTENDEES_CONFIRMED'])
             databank_workshop = pd.concat([databank_workshop, df])
           databank_workshop = databank_workshop.sort_values('WORKSHOP_DATE', ascending = False)
+          
+          # Set index (starting with 1)
+          id_list = []
+          for i in range(len(databank_workshop)):
+            id_list.append(i + 1)
+          databank_workshop.insert(0, "ID", id_list, True)
+          databank_workshop = databank_workshop.set_index('ID')
+          
+          # Drop not needed rows (employee not invided or already confirmed) for option Selectbox
+          dropping = []
+          for i in range(len(databank_workshop)):
+            invited = False
+            drop = False
+            if databank_workshop._get_value(i + 1, 'WORKSHOP_ATTENDEES_CONFIRMED') != None:
+              for row in databank_workshop._get_value(i + 1, 'WORKSHOP_ATTENDEES_CONFIRMED').split(' '):
+                if row == eno['eno'][0]:
+                  drop = True
+                  dropping.append(i)
+            if databank_workshop._get_value(i + 1, 'WORKSHOP_ATTENDEES') != None:
+              for row in databank_workshop._get_value(i + 1, 'WORKSHOP_ATTENDEES').split(' '):
+                if row == eno['eno'][0]:
+                  invited = True
+              if invited == False:
+                if drop == False:
+                  dropping.append(i)
+          databank_workshop = databank_workshop.drop(databank_workshop.index[dropping])
+                 
+          # Set new index (starting with 1)
           id_list = []
           for i in range(len(databank_workshop)):
             id_list.append(i + 1)
@@ -600,27 +629,40 @@ if check_password():
           
           
           ## Selectbox to choose from existing Workshop
-          st.subheader('Add employee training')
-          st.write("Workshop not available in Selectbox? Go to <a href='Workshops' target='_self'>Workhop page</a> to add it.", unsafe_allow_html = True)
+          st.subheader('Confirm training')
+          st.write("Workshop not available in Selectbox? Go to <a href='Workshops' target='_self'>Workhop page</a> to invite employee to it or to add the Workshop.", unsafe_allow_html = True)
           
-          # Concacenating option for selectbox
+          # Concacenating lists as option for Selectbox
           workshop_title = [str(title) + ' (' for title in list(databank_workshop['WORKSHOP_TITLE'])]
           workshop_date = [str(date) + ')' for date in list(databank_workshop['WORKSHOP_DATE'])]
-          workshops = [i + j for i, j in zip(workshop_title, workshop_date)]
+          workshops = [a + b for a, b in zip(workshop_title, workshop_date)]
+          
+          # Show Selectbox and Workshop information
           st.write('**' +counter + '**')
-          index_workshop = st.selectbox(label = 'Title', options = range(len(workshops)), format_func = lambda x: workshops[x], index = 0)
-          st.text_input(label = 'Description', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DESCRIPTION'), disabled = True)
-          st.text_input(label = 'Facilitator', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR'), disabled = True)
-          st.text_input(label = 'Facilitator Email', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR_EMAIL'), disabled = True)
-          st.text_input(label = 'Date', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DATE'), disabled = True)
-          st.text_input(label = 'Duration', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DURATION'), disabled = True)
-                
+          if len(workshops) > 0:
+            index_workshop = st.selectbox(label = 'Title', options = range(len(workshops)), format_func = lambda x: workshops[x], index = 0)
+            st.text_input(label = 'Description', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DESCRIPTION'), disabled = True)
+            st.text_input(label = 'Facilitator', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR'), disabled = True)
+            st.text_input(label = 'Facilitator Email', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_FACILITATOR_EMAIL'), disabled = True)
+            st.text_input(label = 'Date', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DATE'), disabled = True)
+            st.text_input(label = 'Duration', value = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_DURATION'), disabled = True)
+          else:
+            st.info(body = 'Employee needs to be invited a Workshop!', icon = "ℹ")
                 
           ## Submit button for changes on employee `Training data` - existend employee
-          submitted = st.button("Add Workshop to Training data")
+          submitted = st.button("Confirm training for employee")
           if submitted:
-            ## Writing to databank idcard table TRAINING
+            ## Rewriting changes to database 
+            # Writing changes to databank idcard table TRAINING
             query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, WORKSHOP_ID) VALUES (%s, '%s', '%s');" %(idT, eno['eno'][0], databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_ID'))
+            run_query(query)
+            conn.commit()
+            
+            # Rebuild confirmation status
+            confirmed, not_confirmed = rebuild_confirmation(option_attendee = 1, confirmed = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_ATTENDEES_CONFIRMED'), not_confirmed = databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_ATTENDEES'), employee = eno['eno'][0])
+            
+            # Update workshop data
+            query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s', WORKSHOP_ATTENDEES_CONFIRMED = '%s' WHERE WORKSHOP_ID = '%s';" %(not_confirmed, confirmed, databank_workshop._get_value(index_workshop + 1, 'WORKSHOP_ID'))        
             run_query(query)
             conn.commit()
             
