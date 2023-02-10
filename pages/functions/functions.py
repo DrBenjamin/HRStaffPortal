@@ -351,6 +351,63 @@ def generate_qrcode(data):
 
 
 
+### Function build_employee = Creates list of names of confirmed / not confirmed
+def build_employees(data, not_confirmed, confirmed):
+  row = []
+  names = []
+  not_in_list = True
+  already_in = ''
+  if not_confirmed is not None:
+    already_in = not_confirmed.split(' ')
+  elif confirmed is not None:
+    already_in += confirmed.split(' ')
+  already_in = list(filter(None, already_in))
+  for row in data:
+    for eno in already_in:
+      if row[3] == eno:
+        not_in_list = False
+    if not_in_list == True:
+      if row[5] is None:
+        names.append(str(row[1] + ' ' + row[2] + ', ' + row[3] + ', ' + row[4] + ' ('')'))
+      else:
+        names.append(str(row[1] + ' ' + row[2] + ', ' + row[3] + ', ' + row[4] + ' (' + row[5] + ')'))
+    else:
+      not_in_list = True
+  return names, already_in
+          
+          
+
+### Function rebuild_confirmation = Creates new lists of of confirmed / not confirmed
+def rebuild_confirmation(option_attendee, confirmed, not_confirmed, employee):
+  not_confirmed_after = ''
+  not_confirmed_before = not_confirmed
+  if option_attendee > 0:
+    not_confirmed_after = not_confirmed_before.replace(employee, '')
+    if confirmed != None:
+      confirmed += ' ' + employee
+    else:
+      confirmed = employee
+  else:
+    if not_confirmed != None:
+      not_confirmed_after = not_confirmed
+  return confirmed, not_confirmed_after
+
+
+
+### Function confirmed_query = Creates query to get just confirmed from database
+def confirmed_query(confirmed):
+  confirmed = confirmed.split(' ')
+  confirmed_query = ""
+  for row in confirmed:
+    if len(confirmed_query) == 0:
+      confirmed_query = confirmed_query + "EMPLOYEE_NO = " + "'" + row + "'"
+    else:
+      if row != '':
+        confirmed_query = confirmed_query + " OR EMPLOYEE_NO = " + "'" + row + "'"
+  query = "SELECT FORENAME, SURNAME, EMPLOYEE_NO, IMAGE FROM `idcard`.`IMAGEBASE` WHERE %s;" %(confirmed_query)  
+  return query
+  
+  
 ### Function header = Shows header information 
 def header(title, data_desc, expanded = True):
   with st.expander("Header", expanded = expanded):

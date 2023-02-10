@@ -27,6 +27,9 @@ from functions import generateID
 from functions import generate_qrcode
 from functions import save_img
 from functions import load_file
+from functions import build_employees
+from functions import rebuild_confirmation
+from functions import confirmed_query
 from network import send_mail
 from network import get_ip
 from network import google_sheet_credentials
@@ -287,6 +290,7 @@ if check_password():
       if len(images) > 1:
         attendee_option = image_select(label = 'Which employee should be confirmed?', images = images, captions = attendees_desc, index = 0, return_value = 'index')
       else:
+        attendee_option = 0
         st.info(body = 'Invite Employees to this Workshop!', icon = "ℹ")
         
       # Delete temp images
@@ -296,29 +300,23 @@ if check_password():
         
         
       ## Rewriting lists to databank
-      not_confirmed_after = ''
-      not_confirmed_before = databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES')
+      # Rebuildung confirmed and not_confirmed
       if st.button('Confirm selected'):
-        if attendee_option > 0:
-          not_confirmed_after = not_confirmed_before.replace(databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO'), '')
-          if databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED') != None:
-            confirmed = databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED') + ' ' + databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO')
-          else:
-            confirmed = databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO')
-                
-          # Update workshop data
-          query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s', WORKSHOP_ATTENDEES_CONFIRMED = '%s' WHERE WORKSHOP_ID = '%s';" %(not_confirmed_after, confirmed, databank_workshop._get_value(index_workshop, 'WORKSHOP_ID'))
-          run_query(query)
-          conn.commit()
+        confirmed, not_confirmed = rebuild_confirmation(option_attendee = attendee_option, confirmed = databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED'), not_confirmed = databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES'), employee = databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO'))
+      
+        # Update workshop data
+        query = "UPDATE `idcard`.`WORKSHOP` SET WORKSHOP_ATTENDEES = '%s', WORKSHOP_ATTENDEES_CONFIRMED = '%s' WHERE WORKSHOP_ID = '%s';" %(not_confirmed, confirmed, databank_workshop._get_value(index_workshop, 'WORKSHOP_ID'))        
+        run_query(query)
+        conn.commit()
           
-          # Write to databank idcard table TRAINING
-          id = lastID(url = '`idcard`.`TRAINING`')
-          query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, WORKSHOP_ID) VALUES (%s, '%s', '%s');" %(id, databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO'), databank_workshop._get_value(index_workshop, 'WORKSHOP_ID'))
-          run_query(query)
-          conn.commit()
+        # Write to databank idcard table TRAINING
+        id = lastID(url = '`idcard`.`TRAINING`')
+        query = "INSERT INTO `idcard`.`TRAINING`(ID, EMPLOYEE_NO, WORKSHOP_ID) VALUES (%s, '%s', '%s');" %(id, databank_attendee._get_value(attendee_option + 1, 'EMPLOYEE_NO'), databank_workshop._get_value(index_workshop, 'WORKSHOP_ID'))
+        run_query(query)
+        conn.commit()
             
-          # Reload
-          st.experimental_rerun()
+        # Reload
+        st.experimental_rerun()
           
             
       ## Show confirmed
@@ -326,15 +324,7 @@ if check_password():
       
       # Getting employee data which is needed for confirmed
       if databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED') is not None:
-        confirmed = databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED').split(' ')
-        confirmed_query = ""
-        for row in confirmed:
-          if len(confirmed_query) == 0:
-            confirmed_query = confirmed_query + "EMPLOYEE_NO = " + "'" + row + "'"
-          else:
-            if row != '':
-              confirmed_query = confirmed_query + " OR EMPLOYEE_NO = " + "'" + row + "'"
-        query = "SELECT FORENAME, SURNAME, EMPLOYEE_NO, IMAGE FROM `idcard`.`IMAGEBASE` WHERE %s;" %(confirmed_query)
+        query = confirmed_query(databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED'))
         confirmed_attendees = run_query(query)
           
         # Columns
@@ -359,26 +349,8 @@ if check_password():
       rows = run_query(query)
             
       # Building employees for multiselect which are not already in the confirmed list
-      row = []
-      names = []
-      not_in_list = True
-      already_in = ''
-      if databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES') is not None:
-        already_in = databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES').split(' ')
-      elif databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED') is not None:
-        already_in += databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED').split(' ')
-      already_in = list(filter(None, already_in))
-      for row in rows:
-        for eno in already_in:
-          if row[3] == eno:
-            not_in_list = False
-        if not_in_list == True:
-          if row[5] is None:
-            names.append(str(row[1] + ' ' + row[2] + ', ' + row[3] + ', ' + row[4] + ' ('')'))
-          else:
-            names.append(str(row[1] + ' ' + row[2] + ', ' + row[3] + ', ' + row[4] + ' (' + row[5] + ')'))
-        else:
-          not_in_list = True
+      names, already_in = build_employees(data = rows, not_confirmed = databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES'), confirmed = databank_workshop._get_value(index_workshop, 'WORKSHOP_ATTENDEES_CONFIRMED'))
+      
       st.write('**Employees to invite:**')
       options = st.multiselect(label = 'Which Employee(s) do you want to add?', options = names)
       mail_addresses = [option.split('(', 1)[1][:-1] for option in options]
