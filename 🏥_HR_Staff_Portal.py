@@ -605,19 +605,12 @@ if check_password():
           dropping = []
           for i in range(len(databank_workshop)):
             invited = False
-            drop = False
-            if databank_workshop._get_value(i + 1, 'WORKSHOP_ATTENDEES_CONFIRMED') != None:
-              for row in databank_workshop._get_value(i + 1, 'WORKSHOP_ATTENDEES_CONFIRMED').split(' '):
-                if row == eno['eno'][0]:
-                  drop = True
-                  dropping.append(i)
             if databank_workshop._get_value(i + 1, 'WORKSHOP_ATTENDEES') != None:
               for row in databank_workshop._get_value(i + 1, 'WORKSHOP_ATTENDEES').split(' '):
                 if row == eno['eno'][0]:
                   invited = True
               if invited == False:
-                if drop == False:
-                  dropping.append(i)
+                dropping.append(i)
           databank_workshop = databank_workshop.drop(databank_workshop.index[dropping])
                  
           # Set new index (starting with 1)
