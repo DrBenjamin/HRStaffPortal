@@ -83,7 +83,7 @@ if check_password():
   
   
   ### Statistics expander  
-  with st.expander(label = 'Statistics', expanded = True):
+  with st.expander(label = '', expanded = True):
     st.title('Statistics')
     
     
