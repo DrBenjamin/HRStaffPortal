@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.1](https://github.com/DrBenjamin/HRStaffPortal) - 2023-30-01
+
+``` Version 2 Release```
+
+### Added
+* HR Staff Portal
+    * Check for invited employees in Trainings to show for confirmation
+
+### Changed
+
+
+### Fixed
+
+
 ## [0.2.0](https://github.com/DrBenjamin/HRStaffPortal/compare/v0.1.1...v0.2.0) - 2023-30-01
 
 ``` Pre-Release```
