@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.1](https://github.com/DrBenjamin/HRStaffPortal) - 2023-30-01
+## [0.2.1](https://github.com/DrBenjamin/HRStaffPortal) - 2023-02-13
 
 ``` Version 2 Release```
 
@@ -14,7 +14,7 @@
 ### Fixed
 
 
-## [0.2.0](https://github.com/DrBenjamin/HRStaffPortal/compare/v0.1.1...v0.2.0) - 2023-30-01
+## [0.2.0](https://github.com/DrBenjamin/HRStaffPortal/compare/v0.1.1...v0.2.0) - 2023-01-30
 
 ``` Pre-Release```
 

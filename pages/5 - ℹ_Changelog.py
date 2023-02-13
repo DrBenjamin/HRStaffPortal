@@ -59,8 +59,8 @@ header(title = 'Changelog', data_desc = 'Software information', expanded = st.se
 ## Changelog iframe
 with st.expander('Changelog', expanded = True):
   ## Local site hosted on Apache
-  #source = 'http://' + get_ip() + '/index.html'
-  source = "https://192.168.1.173/index.html"
+  source = 'https://' + get_ip() + '/index.html'
+  #source = "https://192.168.1.173/index.html"
   stc.iframe(src = source, height = 620, scrolling = True)
   
   
