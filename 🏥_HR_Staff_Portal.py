@@ -280,7 +280,7 @@ if check_password():
   ## Checkboxes for editing and adding training data
   if (index != 0):
     checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
-    checkbox_training = st.checkbox(label = 'Add Training', value = checkbox_val, disabled = not checkbox_val)
+    checkbox_training = st.checkbox(label = 'Confirm Training', value = checkbox_val, disabled = not checkbox_val)
 
   
   
