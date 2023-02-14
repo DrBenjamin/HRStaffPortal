@@ -844,7 +844,7 @@ if check_password():
       
       ## Export `Fuel` Report to Excel Makro file
       if st.button('Export Fuel Report to Excel document'):
-        excel_file_name = 'Fuel Report - Vehicle ' + vehicle + '.xlsm'
+        excel_file_name = 'Fuel Report - Vehicle ' + str(vehicle) + '.xlsm'
         export_excel('Avg. Fuel Consumption', 'B', [{'header': 'Date'}, {'header': 'Average Fuel Consumption'},], int(len(report_fuel_consumption_average) + 1), report_fuel_consumption_average, 
                     'Fuel Cost per Litre', 'B', [{'header': 'Date'}, {'header': 'Fuel Cost'},], int(len(report_fuel_price_litre) + 1), report_fuel_price_litre,
                     'Fuel max. Capacity', 'C', [{'header': 'Date'}, {'header': 'Fuel Amount'}, {'header': 'Fuel max. Capacity'},], int(len(report_fuel_max_cap) + 1), report_fuel_max_cap,
