@@ -19,6 +19,7 @@ from docx import Document
 from docx.shared import Inches
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from streamlit_qrcode_scanner import qrcode_scanner
 import qrcode
 
 
@@ -351,6 +352,14 @@ def generate_qrcode(data):
 
 
 
+### Function: qrcode_reader = Scans National IDs QR Code
+def qrcode_reader():
+  qrcode = None
+  qrcode = qrcode_scanner(key = 'qrcode_scanner')
+  return qrcode
+
+      
+      
 ### Function build_employee = Creates list of names of confirmed / not confirmed
 def build_employees(data, not_confirmed, confirmed):
   row = []
