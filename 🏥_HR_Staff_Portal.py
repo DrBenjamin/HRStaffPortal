@@ -24,6 +24,7 @@ from functions import export_excel
 from functions import load_file
 from functions import landing_page
 from functions import rebuild_confirmation
+from functions import qrcode_reader
 from network import google_sheet_credentials
 
 
@@ -281,6 +282,14 @@ if check_password():
   if (index != 0):
     checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
     checkbox_training = st.checkbox(label = 'Confirm Training', value = checkbox_val, disabled = not checkbox_val)
+  
+  
+  ## QR Code reader for `National ID` to prefil `New Employee` form
+  else:
+    national_id = st.radio(label = 'Type of Input', options = ('Input data manually', 'Scan National ID'), index = 0)
+    if national_id == 'Scan National ID':
+      qrcode = qrcode_reader()
+      print(qrcode)
 
   
   
@@ -295,6 +304,9 @@ if check_password():
 
   ### tab `Master data`
   if (st.session_state['chosen_id'] == 1):
+
+        
+        
     ## Form for showing employee input fields 
     with st.form("Employee data"):
       st.write('')
@@ -311,6 +323,8 @@ if check_password():
         ## New employee data input
         # Check for ID number count of Employee
         id = lastID(url = '`idcard`.`IMAGEBASE`')
+        
+        # Input fields
         st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)
         forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
