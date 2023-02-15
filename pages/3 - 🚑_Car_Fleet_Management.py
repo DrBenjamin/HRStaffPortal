@@ -833,11 +833,7 @@ if check_password():
       st.subheader('Fuel max. Capacity')
       st.dataframe(report_fuel_max_cap)
       
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> af135ccf351053fe2690e06632393c1dce4de127
       ## Export `Fuel` Report to Excel Makro file
       if st.button('Export Fuel Report to Excel document'):
         excel_file_name = 'Fuel Report - Vehicle ' + str(vehicle) + '.xlsm'
