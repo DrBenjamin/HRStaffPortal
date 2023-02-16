@@ -286,10 +286,20 @@ if check_password():
   
   ## QR Code reader for `National ID` to prefil `New Employee` form
   else:
-    national_id = st.radio(label = 'Type of Input', options = ('Input data manually', 'Scan National ID'), index = 0)
-    if national_id == 'Scan National ID':
-      qrcode = qrcode_reader()
-      print(qrcode)
+    column1, column2 = st.columns(2)
+    
+    with column1:
+      national_id = st.radio(label = 'Type of Input', options = ('Input data manually', 'Scan National ID'), index = 0)
+      if national_id == 'Scan National ID':
+        qrcode = qrcode_reader()
+        print(qrcode)
+    with column2:
+      if national_id == 'Input data manually':
+        st.write('Proceed below to type in employee data.')
+        st.image('images/Keyboard.png')
+      else:
+        st.write('Scan the National ID QR Code on the backside.')
+        st.image('images/ID.png')
 
   
   
