@@ -8,6 +8,7 @@ mysql-connector-python == 8.0.29
 extra_streamlit_components == 0.1.56
 streamlit-scrollable-textbox
 streamlit_image_select
+streamlit_qrcode_scanner
 opencv-python-headless
 xlsxwriter
 python-docx
@@ -16,7 +17,6 @@ deepl
 geocoder
 geopy
 qrcode
-qrcode_scanner
 pygsheets
 googledrivedownloader
 loguru
