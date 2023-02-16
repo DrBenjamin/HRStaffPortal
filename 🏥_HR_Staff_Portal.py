@@ -106,6 +106,11 @@ if ('logout' not in st.session_state):
 ## Image
 if ('image' not in st.session_state):
   st.session_state['image'] = 'images/placeholder.png'
+  
+
+## National ID
+if ('national_id_data' not in st.session_state):
+  st.session_state['national_id_data'] = None
 
 
 
@@ -174,10 +179,9 @@ def pictureUploader(image, index):
 def onChange():
   st.session_state['run'] = True
   #st.session_state['chosen_id'] = 1
-def changed():
-  updateExtra = True
+  #st.session_state['national_id_data'] = None
   
-
+  
 
 
 #### Two versions of the page -> Landing page vs. HRStaffPortal
@@ -287,13 +291,21 @@ if check_password():
   
   ## QR Code reader for `National ID` to prefil `New Employee` form
   else:
-    national_id = st.radio(label = 'Type of Input', options = ('Input data manually', 'Scan National ID'), index = 0)
-    national_id_data = None
-    if national_id == 'Scan National ID':
-      qrcode = qrcode_reader()
-      if qrcode != None:
-        national_id_data = parse_national_id(qrcode)
-      
+    column1, column2 = st.columns(2)
+    with column1:
+      national_id = st.radio(label = 'Type of Input', options = ('Input data manually', 'Scan National ID'), index = 0)
+      if national_id == 'Scan National ID':
+        qrcode = qrcode_reader()
+        if qrcode != None:
+          st.session_state['national_id_data'] = parse_national_id(qrcode)
+    with column2:
+      if national_id == 'Input data manually':
+        st.write('Proceed below to type in employee data')
+        st.image('images/Keyboard.png')
+      else:
+        st.write('Scan the National ID QR Code on the backside')
+        st.image('images/ID.png')
+
 
   
   ### Custom Tabs with IDs
@@ -330,12 +342,12 @@ if check_password():
         # Input fields
         st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)
-        if national_id_data == None:
+        if st.session_state['national_id_data'] == None:
           forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
           surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
         else:
-          forename = st.text_input(label = 'Forename', value = national_id_data['first_name'])
-          surname = st.text_input(label = 'Surname', value = national_id_data['last_name'])
+          forename = st.text_input(label = 'Forename', value = st.session_state['national_id_data']['first_name'].lower().capitalize())
+          surname = st.text_input(label = 'Surname', value = st.session_state['national_id_data']['last_name'].lower().capitalize())
         job = st.text_input(label = 'Job', placeholder = 'Job?')
         exp = st.text_input(label = 'Expirity date', value = '2023-12-31 00:00:00')
         emp_no = st.text_input(label = 'Employee number', placeholder = 'Employee number?')
@@ -787,8 +799,22 @@ if check_password():
         ## Input extra employee data if not existend
         else:
           options = ['Female', 'Male', 'Divers']
-          gender = st.selectbox('Gender', options = options, index = 0)
-          birthday = st.date_input(label = 'Birthday', value = datetime.now(), min_value = date(1950, 1, 1), max_value = datetime.now())
+          if st.session_state['national_id_data'] == None:
+            gender = st.selectbox('Gender', options = options, index = 0)
+          else:
+            if (st.session_state['national_id_data']['gender'] == 'Female'):
+              index = 0
+            elif (st.session_state['national_id_data']['gender'] == 'Male'):
+              index = 1
+            elif (st.session_state['national_id_data']['gender'] == 'Divers'):
+              index = 2
+            else:
+              index = 0
+            gender = st.selectbox('Gender', options = options, index = index)
+          if st.session_state['national_id_data'] == None:
+            birthday = st.date_input(label = 'Birthday', value = datetime.now(), min_value = date(1950, 1, 1), max_value = datetime.now())
+          else:
+            birthday = st.date_input(label = 'Birthday', value = st.session_state['national_id_data']['dob'], min_value = date(1950, 1, 1), max_value = datetime.now())
           address_street = st.text_input(label = 'Street', placeholder = 'Street?', disabled = False)
           if (address_street != ''):
             insertExtra = True
@@ -807,7 +833,10 @@ if check_password():
           phone2 = st.text_input(label = 'Phone 2', placeholder = 'Phone 2?', disabled = False)
           if (phone2 != ''):
             insertExtra = True
-          nationality = st.text_input(label = 'Nationality', placeholder = 'Nationality?', disabled = False)
+          if st.session_state['national_id_data'] == None:
+            nationality = st.text_input(label = 'Nationality', placeholder = 'Nationality?', disabled = False)
+          else:
+            nationality = st.text_input(label = 'Nationality', value = 'Malawian', disabled = False)
           if (nationality != ''):
             insertExtra = True
           origin = st.text_input(label = 'Place of origin', placeholder = 'Place of origin?', disabled = False)

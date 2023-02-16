@@ -374,9 +374,8 @@ def parse_national_id(text):
     month = dateOfBirth[1]
     month_var = {"JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6, "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12}
     num_month = month_var[month.upper()]
-    birth_date = date(int(year), num_month, int(day))
-    print_dob = day + "-" + month + "-" + year
-    result = {"first_name": fname,"middle_name": mname, "last_name": lname, "gender": gender, "nation_id": nat_id, "dob": birth_date, "printable_dob": print_dob}
+    dob = year + "-" + month + "-" + day
+    result = {"first_name": fname,"middle_name": mname, "last_name": lname, "gender": gender, "nation_id": nat_id, "dob": dob}
 
     # Return result
     return result
