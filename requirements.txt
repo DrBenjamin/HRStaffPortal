@@ -16,7 +16,7 @@ deepl
 geocoder
 geopy
 qrcode
-from streamlit_qrcode_scanner import qrcode_scanner
+qrcode_scanner
 pygsheets
 googledrivedownloader
 loguru
