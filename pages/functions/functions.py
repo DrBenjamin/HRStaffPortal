@@ -21,6 +21,7 @@ from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from streamlit_qrcode_scanner import qrcode_scanner
 import qrcode
+from datetime import date
 
 
 
@@ -352,6 +353,36 @@ def generate_qrcode(data):
 
 
 
+### parse_national_id = Parsing National ID QR Code data to list
+def parse_national_id(text):
+  val = text.split('~')
+  if len(val) == 12:
+    if len(val[6].split(', ')) > 1:
+      fname, mname = val[6].split(', ')
+    else:
+      fname = val[6]
+      mname = ''
+    lname = val[4]
+    gender = str(val[8]).upper()
+    raw_dob = val[9]
+    nat_id = str(val[5])
+
+    # Cleaning data format
+    dateOfBirth = str(raw_dob).split(" ")
+    day = dateOfBirth[0]
+    year = dateOfBirth[2]
+    month = dateOfBirth[1]
+    month_var = {"JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6, "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12}
+    num_month = month_var[month.upper()]
+    birth_date = date(int(year), num_month, int(day))
+    print_dob = day + "-" + month + "-" + year
+    result = {"first_name": fname,"middle_name": mname, "last_name": lname, "gender": gender, "nation_id": nat_id, "dob": birth_date, "printable_dob": print_dob}
+
+    # Return result
+    return result
+
+  
+  
 ### Function: qrcode_reader = Scans National IDs QR Code
 def qrcode_reader():
   qrcode = None

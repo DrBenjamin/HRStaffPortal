@@ -25,6 +25,7 @@ from functions import load_file
 from functions import landing_page
 from functions import rebuild_confirmation
 from functions import qrcode_reader
+from functions import parse_national_id
 from network import google_sheet_credentials
 
 
@@ -287,11 +288,13 @@ if check_password():
   ## QR Code reader for `National ID` to prefil `New Employee` form
   else:
     national_id = st.radio(label = 'Type of Input', options = ('Input data manually', 'Scan National ID'), index = 0)
+    national_id_data = None
     if national_id == 'Scan National ID':
       qrcode = qrcode_reader()
-      print(qrcode)
+      if qrcode != None:
+        national_id_data = parse_national_id(qrcode)
+      
 
-  
   
   ### Custom Tabs with IDs
   chosen_id = stx.tab_bar(data = [
@@ -327,8 +330,12 @@ if check_password():
         # Input fields
         st.text_input(label = 'ID', value = id, disabled = True)
         layout = st.text_input(label = 'Layout', value = 1)
-        forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
-        surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+        if national_id_data == None:
+          forename = st.text_input(label = 'Forename', placeholder = 'Forename?')
+          surname = st.text_input(label = 'Surname', placeholder = 'Surname?')
+        else:
+          forename = st.text_input(label = 'Forename', value = national_id_data['first_name'])
+          surname = st.text_input(label = 'Surname', value = national_id_data['last_name'])
         job = st.text_input(label = 'Job', placeholder = 'Job?')
         exp = st.text_input(label = 'Expirity date', value = '2023-12-31 00:00:00')
         emp_no = st.text_input(label = 'Employee number', placeholder = 'Employee number?')
