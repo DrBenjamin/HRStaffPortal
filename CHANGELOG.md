@@ -7,6 +7,7 @@
 ### Added
 * HR Staff Portal
     * Check for invited employees in Trainings to show for confirmation
+    * National ID Card QR Code data import
 
 ### Changed
 
