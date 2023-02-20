@@ -1,6 +1,6 @@
 ##### `pages/2 - 🛠_Workshops.py`
 ##### HR Staff Portal
-##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
+##### Open-Source, hosted on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
