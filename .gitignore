@@ -145,6 +145,13 @@ HRStaffPortal.Rproj
 .idea/**/dictionaries
 .idea/**/shelf
 .idea/**/codeStyleConfig.xml
+.idea/**/misc.xml
+.idea/**/modules.xml
+.idea/**/profiles_settings.xml
+.idea/**/Project_Default.xml
+.idea/**/vcs.xml
+HRStaffPortal.iml
+.idea/**/.gitignore
 
 # AWS User-specific
 .idea/**/aws.xml
