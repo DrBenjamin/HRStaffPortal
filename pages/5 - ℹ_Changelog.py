@@ -1,4 +1,4 @@
-##### `pages/5 - ℹ_Changelogt.py`
+##### `pages/5 - ℹ_Changelog.py`
 ##### HR Staff Portal
 ##### Open-Source, hosted on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to ben@benbox.org for any questions
@@ -20,7 +20,7 @@ desc_file = open('DESCRIPTION', 'r')
 lines = desc_file.readlines()
 print(lines[3])
 st.set_page_config(
-  page_title = "Cangelog",
+  page_title = "Changelog",
   page_icon = st.secrets['custom']['facility_image_thumbnail'],
   layout = "centered",
   initial_sidebar_state = "expanded",
