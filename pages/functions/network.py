@@ -98,7 +98,7 @@ def get_ip():
 
 
 ### Function: google_sheet_credentials = Getting Google Sheet API credentials
-@st.experimental_singleton
+@st.cache_resource
 def google_sheet_credentials():
   ## Google Sheet API authorization
   output = st.secrets['google']['credentials_file']
