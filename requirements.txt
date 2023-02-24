@@ -3,7 +3,7 @@
 ##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to ben@benbox.org for any questions
 ### All needed libraries (and their versions)
-streamlit == 1.18.1
+streamlit == 1.19.0
 mysql-connector-python == 8.0.29
 extra_streamlit_components == 0.1.56
 streamlit-scrollable-textbox
