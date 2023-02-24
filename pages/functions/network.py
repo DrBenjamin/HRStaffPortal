@@ -4,14 +4,10 @@
 ##### Please reach out to benjamin.gross@giz.de for any questions
 #### Loading needed Python libraries
 import streamlit as st
-import pandas as pd
 import pygsheets
-import io
 import os
 import shutil
 import deepl
-import typing as T
-import signal
 import socket
 import smtplib
 from email.mime.multipart import MIMEMultipart
