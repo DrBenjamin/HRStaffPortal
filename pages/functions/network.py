@@ -18,13 +18,38 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email import encoders
-from streamlit.web.server import Server
 from google_drive_downloader import GoogleDriveDownloader
+import zipfile
+import requests
 
 
 
 
 #### All shared network functions
+### Function downzip = Download and unzip zip files
+def downzip(url, zip_files, path):
+    progress_text = "Downloading Files. Please wait."
+    my_bar = st.progress(0, text = progress_text)
+    my_bar.progress(0, text = progress_text)
+    for i in range(len(zip_files)):
+        zip_file = requests.get(url + zip_files[i]).content
+        my_bar.progress(int(100 / len(zip_files) * (i + 0.5)), text = progress_text)
+        success = True
+        zip_file_path = path + zip_files[i]
+        while success == False:
+            try:
+                with open(zip_file_path, 'wb') as handler:
+                    handler.write(zip_file)
+                with zipfile.ZipFile(zip_file_path) as z:
+                    z.extractall(path)
+                if os.path.exists(zip_file_path):
+                    os.remove(zip_file_path)
+                my_bar.progress(int(100 / len(zip_files) * (i + 1)), text = progress_text)
+            except:
+                success = False
+                
+                
+                
 ### Function: trans = DeepL translation
 def trans(input, target_lang):
 	translator = deepl.Translator(st.secrets["deepl"]["key"])
