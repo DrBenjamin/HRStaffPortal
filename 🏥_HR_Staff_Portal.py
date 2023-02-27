@@ -919,8 +919,11 @@ if check_password():
   st.download_button('Download Image', data = st.session_state['image'], mime="image/png")
   
   
-  ## Show databank data in dataframe
+  ## Show databank data in editable dataframe
   with st.expander("See all Databank entries", expanded = False):
+    st.info('Before exporting to Excel you can alter the data (e.g. delete specific column data cause of Data Privacy reasons).', icon = 'ℹ️')
+
+
     ## Show `IMAGEBASE` table data
     st.subheader('Employee data')
     databank = st.experimental_data_editor(databank, use_container_width = True)
