@@ -22,6 +22,10 @@ from functions import export_excel
 from functions import load_file
 from functions import landing_page
 from functions import save_img
+from network import downzip
+
+
+
 
 #### Streamlit initial setup
 desc_file = open('DESCRIPTION', 'r')
@@ -45,6 +49,9 @@ st.set_page_config(
                      'contact_admin'] + '\n\n-----------'
     }
 )
+
+
+
 
 #### OS Check
 ### Check for 3 different platforms

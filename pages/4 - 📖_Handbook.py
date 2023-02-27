@@ -20,6 +20,7 @@ from functions import load_file
 from functions import export_docx
 from functions import generateID
 from network import send_mail
+from network import downzip
 
 
 

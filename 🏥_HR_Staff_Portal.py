@@ -23,6 +23,7 @@ from functions import rebuild_confirmation
 from functions import qrcode_reader
 from functions import parse_national_id
 from network import google_sheet_credentials
+from network import downzip
 
 
 
