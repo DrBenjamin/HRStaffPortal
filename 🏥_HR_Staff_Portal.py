@@ -921,7 +921,7 @@ if check_password():
   
   ## Show databank data in editable dataframe
   with st.expander("See all Databank entries", expanded = False):
-    st.info('Before exporting to Excel you can alter the data (e.g. delete specific column data cause of Data Privacy reasons).', icon = 'ℹ️')
+    st.info('You may want to alter the data before exporting to Excel (e.g. delete specific column data cause of Data Privacy reasons).', icon = 'ℹ️')
 
 
     ## Show `IMAGEBASE` table data
