@@ -111,6 +111,7 @@ def send_mail(subject, body, receiver, attachment = None):
 ### Function: get_ip() = Get own ip address
 def get_ip():
     hostname = socket.gethostname()
+    st.write(hostname)
     ip_address = socket.gethostbyname(hostname)
 
     return ip_address
