@@ -1,16 +1,16 @@
 # Changelog
 
-## [0.2.1](https://github.com/DrBenjamin/HRStaffPortal) - 2023-02-13
+## [0.2.1](https://github.com/DrBenjamin/HRStaffPortal) - 2023-02-27
 
 ``` Version 2 Release```
 
 ### Added
 * HR Staff Portal
-    * Check for invited employees in Trainings to show for confirmation
-    * National ID Card QR Code data import
+    * Check for invited employees in Trainings to show in `multiselect` for confirmation
+    * National ID Card master data import by scanning the QR Code
 
 ### Changed
-
+* Use `st.experimental_data_editor` to show (and alter) dataframes
 
 ### Fixed
 
