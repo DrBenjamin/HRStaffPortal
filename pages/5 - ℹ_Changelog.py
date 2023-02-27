@@ -5,7 +5,6 @@
 #### Loading needed Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
-import socket
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
@@ -67,7 +66,7 @@ header(title = 'Changelog', data_desc = 'Software information', expanded = st.se
 ## Changelog iframe
 with st.expander('', expanded = True):
     ## Local site hosted on Apache
-    source = 'https://' + get_ip() + '/index.html'
+    source = 'https://127.0.0.1/index.html'
     stc.iframe(src = source, height = 620, scrolling = True)
 
 
