@@ -14,6 +14,9 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from streamlit_qrcode_scanner import qrcode_scanner
 import qrcode
+import sys
+sys.path.insert(1, "pages/functions/")
+from network import downzip
 
 
 
@@ -49,8 +52,13 @@ def check_password():
 
 
     ## Sidebar
-    # Sidebar Header Image
-    st.sidebar.image(st.secrets['custom']['facility_image'])
+    # Download images
+    #file = st.secrets['custom']['images_path'] + st.secrets['custom']['sidebar_image']
+    if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['sidebar_image']):
+        downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']], st.secrets['custom']['images_path'])
+
+    # Show Sidebar Header Image
+    st.sidebar.image(st.secrets['custom']['sidebar_image'])
 
     # Header switch
     if st.session_state['header'] == True:

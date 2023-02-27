@@ -10,8 +10,8 @@ import numpy as np
 import cv2
 import mysql.connector
 import platform
-import sys
 from datetime import datetime, date
+import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password

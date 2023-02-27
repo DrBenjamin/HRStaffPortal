@@ -23,16 +23,14 @@ import requests
 
 #### All shared network functions
 ### Function downzip = Download and unzip zip files
+@st.cache_data
 def downzip(url, zip_files, path):
-    progress_text = "Downloading Files. Please wait."
-    my_bar = st.progress(0, text = progress_text)
-    my_bar.progress(0, text = progress_text)
     for i in range(len(zip_files)):
         zip_file = requests.get(url + zip_files[i]).content
-        my_bar.progress(int(100 / len(zip_files) * (i + 0.5)), text = progress_text)
-        success = True
         zip_file_path = path + zip_files[i]
-        while success == False:
+        x_times = 0
+        while x_times < 4:
+            x_times += 1
             try:
                 with open(zip_file_path, 'wb') as handler:
                     handler.write(zip_file)
@@ -40,9 +38,9 @@ def downzip(url, zip_files, path):
                     z.extractall(path)
                 if os.path.exists(zip_file_path):
                     os.remove(zip_file_path)
-                my_bar.progress(int(100 / len(zip_files) * (i + 1)), text = progress_text)
+                x_times = 4
             except:
-                success = False
+                print(x_times)
 
 
 
