@@ -20,15 +20,22 @@ desc_file = open('DESCRIPTION', 'r')
 lines = desc_file.readlines()
 print(lines[3])
 st.set_page_config(
-  page_title = "Changelog",
-  page_icon = st.secrets['custom']['facility_image_thumbnail'],
-  layout = "centered",
-  initial_sidebar_state = "expanded",
-  menu_items = { 
-         'Get Help': st.secrets['custom']['menu_items_help'],
-         'Report a bug': st.secrets['custom']['menu_items_bug'],
-         'About': '**HR Staff Portal** (' + lines[3] + ')\n\n' + st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')' + ', ' + st.secrets['custom']['address_line1'] + '\n' +st.secrets['custom']['address_line2'] + '\n\n' + st.secrets['custom']['contact_tel1'] + '\n\n' + st.secrets['custom']['contact_tel2'] + '\n\n' + st.secrets['custom']['contact_tel3'] + '\n\n' + st.secrets['custom']['contact_mail1_desc'] + ': ' + st.secrets['custom']['contact_mail1'] + '\n\n' + st.secrets['custom']['contact_mail2_desc'] + ': ' + st.secrets['custom']['contact_mail2'] + '\n\nAdministrator: ' + st.secrets['custom']['contact_admin'] + '\n\n-----------'
-        }
+    page_title = "Changelog",
+    page_icon = st.secrets['custom']['facility_image_thumbnail'],
+    layout = "centered",
+    initial_sidebar_state = "expanded",
+    menu_items = {
+        'Get Help': st.secrets['custom']['menu_items_help'],
+        'Report a bug': st.secrets['custom']['menu_items_bug'],
+        'About': '**HR Staff Portal** (' + lines[3] + ')\n\n' + st.secrets['custom']['facility'] + ' (' +
+                 st.secrets['custom']['facility_abbreviation'] + ')' + ', ' + st.secrets['custom'][
+                     'address_line1'] + '\n' + st.secrets['custom']['address_line2'] + '\n\n' + st.secrets['custom'][
+                     'contact_tel1'] + '\n\n' + st.secrets['custom']['contact_tel2'] + '\n\n' + st.secrets['custom'][
+                     'contact_tel3'] + '\n\n' + st.secrets['custom']['contact_mail1_desc'] + ': ' +
+                 st.secrets['custom']['contact_mail1'] + '\n\n' + st.secrets['custom']['contact_mail2_desc'] + ': ' +
+                 st.secrets['custom']['contact_mail2'] + '\n\nAdministrator: ' + st.secrets['custom'][
+                     'contact_admin'] + '\n\n-----------'
+    }
 )
 
 
@@ -37,10 +44,10 @@ st.set_page_config(
 #### Initialization of session states
 ## Session state
 if ('admin' not in st.session_state):
-  st.session_state['admin'] = False
+    st.session_state['admin'] = False
 if ('header' not in st.session_state):
-  st.session_state['header'] = True
-  
+    st.session_state['header'] = True
+
 
 
 
@@ -51,25 +58,25 @@ if ('header' not in st.session_state):
 
 #### Main program
 ### Header
-header(title = 'Changelog', data_desc = 'Software information', expanded = st.session_state['header']) 
+header(title = 'Changelog', data_desc = 'Software information', expanded = st.session_state['header'])
 
 
 
 ### Changelog
 ## Changelog iframe
 with st.expander('', expanded = True):
-  ## Local site hosted on Apache
-  source = 'https://' + get_ip() + '/index.html'
-  stc.iframe(src = source, height = 620, scrolling = True)
-  
-  
-  
+    ## Local site hosted on Apache
+    source = 'https://' + get_ip() + '/index.html'
+    stc.iframe(src = source, height = 620, scrolling = True)
+
+
+
 ### Logged in state (About)
 if check_password():
-  print('Logged in')
-  
+    print('Logged in')
+
 
 
 ### Logged out state (About)
 else:
-  print('Logged out')
+    print('Logged out')
