@@ -9,8 +9,6 @@ import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
-from functions import logout
-from network import get_ip
 
 
 

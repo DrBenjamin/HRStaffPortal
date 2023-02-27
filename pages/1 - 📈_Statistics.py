@@ -4,18 +4,14 @@
 ##### Please reach out to benjamin.gross@giz.de for any questions
 #### Loading needed Python libraries
 import streamlit as st
-import streamlit.components.v1 as stc
 import pandas as pd
-import numpy as np
 import sys
 import mysql.connector
 from datetime import date
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
-from functions import logout
 from functions import landing_page
 
 

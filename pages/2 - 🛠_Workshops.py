@@ -4,24 +4,16 @@
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
-import streamlit.components.v1 as stc
-import pandas as pd
 import mysql.connector
-import io
 import os
-import shutil
-import platform
 import pandas as pd
 import numpy as np
-import pygsheets
-from google_drive_downloader import GoogleDriveDownloader as gdd
 from streamlit_image_select import image_select
 from datetime import datetime, date
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
-from functions import logout
 from functions import landing_page
 from functions import generateID
 from functions import generate_qrcode
@@ -87,6 +79,8 @@ if ('workshop' not in st.session_state):
     st.session_state['workshop'] = '00000'
 if ('updateGoogleSheet' not in st.session_state):
     st.session_state['updateGoogleSheet'] = False
+
+
 
 
 #### Functions

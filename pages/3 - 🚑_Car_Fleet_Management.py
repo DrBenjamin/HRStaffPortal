@@ -12,15 +12,12 @@ import numpy as np
 import cv2
 import mysql.connector
 import os
-import io
 from datetime import datetime
 from streamlit_image_select import image_select
 import sys
-
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
-from functions import logout
 from functions import export_excel
 from functions import load_file
 from functions import landing_page

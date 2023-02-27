@@ -4,7 +4,6 @@
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
-import streamlit.components.v1 as stc
 import streamlit_scrollable_textbox as sty
 import pandas as pd
 import mysql.connector
@@ -16,11 +15,9 @@ from datetime import date
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
-from functions import logout
 from functions import load_file
 from functions import export_docx
 from functions import generateID
-from network import trans
 from network import send_mail
 
 
