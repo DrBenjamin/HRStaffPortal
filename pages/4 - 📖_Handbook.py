@@ -10,6 +10,7 @@ import mysql.connector
 import openai
 import geocoder
 from geopy.geocoders import Nominatim
+import os
 import sys
 from datetime import date
 sys.path.insert(1, "pages/functions/")
