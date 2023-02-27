@@ -5,6 +5,7 @@
 #### Loading needed Python libraries
 import streamlit as st
 import streamlit.components.v1 as stc
+import socket
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
