@@ -409,7 +409,10 @@ if check_password():
                 driver_image = cv2.imencode('.png', driver_image)[1].tobytes()
 
             else:
-                driver_image = load_file("images/placeholder.png")
+                if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder_car']):
+                    downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']],
+                            st.secrets['custom']['images_path'])
+                driver_image = load_file(st.secrets['custom']['placeholder_car'])
 
 
             ## Submit Button `Create new Driver`
@@ -671,7 +674,10 @@ if check_password():
 
             # Set placeholder image, if no image data existend
             else:
-                vehicle_image = load_file("images/placeholder_car.png")
+                if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder_car']):
+                    downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']],
+                            st.secrets['custom']['images_path'])
+                vehicle_image = load_file(st.secrets['custom']['placeholder_car'])
 
 
             ## Submit Button `Create new Vehicles`

@@ -53,9 +53,9 @@ def check_password():
 
     ## Sidebar
     # Download images
-    #file = st.secrets['custom']['images_path'] + st.secrets['custom']['sidebar_image']
     if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['sidebar_image']):
         downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']], st.secrets['custom']['images_path'])
+
 
     # Show Sidebar Header Image
     st.sidebar.image(st.secrets['custom']['sidebar_image'])

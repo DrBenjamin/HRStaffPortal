@@ -938,7 +938,10 @@ if check_password():
             if uploaded_file is not None:
                 handbook_image = uploaded_file.getvalue()
             else:
-                handbook_image = load_file("images/placeholder_documentation.png")
+                if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder_docu']):
+                    downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']],
+                            st.secrets['custom']['images_path'])
+                handbook_image = load_file(st.secrets['custom']['placeholder_docu'])
                 handbook_image_text = 'Placeholder image.'
 
             # Image description text input

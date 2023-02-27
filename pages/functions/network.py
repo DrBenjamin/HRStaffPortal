@@ -23,7 +23,6 @@ import requests
 
 #### All shared network functions
 ### Function downzip = Download and unzip zip files
-@st.cache_data
 def downzip(url, zip_files, path):
     for i in range(len(zip_files)):
         zip_file = requests.get(url + zip_files[i]).content

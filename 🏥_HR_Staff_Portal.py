@@ -108,7 +108,7 @@ if ('logout' not in st.session_state):
 
 ## Image
 if ('image' not in st.session_state):
-    st.session_state['image'] = 'images/placeholder.png'
+    st.session_state['image'] = st.secrets['custom']['placeholder']
 
 
 ## National ID
@@ -421,7 +421,10 @@ if check_password():
 
                 # Set placeholder image, if no image data existend
                 else:
-                    image = load_file("images/placeholder.png")
+                    if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder']):
+                        downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']],
+                                st.secrets['custom']['images_path'])
+                    image = load_file(st.secrets['custom']['placeholder'])
 
 
                 ## Submit button `Create New Employee`
@@ -496,10 +499,13 @@ if check_password():
                 ## Check if image is empty and show a placeholder
                 if (len(employee[0][8]) < 10):
                     # Show placeholder
-                    st.image('images/placeholder.png')
+                    if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder']):
+                        downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']],
+                                st.secrets['custom']['images_path'])
+                    st.image(st.secrets['custom']['placeholder'])
 
                     # Set Image Session State to `No Image` placeholder
-                    st.session_state['image'] = load_file('images/placeholder.png')
+                    st.session_state['image'] = load_file(st.secrets['custom']['placeholder'])
 
 
                 ## Show existing image
