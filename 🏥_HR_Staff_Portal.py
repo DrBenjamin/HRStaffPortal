@@ -923,23 +923,24 @@ if check_password():
   with st.expander("See all Databank entries", expanded = False):
     ## Show `IMAGEBASE` table data
     st.subheader('Employee data')
-    st.dataframe(databank, use_container_width = True)
+    databank = st.experimental_data_editor(databank, use_container_width = True)
     
     
     ## Show `EMPLOYEE` table data
     st.subheader('Extra employee data')
-    st.dataframe(databank_employee, use_container_width = True)
+    databank_employee = st.experimental_data_editor(databank_employee, use_container_width = True)
     
     
     ## Show `TRAINING` table data
     st.subheader('Training data')
-    st.dataframe(databank_training, use_container_width = True)
+    databank_training = st.experimental_data_editor(databank_training, use_container_width = True)
     
     
     ## Export `Vehicles` dataframe to Excel Makro file
     if st.button('Export Excel'):
       export_excel('Employees', 'G', [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'}, {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'CARDS_PRINTED'},], int(len(databank) + 1), databank,
-                  'Trainings', 'E', [{'header': 'EMPLOYEE_NO'}, {'header': 'TRAINING'}, {'header': 'INSTITUTE'}, {'header': 'DATE'}, {'header': 'DAYS'},], int(len(databank_training) + 1), databank_training)
+                   'Extra data', 'M', [{'header': 'EMPLOYEE_NO'}, {'header': 'GENDER'}, {'header': 'BIRTHDAY'}, {'header': 'STREET'}, {'header': 'CITY'}, {'header': 'CITY_CODE'}, {'header': 'EMAIL'}, {'header': 'PHONE'}, {'header': 'PHONE2'}, {'header': 'NATIONALITY'}, {'header': 'ORIGIN'}, {'header': 'MARRIAGE'}, {'header': 'EMPLOYEMENT'},], int(len(databank_employee) + 1), databank_employee,
+                   'Trainings', 'E', [{'header': 'EMPLOYEE_NO'}, {'header': 'TRAINING'}, {'header': 'INSTITUTE'}, {'header': 'DATE'}, {'header': 'DAYS'},], int(len(databank_training) + 1), databank_training)
 
        
           
