@@ -2,7 +2,7 @@
 
 ## [0.2.1](https://github.com/DrBenjamin/HRStaffPortal) - 2023-02-27
 
-``` Version 2 Release```
+``` Version 0.2 Release```
 
 ### Added
 * HR Staff Portal
@@ -10,7 +10,7 @@
     * National ID Card master data import by scanning the QR Code
 
 ### Changed
-* Use `st.experimental_data_editor` to show (and alter) dataframes
+* Use `st.experimental_data_editor` instead of `st.dataframe` to show (and alter) dataframes
 
 ### Fixed
 
