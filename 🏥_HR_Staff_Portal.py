@@ -5,21 +5,16 @@
 #### Loading needed Python libraries
 import streamlit as st
 import extra_streamlit_components as stx
-import streamlit.components.v1 as stc
 import pandas as pd
 import numpy as np
-import pygsheets
 import cv2
 import mysql.connector
-import os
 import platform
-import io
 import sys
 from datetime import datetime, date
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
-from functions import logout
 from functions import export_excel
 from functions import load_file
 from functions import landing_page
