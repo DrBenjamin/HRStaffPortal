@@ -7,21 +7,13 @@ import streamlit as st
 import platform
 import pandas as pd
 import io
-from io import BytesIO
-from PIL import Image
-from PIL.PngImagePlugin import PngInfo
 import os
-import sys
 from loguru import logger
-from pathlib import Path
 import xlsxwriter
 from docx import Document
-from docx.shared import Inches
-from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from streamlit_qrcode_scanner import qrcode_scanner
 import qrcode
-from datetime import date
 
 
 
