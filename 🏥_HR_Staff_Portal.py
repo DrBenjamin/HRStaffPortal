@@ -11,6 +11,7 @@ import cv2
 import mysql.connector
 import platform
 from datetime import datetime, date
+from streamlit_image_select import image_select
 import os
 import sys
 sys.path.insert(1, "pages/functions/")
@@ -315,21 +316,12 @@ if check_password():
 
     ## QR Code reader for `National ID` to prefil `New Employee` form
     else:
-        column1, column2 = st.columns(2)
-        with column1:
-            national_id = st.radio(label = 'Type of Input', options = ('Input data manually', 'Scan National ID'),
-                                   index = 0)
-            if national_id == 'Scan National ID':
-                qrcode = qrcode_reader()
-                if qrcode != None:
-                    st.session_state['national_id_data'] = parse_national_id(qrcode)
-        with column2:
-            if national_id == 'Input data manually':
-                st.write('Proceed below to type in employee data')
-                st.image('images/Keyboard.png')
-            else:
-                st.write('Scan the National ID QR Code on the backside')
-                st.image('images/ID.png')
+        national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png'], captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside'],
+                                          index = 0, return_value = 'index')
+        if national_id == 1:
+            qrcode = qrcode_reader()
+            if qrcode != None:
+                st.session_state['national_id_data'] = parse_national_id(qrcode)
 
 
 
