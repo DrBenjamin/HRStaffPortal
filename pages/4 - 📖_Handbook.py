@@ -308,6 +308,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
         #lang = st.sidebar.selectbox('In which language should Ben answer?', (
         #'BG', 'CS', 'DA', 'DE', 'EL', 'EN-GB', 'ES', 'ET', 'FI', 'FR', 'HU', 'IT', 'JA', 'LT', 'LV', 'NL', 'PL', 'PT',
         #'RO', 'RU', 'SK', 'SL', 'SV', 'ZH'), index = 5, key = 'lang')
+        lang = 'en-GB'
 
 
         ## Columns
@@ -565,9 +566,10 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
 
                         ## Debugging output
-                        # st.write(databank_handbook)
-                        # st.write(st.session_state['handbook_text'])
-                        # st.write(st.session_state['answer_score'])
+                        #st.write(keywords)
+                        #st.write(databank_handbook)
+                        #st.write(st.session_state['handbook_text'])
+                        #st.write(st.session_state['answer_score'])
 
 
                         ## Doing the request to OpenAI for answering the question
