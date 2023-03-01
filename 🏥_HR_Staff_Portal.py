@@ -12,12 +12,15 @@ import mysql.connector
 import platform
 from datetime import datetime, date
 from streamlit_image_select import image_select
+from io import StringIO
+from io import BytesIO
 import os
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
 from functions import export_excel
+from functions import import_excel
 from functions import load_file
 from functions import landing_page
 from functions import rebuild_confirmation
@@ -314,14 +317,14 @@ if check_password():
         checkbox_training = st.checkbox(label = 'Confirm Training', value = checkbox_val, disabled = not checkbox_val)
 
 
-    ## QR Code reader for `National ID` to prefil `New Employee` form
-    else:
-        national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png'], captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside'],
-                                          index = 0, return_value = 'index')
-        if national_id == 1:
-            qrcode = qrcode_reader()
-            if qrcode != None:
-                st.session_state['national_id_data'] = parse_national_id(qrcode)
+    ## QR Code reader for `National ID` to prefill `New Employee` form
+    national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png'],
+                               captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside'],
+                               index = 0, return_value = 'index')
+    if national_id == 1:
+        qrcode = qrcode_reader()
+        if qrcode != None:
+            st.session_state['national_id_data'] = parse_national_id(qrcode)
 
 
 
@@ -1032,29 +1035,40 @@ if check_password():
 
 
     ## Show databank data in editable dataframe
-    with st.expander("See all Databank entries", expanded = False):
+    with st.expander("Database Excel Import / Export (all tables))", expanded = False):
         st.info(
             'You may want to alter the data before exporting to Excel (e.g. delete specific column data cause of Data Privacy reasons - this will not change the database data!)',
             icon = 'ℹ️')
 
 
         ## Show `IMAGEBASE` table data
+        # Import Excel data
+        databanks_dict = import_excel(sheet_names = [0, 1, 2])
         st.subheader('Employee data')
-        databank = st.experimental_data_editor(databank, use_container_width = True)
+        try:
+            databank = st.experimental_data_editor(databanks_dict[0], use_container_width = True)
+        except:
+            databank = st.experimental_data_editor(databank, use_container_width = True)
 
 
         ## Show `EMPLOYEE` table data
         st.subheader('Extra employee data')
-        databank_employee = st.experimental_data_editor(databank_employee, use_container_width = True)
+        try:
+            databank_employee = st.experimental_data_editor(databanks_dict[1], use_container_width = True)
+        except:
+            databank_employee = st.experimental_data_editor(databank_employee, use_container_width = True)
 
 
         ## Show `TRAINING` table data
         st.subheader('Training data')
-        databank_training = st.experimental_data_editor(databank_training, use_container_width = True)
+        try:
+            databank_training = st.experimental_data_editor(databanks_dict[2], use_container_width = True)
+        except:
+            databank_training = st.experimental_data_editor(databank_training, use_container_width = True)
 
 
         ## Export `Vehicles` dataframe to Excel Makro file
-        if st.button('Export Excel'):
+        if st.button('Export Excel (all tables)'):
             export_excel('Employees', 'G',
                          [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'},
                           {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'CARDS_PRINTED'}, ],
@@ -1064,8 +1078,7 @@ if check_password():
                           {'header': 'CITY'}, {'header': 'CITY_CODE'}, {'header': 'EMAIL'}, {'header': 'PHONE'},
                           {'header': 'PHONE2'}, {'header': 'NATIONALITY'}, {'header': 'ORIGIN'}, {'header': 'MARRIAGE'},
                           {'header': 'EMPLOYEMENT'}, ], int(len(databank_employee) + 1), databank_employee,
-                         'Trainings', 'E', [{'header': 'EMPLOYEE_NO'}, {'header': 'TRAINING'}, {'header': 'INSTITUTE'},
-                                            {'header': 'DATE'}, {'header': 'DAYS'}, ], int(len(databank_training) + 1),
+                         'Trainings', 'G', [{'header': 'EMPLOYEE_NO'}, {'header': 'WORKSHOP_ID'}, {'header': 'WORKSHOP_TITLE'}, {'header': 'WORKSHOP_DESCRIPTION'}, {'header': 'WORKSHOP_FACILITATOR'}, {'header': 'WORKSHOP_DATE'}, {'header': 'WORKSHOP_DURATION'}, ], int(len(databank_training) + 1),
                          databank_training)
 
 

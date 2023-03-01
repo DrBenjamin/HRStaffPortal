@@ -10,6 +10,8 @@ import io
 import os
 from loguru import logger
 import xlsxwriter
+import openpyxl
+import xlrd
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from streamlit_qrcode_scanner import qrcode_scanner
@@ -120,6 +122,30 @@ def logout():
 
 
 
+### Function: import_excel = MS Excel File (xlsx) to Pandas dataframe
+def import_excel(sheet_names):
+    df = None
+    uploaded_file = st.file_uploader("Choose an Excel document for data import", type = 'xls')
+    if uploaded_file is not None:
+        # To read file as bytes:
+        bytes_data = uploaded_file.getvalue()
+    
+        # Write bytes to file
+        try:
+            # Write Excel to dataframe
+            df = pd.read_excel(io.BytesIO(bytes_data), sheet_name = sheet_names, header = 0)
+            for i in range(len(df)):
+                id_list = []
+                for id in range(len(df[i])):
+                    id_list.append(id + 1)
+                df[i].insert(0, "ID", id_list, True)
+                df[i] = df[i].set_index('ID')
+        except:
+            print('No Excel Import data present')
+    return df
+    
+    
+    
 ### Function: export_excel = Pandas dataframe to MS Excel Makro File (xlsm)
 def export_excel(sheet, column, columns, length, data,
                  sheet2 = 'N0thing', column2 = 'A', columns2 = '', length2 = '', data2 = '',

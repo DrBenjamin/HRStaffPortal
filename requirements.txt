@@ -11,6 +11,8 @@ streamlit_image_select
 streamlit_qrcode_scanner
 opencv-python-headless
 xlsxwriter
+openpyxl
+xlrd
 python-docx
 openai
 deepl

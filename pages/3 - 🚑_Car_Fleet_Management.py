@@ -19,6 +19,7 @@ sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
 from functions import export_excel
+from functions import import_excel
 from functions import load_file
 from functions import landing_page
 from functions import save_img
@@ -1160,45 +1161,68 @@ if check_password():
 
 
     ### Database Excel Export Expander
-    with st.expander('Database Excel Export (all tables)', expanded = False):
+    with st.expander('Database Excel Import / Export (all tables)', expanded = False):
         st.info(
             'You may want to alter the data before exporting to Excel (e.g. delete specific column data cause of Data Privacy reasons - this will not change the database data!)',
             icon = 'ℹ️')
 
 
         ## Show `DRIVERS` table dataframe
+        # Import Excel data
+        databanks_carfleet_dict = import_excel(sheet_names = [0, 1, 2, 3, 4, 5, 6])
         st.subheader('Drivers data')
-        databank_drivers_excel = st.experimental_data_editor(databank_drivers_excel, use_container_width = True)
+        try:
+            databank_drivers_excel = st.experimental_data_editor(databanks_carfleet_dict[0], use_container_width = True)
+        except:
+            databank_drivers_excel = st.experimental_data_editor(databank_drivers_excel, use_container_width = True)
 
 
         ## Show `FUEL` table dataframe
         st.subheader('Fuel data')
-        databank_fuel = st.experimental_data_editor(databank_fuel, use_container_width = True)
+        try:
+            databank_fuel = st.experimental_data_editor(databanks_carfleet_dict[1], use_container_width = True)
+        except:
+            databank_fuel = st.experimental_data_editor(databank_fuel, use_container_width = True)
 
 
         ## Show `INSURANCES` table dataframe
         st.subheader('Insurances data')
-        databank_insurances = st.experimental_data_editor(databank_insurances, use_container_width = True)
+        try:
+            databank_insurances = st.experimental_data_editor(databanks_carfleet_dict[2], use_container_width = True)
+        except:
+            databank_insurances = st.experimental_data_editor(databank_insurances, use_container_width = True)
 
 
         ## Show `REPAIRS` table dataframe
         st.subheader('Repairs data')
-        databank_repairs = st.experimental_data_editor(databank_repairs, use_container_width = True)
+        try:
+            databank_repairs = st.experimental_data_editor(databanks_carfleet_dict[3], use_container_width = True)
+        except:
+            databank_repairs = st.experimental_data_editor(databank_repairs, use_container_width = True)
 
 
         ## Show `SERVICES` table dataframe
         st.subheader('Services data')
-        databank_services = st.experimental_data_editor(databank_services, use_container_width = True)
+        try:
+            databank_services = st.experimental_data_editor(databanks_carfleet_dict[4], use_container_width = True)
+        except:
+            databank_services = st.experimental_data_editor(databank_services, use_container_width = True)
 
 
         ## Show `TRIPS` table dataframe
         st.subheader('Trips data')
-        databank_trips = st.experimental_data_editor(databank_trips, use_container_width = True)
+        try:
+            databank_trips = st.experimental_data_editor(databanks_carfleet_dict[5], use_container_width = True)
+        except:
+            databank_trips = st.experimental_data_editor(databank_trips, use_container_width = True)
 
 
         ## Show `VEHICLES` table dataframe
         st.subheader('Vehicles data')
-        databank_vehicles_excel = st.experimental_data_editor(databank_vehicles_excel, use_container_width = True)
+        try:
+            databank_vehicles_excel = st.experimental_data_editor(databanks_carfleet_dict[6], use_container_width = True)
+        except:
+            databank_vehicles_excel = st.experimental_data_editor(databank_vehicles_excel, use_container_width = True)
 
 
         ## Export all tables to Excel workbook
