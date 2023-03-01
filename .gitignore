@@ -11,6 +11,8 @@ changelog-dist/
 .Rbuildignore
 *Export.xlsm
 *Export.xlsx
+temp.xlsx
+temp.xls
 *VBA.xlsm
 *.docx
 MoH.png
