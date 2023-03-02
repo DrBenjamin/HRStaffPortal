@@ -50,7 +50,7 @@ except KeyError as e:
     exit()
 
 except BadZipfile as e:
-    # Usually if the file is an xls file and not an xlsm file.
+    # Usually if the file is a xls file and not a xlsm file.
     print("File error: %s: '%s'" % (str(e), xlsm_file))
     print("File may not be an Excel xlsm macro file.")
     exit()
