@@ -362,7 +362,7 @@ def save_img(data, filename = 'temp.png'):
 
 
 
-### Function: generateID = Generates an 5-digits ID
+### Function: generateID = Generates a 5-digits ID
 def generateID(id):
     if (id < 10):
         generated_id = '0000' + str(id)
