@@ -16,6 +16,7 @@ xlsxwriter
 openpyxl
 xlrd
 python-docx
+PyGt5
 openai
 deepl
 geocoder

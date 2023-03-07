@@ -1045,29 +1045,37 @@ if check_password():
         databanks_dict = import_excel(sheet_names = [0, 1, 2])
         st.subheader('Employee data')
         try:
-            databank = st.experimental_data_editor(databanks_dict[0], use_container_width = True)
+            databank_edit = st.experimental_data_editor(databanks_dict[0], use_container_width = True)
         except:
-            databank = st.experimental_data_editor(databank, use_container_width = True)
+            databank_edit = st.experimental_data_editor(databank, use_container_width = True)
 
 
         ## Show `EMPLOYEE` table data
         st.subheader('Extra employee data')
         try:
-            databank_employee = st.experimental_data_editor(databanks_dict[1], use_container_width = True)
+            databank_employee_edit = st.experimental_data_editor(databanks_dict[1], use_container_width = True)
         except:
-            databank_employee = st.experimental_data_editor(databank_employee, use_container_width = True)
+            databank_employee_edit = st.experimental_data_editor(databank_employee, use_container_width = True)
 
 
         ## Show `TRAINING` table data
         st.subheader('Training data')
         try:
-            databank_training = st.experimental_data_editor(databanks_dict[2], use_container_width = True)
+            databank_training_edit = st.experimental_data_editor(databanks_dict[2], use_container_width = True)
         except:
-            databank_training = st.experimental_data_editor(databank_training, use_container_width = True)
+            databank_training_edit = st.experimental_data_editor(databank_training, use_container_width = True)
+
+
+        ## Write changes to database
+        if st.button('Write changes to Database'):
+            databank_diff = databank.compare(databank_edit, keep_equal = True, align_axis = 0)
+            #databank_diff.drop(databank_diff.columns[[1]], inplace = True, axis = 1)
+            #databank_diff = databank_diff.set_index('ID')
+            st.write(databank_diff)
 
 
         ## Export `Vehicles` dataframe to Excel Makro file
-        if st.button('Export Excel (all tables)'):
+        if st.button('Export Excel (Database)'):
             export_excel('Employees', 'G',
                          [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'},
                           {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'CARDS_PRINTED'}, ],
@@ -1079,6 +1087,7 @@ if check_password():
                           {'header': 'EMPLOYEMENT'}, ], int(len(databank_employee) + 1), databank_employee,
                          'Trainings', 'G', [{'header': 'EMPLOYEE_NO'}, {'header': 'WORKSHOP_ID'}, {'header': 'WORKSHOP_TITLE'}, {'header': 'WORKSHOP_DESCRIPTION'}, {'header': 'WORKSHOP_FACILITATOR'}, {'header': 'WORKSHOP_DATE'}, {'header': 'WORKSHOP_DURATION'}, ], int(len(databank_training) + 1),
                          databank_training)
+
 
 
 
