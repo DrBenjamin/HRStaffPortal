@@ -301,39 +301,46 @@ if check_password():
 
 
     ### Employee selectbox (on change sets first start session state)
-    st.title('Employee data')
-    if (st.session_state['chosen_id'] != 1):
-        selectbox_enabled = True
-    else:
-        selectbox_enabled = False
-    index = st.selectbox(label = "Which employee do you want to select?", options = range(len(names)),
-                         format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'],
-                         disabled = selectbox_enabled)
-
-
-    ## Checkboxes for editing and adding training data
-    if (index != 0):
-        checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
-        checkbox_training = st.checkbox(label = 'Confirm Training', value = checkbox_val, disabled = not checkbox_val)
-
-
-    ## QR Code reader for `National ID` to prefill `New Employee` form
-    national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png'],
-                               captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside'],
-                               index = 0, return_value = 'index')
-    if national_id == 1:
-        qrcode = qrcode_reader()
-        if qrcode != None:
-            st.session_state['national_id_data'] = parse_national_id(qrcode)
-
-
-
-    ### Custom Tabs with IDs
-    chosen_id = stx.tab_bar(data = [
-        stx.TabBarItemData(id = 1, title = "Master data", description = "Employee data"),
-        stx.TabBarItemData(id = 2, title = "Training data", description = "Employee trainings"),
-        stx.TabBarItemData(id = 3, title = "More data", description = "Extra Employee data"), ], default = 1)
-    st.session_state['chosen_id'] = int(chosen_id)
+    with st.expander(label = '', expanded = True):
+        st.title('Employee data')
+        st.write('This data is shared with the EasyBadge Printer Software.')
+        st.subheader('Create a new employee or alter an existing dataset')
+        if (st.session_state['chosen_id'] != 1):
+            selectbox_enabled = True
+        else:
+            selectbox_enabled = False
+        index = st.selectbox(label = "Which employee do you want to select?", options = range(len(names)),
+                             format_func = lambda x: names[x], on_change = onChange, index = st.session_state['index'],
+                             disabled = selectbox_enabled)
+    
+    
+        ## Checkboxes for editing and adding training data
+        if (index != 0):
+            st.subheader('Reading or writing mode')
+            checkbox_val = st.checkbox(label = 'Edit Mode', value = False)
+            checkbox_training = st.checkbox(label = 'Confirm Training', value = checkbox_val, disabled = not checkbox_val)
+    
+    
+        ## QR Code reader for `National ID` to prefill `New Employee` form
+        st.subheader('Choose type of input')
+        st.info('You may want to scan a National ID for prefilling some data.', icon = 'ℹ️')
+        national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png'],
+                                   captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside'],
+                                   index = 0, return_value = 'index')
+        if national_id == 1:
+            qrcode = qrcode_reader()
+            if qrcode != None:
+                st.session_state['national_id_data'] = parse_national_id(qrcode)
+    
+    
+    
+        ### Custom Tabs with IDs
+        st.subheader('Choose type of data')
+        chosen_id = stx.tab_bar(data = [
+            stx.TabBarItemData(id = 1, title = "Master data", description = "Employee data"),
+            stx.TabBarItemData(id = 2, title = "Training data", description = "Employee trainings"),
+            stx.TabBarItemData(id = 3, title = "More data", description = "Extra Employee data"), ], default = 1)
+        st.session_state['chosen_id'] = int(chosen_id)
 
 
 
@@ -343,7 +350,7 @@ if check_password():
         with st.form("Employee data"):
             st.write('')
             st.title('Employee Master data')
-            st.subheader('Enter or view Employee Master data')
+            st.header('Enter or view Employee Master data')
 
 
             ## If new employee just show empty form
@@ -596,7 +603,7 @@ if check_password():
         with st.expander(label = "", expanded = True):
             ## Get information of selected employee regarding training
             st.title('Employee Training data')
-            st.subheader('View employee training data')
+            st.header('View employee training data')
 
 
             ## If new Employee just show empty form
@@ -764,7 +771,7 @@ if check_password():
         ## Expander for extra data
         with st.expander(label = "", expanded = True):
             st.title('More Employee data')
-            st.subheader('Enter or view extra Employee data')
+            st.header('Enter or view extra Employee data')
 
 
             ## If new Employee just show empty form
@@ -1029,36 +1036,50 @@ if check_password():
 
 
     ### Out of the Tabs
-    ## Image Download Button
-    st.download_button('Download Image', data = st.session_state['image'], mime = "image/png")
+    ## Export employee image
+    with st.expander(label = '', expanded = True):
+        st.title('Export employee image')
+        st.info('You may want to download the employee image.', icon = 'ℹ️')
+        
+        # Image Download Button
+        st.download_button('Download Image', data = st.session_state['image'], mime = "image/png")
 
 
     ## Show databank data in editable dataframe
-    with st.expander("Database Excel Import / Export (all tables))", expanded = False):
+    with st.expander('Database Excel Import / Export (all tables))', expanded = False):
+        st.title('Data')
+        st.write('Here you will find the raw data from the databases.')
+        
+        ## Data Import
+        st.header('Data import')
+        st.info(
+            'You may want to import data from an compatible Excel file with 3 Sheets (containing 1. `Employees`, 2. `Extra data`, 3. `Trainings`).',
+            icon = 'ℹ️')
+        # Import Excel data
+        databanks_dict = import_excel(sheet_names = [0, 1, 2])
+        
+        
+        ## Data review and editing
+        st.header('Data review and editing')
         st.info(
             'You may want to alter the data before exporting to Excel (e.g. delete specific column data cause of Data Privacy reasons - this will not change the database data!)',
             icon = 'ℹ️')
-
-
-        ## Show `IMAGEBASE` table data
-        # Import Excel data
-        databanks_dict = import_excel(sheet_names = [0, 1, 2])
+        
+        # Show `IMAGEBASE` table data
         st.subheader('Employee data')
         try:
             databank_edit = st.experimental_data_editor(databanks_dict[0], use_container_width = True)
         except:
             databank_edit = st.experimental_data_editor(databank, use_container_width = True)
 
-
-        ## Show `EMPLOYEE` table data
+        # Show `EMPLOYEE` table data
         st.subheader('Extra employee data')
         try:
             databank_employee_edit = st.experimental_data_editor(databanks_dict[1], use_container_width = True)
         except:
             databank_employee_edit = st.experimental_data_editor(databank_employee, use_container_width = True)
 
-
-        ## Show `TRAINING` table data
+        # Show `TRAINING` table data
         st.subheader('Training data')
         try:
             databank_training_edit = st.experimental_data_editor(databanks_dict[2], use_container_width = True)
@@ -1066,15 +1087,23 @@ if check_password():
             databank_training_edit = st.experimental_data_editor(databank_training, use_container_width = True)
 
 
-        ## Write changes to database
-        if st.button('Write changes to Database'):
-            databank_diff = databank.compare(databank_edit, keep_equal = True, align_axis = 0)
-            #databank_diff.drop(databank_diff.columns[[1]], inplace = True, axis = 1)
-            #databank_diff = databank_diff.set_index('ID')
-            st.write(databank_diff)
+        ## Show `Write changes to database` button (if there are changes)
+        databank_diff = databank.compare(databank_edit, keep_equal = True, align_axis = 0)
+        if len(databank_diff) > 0:
+            st.subheader('Data update')
+            st.info('You may want to update the database with the changes. Otherwise you may want to export the altered data.', icon = 'ℹ️')
+            if st.button('Write changes to Database'):
+                #databank_diff.drop(databank_diff.columns[[1]], inplace = True, axis = 1)
+                #databank_diff = databank_diff.set_index('ID')
+                st.write(databank_diff)
 
 
         ## Export `Vehicles` dataframe to Excel Makro file
+        st.subheader('Data export to an Ecel document')
+        if len(databank_diff) > 0:
+            st.info('You may want to export the altered data.', icon = 'ℹ️')
+        else:
+            st.info('You may want to export the database data.', icon = 'ℹ️')
         if st.button('Export Excel (Database)'):
             export_excel('Employees', 'G',
                          [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'},
