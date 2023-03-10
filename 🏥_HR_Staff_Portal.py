@@ -1089,13 +1089,16 @@ if check_password():
 
         ## Show `Write changes to database` button (if there are changes)
         databank_diff = databank.compare(databank_edit, keep_equal = True, align_axis = 0)
+        number = st.number_input('Which row should be updated?', value = 1, min_value = 1, max_value = 2, step = 1)
+        st.experimental_show(databank_diff)
         if len(databank_diff) > 0:
             st.subheader('Data update')
             st.info('You may want to update the database with the changes. Otherwise you may want to export the altered data.', icon = 'ℹ️')
             if st.button('Write changes to Database'):
                 #databank_diff.drop(databank_diff.columns[[1]], inplace = True, axis = 1)
                 #databank_diff = databank_diff.set_index('ID')
-                st.write(databank_diff)
+                #st.write(databank_diff)
+                print('Changes to database')
 
 
         ## Export `Vehicles` dataframe to Excel Makro file
