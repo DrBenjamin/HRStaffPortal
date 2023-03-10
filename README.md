@@ -6,7 +6,7 @@
 
 This App handles *employee data* which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL databank.
 
-For development **[RStudio](https://www.rstudio.com/products/rstudio/download/#download)** is used. Install **[git](https://git-scm.com/download/win)** to use version control.
+For development choose your favorite Editor or use an IDE as **[RStudio](https://www.rstudio.com/products/rstudio/download/#download)** or [PyCharm](https://www.jetbrains.com/pycharm/). Install **[git](https://git-scm.com/download/win)** to use version control.
 
 ### Setup
 
