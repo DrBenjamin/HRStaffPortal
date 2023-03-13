@@ -181,7 +181,7 @@ if check_password():
         # Converting numby array to list
         numb = numb.tolist()
     
-        # Update the worksheet with the numpy array values at specific range
+        # Update the worksheet with the numpy array values at a specific range
         try:
             wks.update_values(crange = 'A2', values = numb)
         except:
