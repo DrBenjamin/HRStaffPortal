@@ -66,7 +66,9 @@ with st.expander('', expanded = True):
     ## Local site hosted on Apache
     source = 'https://192.168.1.173/index.html'
     stc.iframe(src = source, height = 620, scrolling = True)
-
+    
+    units = st.multiselect(label = 'Department(s)', options = ['Medical', 'Peads', 'Surcical', 'Ops & Gyna'])
+    st.write('Department(s): ' + str(units))
 
 
 ### Logged in state (About)

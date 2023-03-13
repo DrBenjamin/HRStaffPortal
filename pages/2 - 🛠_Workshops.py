@@ -74,11 +74,9 @@ if ('header' not in st.session_state):
     st.session_state['header'] = True
 
 
-## Created workshop states
+## Created Workshop states
 if ('workshop' not in st.session_state):
     st.session_state['workshop'] = '00000'
-if ('updateGoogleSheet' not in st.session_state):
-    st.session_state['updateGoogleSheet'] = False
 
 
 
@@ -127,6 +125,7 @@ def lastID(url):
 
 
 
+
 #### Main Program
 ### Logged in state (Workshops page)
 if check_password():
@@ -137,9 +136,7 @@ if check_password():
     ## Open databank connection
     conn = init_connection()
 
-
-    ## Get workshop data
-    # Run query
+    # Get workshop data
     query = "SELECT WORKSHOP_ID, WORKSHOP_TITLE, WORKSHOP_DESCRIPTION, WORKSHOP_FACILITATOR, WORKSHOP_FACILITATOR_EMAIL, WORKSHOP_DATE, WORKSHOP_DURATION, WORKSHOP_ATTENDEES, WORKSHOP_ATTENDEES_CONFIRMED FROM idcard.WORKSHOP;"
     rows = run_query(query)
 
@@ -163,26 +160,32 @@ if check_password():
 
 
     ## Google Sheet update
-    if st.session_state['updateGoogleSheet'] == True:
-        # Open the spreadsheet and the first sheet
-        client = google_sheet_credentials()
+    # Open the spreadsheet and the first sheet
+    client = google_sheet_credentials()
+    if client != 'Exception':
         sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
         wks = sh.sheet1
 
+        # Read the worksheet and get a pandas dataframe
+        try:
+            data = wks.get_as_df()
+        except:
+            print('Exception in read of Google Sheet')
+    
         # Creating numpy array
         numb = np.array(databank_workshop)
-
+    
         # Converting dates to string
         numb[:, [5]] = numb[:, [5]].astype('str')
-
+    
         # Converting numby array to list
         numb = numb.tolist()
-
+    
         # Update the worksheet with the numpy array values at specific range
-        wks.update_values(crange = 'A2', values = numb)
-
-        # Set session state to False
-        st.session_state['updateGoogleSheet'] = False
+        try:
+            wks.update_values(crange = 'A2', values = numb)
+        except:
+            print('Exception in write of Google Sheet')
 
 
 
@@ -534,6 +537,14 @@ if check_password():
                 ## Reload
                 st.session_state['workshop'] = workshop_id
                 st.experimental_rerun()
+                
+    
+    ## Show Google Sheet Workshop data
+    with st.expander('Workshop data'):
+        #duplicate_cols = data.columns[data.columns.duplicated()]
+        #data.drop(columns = duplicate_cols, inplace = True)
+        databank_workshop_edited = st.experimental_data_editor(data)
+    
 
 
 

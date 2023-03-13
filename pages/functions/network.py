@@ -118,16 +118,18 @@ def get_ip():
 @st.cache_resource
 def google_sheet_credentials():
     ## Google Sheet API authorization
-    output = st.secrets['google']['credentials_file']
-    GoogleDriveDownloader.download_file_from_google_drive(file_id = st.secrets['google']['credentials_file_id'],
+    try:
+        GoogleDriveDownloader.download_file_from_google_drive(file_id = st.secrets['google']['credentials_file_id'],
                                                           dest_path = './credentials.zip', unzip = True)
-    client = pygsheets.authorize(service_file = st.secrets['google']['credentials_file'])
-    if os.path.exists("credentials.zip"):
-        os.remove("credentials.zip")
-    if os.path.exists("google_credentials.json"):
-        os.remove("google_credentials.json")
-    if os.path.exists("__MACOSX"):
-        shutil.rmtree("__MACOSX")
-
+        client = pygsheets.authorize(service_file = st.secrets['google']['credentials_file'])
+        if os.path.exists("credentials.zip"):
+            os.remove("credentials.zip")
+        if os.path.exists("google_credentials.json"):
+            os.remove("google_credentials.json")
+        if os.path.exists("__MACOSX"):
+            shutil.rmtree("__MACOSX")
+    except:
+        client = 'Exception'
+        
     # Return client
     return client
