@@ -298,6 +298,10 @@ if check_password():
     # Creating numpy array
     numb = np.array(databank_pin)
 
+    # Add readed data
+    #newrow = np.array([1, 2, 3)])
+    #numb = np.vstack((numb, newrow))
+
     # Converting numby array to list
     numb = numb.tolist()
 
