@@ -14,6 +14,7 @@ from datetime import datetime, date
 from streamlit_image_select import image_select
 from io import StringIO
 from io import BytesIO
+import random
 import os
 import sys
 sys.path.insert(1, "pages/functions/")
@@ -207,13 +208,13 @@ if check_password():
     conn = init_connection()
 
     # Get employee data
-    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
+    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, DEPARTMENT, UNIT, EXPIRY_DATE, EMPLOYEE_NO, PIN, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
     databank = pd.DataFrame(
-        columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'CARDS_PRINTED'])
+        columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'DEPARTMENT', 'UNIT', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'PIN', 'CARDS_PRINTED'])
     for row in rows:
-        df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]],
-                          columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'EXPIRY_DATE', 'EMPLOYEE_NO',
+        df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]],
+                          columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'DEPARTMENT', 'UNIT', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'PIN',
                                      'CARDS_PRINTED'])
         databank = pd.concat([databank, df])
     databank = databank.set_index('ID')
@@ -288,16 +289,23 @@ if check_password():
     sh = client.open_by_key(st.secrets['google']['pin_spreadsheet_id'])
     wks = sh.sheet1
 
+    # Read the worksheet and get a pandas dataframe
+    try:
+        data_google = wks.get_as_df()
+    except:
+        print('Exception in read of Google Sheet')
 
-    ## Update the worksheet with the numpy array values, beginning at cell 'A2'
     # Creating numpy array
     numb = np.array(databank_pin)
 
     # Converting numby array to list
     numb = numb.tolist()
 
-    # Writing to worksheet
-    wks.update_values(crange = 'A2', values = numb)
+    # Update the worksheet with the numpy array values, beginning at a specific cell
+    try:
+        wks.update_values(crange = 'A2', values = numb)
+    except:
+        print('Exception in write of Google Sheet')
 
 
 
@@ -375,9 +383,16 @@ if check_password():
                         'first_name'].lower().capitalize())
                     surname = st.text_input(label = 'Surname', value = st.session_state['national_id_data'][
                         'last_name'].lower().capitalize())
-                job = st.text_input(label = 'Job', placeholder = 'Job?')
+                job = st.text_input(label = 'Position', placeholder = 'Position?')
+                dep = st.multiselect(label = 'Department', options = ['Medical', 'Surgery', 'Divers'])
+                unit = st.multiselect(label = 'Unit', options = ['4A', '4B', '4C', '4D', 'Divers'])
                 exp = st.text_input(label = 'Expirity date', value = '2023-12-31 00:00:00')
                 emp_no = st.text_input(label = 'Employee number', placeholder = 'Employee number?')
+                numbers = random.sample(range(10), 4)
+                pin = ''
+                for digit in numbers:
+                    pin += str(digit)
+                st.text_input(label = 'Secret PIN number', value = pin, disabled = True)
                 capri = st.text_input(label = 'Cards printed', value = 0)
 
 
@@ -440,9 +455,9 @@ if check_password():
                         id = lastID(url = '`idcard`.`IMAGEBASE`')
 
 
-                        ## Maybe it needs a break???
-                        query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s, %s);" % (
-                        id, layout, forename, surname, job, exp, emp_no, capri)
+                        ## Maybe it needs a break to prevent used `IDs`???
+                        query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, DEPARTMENT, UNIT, EXPIRY_DATE, EMPLOYEE_NO, PIN, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s', %s);" % (
+                        id, layout, forename, surname, job, ', '.join(dep), ', '.join(unit), exp, emp_no, pin, capri)
                         run_query(query)
                         conn.commit()
                         st.session_state['success1'] = True
@@ -467,7 +482,7 @@ if check_password():
             ## If data is already existent, show filled form
             else:
                 ## Get information of selected Employee
-                query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, EXPIRY_DATE, EMPLOYEE_NO, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" % (
+                query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, DEPARTMENT, UNIT, EXPIRY_DATE, EMPLOYEE_NO, PIN, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" % (
                     index)
                 employee = run_query(query)
 
@@ -486,22 +501,31 @@ if check_password():
                 surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
                 if (employee[0][3] != surname):
                     updateMaster = True
-                job = st.text_input(label = 'Job', value = employee[0][4], disabled = not checkbox_val)
+                job = st.text_input(label = 'Position', value = employee[0][4], disabled = not checkbox_val)
                 if (employee[0][4] != job):
                     updateMaster = True
-                exp = st.text_input(label = 'Expirity date', value = employee[0][5], disabled = not checkbox_val)
-                if (employee[0][5] != exp):
+                dep = st.multiselect(label = 'Department', options = ['Medical', 'Surgery', 'Divers'], default = employee[0][5].split(', '), disabled = not checkbox_val)
+                if (employee[0][5] != dep):
                     updateMaster = True
-                emp_no = st.text_input(label = 'Employee number', value = employee[0][6], disabled = not checkbox_val)
-                if (employee[0][6] != emp_no):
+                unit = st.multiselect(label = 'Unit', options = ['4A', '4B', '4C', '4D', 'Divers'], default = employee[0][6].split(', '), disabled = not checkbox_val)
+                if (employee[0][6] != unit):
                     updateMaster = True
-                capri = st.text_input(label = 'Cards printed', value = employee[0][7], disabled = not checkbox_val)
-                if (employee[0][7] != capri):
+                exp = st.text_input(label = 'Expirity date', value = employee[0][7], disabled = not checkbox_val)
+                if (employee[0][7] != exp):
+                    updateMaster = True
+                emp_no = st.text_input(label = 'Employee number', value = employee[0][8], disabled = not checkbox_val)
+                if (employee[0][8] != emp_no):
+                    updateMaster = True
+                pin = st.text_input(label = 'Secret PIN number', value = employee[0][9], disabled = not checkbox_val)
+                if (employee[0][9] != pin):
+                    updateMaster = True
+                capri = st.text_input(label = 'Cards printed', value = employee[0][10], disabled = not checkbox_val)
+                if (employee[0][10] != capri):
                     updateMaster = True
 
 
                 ## Check if image is empty and show a placeholder
-                if (len(employee[0][8]) < 10):
+                if (len(employee[0][11]) < 10):
                     # Show placeholder
                     if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder']):
                         downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']],
@@ -514,10 +538,10 @@ if check_password():
 
                 ## Show existing image
                 else:
-                    st.image(employee[0][8])
+                    st.image(employee[0][11])
 
                     # Save Image for downloading to Image Session State
-                    st.session_state['image'] = employee[0][8]
+                    st.session_state['image'] = employee[0][11]
 
 
                 ## Image input
@@ -575,8 +599,8 @@ if check_password():
 
                     ## Writing to databank idcard Table IMAGEBASE
                     if (updateMaster == True):
-                        query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', CARDS_PRINTED = %s WHERE ID = %s;" % (
-                        layout, forename, surname, job, exp, emp_no, capri, index)
+                        query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', DEPARTMENT = '%s', UNIT = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', PIN = '%s', CARDS_PRINTED = %s WHERE ID = %s;" % (
+                        layout, forename, surname, job, ', '.join(dep), ', '.join(unit), exp, emp_no, pin, capri, index)
                         run_query(query)
                         conn.commit()
                         st.session_state['success1'] = True
@@ -1086,12 +1110,16 @@ if check_password():
             databank_training_edit = st.experimental_data_editor(databanks_dict[2], use_container_width = True)
         except:
             databank_training_edit = st.experimental_data_editor(databank_training, use_container_width = True)
+            
+        # Show PIN data
+        st.subheader('PIN data')
+        data_google_edit = st.experimental_data_editor(data_google, use_container_width = True)
 
 
         ## Show `Write changes to database` button (if there are changes)
         databank_diff = databank.compare(databank_edit, keep_equal = True, align_axis = 0)
-        number = st.number_input('Which row should be updated?', value = 1, min_value = 1, max_value = 2, step = 1)
-        st.experimental_show(databank_diff)
+        #number = st.number_input('Which row should be updated?', value = 1, min_value = 1, max_value = 2, step = 1)
+        #st.experimental_show(databank_diff)
         if len(databank_diff) > 0:
             st.subheader('Data update')
             st.info('You may want to update the database with the changes. Otherwise you may want to export the altered data.', icon = 'ℹ️')
