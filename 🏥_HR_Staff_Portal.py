@@ -12,8 +12,6 @@ import mysql.connector
 import platform
 from datetime import datetime, date
 from streamlit_image_select import image_select
-from io import StringIO
-from io import BytesIO
 import random
 import os
 import sys
