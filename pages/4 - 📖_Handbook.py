@@ -192,7 +192,7 @@ conn = init_connection()
 
 
 ### Header
-header(title = 'Handbook page', data_desc = 'handbooks', expanded = st.session_state['header'])
+header(title = 'Handbook page', data_desc = 'handbooks (User & Admin) and the Specification document', expanded = st.session_state['header'])
 
 
 
