@@ -20,26 +20,7 @@ All Software which is used to run **HR Staff Portal** is **Open Source**. Please
 
 Install **[Streamlit & Python](https://docs.streamlit.io/library/get-started/installation)** to run the source code locally. A virtual Python environment like **Anaconda** / **Miniconda** is highly recommend.
 
-After that you need to install some *Python libraries*:
-
-```cmd
-pip install mysql-connector-python-rf
-pip install mysql-connector-python==8.0.29
-pip install extra_streamlit_components
-pip install streamlit-scrollable-textbox
-pip install streamlit_image_select
-pip install opencv-python-headless
-pip install XlsxWriter
-pip install python-docx
-pip install openai
-pip install deepl
-pip install geocoder
-pip install geopy
-pip install qrcode
-pip install loguru
-```
-
-or do it at once using the `requirements.txt` file with:
+After that you need to install some *Python libraries*. To do so use the `requirements.txt` file with:
 
 ```cmd
 pip install -r requirements.txt
@@ -242,12 +223,18 @@ The **HR Staff Portal** software runs under the **[GNU General Public License v3
 
 #### Use of the web application
 
-The **HR Staff Portal** is running as an *Web Service* through the *Python Streamlit framework*. It will use the *port* `8501` if you are not changing it in `.streamlit/config.toml` in the `browser` section:
+The **HR Staff Portal** is running as an *Web Service* through the *Python Streamlit framework*. It will use the *port* `8501` if you are not changing it in `.streamlit/config.toml` in the `browser` section. Set the Server certification files to use ssl (https connection):
 
 ```
 [browser]
 # Server port binding
 serverPort = 8501
+
+# Server certificate file for connecting via HTTPS. Must be set at the same time as "server.sslKeyFile"
+sslCertFile = /Path-to-ssl-files/host.cert
+
+# Cryptographic key file for connecting via HTTPS. Must be set at the same time as "server.sslCertFile"
+sslKeyFile = /Path-to-ssl-files/host.key
 ```
 
 ##### Clone a specific version of HR Staff Portal
