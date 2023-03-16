@@ -31,7 +31,7 @@ from network import downzip
 
 
 
-#### Streamlit initial setup
+#### Streamlit Initial Setup
 desc_file = open('DESCRIPTION', 'r')
 lines = desc_file.readlines()
 print(lines[3])
