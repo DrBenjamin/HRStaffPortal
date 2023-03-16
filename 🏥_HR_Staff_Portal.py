@@ -1142,9 +1142,9 @@ if check_password():
         else:
             st.info('You may want to export the database data.', icon = 'ℹ️')
         if st.button('Export Excel (Database)'):
-            export_excel('Employees', 'G',
-                         [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'},
-                          {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'CARDS_PRINTED'}, ],
+            export_excel('Employees', 'J',
+                         [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'}, {'header': 'DEPARTMENT'},
+                          {'header': 'UNIT'}, {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'PIN'}, {'header': 'CARDS_PRINTED'}, ],
                          int(len(databank) + 1), databank,
                          'Extra data', 'M',
                          [{'header': 'EMPLOYEE_NO'}, {'header': 'GENDER'}, {'header': 'BIRTHDAY'}, {'header': 'STREET'},
