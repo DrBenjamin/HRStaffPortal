@@ -47,7 +47,6 @@ __pycache__/
 *.so
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
