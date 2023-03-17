@@ -172,7 +172,7 @@ if check_password():
         #try:
             #data = wks.get_as_df()
         #except:
-            print('Exception in read of Google Sheet')
+            # print('Exception in read of Google Sheet')
     
         # Creating numpy array
         #numb = np.array(databank_workshop)
@@ -541,11 +541,12 @@ if check_password():
                 st.experimental_rerun()
                 
     
-    ## Show Google Sheet Workshop data
-    with st.expander('Workshop data'):
+    
+    ### Show Google Sheet Workshop data
+    #with st.expander('Workshop data'):
         #duplicate_cols = data.columns[data.columns.duplicated()]
         #data.drop(columns = duplicate_cols, inplace = True)
-        databank_workshop_edited = st.experimental_data_editor(data)
+        #databank_workshop_edited = st.experimental_data_editor(data)
     
 
 
