@@ -8,7 +8,6 @@ import platform
 import pandas as pd
 import io
 import os
-from loguru import logger
 import xlsxwriter
 import openpyxl
 import xlrd
