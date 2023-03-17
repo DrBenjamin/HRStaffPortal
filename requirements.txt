@@ -9,7 +9,6 @@ mysql-connector-python==8.0.32
 mysql-connector-python-rf
 extra_streamlit_components==0.1.56
 streamlit-scrollable-textbox
-streamlit_image_select
 streamlit_qrcode_scanner
 opencv-python-headless
 xlsxwriter
