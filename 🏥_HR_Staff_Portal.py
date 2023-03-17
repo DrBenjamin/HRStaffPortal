@@ -1097,9 +1097,8 @@ if check_password():
         
         ## Data Import
         st.header('Data import')
-        st.info(
-            'You may want to import data from an compatible Excel file with 3 Sheets (containing 1. `Employees`, 2. `Extra data`, 3. `Trainings`).',
-            icon = 'ℹ️')
+        #st.info('You may want to import data from an compatible Excel file with 3 Sheets (containing 1. `Employees`, 2. `Extra data`, 3. `Trainings`).', icon = 'ℹ️')
+        st.warning('Import function not implemented yet.', icon = '‼️️')
         # Import Excel data
         databanks_dict = import_excel(sheet_names = [0, 1, 2])
         
