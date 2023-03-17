@@ -23,6 +23,20 @@ from network import downzip
 
 
 
+#### Initialization of session states
+## Session states
+if ('username' not in st.session_state):
+    st.session_state['username'] = ''
+if ('password' not in st.session_state):
+    st.session_state['password'] = ''
+if ('admin' not in st.session_state):
+    st.session_state['admin'] = False
+if ('password_correct' not in st.session_state):
+    st.session_state['password_correct'] = False
+    
+    
+    
+    
 #### All shared general functions
 ### Function: check_password = Password / user checking
 def check_password():
@@ -125,7 +139,7 @@ def logout():
 ### Function: import_excel = MS Excel File (xlsx) to Pandas dataframe
 def import_excel(sheet_names):
     df = None
-    uploaded_file = st.file_uploader("Choose an Excel document for data import", type = 'xls')
+    uploaded_file = st.file_uploader("Choose an Excel document for data import", type = 'xls', disabled = True)
     if uploaded_file is not None:
         # To read file as bytes:
         bytes_data = uploaded_file.getvalue()

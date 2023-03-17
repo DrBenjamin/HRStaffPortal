@@ -163,31 +163,31 @@ if check_password():
 
     ## Google Sheet update
     # Open the spreadsheet and the first sheet
-    client = google_sheet_credentials()
-    if client != 'Exception':
-        sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
-        wks = sh.sheet1
+    #client = google_sheet_credentials()
+    #if client != 'Exception':
+        #sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
+        #wks = sh.sheet1
 
         # Read the worksheet and get a pandas dataframe
-        try:
-            data = wks.get_as_df()
-        except:
+        #try:
+            #data = wks.get_as_df()
+        #except:
             print('Exception in read of Google Sheet')
     
         # Creating numpy array
-        numb = np.array(databank_workshop)
+        #numb = np.array(databank_workshop)
     
         # Converting dates to string
-        numb[:, [5]] = numb[:, [5]].astype('str')
+        #numb[:, [5]] = numb[:, [5]].astype('str')
     
         # Converting numby array to list
-        numb = numb.tolist()
+        #numb = numb.tolist()
     
         # Update the worksheet with the numpy array values at a specific range
-        try:
-            wks.update_values(crange = 'A2', values = numb)
-        except:
-            print('Exception in write of Google Sheet')
+        #try:
+            #wks.update_values(crange = 'A2', values = numb)
+        #except:
+            #print('Exception in write of Google Sheet')
 
 
 

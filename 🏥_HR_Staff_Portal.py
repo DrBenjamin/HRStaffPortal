@@ -88,8 +88,6 @@ eno = st.experimental_get_query_params()
 ## Session states
 if ('run' not in st.session_state):
     st.session_state['run'] = True
-if ('admin' not in st.session_state):
-    st.session_state['admin'] = False
 if ('header' not in st.session_state):
     st.session_state['header'] = True
 
@@ -270,8 +268,6 @@ if check_password():
         names.append(str(row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]))
 
 
-
-    ### Google Sheet support
     ## Getting employee PIN data
     query = "SELECT ID, ID, EMPLOYEE_NO, PIN FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
@@ -280,37 +276,39 @@ if check_password():
         df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['ID_INDEX', 'ID', 'EMPLOYEE_NO', 'PIN'])
         databank_pin = pd.concat([databank_pin, df])
     databank_pin = databank_pin.set_index('ID_INDEX')
-
-
+    
+    
+    
+    ### Google Sheet support
     ## Open the spreadsheet and the first sheet
     # Getting credentials
-    client = google_sheet_credentials()
+    #client = google_sheet_credentials()
 
     # Opening sheet
-    sh = client.open_by_key(st.secrets['google']['pin_spreadsheet_id'])
-    wks = sh.sheet1
+    #sh = client.open_by_key(st.secrets['google']['pin_spreadsheet_id'])
+    #wks = sh.sheet1
 
     # Read the worksheet and get a pandas dataframe
-    try:
-        data_google = wks.get_as_df()
-    except:
-        print('Exception in read of Google Sheet')
+    #try:
+        #data_google = wks.get_as_df()
+    #except:
+        #print('Exception in read of Google Sheet')
 
     # Creating numpy array
-    numb = np.array(databank_pin)
+    #numb = np.array(databank_pin)
 
     # Add readed data
     #newrow = np.array([1, 2, 3)])
     #numb = np.vstack((numb, newrow))
 
     # Converting numby array to list
-    numb = numb.tolist()
+    #numb = numb.tolist()
 
     # Update the worksheet with the numpy array values, beginning at a specific cell
-    try:
-        wks.update_values(crange = 'A2', values = numb)
-    except:
-        print('Exception in write of Google Sheet')
+    #try:
+        #wks.update_values(crange = 'A2', values = numb)
+    #except:
+        #print('Exception in write of Google Sheet')
 
 
 
@@ -388,7 +386,8 @@ if check_password():
                         'first_name'].lower().capitalize())
                     surname = st.text_input(label = 'Surname', value = st.session_state['national_id_data'][
                         'last_name'].lower().capitalize())
-                job = st.text_input(label = 'Position', placeholder = 'Position?')
+                job = st.selectbox(label = 'Position', options = ['Clinician', 'Nurse', 'Guard', 'Cleaner', 'Driver', 'HR', 'Director'])
+                #job = st.text_input(label = 'Position', placeholder = 'Position?')
                 dep = st.multiselect(label = 'Department', options = ['Medical', 'Surgery', 'Divers'])
                 unit = st.multiselect(label = 'Unit', options = ['4A', '4B', '4C', '4D', 'Divers'])
                 exp = st.text_input(label = 'Expirity date', value = '2023-12-31 00:00:00')
@@ -506,7 +505,23 @@ if check_password():
                 surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
                 if (employee[0][3] != surname):
                     updateMaster = True
-                job = st.text_input(label = 'Position', value = employee[0][4], disabled = not checkbox_val)
+                if employee[0][4] == 'Clinician':
+                    job_index = 0
+                elif employee[0][4] == 'Nurse':
+                    job_index = 1
+                elif employee[0][4] == 'Guard':
+                    job_index = 2
+                elif employee[0][4] == 'Cleander':
+                    job_index = 3
+                elif employee[0][4] == 'Driver':
+                    job_index = 4
+                elif employee[0][4] == 'HR':
+                    job_index = 5
+                elif employee[0][4] == 'Director':
+                    job_index = 6
+                else:
+                    job_index = 0
+                job = st.selectbox(label = 'Position', options = ['Clinician', 'Nurse', 'Guard', 'Cleaner', 'Driver', 'HR', 'Director'], index = job_index, disabled = not checkbox_val)
                 if (employee[0][4] != job):
                     updateMaster = True
                 dep = st.multiselect(label = 'Department', options = ['Medical', 'Surgery', 'Divers'], default = employee[0][5].split(', '), disabled = not checkbox_val)
@@ -1117,8 +1132,8 @@ if check_password():
             databank_training_edit = st.experimental_data_editor(databank_training, use_container_width = True)
             
         # Show PIN data
-        st.subheader('PIN data')
-        data_google_edit = st.experimental_data_editor(data_google, use_container_width = True)
+        #st.subheader('PIN data')
+        #data_google_edit = st.experimental_data_editor(data_google, use_container_width = True)
 
 
         ## Show `Write changes to database` button (if there are changes)
