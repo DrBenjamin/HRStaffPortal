@@ -6,6 +6,8 @@ placeholder_car.png
 placeholder_documentation.png
 host.cert
 host.key
+MoH.svg
+icon.svg
 changelog-dist/
 .Rdata
 .Rbuildignore
@@ -178,3 +180,5 @@ HRStaffPortal.iml
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+.idea/**/.name
+.idea/**/HR Staff Portal.iml
