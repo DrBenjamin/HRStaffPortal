@@ -11,7 +11,6 @@ import cv2
 import mysql.connector
 import platform
 from datetime import datetime, date
-from streamlit_image_select import image_select
 import random
 import os
 import sys
@@ -27,6 +26,8 @@ from functions import qrcode_reader
 from functions import parse_national_id
 from network import google_sheet_credentials
 from network import downzip
+sys.path.insert(2, "pages/modules/")
+from streamlit_image_select import image_select
 
 
 

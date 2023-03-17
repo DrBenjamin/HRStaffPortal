@@ -8,7 +8,6 @@ import mysql.connector
 import os
 import pandas as pd
 import numpy as np
-from streamlit_image_select import image_select
 from datetime import datetime, date
 import sys
 sys.path.insert(1, "pages/functions/")
@@ -25,6 +24,8 @@ from functions import confirmed_query
 from network import send_mail
 from network import get_ip
 from network import google_sheet_credentials
+sys.path.insert(2, "pages/modules/")
+from streamlit_image_select import image_select
 
 
 

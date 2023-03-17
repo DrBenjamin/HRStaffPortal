@@ -13,7 +13,6 @@ import cv2
 import mysql.connector
 import os
 from datetime import datetime
-from streamlit_image_select import image_select
 import sys
 sys.path.insert(1, "pages/functions/")
 from functions import header
@@ -24,6 +23,8 @@ from functions import load_file
 from functions import landing_page
 from functions import save_img
 from network import downzip
+sys.path.insert(2, "pages/modules/")
+from streamlit_image_select import image_select
 
 
 
