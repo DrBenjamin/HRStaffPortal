@@ -387,7 +387,6 @@ if check_password():
                     surname = st.text_input(label = 'Surname', value = st.session_state['national_id_data'][
                         'last_name'].lower().capitalize())
                 job = st.selectbox(label = 'Position', options = ['Clinician', 'Nurse', 'Guard', 'Cleaner', 'Driver', 'HR', 'Director'])
-                #job = st.text_input(label = 'Position', placeholder = 'Position?')
                 dep = st.multiselect(label = 'Department', options = ['Medical', 'Surgery', 'Divers'])
                 unit = st.multiselect(label = 'Unit', options = ['4A', '4B', '4C', '4D', 'Divers'])
                 exp = st.text_input(label = 'Expirity date', value = '2023-12-31 00:00:00')
@@ -511,7 +510,7 @@ if check_password():
                     job_index = 1
                 elif employee[0][4] == 'Guard':
                     job_index = 2
-                elif employee[0][4] == 'Cleander':
+                elif employee[0][4] == 'Cleaner':
                     job_index = 3
                 elif employee[0][4] == 'Driver':
                     job_index = 4
