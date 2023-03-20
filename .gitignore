@@ -47,7 +47,6 @@ __pycache__/
 *.so
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -181,4 +180,5 @@ HRStaffPortal.iml
 .idea/**/gradle.xml
 .idea/**/libraries
 .idea/**/.name
-.idea/**/HR Staff Portal.iml
+.idea/**/🏥 HR Staff Portal.iml
+
