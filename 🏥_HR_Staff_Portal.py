@@ -132,8 +132,8 @@ def init_connection():
     ## Initialize connection
     try:
         return mysql.connector.connect(**st.secrets["mysql"])
-    except:
-        print("An exception occurred in function `init_connection`")
+    except Exception as e:
+        print("An exception occurred in function `init_connection` ", e)
         st.error(body = 'Databank connection timeout!', icon = "🚨")
         st.stop()
 
@@ -147,8 +147,8 @@ def run_query(query):
             cur.execute(query)
             return cur.fetchall()
 
-        except:
-            print('An exception occurred in function `run_query` with query \"' + query + '\"')
+        except Exception as e:
+            print('An exception occurred in function `run_query` with query \"' + query + '\", Error: ' + e)
 
 
 
@@ -292,8 +292,8 @@ if check_password():
     # Read the worksheet and get a pandas dataframe
     #try:
         #data_google = wks.get_as_df()
-    #except:
-        #print('Exception in read of Google Sheet')
+    #except Exception as e:
+        #print('Exception in read of Google Sheet ', e)
 
     # Creating numpy array
     #numb = np.array(databank_pin)
@@ -308,8 +308,8 @@ if check_password():
     # Update the worksheet with the numpy array values, beginning at a specific cell
     #try:
         #wks.update_values(crange = 'A2', values = numb)
-    #except:
-        #print('Exception in write of Google Sheet')
+    #except Exception as e:
+        #print('Exception in write of Google Sheet ', e)
 
 
 
@@ -1113,21 +1113,24 @@ if check_password():
         st.subheader('Employee data')
         try:
             databank_edit = st.experimental_data_editor(databanks_dict[0], use_container_width = True)
-        except:
+        except Exception as e:
+            print(e)
             databank_edit = st.experimental_data_editor(databank, use_container_width = True)
 
         # Show `EMPLOYEE` table data
         st.subheader('Extra employee data')
         try:
             databank_employee_edit = st.experimental_data_editor(databanks_dict[1], use_container_width = True)
-        except:
+        except Exception as e:
+            print(e)
             databank_employee_edit = st.experimental_data_editor(databank_employee, use_container_width = True)
 
         # Show `TRAINING` table data
         st.subheader('Training data')
         try:
             databank_training_edit = st.experimental_data_editor(databanks_dict[2], use_container_width = True)
-        except:
+        except Exception as e:
+            print(e)
             databank_training_edit = st.experimental_data_editor(databank_training, use_container_width = True)
             
         # Show PIN data

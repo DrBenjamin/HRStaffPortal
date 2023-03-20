@@ -101,8 +101,8 @@ def init_connection():
     ## Initialize connection
     try:
         return mysql.connector.connect(**st.secrets["mysql_benbox"])
-    except:
-        print("An exception occurred in function `init_connection`")
+    except Exception as e:
+        print("An exception occurred in function `init_connection`", e)
         st.error(body = 'Databank connection timeout!', icon = "🚨")
         st.stop()
 
@@ -116,8 +116,8 @@ def run_query(query):
             cur.execute(query)
             return cur.fetchall()
 
-        except:
-            print('An exception occurred in function `run_query` with query \"' + query + '\"')
+        except Exception as e:
+            print('An exception occurred in function `run_query` with query \"' + query + '\", Error: ' + e)
 
 
 
@@ -175,8 +175,8 @@ def geo_check(address_part, fallback, language = 'en'):
         print("Detected location:", output)
 
     # Set `output` to `fallback` if not reachable
-    except:
-        print("An exception occurred in `Geocoder`")
+    except Exception as e:
+        print("An exception occurred in `Geocoder` ", e)
         output = fallback
 
     # Return output
@@ -596,8 +596,8 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
 
                 ## Error
-                except:
-                    print('An exception occurred in `OpenAI`')
+                except Exception as e:
+                    print('An exception occurred in `OpenAI` ', e)
                     answer = 'Unfortunately we have not found the answer to your question.'
 
                     # Store the answer in session state
