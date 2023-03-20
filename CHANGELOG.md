@@ -17,9 +17,9 @@
 
 ### Fixed
 
-* Changed `@st.experimental_memo` to `@st.cache_data` in module streamlit_image_select to prevent deprecated message
-* Added Exception handling for `set_page_config`  error message when it is called more than once
-* Added session states for  `st.session_state` has no key "username" error message
+* BUG: Exception handling for `st.session_state["username"] not existent error
+* BUG: `@st.experimental_memo` to `@st.cache_data` in module streamlit_image_select to prevent deprecated message
+* BUG: Exception handling for `set_page_config`  error message when it is called more than once
 
 ## [0.2.0](https://github.com/DrBenjamin/HRStaffPortal/compare/v0.1.1...v0.2.0) - 2023-01-30
 

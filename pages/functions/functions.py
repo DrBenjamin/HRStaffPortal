@@ -19,50 +19,56 @@ import sys
 sys.path.insert(1, "pages/functions/")
 from network import downzip
 
-
-
-
-#### Initialization of session states
-## Session states
-if ('username' not in st.session_state):
-    st.session_state['username'] = ''
-if ('password' not in st.session_state):
-    st.session_state['password'] = ''
-if ('admin' not in st.session_state):
-    st.session_state['admin'] = False
-if ('password_correct' not in st.session_state):
-    st.session_state['password_correct'] = False
-    
     
     
     
 #### All shared general functions
 ### Function: check_password = Password / user checking
 def check_password():
-    # Returns `True` if the user had a correct password
+    # Session states
+    if ("username" not in st.session_state):
+        st.session_state["username"] = ''
+    if ("password" not in st.session_state):
+        st.session_state["password"] = ''
+    if ("admin" not in st.session_state):
+        st.session_state["admin"] = False
+    if ("password_correct" not in st.session_state):
+        st.session_state["password_correct"] = False
+
+    # Checks whether a password entered by the user is correct
     def password_entered():
-        # Checks whether a password entered by the user is correct
-        if st.session_state["username"] in st.secrets["passwords"] and st.session_state["password"] == \
-                st.secrets["passwords"][st.session_state["username"]]:
-            st.session_state["password_correct"] = True
+        # Session states
+        if ("username" not in st.session_state):
+            st.session_state["username"] = ''
+        if ("password" not in st.session_state):
+            st.session_state["password"] = ''
+        if ("admin" not in st.session_state):
             st.session_state["admin"] = False
+        if ("password_correct" not in st.session_state):
+            st.session_state["password_correct"] = False
+        try:
+            if st.session_state["username"] in st.secrets["passwords"] and st.session_state["password"] == st.secrets["passwords"][st.session_state["username"]]:
+                st.session_state["password_correct"] = True
+                st.session_state["admin"] = False
+    
+                # Delete username + password
+                del st.session_state["password"]
+                del st.session_state["username"]
 
-            # Delete username + password
-            del st.session_state["password"]
-            del st.session_state["username"]
-
-        # Checks whether a password entered by the user is correct for admins
-        elif st.session_state["username"] in st.secrets["admins"] and st.session_state["password"] == \
-                st.secrets["admins"][st.session_state["username"]]:
-            st.session_state["password_correct"] = True
-            st.session_state["admin"] = True
-
-            # Delete username + password
-            del st.session_state["password"]
-            del st.session_state["username"]
-
-        # No combination fits
-        else:
+            # Checks whether a password entered by the user is correct for admins
+            elif st.session_state["username"] in st.secrets["admins"] and st.session_state["password"] == st.secrets["admins"][st.session_state["username"]]:
+                st.session_state["password_correct"] = True
+                st.session_state["admin"] = True
+    
+                # Delete username + password
+                del st.session_state["password"]
+                del st.session_state["username"]
+    
+            # No combination fits
+            else:
+                st.session_state["password_correct"] = False
+        except Exception as e:
+            print('Exception in `password_entered` function. Error: ', e)
             st.session_state["password_correct"] = False
 
 
