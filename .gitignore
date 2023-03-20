@@ -37,6 +37,8 @@ files/Code_Snippets.py
 .DS_Store
 run.sh
 update.sh
+pages/modules/streamlit_image_select/frontend/build/precache*
+
 # VS Code
 launch.json
 # Byte-compiled / optimized / DLL files

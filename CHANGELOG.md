@@ -13,6 +13,7 @@
 ### Changed
 
 * Use `st.experimental_data_editor` instead of `st.dataframe` to show (and alter) dataframes
+* Moved `streamlit_image_select` to modules folder
 
 ### Fixed
 
