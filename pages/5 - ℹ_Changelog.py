@@ -70,8 +70,10 @@ with st.expander('', expanded = True):
     source = 'https://192.168.1.173/index.html'
     stc.iframe(src = source, height = 620, scrolling = True)
     
-    units = st.multiselect(label = 'Department(s)', options = ['Medical', 'Peads', 'Surcical', 'Ops & Gyna'])
-    st.write('Department(s): ' + str(units))
+    
+    ## Hugging Face
+    #source = "https://drbenjamin-openai.hf.space"
+    #stc.iframe(src = source, height = 620, scrolling = True)
 
 
 ### Logged in state (About)
