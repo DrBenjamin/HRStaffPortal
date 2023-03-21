@@ -117,7 +117,7 @@ def run_query(query):
             return cur.fetchall()
 
         except Exception as e:
-            print('An exception occurred in function `run_query` with query \"' + query + '\", Error: ' + e)
+            print('An exception occurred in function `run_query` with query \"' + query + '\", Error: ' + str(e))
 
 
 
@@ -366,48 +366,58 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
                 ## Doing the requests to OpenAI for summarizing / keyword extracting the question
                 try:
                     # Creating summary of user question
+                    model = 'gpt-3.5-turbo' #model == 'gpt-4-0314'
                     summary_question = 'A User asks in the category \"' + categories[
                         category] + '\" and the sub-category"' + sub_categories[
                                            sub_category] + '" about this question: \"' + user_question + '" Please summarise it to a statement in no more than three words.'
-                    response_summary = openai.Completion.create(model = "text-davinci-003", prompt = summary_question,
-                                                                temperature = 0.3, max_tokens = 64, top_p = 1.0,
-                                                                frequency_penalty = 0.0, presence_penalty = 0.0)
-                    summary = response_summary['choices'][0]['text'].lstrip()
+                    response_summary = openai.ChatCompletion.create(
+                        model = model,
+                        messages = [
+                            {"role": "system", "content": "You do summarization."},
+                            {"role": "user", "content": summary_question},
+                        ]
+                    )
+                    summary = response_summary['choices'][0]['message']['content'].lstrip()
                     summary = summary.replace('.', '')
 
-                    # Find the keyword1
-                    keyword_question = 'Extract one one-word keyword of the beginning of the text which is a noun without the accompanying article and pronoun: \"' + user_question + '"'
-                    response_keyword = openai.Completion.create(model = "text-curie-001", prompt = keyword_question,
-                                                                temperature = 0.0, max_tokens = 64, top_p = 1.0,
-                                                                frequency_penalty = 0.0, presence_penalty = 0.0)
-                    keyword1 = response_keyword['choices'][0]['text'].lstrip()
-                    keyword1 = keyword1.capitalize()
-
-                    # Find the 4 other keywords
-                    keywords_question = 'Extract four one-word keywords which are not the same as \"' + keyword1 + '\"' + ' of this text: \"' + user_question + '" Please indicate your answer separated by commas.'
-                    response_keywords = openai.Completion.create(model = "text-davinci-003", prompt = keywords_question,
-                                                                 temperature = 0.0, max_tokens = 64, top_p = 1.0,
-                                                                 frequency_penalty = 0.0, presence_penalty = 0.0)
-                    keywords = response_keywords['choices'][0]['text']
-
-
-                    ## Cleaning response
+                    # Find the keywords
+                    keyword_question = 'Extract and list five (5) keywords in a comma seperated string without the text "Keywords:": \"' + user_question + '"'
+                    response_keywords = openai.ChatCompletion.create(
+                        model = model,
+                        messages = [
+                            {"role": "system", "content": 'You do keyword extraction. Find exactly five (5) keywords one-word keywords of the text which are nouns without the accompanying articles and pronouns. Put them in a list without the word "Keyword".'},
+                            {"role": "user", "content": keyword_question},
+                        ]
+                    )
+                    keywords = response_keywords['choices'][0]['message']['content']
+                    
                     # Create keywords array out of comma seperated string
                     keywords = keywords.split(',')
-                    for i in range(4):
+                    
+                    # Cleaning response
+                    for i in range(len(keywords)):
+                        # Remove "
+                        keywords[i] = keywords[i].translate({ord('"'): None})
+                        
                         # Remove leading space
                         keywords[i] = keywords[i].strip()
                         keywords[i] = keywords[i].lstrip()
-
+    
                         # Delete '.' in strings
                         keywords[i] = keywords[i].replace('.', '')
-
-                        # Just keep first word
+    
+                        # Just keep first word in string
                         if (len(keywords[i]) >= 1):
                             keywords[i] = keywords[i].split()[0]
-
+    
                         # Capitalize
                         keywords[i] = keywords[i].capitalize()
+                    
+                    # Filling missing keywords
+                    if len(keywords) < 5:
+                        keywords.append(keywords[0])
+                        while len(keywords) < 5:
+                            keywords.append(keywords[1])
 
 
                     ## Writing responses to table `QUESTIONS` in database `benbox`
@@ -420,8 +430,8 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
                     # Write question to table `QUESTIONS`
                     query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, CATEGORY_ID, CATEGORY_SUB_ID, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (
-                    id, question_id, categories_id[category], sub_categories_id[sub_category], keyword1, keywords[0],
-                    keywords[1], keywords[2], keywords[3], summary, user_question, lang[:2].lower())
+                    id, question_id, categories_id[category], sub_categories_id[sub_category], keywords[0],
+                    keywords[1], keywords[2], keywords[3], keywords[4], summary, user_question, lang[:2].lower())
                     run_query(query)
                     conn.commit()
                     st.session_state['answer_done'] = False
@@ -429,10 +439,10 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
                     ## Get handbook data to answer from table `HANDBOOK_USER`
                     query = "SELECT ID, ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_HEADLINE, HANDBOOK_HITS FROM benbox.HANDBOOK_USER WHERE HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD1 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD2 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD3 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD4 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR HANDBOOK_KEYWORD5 LIKE '%s' OR CATEGORY_ID = '%s' OR CATEGORY_SUB_ID = '%s';" % (
-                    keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1],
-                    keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2], keywords[3], keyword1,
-                    keywords[0], keywords[1], keywords[2], keywords[3], keyword1, keywords[0], keywords[1], keywords[2],
-                    keywords[3], categories_id[category], sub_categories_id[sub_category])
+                    keywords[0], keywords[1], keywords[2], keywords[3], keywords[4], keywords[0], keywords[1],
+                    keywords[2], keywords[3], keywords[4], keywords[0], keywords[1], keywords[2], keywords[3], keywords[4],
+                    keywords[0], keywords[1], keywords[2], keywords[3], keywords[4], keywords[0], keywords[1], keywords[2],
+                    keywords[3], keywords[4], categories_id[category], sub_categories_id[sub_category])
                     rows = run_query(query)
                     databank_handbook = pd.DataFrame(
                         columns = ['ID_Index', 'ID', 'HANDBOOK_ID', 'CATEGORY_ID', 'CATEGORY_SUB_ID',
@@ -452,19 +462,14 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
                     ## Checking if handbook data was found
                     if (len(databank_handbook) > 0):
-                        # Adding keyword1 at first position
-                        keywords.insert(0, keyword1)
-
-
-                        ## Loop through all matches
+                        # Loop through all matches
                         for x in range(len(databank_handbook)):
                             handbook = databank_handbook.iloc[x]
 
                             # Add importance through `HANDBOOK_HITS` value
                             counter = 0 + handbook[12]
 
-
-                            ## Check for matching category and sub-category
+                            # Check for matching category and sub-category
                             if (handbook[2] == categories_id[category]):
                                 counter += 3
                                 if (handbook[3] == sub_categories_id[sub_category]):
@@ -573,15 +578,27 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
                         #st.write(databank_handbook)
                         #st.write(st.session_state['handbook_text'])
                         #st.write(st.session_state['answer_score'])
+                        #st.write(st.session_state['answer_id'])
+                        #st.write(st.session_state['question_id'])
+                        #st.write(st.session_state['handbook_id'])
+                        #st.write(st.session_state['answer'])
 
 
                         ## Doing the request to OpenAI for answering the question
                         answer_question = 'The user handbook contains following information: \"' + st.session_state[
-                            'handbook_text'] + '\". Right now you are in the city called \"' + city + '\". Please answer following user question: \"' + user_question + '\"'
-                        response_answer = openai.Completion.create(model = "text-davinci-003", prompt = answer_question,
-                                                                   temperature = 0.5, max_tokens = 128, top_p = 1.0,
-                                                                   frequency_penalty = 0.0, presence_penalty = 0.0)
-                        answer = response_answer['choices'][0]['text'].lstrip()
+                            'handbook_text'] + '\". Right now you are in the city called \"' + city + '\". Please answer following user question: \"\"\"' + user_question + '\"\"\"'
+                        response_answer = openai.ChatCompletion.create(
+                            model = model,
+                            messages = [
+                                {"role": "system", "content": "Give a comprehensive answer, stick to the handbook information, but do not mention the handbook."},
+                                {"role": "user", "content": answer_question},
+                            ]
+                        )
+                        
+                        # Cleaning answer
+                        answer = response_answer['choices'][0]['message']['content'].lstrip()
+                        answer = answer.replace("'", "")
+                        answer = answer.replace('"', '')
 
                         # Store the answer in session state
                         st.session_state['answer'] = answer
@@ -597,7 +614,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
                 ## Error
                 except Exception as e:
-                    print('An exception occurred in `OpenAI` ', e)
+                    print('An exception occurred in `OpenAI` ', str(e))
                     answer = 'Unfortunately we have not found the answer to your question.'
 
                     # Store the answer in session state
@@ -632,7 +649,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
             ## Write every answer to table `ANSWERS`
             if (st.session_state['answer_done'] == False):
-                # Get latest ID from table
+                # Get last ID from table
                 id = lastID(url = '`benbox`.`ANSWERS`')
 
                 # Populate `ANSWER_ID`
