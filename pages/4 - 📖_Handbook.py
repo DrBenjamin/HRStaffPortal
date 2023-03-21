@@ -461,7 +461,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
 
                     ## Checking if handbook data was found
-                    if (len(databank_handbook) > 0):
+                    if (len(databank_handbook) >= 1):
                         # Loop through all matches
                         for x in range(len(databank_handbook)):
                             handbook = databank_handbook.iloc[x]
@@ -590,7 +590,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
                         response_answer = openai.ChatCompletion.create(
                             model = model,
                             messages = [
-                                {"role": "system", "content": "Give a comprehensive answer, stick to the handbook information, but do not mention the handbook."},
+                                {"role": "system", "content": 'Give a comprehensive answer, stick to the handbook information, and start always with "According to the handbook".'},
                                 {"role": "user", "content": answer_question},
                             ]
                         )
@@ -602,6 +602,7 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
                         # Store the answer in session state
                         st.session_state['answer'] = answer
+                        databank_handbook = ''
 
 
                     ## No handbook data found
