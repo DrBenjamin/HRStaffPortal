@@ -34,18 +34,11 @@ def check_password():
         st.session_state["admin"] = False
     if ("password_correct" not in st.session_state):
         st.session_state["password_correct"] = False
+    if ('logout' not in st.session_state):
+        st.session_state['logout'] = False
 
     # Checks whether a password entered by the user is correct
     def password_entered():
-        # Session states
-        if ("username" not in st.session_state):
-            st.session_state["username"] = ''
-        if ("password" not in st.session_state):
-            st.session_state["password"] = ''
-        if ("admin" not in st.session_state):
-            st.session_state["admin"] = False
-        if ("password_correct" not in st.session_state):
-            st.session_state["password_correct"] = False
         try:
             if st.session_state["username"] in st.secrets["passwords"] and st.session_state["password"] == st.secrets["passwords"][st.session_state["username"]]:
                 st.session_state["password_correct"] = True

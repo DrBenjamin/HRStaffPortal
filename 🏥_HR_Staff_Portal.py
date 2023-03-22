@@ -109,11 +109,6 @@ if ('chosen_id' not in st.session_state):
     st.session_state['chosen_id'] = 1
 
 
-## Logout
-if ('logout' not in st.session_state):
-    st.session_state['logout'] = False
-
-
 ## Image
 if ('image' not in st.session_state):
     st.session_state['image'] = st.secrets['custom']['placeholder']
