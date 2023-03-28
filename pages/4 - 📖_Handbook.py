@@ -722,11 +722,12 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
 ### Handbook
 with st.expander(label = 'Handbook', expanded = False):
-    st.header('Handbook ')
-    st.write('Here you can export the handbook as a Word document.')
+    st.header('Handbook')
 
 
     ## Docx export
+    st.subheader('Document')
+    st.write('Here you can export the handbook as a Word document.')
     if st.button(label = 'Export handbook'):
         ## Get handbook data to export from table `HANDBOOK_USER`
         query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM benbox.HANDBOOK_USER AS han LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.HANDBOOK_CHAPTER_STRUCTURE AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.HANDBOOK_PARAGRAPH_STRUCTURE AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;"
@@ -757,6 +758,22 @@ with st.expander(label = 'Handbook', expanded = False):
 
         ## Export docx file
         export_docx(data = databank_handbook, faq = faq, docx_file_name = 'Handbook.docx')
+
+
+    ## Show videos which are present in the database
+    # Run query
+    try:
+        query = "SELECT ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM `benbox`.`HANDBOOK_VIDEO`;"
+        rows = run_query(query)
+
+        # Show videos
+        st.subheader('Videos')
+        for row in rows:
+            st.markdown('**Description:** ' + str(row[1]), unsafe_allow_html = True)
+            video_bytes = row[2]
+            st.video(data = video_bytes, format = 'video/mp4', start_time = 0)
+    except Exception as e:
+        print(e, ' No videos available!')
 
 
 
