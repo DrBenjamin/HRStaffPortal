@@ -1090,6 +1090,7 @@ if check_password():
         st.title('Data')
         st.write('Here you will find the raw data from the databases.')
         
+        
         ## Data Import
         st.header('Data import')
         #st.info('You may want to import data from an compatible Excel file with 3 Sheets (containing 1. `Employees`, 2. `Extra data`, 3. `Trainings`).', icon = 'ℹ️')
