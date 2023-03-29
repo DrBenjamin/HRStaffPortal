@@ -134,6 +134,22 @@ def pictureUploader(image, index):
     insert_blob_tuple = (image, index)
     result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
     connection.commit()
+    
+    
+    
+### Function: pictureUploader = uploads handbook images
+def videoUploader(index, description, video):
+    # Initialize connection
+    connection = mysql.connector.connect(**st.secrets["mysql_benbox"])
+    cursor = connection.cursor()
+
+    # SQL statement
+    sql_insert_blob_query = """ INSERT INTO `benbox`.`HANDBOOK_VIDEO`(ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES (%s, %s, %s);"""
+
+    # Convert data into tuple format
+    insert_blob_tuple = (index, description, video)
+    result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
+    connection.commit()
 
 
 
@@ -1011,7 +1027,24 @@ if check_password():
 
                 # Rerun
                 st.experimental_rerun()
-
+        
+        
+    ## Show handbook video upload in expander
+    with st.expander(label = 'Handbook video upload', expanded = False):
+        # Handbook image upload
+        uploaded_file = st.file_uploader(label = "Upload a video", type = 'mp4')
+        if uploaded_file is not None:
+            handbook_video = uploaded_file.getvalue()
+    
+            # Video description text input
+            handbook_video_text = st.text_input(label = 'Video description')
+        
+            # Upload to database
+            pressed = st.button('Upload')
+            if pressed:
+                video_id = lastID(url = '`benbox`.`HANDBOOK_VIDEO`')
+                videoUploader(index = video_id, description = handbook_video_text, video = handbook_video)
+        
 
 
     ### Admin console
