@@ -143,7 +143,7 @@ def run_query(query):
             return cur.fetchall()
 
         except Exception as e:
-            print('An exception occurred in function `run_query` with query \"' + query + '\", Error: ' + e)
+            print('An exception occurred in function `run_query` with query \"' + query + '\", Error: ' + str(e))
 
 
 
@@ -370,7 +370,21 @@ if check_password():
                 ## New employee data input
                 # Check for ID number count of Employee
                 id = lastID(url = '`idcard`.`IMAGEBASE`')
-
+                
+                # Get Departments from table `idcard`.`DEPARTMENTS`
+                query = "SELECT DEPARTMENTS FROM `idcard`.`DEPARTMENTS`;"
+                deps = run_query(query)
+                str_deps = []
+                for dep in deps:
+                    str_deps.append(str(dep).replace("('", "").replace("',)", ""))
+                
+                # Get Units from table `idcard`.`UNITS`
+                query = "SELECT UNIT FROM `idcard`.`UNITS`;"
+                units = run_query(query)
+                str_units = []
+                for unit in units:
+                    str_units.append(str(unit).replace("('", "").replace("',)", ""))
+            
                 # Input fields
                 st.text_input(label = 'ID', value = id, disabled = True)
                 layout = st.text_input(label = 'Layout', value = 1)
@@ -383,8 +397,8 @@ if check_password():
                     surname = st.text_input(label = 'Surname', value = st.session_state['national_id_data'][
                         'last_name'].lower().capitalize())
                 job = st.selectbox(label = 'Position', options = ['Clinician', 'Nurse', 'Guard', 'Cleaner', 'Driver', 'HR', 'Director'])
-                dep = st.multiselect(label = 'Department', options = ['Medical', 'Surgery', 'Divers'])
-                unit = st.multiselect(label = 'Unit', options = ['4A', '4B', '4C', '4D', 'Divers'])
+                dep = st.multiselect(label = 'Department', options = str_deps)
+                unit = st.multiselect(label = 'Unit', options = str_units)
                 exp = st.text_input(label = 'Expirity date', value = '2023-12-31 00:00:00')
                 emp_no = st.text_input(label = 'Employee number', placeholder = 'Employee number?')
                 numbers = random.sample(range(10), 4)
