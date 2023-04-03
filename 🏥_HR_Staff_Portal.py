@@ -537,13 +537,13 @@ if check_password():
                     job_index = 6
                 else:
                     job_index = 0
-                job = st.selectbox(label = 'Position', options = ['Clinician', 'Nurse', 'Guard', 'Cleaner', 'Driver', 'HR', 'Director'], index = job_index, disabled = not checkbox_val)
+                job = st.selectbox(label = 'Position', options = str_pos, index = job_index, disabled = not checkbox_val)
                 if (employee[0][4] != job):
                     updateMaster = True
-                dep = st.multiselect(label = 'Department', options = ['Medical', 'Surgery', 'Divers'], default = employee[0][5].split(', '), disabled = not checkbox_val)
+                dep = st.multiselect(label = 'Department', options = str_deps, default = employee[0][5].split(', '), disabled = not checkbox_val)
                 if (employee[0][5] != dep):
                     updateMaster = True
-                unit = st.multiselect(label = 'Unit', options = ['4A', '4B', '4C', '4D', 'Divers'], default = employee[0][6].split(', '), disabled = not checkbox_val)
+                unit = st.multiselect(label = 'Unit', options = str_units, default = employee[0][6].split(', '), disabled = not checkbox_val)
                 if (employee[0][6] != unit):
                     updateMaster = True
                 exp = st.text_input(label = 'Expirity date', value = employee[0][7], disabled = not checkbox_val)
