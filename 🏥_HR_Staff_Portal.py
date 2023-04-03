@@ -371,6 +371,13 @@ if check_password():
                 # Check for ID number count of Employee
                 id = lastID(url = '`idcard`.`IMAGEBASE`')
                 
+                # Get Positions from table `idcard`.`POSITIONS`
+                query = "SELECT POSITIONS FROM `idcard`.`POSITIONS`;"
+                positions = run_query(query)
+                str_pos = []
+                for pos in positions:
+                    str_pos.append(str(pos).replace("('", "").replace("',)", ""))
+                
                 # Get Departments from table `idcard`.`DEPARTMENTS`
                 query = "SELECT DEPARTMENTS FROM `idcard`.`DEPARTMENTS`;"
                 deps = run_query(query)
@@ -396,7 +403,7 @@ if check_password():
                         'first_name'].lower().capitalize())
                     surname = st.text_input(label = 'Surname', value = st.session_state['national_id_data'][
                         'last_name'].lower().capitalize())
-                job = st.selectbox(label = 'Position', options = ['Clinician', 'Nurse', 'Guard', 'Cleaner', 'Driver', 'HR', 'Director'])
+                job = st.selectbox(label = 'Position', options = str_pos)
                 dep = st.multiselect(label = 'Department', options = str_deps)
                 unit = st.multiselect(label = 'Unit', options = str_units)
                 exp = st.text_input(label = 'Expirity date', value = '2023-12-31 00:00:00')
