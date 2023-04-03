@@ -274,7 +274,30 @@ if check_password():
     databank_pin = databank_pin.set_index('ID_INDEX')
     
     
+    ## Get Positions, Departments and Units from database
+    # Get Positions from table `idcard`.`POSITIONS`
+    query = "SELECT POSITIONS FROM `idcard`.`POSITIONS`;"
+    positions = run_query(query)
+    str_pos = []
+    for pos in positions:
+        str_pos.append(str(pos).replace("('", "").replace("',)", ""))
     
+    # Get Departments from table `idcard`.`DEPARTMENTS`
+    query = "SELECT DEPARTMENTS FROM `idcard`.`DEPARTMENTS`;"
+    deps = run_query(query)
+    str_deps = []
+    for dep in deps:
+        str_deps.append(str(dep).replace("('", "").replace("',)", ""))
+    
+    # Get Units from table `idcard`.`UNITS`
+    query = "SELECT UNIT FROM `idcard`.`UNITS`;"
+    units = run_query(query)
+    str_units = []
+    for unit in units:
+        str_units.append(str(unit).replace("('", "").replace("',)", ""))
+        
+        
+
     ### Google Sheet support
     ## Open the spreadsheet and the first sheet
     # Getting credentials
@@ -371,27 +394,6 @@ if check_password():
                 # Check for ID number count of Employee
                 id = lastID(url = '`idcard`.`IMAGEBASE`')
                 
-                # Get Positions from table `idcard`.`POSITIONS`
-                query = "SELECT POSITIONS FROM `idcard`.`POSITIONS`;"
-                positions = run_query(query)
-                str_pos = []
-                for pos in positions:
-                    str_pos.append(str(pos).replace("('", "").replace("',)", ""))
-                
-                # Get Departments from table `idcard`.`DEPARTMENTS`
-                query = "SELECT DEPARTMENTS FROM `idcard`.`DEPARTMENTS`;"
-                deps = run_query(query)
-                str_deps = []
-                for dep in deps:
-                    str_deps.append(str(dep).replace("('", "").replace("',)", ""))
-                
-                # Get Units from table `idcard`.`UNITS`
-                query = "SELECT UNIT FROM `idcard`.`UNITS`;"
-                units = run_query(query)
-                str_units = []
-                for unit in units:
-                    str_units.append(str(unit).replace("('", "").replace("',)", ""))
-            
                 # Input fields
                 st.text_input(label = 'ID', value = id, disabled = True)
                 layout = st.text_input(label = 'Layout', value = 1)
