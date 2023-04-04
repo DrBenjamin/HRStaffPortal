@@ -18,6 +18,7 @@
 --
 -- Table structure for table `ACCREDITATIONCATEGORIES`
 --
+USE idcard;
 
 DROP TABLE IF EXISTS `ACCREDITATIONCATEGORIES`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

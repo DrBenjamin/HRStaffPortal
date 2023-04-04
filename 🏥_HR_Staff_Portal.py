@@ -1120,13 +1120,10 @@ if check_password():
         databank_pos = import_excel()
         
         # Show `Write changes to database` button (if there are changes)
-        #databank_diff = databank.compare(databank_edit, keep_equal = True, align_axis = 0)
-        #number = st.number_input('Which row should be updated?', value = 1, min_value = 1, max_value = 2, step = 1)
-        #st.experimental_show(databank_diff)
-        if len(databank_pos) > 0:
-            st.subheader('Data update')
-            st.info('You may want to update the database with the new Positions data.', icon = 'ℹ️')
-            if st.button('Write changes to Database'):
+        if len(databank_pos) > 1:
+            st.subheader('Preview')
+            st.write(databank_pos)
+            if st.button('Write to Database'):
                 query = "DELETE FROM `idcard`.`POSITIONS`;"
                 run_query(query)
                 conn.commit()
