@@ -273,17 +273,15 @@ if check_password():
         databank_pin = pd.concat([databank_pin, df])
     databank_pin = databank_pin.set_index('ID_INDEX')
     
-    
-    ## Get Positions, Departments and Units from database
     # Get Positions from table `idcard`.`POSITIONS`
-    query = "SELECT POSITIONS FROM `idcard`.`POSITIONS`;"
+    query = "SELECT POSITION FROM `idcard`.`POSITIONS`;"
     positions = run_query(query)
     str_pos = []
     for pos in positions:
         str_pos.append(str(pos).replace("('", "").replace("',)", ""))
     
     # Get Departments from table `idcard`.`DEPARTMENTS`
-    query = "SELECT DEPARTMENTS FROM `idcard`.`DEPARTMENTS`;"
+    query = "SELECT DEPARTMENT FROM `idcard`.`DEPARTMENTS`;"
     deps = run_query(query)
     str_deps = []
     for dep in deps:
@@ -1116,67 +1114,54 @@ if check_password():
         
         ## Data Import
         st.header('Data import')
-        #st.info('You may want to import data from an compatible Excel file with 3 Sheets (containing 1. `Employees`, 2. `Extra data`, 3. `Trainings`).', icon = 'ℹ️')
-        st.warning('Import function not yet implemented.', icon = '‼️️')
+        st.info('You may want to import data about Positions (Designation) from an compatible Excel document.', icon = 'ℹ️')
+        
         # Import Excel data
-        databanks_dict = import_excel(sheet_names = [0, 1, 2])
+        databank_pos = import_excel()
+        
+        # Show `Write changes to database` button (if there are changes)
+        #databank_diff = databank.compare(databank_edit, keep_equal = True, align_axis = 0)
+        #number = st.number_input('Which row should be updated?', value = 1, min_value = 1, max_value = 2, step = 1)
+        #st.experimental_show(databank_diff)
+        if len(databank_pos) > 0:
+            st.subheader('Data update')
+            st.info('You may want to update the database with the new Positions data.', icon = 'ℹ️')
+            if st.button('Write changes to Database'):
+                query = "DELETE FROM `idcard`.`POSITIONS`;"
+                run_query(query)
+                conn.commit()
+                for index, row in databank_pos.iterrows():
+                    query = "INSERT INTO `idcard`.`POSITIONS`(ID, POSITION) VALUES (%s, '%s');" % (index, row['Position'])
+                    run_query(query)
+                    conn.commit()
+                st.experimental_rerun()
         
         
         ## Data review and editing
         st.header('Data review and editing')
         st.info(
-            'You may want to alter the data before exporting to Excel (e.g. delete specific column data cause of Data Privacy reasons - this will not change the database data!)',
-            icon = 'ℹ️')
+            'You may want to alter the data before exporting to Excel (e.g. delete specific column data cause of Data Privacy reasons - this will not change the database data!)', icon = 'ℹ️')
         
         # Show `IMAGEBASE` table data
         st.subheader('Employee data')
-        try:
-            databank_edit = st.experimental_data_editor(databanks_dict[0], use_container_width = True)
-        except Exception as e:
-            print(e)
-            databank_edit = st.experimental_data_editor(databank, use_container_width = True)
+        databank_edit = st.experimental_data_editor(databank, use_container_width = True)
 
         # Show `EMPLOYEE` table data
         st.subheader('Extra employee data')
-        try:
-            databank_employee_edit = st.experimental_data_editor(databanks_dict[1], use_container_width = True)
-        except Exception as e:
-            print(e)
-            databank_employee_edit = st.experimental_data_editor(databank_employee, use_container_width = True)
+        databank_employee_edit = st.experimental_data_editor(databank_employee, use_container_width = True)
 
         # Show `TRAINING` table data
         st.subheader('Training data')
-        try:
-            databank_training_edit = st.experimental_data_editor(databanks_dict[2], use_container_width = True)
-        except Exception as e:
-            print(e)
-            databank_training_edit = st.experimental_data_editor(databank_training, use_container_width = True)
+        databank_training_edit = st.experimental_data_editor(databank_training, use_container_width = True)
             
         # Show PIN data
         #st.subheader('PIN data')
         #data_google_edit = st.experimental_data_editor(data_google, use_container_width = True)
 
 
-        ## Show `Write changes to database` button (if there are changes)
-        databank_diff = databank.compare(databank_edit, keep_equal = True, align_axis = 0)
-        #number = st.number_input('Which row should be updated?', value = 1, min_value = 1, max_value = 2, step = 1)
-        #st.experimental_show(databank_diff)
-        if len(databank_diff) > 0:
-            st.subheader('Data update')
-            st.info('You may want to update the database with the changes. Otherwise you may want to export the altered data.', icon = 'ℹ️')
-            if st.button('Write changes to Database'):
-                #databank_diff.drop(databank_diff.columns[[1]], inplace = True, axis = 1)
-                #databank_diff = databank_diff.set_index('ID')
-                #st.write(databank_diff)
-                print('Changes to database')
-
-
         ## Export `Vehicles` dataframe to Excel Makro file
         st.subheader('Data export to an Ecel document')
-        if len(databank_diff) > 0:
-            st.info('You may want to export the altered data.', icon = 'ℹ️')
-        else:
-            st.info('You may want to export the database data.', icon = 'ℹ️')
+        st.info('You may want to export the database data.', icon = 'ℹ️')
         if st.button('Export Excel (Database)'):
             export_excel('Employees', 'J',
                          [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'}, {'header': 'DEPARTMENT'},
