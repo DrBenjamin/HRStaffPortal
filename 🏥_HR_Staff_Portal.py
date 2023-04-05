@@ -1117,20 +1117,38 @@ if check_password():
         st.info('You may want to import data about Positions (Designation) from an compatible Excel document.', icon = 'ℹ️')
         
         # Import Excel data
-        databank_pos = import_excel()
+        databank_pos, databank_unit = import_excel()
         
         # Show `Write changes to database` button (if there are changes)
         if len(databank_pos) > 1:
             st.subheader('Preview')
             st.write(databank_pos)
+            if len(databank_unit) > 1:
+                st.write(databank_unit)
             if st.button('Write to Database'):
-                query = "DELETE FROM `idcard`.`POSITIONS`;"
-                run_query(query)
-                conn.commit()
-                for index, row in databank_pos.iterrows():
-                    query = "INSERT INTO `idcard`.`POSITIONS`(ID, POSITION) VALUES (%s, '%s');" % (index, row['Position'])
+                if len(databank_unit) == 1:
+                    query = "DELETE FROM `idcard`.`POSITIONS`;"
                     run_query(query)
                     conn.commit()
+                    for index, row in databank_pos.iterrows():
+                        query = "INSERT INTO `idcard`.`POSITIONS`(ID, POSITION) VALUES (%s, '%s');" % (index, row['Position'])
+                        run_query(query)
+                        conn.commit()
+                else:
+                    query = "DELETE FROM `idcard`.`DEPARTMENTS`;"
+                    run_query(query)
+                    conn.commit()
+                    for index, row in databank_pos.iterrows():
+                        query = "INSERT INTO `idcard`.`DEPARTMENTS`(ID, DEPARTMENT) VALUES (%s, '%s');" % (index, row['Department'])
+                        run_query(query)
+                        conn.commit()
+                    query = "DELETE FROM `idcard`.`UNITS`;"
+                    run_query(query)
+                    conn.commit()
+                    for index, row in databank_unit.iterrows():
+                        query = "INSERT INTO `idcard`.`UNITS`(ID, UNIT) VALUES (%s, '%s');" % (index, row['Unit'])
+                        run_query(query)
+                        conn.commit()
                 st.experimental_rerun()
         
         
