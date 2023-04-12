@@ -16,23 +16,11 @@ Description of the installation and configuration to use the **HR Staff Portal**
 
 All Software which is used to run **HR Staff Portal** is **Open Source**. Please be aware of different licenses with varying policies.
 
-##### Installation of Python, Streamlit and dependencies
+##### Installation of Python and Streamlit
 
 Install **[Streamlit & Python](https://docs.streamlit.io/library/get-started/installation)** to run the source code locally. A virtual Python environment like **Anaconda** / **Miniconda** is highly recommend.
 
-After that you need to install some *Python libraries*. To do so use the `requirements.txt` file with:
-
-```cmd
-pip install -r requirements.txt
-```
-
-Install the **Changelog converter** (Markdown to html) with **[Node.js](https://nodejs.org/en/download/)**:
-
-```cmd
-npm install --save-dev changelog-to-html
-```
-
-#### Getting the HR Staff Portal source code
+#### Getting the HR Staff Portal source code and install dependencies
 
 Clone the *repository* of **HRStaffPortal** with following command:
 
@@ -40,6 +28,18 @@ Clone the *repository* of **HRStaffPortal** with following command:
 git clone https://github.com/DrBenjamin/HRStaffPortal.git
 ```
 
+After that you need to install some *Python libraries*. To do so use the `requirements.txt` file with:
+
+```cmd
+cd HRStaffPortal
+python -m pip install -r requirements.txt
+```
+
+Install the **Changelog converter** (Markdown to html) with **[Node.js](https://nodejs.org/en/download/)**:
+
+```cmd
+npm install --save-dev changelog-to-html
+```
 ##### Configuration of Streamlit config files
 
 First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the *theming* and some *Streamlit server behaviour* flags:
@@ -220,18 +220,12 @@ The **HR Staff Portal** software runs under the **[GNU General Public License v3
 
 #### Use of the web application
 
-The **HR Staff Portal** is running as an *Web Service* through the *Python Streamlit framework*. It will use the *port* `8501` if you are not changing it in `.streamlit/config.toml` in the `browser` section. Set the Server certification files to use ssl (https connection):
+The **HR Staff Portal** is running as an *Web Service* through the *Python Streamlit framework*. It will use the *port* `8501` if you are not changing it in `.streamlit/config.toml` in the `browser` section:
 
 ```
 [browser]
 # Server port binding
 serverPort = 8501
-
-# Server certificate file for connecting via HTTPS. Must be set at the same time as "server.sslKeyFile"
-sslCertFile = /Path-to-ssl-files/host.cert
-
-# Cryptographic key file for connecting via HTTPS. Must be set at the same time as "server.sslCertFile"
-sslKeyFile = /Path-to-ssl-files/host.key
 ```
 
 ##### Clone a specific version of HR Staff Portal
@@ -287,7 +281,7 @@ SSLCertificateKeyFile /Path-to-ssl-files/host.key
 If you've installed all dependencies, configured the MySQL server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the *Terminal* of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
 
 ```cmd
-streamlit run 🏥_HR_Staff_Portal.py
+python -m streamlit run 🏥_HR_Staff_Portal.py
 ```
 
 This will open the **Web App** on the servers IP address(es) and the designated port. Open it in the browser with `http://xxx.xxx.xxx.xxx:8501` or `https://xxx.xxx.xxx.xxx:8501` if you are using SLL connections.
@@ -301,7 +295,7 @@ The Software and its dependencies will be updated regularly, so make sure to alw
 To update to the latest version of the **Streamlit web app framework**, run the following command:
 
 ```cmd
-pip install --upgrade streamlit
+python -m pip install --upgrade streamlit
 ```
 
 ##### Update dependencies
@@ -309,7 +303,7 @@ pip install --upgrade streamlit
 To update all dependencies, use this command:
 
 ```cmd
-pip install --upgrade -r requirements.txt
+python -m pip install --upgrade -r requirements.txt
 ```
 
 ### Demo
