@@ -446,8 +446,8 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
                     # Write question to table `QUESTIONS`
                     query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, CATEGORY_ID, CATEGORY_SUB_ID, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (
-                    id, question_id, categories_id[category], sub_categories_id[sub_category], keywords[0],
-                    keywords[1], keywords[2], keywords[3], keywords[4], summary, user_question, lang[:2].lower())
+                    id, question_id, categories_id[category], sub_categories_id[sub_category], keywords[0].replace("'", ""),
+                    keywords[1].replace("'", ""), keywords[2].replace("'", ""), keywords[3].replace("'", ""), keywords[4].replace("'", ""), summary.replace("'", ""), user_question.replace("'", ""), lang[:2].lower())
                     run_query(query)
                     conn.commit()
                     st.session_state['answer_done'] = False
