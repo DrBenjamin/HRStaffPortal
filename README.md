@@ -6,7 +6,7 @@
 
 This App handles *employee data* which is created through the process of printing *ID Cards* with the **EasyBadge ID Card Printer Software**. All data is stored in a MySQL databank.
 
-For development choose your favorite **Text-Editor** or use an IDE as [RStudio](https://www.rstudio.com/products/rstudio/download/#download) or **[PyCharm](https://www.jetbrains.com/pycharm/)**. Install **[git](https://git-scm.com/download/win)** to use version control.
+For development choose your favorite **Text-Editor** or use an IDE as [RStudio](https://www.rstudio.com/products/rstudio/download/#download), [VS Code](https://code.visualstudio.com) or **[PyCharm](https://www.jetbrains.com/pycharm/)**. Install **[git](https://git-scm.com/download/win)** to use version control.
 
 ### Setup
 
@@ -30,27 +30,6 @@ Install the **Changelog converter** (Markdown to html) with **[Node.js](https://
 
 ```cmd
 npm install --save-dev changelog-to-html
-```
-
-##### Activating Secure Socket Layer (ssl)
-
-If you want a secure connection (https), you need to generate the **[OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)** certificate and the public key:
-
-```cmd
-openssl genrsa 2048 > host.key
-chmod 400 host.key
-openssl req -new -x509 -nodes -sha256 -days 365 -key host.key -out host.cert
-```
-
-Also you need to add the `ssl_options` to server.py in the *Python* / *Virtual environment* folder `Lib/site-packages/streamlit/web/server/server.py`. Connections will now be only possible using `https://` + URL. Be aware, after each update of **Streamlit** to redo these changes.
-
-```Python
-http_server = HTTPServer(
-        app, max_buffer_size=config.get_option("server.maxUploadSize") * 1024 * 1024,
-        ssl_options={
-            "certfile": "/Path-to-ssl-files/host.cert",
-            "keyfile": "/Path-to-ssl-files/host.key",
-        }
 ```
 
 #### Getting the HR Staff Portal source code
@@ -80,20 +59,44 @@ gatherUsageStats = false
 headless = true
 ```
 
+##### Activating Secure Socket Layer (ssl)
+
+If you want a secure connection (https), you need to generate the **[OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)** certificate and the public key:
+
+```cmd
+openssl genrsa 2048 > host.key
+chmod 400 host.key
+openssl req -new -x509 -nodes -sha256 -days 365 -key host.key -out host.cert
+```
+
+Streamlit v1.20.0 brings secure connection, you just need to add these two lines to `.streamlit/config.toml`:
+
+```python
+# Server certificate file for connecting via HTTPS. Must be set at the same time as "server.sslKeyFile"
+sslCertFile = "<path-to-file>/host.cert"
+
+# Cryptographic key file for connecting via HTTPS. Must be set at the same time as "server.sslCertFile"
+sslKeyFile = "<path-to-file>/host.key"
+```
+
 Now create the file `.streamlit/secrets.toml` where you define some customisations and the *user / password* combinations:
 
 ```python
 ### Customization
 [custom]
+images_url = "https://example.url/images/"
+images_zip = "images.zip"
+images_path = "images/"
 facility = "XXXXXXXX"
 facility_abbreviation = "XXX"
 facility_image = "images/XXX.png"
 facility_image_thumbnail = "images/XXX.png"
-carfleet_image = "images/XXX.png"
-carfleet_image_thumbnail = "images/XXX.png"
-menu_items_help = "http://www.example.url/help"
+sidebar_image = "images/XXX.png"
+placeholder = "images/placeholder.png"
+placeholder_docu = "images/placeholder_documentation.png"
+chat_bot = "images/Ben.png"
+menu_items_help = "https://www.example.url/help"
 menu_items_bug = "https://github.com/DrBenjamin/HRStaffPortal/issues"
-menu_items_about = "This is the HR Staff Portal (Version 0.2.0)"
 address_line1 = "XXXXXXXXXX,"
 address_line2 = "XXXXX, XXXXX"
 contact_tel1 = "+xxx x xxx xxx"
@@ -104,6 +107,8 @@ contact_mail1_desc = "XXX"
 contact_mail2 = "xyz2@mail.com"
 contact_mail2_desc = "XXX"
 contact_admin = "xyz@mail.com"
+
+
 
 ### User management
 [passwords]
@@ -135,14 +140,6 @@ In the `.streamlit/secrets.toml` you define the MySQL server settings for the di
 host = "127.0.0.1"
 port = 3306
 database = "idcard"
-user = "xyz"
-password = "xyz"
-
-### MySQL configuration for Car Fleet Management
-[mysql_car]
-host = "127.0.0.1"
-port = 3306
-database = "carfleet"
 user = "xyz"
 password = "xyz"
 
