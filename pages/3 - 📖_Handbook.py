@@ -4,7 +4,6 @@
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
-import streamlit_scrollable_textbox as sty
 import pandas as pd
 import mysql.connector
 import openai
@@ -659,11 +658,9 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
     if (st.session_state['feedback'] == False):
         if (len(st.session_state['answer']) > 0):
             st.write('**:blue[Ben]**')
-            sty.scrollableTextbox(
-                st.session_state['answer'] + ' (Score ' + str(format(st.session_state['answer_score'], '.0%')) + ')',
-                height = 80, border = True)
-
-
+            st.write(st.session_state['answer'] + ' (Score ' + str(format(st.session_state['answer_score'], '.0%')) + ')')
+            
+                
             ## Write every answer to table `ANSWERS`
             if (st.session_state['answer_done'] == False):
                 # Get last ID from table
@@ -733,6 +730,32 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
     ## Response after feedback was given to user
     if (st.session_state['feedback'] == True):
         st.info(body = 'Thanks for your feedback, it was recorded.', icon = 'ℹ️')
+    st.divider()
+    
+    
+    ## Show related Videos
+    st.write('**:green[Videos]**')
+    
+    # Run query
+    query = "SELECT ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM `benbox`.`HANDBOOK_VIDEO`;"
+    rows = run_query(query)
+    titels = []
+    for row in rows:
+        if row[1] == '0000' + str(category + 1) and row[2] == '0000' + str(sub_category + 1):
+            titels.append(row[3])
+            if len(titels) == 1:
+                titel = row[3]
+                video = row[4]
+    if len(titels) > 1:
+        titel = st.selectbox('Select a related video', options = titels)
+        for row in rows:
+            if titel == row[3]:
+                st.video(data = row[4], format = 'video/mp4', start_time = 0)
+    elif len(titels) == 1:
+        st.selectbox('Selected video', options = [titel], disabled = True)
+        st.video(data = video, format = 'video/mp4', start_time = 0)
+    else:
+        st.info(body = 'No related video found.', icon = 'ℹ️')
 
 
 
@@ -743,11 +766,13 @@ with st.expander(label = 'Handbook', expanded = False):
 
     ## Docx export
     st.subheader('Document')
-    st.write('Here you can export the handbook as a Word document.')
+    st.write('Here you can export the handbooks as a Word document.')
+    handbook = st.selectbox(label = 'Choose Handbook', options = ['User handbook'], disabled = True)
     if st.button(label = 'Export handbook'):
-        ## Get handbook data to export from table `HANDBOOK_USER`
+        # Get handbook data to export from table `HANDBOOK_USER`
         query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM benbox.HANDBOOK_USER AS han LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.HANDBOOK_CHAPTER_STRUCTURE AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.HANDBOOK_PARAGRAPH_STRUCTURE AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;"
         rows = run_query(query)
+        
         databank_handbook = pd.DataFrame(
             columns = ['ID', 'HANDBOOK_CHAPTER', 'HANDBOOK_CHAPTER_DESCRIPTION', 'HANDBOOK_CHAPTER_TEXT',
                        'HANDBOOK_PARAGRAPH', 'HANDBOOK_PARAGRAPH_DESCRIPTION', 'HANDBOOK_PARAGRAPH_TEXT', 'CATEGORY',
@@ -776,20 +801,28 @@ with st.expander(label = 'Handbook', expanded = False):
         export_docx(data = databank_handbook, faq = faq, docx_file_name = 'Handbook.docx')
 
 
-    ## Show videos which are present in the database
-    # Run query
+    ## Videos which are present in the database
     try:
+        # Run query
         query = "SELECT ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM `benbox`.`HANDBOOK_VIDEO`;"
         rows = run_query(query)
 
         # Show videos
         st.subheader('Videos')
+        titels = []
         for row in rows:
-            st.markdown('**Description:** ' + str(row[1]), unsafe_allow_html = True)
-            video_bytes = row[2]
-            st.video(data = video_bytes, format = 'video/mp4', start_time = 0)
+            titels.append(row[1])
     except Exception as e:
         print(e, ' No videos available!')
+        
+    # Show videos
+    titel = st.selectbox(label = 'Choose Video', options = titels)
+    for row in rows:
+        if titel == row[1]:
+            st.video(data = row[2], format = 'video/mp4', start_time = 0)
+            
+            # Download Button
+            st.download_button(label = 'Download video', data = row[2], file_name = 'Video.mp4', mime = "video/mp4")
 
 
 
