@@ -168,7 +168,7 @@ def import_excel():
                 empty_bool = False
                 for index, row in data.iterrows():
                     if index == 0:
-                        out1.append(row[1].strip())
+                        out1.append(row[1].strip().title())
                     else:
                         if row[1] == '':
                             empty_bool = True
@@ -176,9 +176,9 @@ def import_excel():
                         else:
                             if empty_bool == True:
                                 empty_bool = False
-                                out1.append(row[1].strip())
+                                out1.append(row[1].strip().title())
                             else:
-                                out2.append(row[1].strip())
+                                out2.append(row[1].strip().title())
                 output = pd.DataFrame(out1, columns = ['Department'])
                 output = output.drop_duplicates(ignore_index = True)
                 output.index = output.index + 1

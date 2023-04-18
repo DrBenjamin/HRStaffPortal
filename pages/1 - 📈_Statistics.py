@@ -99,12 +99,12 @@ if check_password():
         conn = init_connection()
 
         ## Getting employee data
-        query = "SELECT ima.ID, emp.EMPLOYEE_GENDER, emp.EMPLOYEE_BIRTHDAY, ima.JOB_TITLE, emp.EMPLOYEE_NATIONALITY, emp.EMPLOYEE_MARRIAGE_STATUS FROM `idcard`.`IMAGEBASE` As ima LEFT JOIN `idcard`.`EMPLOYEE` AS emp ON emp.EMPLOYEE_NO = ima.EMPLOYEE_NO;"
+        query = "SELECT ima.ID, emp.EMPLOYEE_GENDER, emp.EMPLOYEE_BIRTHDAY, ima.Position, emp.EMPLOYEE_NATIONALITY, emp.EMPLOYEE_MARRIAGE_STATUS FROM `idcard`.`IMAGEBASE` As ima LEFT JOIN `idcard`.`EMPLOYEE` AS emp ON emp.EMPLOYEE_NO = ima.Employee_Number;"
         rows = run_query(query)
-        databank_employee = pd.DataFrame(columns = ['ID', 'GENDER', 'BIRTHDAY', 'JOB', 'NATIONALITY', 'MARRIAGE'])
+        databank_employee = pd.DataFrame(columns = ['ID', 'GENDER', 'BIRTHDAY', 'Position', 'NATIONALITY', 'MARRIAGE'])
         for row in rows:
             df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5]]],
-                              columns = ['ID', 'GENDER', 'BIRTHDAY', 'JOB', 'NATIONALITY', 'MARRIAGE'])
+                              columns = ['ID', 'GENDER', 'BIRTHDAY', 'Position', 'NATIONALITY', 'MARRIAGE'])
             databank_employee = pd.concat([databank_employee, df])
         databank_employee = databank_employee.set_index('ID')
 
@@ -140,7 +140,7 @@ if check_password():
         st.subheader('Job statistics')
         jobs = []
         counter = []
-        for job in databank_employee['JOB']:
+        for job in databank_employee['Position']:
             not_new = False
             i = 0
             for j in jobs:
@@ -155,11 +155,11 @@ if check_password():
                 else:
                     jobs.append(job)
                     counter.append(1)
-        job_data = pd.DataFrame(columns = ['Job', 'Number'])
+        job_data = pd.DataFrame(columns = ['Position', 'Number'])
         for i in range(len(jobs)):
-            df = pd.DataFrame([[jobs[i], counter[i]]], columns = ['Job', 'Number'])
+            df = pd.DataFrame([[jobs[i], counter[i]]], columns = ['Position', 'Number'])
             job_data = pd.concat([job_data, df])
-        job_data = job_data.set_index('Job')
+        job_data = job_data.set_index('Position')
         st.bar_chart(job_data, x = jobs)
 
 

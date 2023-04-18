@@ -87,6 +87,7 @@ if ('answer_id' not in st.session_state):
 if ('handbook_text' not in st.session_state):
     st.session_state['handbook_text'] = ''
 
+
 ## Chapter state for handbook
 if ('chapter' not in st.session_state):
     st.session_state['chapter'] = 1

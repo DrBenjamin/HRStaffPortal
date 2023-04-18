@@ -478,7 +478,7 @@ if check_password():
 
             ## Multiselect to choose employees for workshop
             # Get employee data for filling the employee multiselect
-            query = "SELECT ima.ID, ima.FORENAME, ima.SURNAME, ima.EMPLOYEE_NO, ima.JOB_TITLE, emp.EMPLOYEE_EMAIL FROM `idcard`.`IMAGEBASE` As ima LEFT JOIN `idcard`.`EMPLOYEE` AS emp ON emp.EMPLOYEE_NO = ima.EMPLOYEE_NO;"
+            query = "SELECT ima.ID, ima.Forename, ima.Surname, ima.Employee_Number, ima.Position, emp.EMPLOYEE_EMAIL FROM `idcard`.`IMAGEBASE` As ima LEFT JOIN `idcard`.`EMPLOYEE` AS emp ON emp.EMPLOYEE_NO = ima.Employee_Number;"
             rows = run_query(query)
 
             # Building employees for  multiselect

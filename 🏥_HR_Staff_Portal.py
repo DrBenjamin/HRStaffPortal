@@ -203,14 +203,13 @@ if check_password():
     conn = init_connection()
 
     # Get employee data
-    query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, DEPARTMENT, UNIT, EXPIRY_DATE, EMPLOYEE_NO, PIN, CARDS_PRINTED FROM `idcard`.`IMAGEBASE`;"
+    query = "SELECT ID, Layout, Forename, Surname, Position, Department, Unit, Expiry_Date, Employee_Number, PIN, Cards_Printed FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
     databank = pd.DataFrame(
-        columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'DEPARTMENT', 'UNIT', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'PIN', 'CARDS_PRINTED'])
+        columns = ['ID', 'Layout', 'Forename', 'Surname', 'Position', 'Department', 'Unit', 'Expiry_Date', 'Employee_Number', 'PIN', 'Cards_Printed'])
     for row in rows:
         df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]],
-                          columns = ['ID', 'LAYOUT', 'FORENAME', 'SURNAME', 'JOB_TITLE', 'DEPARTMENT', 'UNIT', 'EXPIRY_DATE', 'EMPLOYEE_NO', 'PIN',
-                                     'CARDS_PRINTED'])
+                          columns = ['ID', 'Layout', 'Forename', 'Surname', 'Position', 'Department', 'Unit', 'Expiry_Date', 'Employee_Number', 'PIN', 'Cards_Printed'])
         databank = pd.concat([databank, df])
     databank = databank.set_index('ID')
 
@@ -248,7 +247,7 @@ if check_password():
 
 
     ## Get employee data for searching for building `ID` / `EMPLOYEE` pairs and filling the employee selectbox
-    query = "SELECT ID, FORENAME, SURNAME, EMPLOYEE_NO, JOB_TITLE FROM `idcard`.`IMAGEBASE`;"
+    query = "SELECT ID, Forename, Surname, Employee_Number, Position FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
     # Building `ID` / `EMPLOYEE` pair and
     # combine Forename and Surname for employee selectbox
@@ -265,11 +264,11 @@ if check_password():
 
 
     ## Getting employee PIN data
-    query = "SELECT ID, ID, EMPLOYEE_NO, PIN FROM `idcard`.`IMAGEBASE`;"
+    query = "SELECT ID, ID, Employee_Number, PIN FROM `idcard`.`IMAGEBASE`;"
     rows = run_query(query)
-    databank_pin = pd.DataFrame(columns = ['ID_INDEX', 'ID', 'EMPLOYEE_NO', 'PIN'])
+    databank_pin = pd.DataFrame(columns = ['ID_INDEX', 'ID', 'Employee_Number', 'PIN'])
     for row in rows:
-        df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['ID_INDEX', 'ID', 'EMPLOYEE_NO', 'PIN'])
+        df = pd.DataFrame([[row[0], row[1], row[2], row[3]]], columns = ['ID_INDEX', 'ID', 'Employee_Number', 'PIN'])
         databank_pin = pd.concat([databank_pin, df])
     databank_pin = databank_pin.set_index('ID_INDEX')
     
@@ -476,8 +475,7 @@ if check_password():
 
 
                         ## Maybe it needs a break to prevent used `IDs`???
-                        query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, DEPARTMENT, UNIT, EXPIRY_DATE, EMPLOYEE_NO, PIN, CARDS_PRINTED) VALUES (%s, %s, '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s', %s);" % (
-                        id, layout, forename, surname, job, ', '.join(dep), ', '.join(unit), exp, emp_no, pin, capri)
+                        query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, Layout, Forename, Surname, Position, Department, Unit, Expiry_Date, Employee_Number, PIN, Cards_Printed) VALUES (%s, %s, '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s', %s);" % (id, layout, forename, surname, job, ', '.join(dep), ', '.join(unit), exp, emp_no, pin, capri)
                         run_query(query)
                         conn.commit()
                         st.session_state['success1'] = True
@@ -502,7 +500,7 @@ if check_password():
             ## If data is already existent, show filled form
             else:
                 ## Get information of selected Employee
-                query = "SELECT ID, LAYOUT, FORENAME, SURNAME, JOB_TITLE, DEPARTMENT, UNIT, EXPIRY_DATE, EMPLOYEE_NO, PIN, CARDS_PRINTED, IMAGE FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" % (
+                query = "SELECT ID, Layout, Forename, Surname, Position, Department, Unit, Expiry_Date, Employee_Number, PIN, Cards_Printed, Image FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" % (
                     index)
                 employee = run_query(query)
 
@@ -635,8 +633,7 @@ if check_password():
 
                     ## Writing to databank idcard Table IMAGEBASE
                     if (updateMaster == True):
-                        query = "UPDATE `idcard`.`IMAGEBASE` SET LAYOUT = %s, FORENAME = '%s', SURNAME = '%s', JOB_TITLE = '%s', DEPARTMENT = '%s', UNIT = '%s', EXPIRY_DATE = '%s', EMPLOYEE_NO = '%s', PIN = '%s', CARDS_PRINTED = %s WHERE ID = %s;" % (
-                        layout, forename, surname, job, ', '.join(dep), ', '.join(unit), exp, emp_no, pin, capri, index)
+                        query = "UPDATE `idcard`.`IMAGEBASE` SET Layout = %s, Forename = '%s', Surname = '%s', Position = '%s', Department = '%s', Unit = '%s', Expiry_Date = '%s', Employee_Number = '%s', PIN = '%s', Cards_Printed = %s WHERE ID = %s;" % (layout, forename, surname, job, ', '.join(dep), ', '.join(unit), exp, emp_no, pin, capri, index)
                         run_query(query)
                         conn.commit()
                         st.session_state['success1'] = True
@@ -1179,8 +1176,8 @@ if check_password():
         st.info('You may want to export the database data.', icon = 'ℹ️')
         if st.button('Export Excel (Database)'):
             export_excel('Employees', 'J',
-                         [{'header': 'LAYOUT'}, {'header': 'FORENAME'}, {'header': 'SURNAME'}, {'header': 'JOB_TITLE'}, {'header': 'DEPARTMENT'},
-                          {'header': 'UNIT'}, {'header': 'EXPIRY_DATE'}, {'header': 'EMPLOYEE_NO'}, {'header': 'PIN'}, {'header': 'CARDS_PRINTED'}, ],
+                         [{'header': 'Layout'}, {'header': 'Forename'}, {'header': 'Surname'}, {'header': 'Position'}, {'header': 'Department'},
+                          {'header': 'Unit'}, {'header': 'Expiry_Date'}, {'header': 'Employee_Number'}, {'header': 'PIN'}, {'header': 'Cards_Printed'}, ],
                          int(len(databank) + 1), databank,
                          'Extra data', 'M',
                          [{'header': 'EMPLOYEE_NO'}, {'header': 'GENDER'}, {'header': 'BIRTHDAY'}, {'header': 'STREET'},
