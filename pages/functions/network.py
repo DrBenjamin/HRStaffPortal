@@ -25,7 +25,7 @@ import requests
 ### Function downzip = Download and unzip zip files
 def downzip(url, zip_files, path):
     for i in range(len(zip_files)):
-        zip_file = requests.get(url + zip_files[i]).content
+        zip_file = requests.get(url + zip_files[i], verify = st.secrets['custom']['certificate']).content
         zip_file_path = path + zip_files[i]
         x_times = 0
         while x_times < 4:
