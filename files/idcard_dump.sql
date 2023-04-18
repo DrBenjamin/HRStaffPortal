@@ -4,6 +4,8 @@
 -- ------------------------------------------------------
 -- Server version	10.5.18-MariaDB-0+deb11u1
 
+USE idcard;
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
