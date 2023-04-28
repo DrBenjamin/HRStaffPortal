@@ -945,7 +945,7 @@ if check_password():
                         index = 2
                     else:
                         index = 0
-                    employment_type = st.selectbox('Marriage status', options = options, index = index)
+                    employment_type = st.selectbox('Employee type', options = options, index = index)
                     if (databank_employee1._get_value(1, 'EMPLOYEE_EMPLOYMENT_TYPE') != employment_type):
                         updateExtra = True
 
@@ -1012,24 +1012,24 @@ if check_password():
 
 
                 ## Get driver data if available
-                query = "SELECT ID, DRIVER_ID, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES FROM carfleet.DRIVERS WHERE EMPLOYEE_NO = '%s';" % (
-                eno['eno'][0])
-                rows = run_query(query)
+                #query = "SELECT ID, DRIVER_ID, DRIVER_NATIONAL_ID, DRIVER_MOBILE_NO, DRIVER_LICENSE_NO, DRIVER_LICENSE_CLASS, DRIVER_LICENSE_EXPIRY_DATE, DRIVER_PSV_BADGE, DRIVER_NOTES FROM carfleet.DRIVERS WHERE EMPLOYEE_NO = '%s';" % (eno['eno'][0])
+                #rows = run_query(query)
 
                 # Create pandas dataframe
-                databank_driver = pd.DataFrame(
-                    columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO',
-                               'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE',
-                               'DRIVER_NOTES'])
+                #databank_driver = pd.DataFrame(
+                    #columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO', 'DRIVER_LICENSE_NO',
+                    #           'DRIVER_LICENSE_CLASS', 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE',
+                    #           'DRIVER_NOTES'])
 
                 # Populate dataframe
-                for row in rows:
-                    df = pd.DataFrame([[1, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]],
-                                      columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO',
-                                                 'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS',
-                                                 'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES'])
-                    databank_driver = pd.concat([databank_driver, df])
-                databank_driver = databank_driver.set_index('ID')
+                #for row in rows:
+                    #df = pd.DataFrame([[1, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]],
+                    #                  columns = ['ID', 'DRIVER_ID', 'DRIVER_NATIONAL_ID', 'DRIVER_MOBILE_NO',
+                    #                             'DRIVER_LICENSE_NO', 'DRIVER_LICENSE_CLASS',
+                    #                             'DRIVER_LICENSE_EXPIRY_DATE', 'DRIVER_PSV_BADGE', 'DRIVER_NOTES'])
+                    #databank_driver = pd.concat([databank_driver, df])
+                #databank_driver = databank_driver.set_index('ID')
+                databank_driver = [1]
 
 
                 ## Submit Button for Changes on `More data` - existend employee
@@ -1062,23 +1062,16 @@ if check_password():
 
                 ## Show Driver data
                 st.subheader('View Driver data')
-                if (len(databank_driver) == 1):
-                    st.text_input(label = 'Driver ID', value = databank_driver._get_value(1, 'DRIVER_ID'),
-                                  disabled = True)
-                    st.text_input(label = 'Driver national ID',
-                                  value = databank_driver._get_value(1, 'DRIVER_NATIONAL_ID'), disabled = True)
-                    st.text_input(label = 'Driver mobile number',
-                                  value = databank_driver._get_value(1, 'DRIVER_MOBILE_NO'), disabled = True)
-                    st.text_input(label = 'Driver license number',
-                                  value = databank_driver._get_value(1, 'DRIVER_LICENSE_NO'), disabled = True)
-                    st.text_input(label = 'Driver license class',
-                                  value = databank_driver._get_value(1, 'DRIVER_LICENSE_CLASS'), disabled = True)
-                    st.text_input(label = 'Driver license expiry date',
-                                  value = databank_driver._get_value(1, 'DRIVER_LICENSE_EXPIRY_DATE'), disabled = True)
-                    st.text_input(label = 'Driver PSV badge', value = databank_driver._get_value(1, 'DRIVER_PSV_BADGE'),
-                                  disabled = True)
-                    st.text_input(label = 'Driver notes', value = databank_driver._get_value(1, 'DRIVER_NOTES'),
-                                  disabled = True)
+                # Set to one, if Driver database is existend!
+                if (len(databank_driver) == 2):
+                    st.text_input(label = 'Driver ID', value = databank_driver._get_value(1, 'DRIVER_ID'), disabled = True)
+                    st.text_input(label = 'Driver national ID', value = databank_driver._get_value(1, 'DRIVER_NATIONAL_ID'), disabled = True)
+                    st.text_input(label = 'Driver mobile number', value = databank_driver._get_value(1, 'DRIVER_MOBILE_NO'), disabled = True)
+                    st.text_input(label = 'Driver license number', value = databank_driver._get_value(1, 'DRIVER_LICENSE_NO'), disabled = True)
+                    st.text_input(label = 'Driver license class', value = databank_driver._get_value(1, 'DRIVER_LICENSE_CLASS'), disabled = True)
+                    st.text_input(label = 'Driver license expiry date', value = databank_driver._get_value(1, 'DRIVER_LICENSE_EXPIRY_DATE'), disabled = True)
+                    st.text_input(label = 'Driver PSV badge', value = databank_driver._get_value(1, 'DRIVER_PSV_BADGE'), disabled = True)
+                    st.text_input(label = 'Driver notes', value = databank_driver._get_value(1, 'DRIVER_NOTES'), disabled = True)
 
                 # If no driver data existend
                 else:
