@@ -201,49 +201,19 @@ if check_password():
 
     ### Get data from the databank(s)
     # Open databank connection
+    connection = st.experimental_connection(name = 'sql', type ='sql')
     conn = init_connection()
 
     # Get employee data
-    query = "SELECT ID, Layout, Forename, Surname, Position, Department, Unit, Expiry_Date, Employee_Number, PIN, Cards_Printed FROM `idcard`.`IMAGEBASE`;"
-    rows = run_query(query)
-    databank = pd.DataFrame(
-        columns = ['ID', 'Layout', 'Forename', 'Surname', 'Position', 'Department', 'Unit', 'Expiry_Date', 'Employee_Number', 'PIN', 'Cards_Printed'])
-    for row in rows:
-        df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]],
-                          columns = ['ID', 'Layout', 'Forename', 'Surname', 'Position', 'Department', 'Unit', 'Expiry_Date', 'Employee_Number', 'PIN', 'Cards_Printed'])
-        databank = pd.concat([databank, df])
+    databank = connection.query("SELECT ID, Layout, Forename, Surname, Position, Department, Unit, Expiry_Date, Employee_Number, PIN, Cards_Printed FROM `idcard`.`IMAGEBASE`;")
     databank = databank.set_index('ID')
 
     # Get extra employee data
-    query = "SELECT ID, EMPLOYEE_NO, EMPLOYEE_GENDER, EMPLOYEE_BIRTHDAY, EMPLOYEE_ADDRESS_STREET, EMPLOYEE_ADDRESS_CITY, EMPLOYEE_ADDRESS_CITY_CODE, EMPLOYEE_EMAIL, EMPLOYEE_PHONE, EMPLOYEE_PHONE2, EMPLOYEE_NATIONALITY, EMPLOYEE_PLACE_OF_ORIGIN, EMPLOYEE_MARRIAGE_STATUS, EMPLOYEE_EMPLOYMENT_TYPE FROM `idcard`.`EMPLOYEE`;"
-    rows = run_query(query)
-    databank_employee = pd.DataFrame(
-        columns = ['ID', 'EMPLOYEE_NO', 'EMPLOYEE_GENDER', 'EMPLOYEE_BIRTHDAY', 'EMPLOYEE_ADDRESS_STREET',
-                   'EMPLOYEE_ADDRESS_CITY', 'EMPLOYEE_ADDRESS_CITY_CODE', 'EMPLOYEE_EMAIL', 'EMPLOYEE_PHONE',
-                   'EMPLOYEE_PHONE2', 'EMPLOYEE_NATIONALITY', 'EMPLOYEE_PLACE_OF_ORIGIN', 'EMPLOYEE_MARRIAGE_STATUS',
-                   'EMPLOYEE_EMPLOYMENT_TYPE'])
-    for row in rows:
-        df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10],
-                            row[11], row[12], row[13]]],
-                          columns = ['ID', 'EMPLOYEE_NO', 'EMPLOYEE_GENDER', 'EMPLOYEE_BIRTHDAY',
-                                     'EMPLOYEE_ADDRESS_STREET', 'EMPLOYEE_ADDRESS_CITY', 'EMPLOYEE_ADDRESS_CITY_CODE',
-                                     'EMPLOYEE_EMAIL', 'EMPLOYEE_PHONE', 'EMPLOYEE_PHONE2', 'EMPLOYEE_NATIONALITY',
-                                     'EMPLOYEE_PLACE_OF_ORIGIN', 'EMPLOYEE_MARRIAGE_STATUS',
-                                     'EMPLOYEE_EMPLOYMENT_TYPE'])
-        databank_employee = pd.concat([databank_employee, df])
+    databank_employee = connection.query("SELECT ID, EMPLOYEE_NO, EMPLOYEE_GENDER, EMPLOYEE_BIRTHDAY, EMPLOYEE_ADDRESS_STREET, EMPLOYEE_ADDRESS_CITY, EMPLOYEE_ADDRESS_CITY_CODE, EMPLOYEE_EMAIL, EMPLOYEE_PHONE, EMPLOYEE_PHONE2, EMPLOYEE_NATIONALITY, EMPLOYEE_PLACE_OF_ORIGIN, EMPLOYEE_MARRIAGE_STATUS, EMPLOYEE_EMPLOYMENT_TYPE FROM `idcard`.`EMPLOYEE`;")
     databank_employee = databank_employee.set_index('ID')
 
     # Get Training data
-    query = "SELECT img.ID, img.EMPLOYEE_NO, img.WORKSHOP_ID, wor.WORKSHOP_TITLE, wor.WORKSHOP_DESCRIPTION, wor.WORKSHOP_FACILITATOR, wor.WORKSHOP_DATE, wor.WORKSHOP_DURATION FROM `idcard`.`TRAINING` AS img LEFT JOIN `idcard`.`WORKSHOP` AS wor ON img.WORKSHOP_ID = wor.WORKSHOP_ID;"
-    rows = run_query(query)
-    databank_training = pd.DataFrame(
-        columns = ['ID', 'EMPLOYEE_NO', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION', 'WORKSHOP_FACILITATOR',
-                   'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
-    for row in rows:
-        df = pd.DataFrame([[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]]],
-                          columns = ['ID', 'EMPLOYEE_NO', 'WORKSHOP_ID', 'WORKSHOP_TITLE', 'WORKSHOP_DESCRIPTION',
-                                     'WORKSHOP_FACILITATOR', 'WORKSHOP_DATE', 'WORKSHOP_DURATION'])
-        databank_training = pd.concat([databank_training, df])
+    databank_training = connection.query("SELECT img.ID, img.EMPLOYEE_NO, img.WORKSHOP_ID, wor.WORKSHOP_TITLE, wor.WORKSHOP_DESCRIPTION, wor.WORKSHOP_FACILITATOR, wor.WORKSHOP_DATE, wor.WORKSHOP_DURATION FROM `idcard`.`TRAINING` AS img LEFT JOIN `idcard`.`WORKSHOP` AS wor ON img.WORKSHOP_ID = wor.WORKSHOP_ID;")
     databank_training = databank_training.set_index('ID')
 
 
