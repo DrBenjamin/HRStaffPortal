@@ -1178,8 +1178,8 @@ if check_password():
                           {'header': 'CITY'}, {'header': 'CITY_CODE'}, {'header': 'EMAIL'}, {'header': 'PHONE'},
                           {'header': 'PHONE2'}, {'header': 'NATIONALITY'}, {'header': 'ORIGIN'}, {'header': 'MARRIAGE'},
                           {'header': 'EMPLOYEMENT'}, ], int(len(databank_employee) + 1), databank_employee,
-                         'Trainings', 'G', [{'header': 'EMPLOYEE_NO'}, {'header': 'WORKSHOP_ID'}, {'header': 'WORKSHOP_TITLE'}, {'header': 'WORKSHOP_DESCRIPTION'}, {'header': 'WORKSHOP_FACILITATOR'}, {'header': 'WORKSHOP_DATE'}, {'header': 'WORKSHOP_DURATION'}, ], int(len(databank_training) + 1),
-                         databank_training)
+                         'Trainings', 'G', [{'header': 'EMPLOYEE_NO'}, {'header': 'WORKSHOP_ID'}, {'header': 'WORKSHOP_TITLE'}, {'header': 'WORKSHOP_DESCRIPTION'}, {'header': 'WORKSHOP_FACILITATOR'}, {'header': 'WORKSHOP_DATE'}, {'header': 'WORKSHOP_DURATION'}, ], int(len(databank_training) + 1), # type: ignore
+                         databank_training) # type: ignore
 
 
 
