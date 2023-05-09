@@ -9,6 +9,7 @@ import extra_streamlit_components as stx
 import pandas as pd
 import numpy as np
 import cv2
+from sqlalchemy.dialects.mysql import *
 import mysql.connector
 import platform
 from datetime import datetime, date
