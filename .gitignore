@@ -186,3 +186,5 @@ HRStaffPortal.iml
 
 /.idea/ChatGPTCopilotChannelManager.xml
 .vscode/settings.json
+package-lock.json
+images/images.zip
