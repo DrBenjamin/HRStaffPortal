@@ -477,7 +477,7 @@ if check_password():
 
 
                 ## Set query parameter
-                st.experimental_set_query_params(eno = employee[0][6])
+                #st.experimental_set_query_params(eno = employee[0][6])
 
 
                 ## Input for updating employee data
@@ -509,10 +509,16 @@ if check_password():
                 job = st.selectbox(label = 'Position', options = str_pos, index = job_index, disabled = not checkbox_val)
                 if (employee[0][4] != job):
                     updateMaster = True
-                dep = st.multiselect(label = 'Department', options = str_deps, default = employee[0][5].split(', '), disabled = not checkbox_val)
+                try:
+                    dep = st.multiselect(label = 'Department', options = str_deps, default = employee[0][5].split(', '), disabled = not checkbox_val)
+                except:
+                    dep = st.multiselect(label = 'Department', options = str_deps, disabled = not checkbox_val)
                 if (employee[0][5] != dep):
                     updateMaster = True
-                unit = st.multiselect(label = 'Unit', options = str_units, default = employee[0][6].split(', '), disabled = not checkbox_val)
+                try:
+                    unit = st.multiselect(label = 'Unit', options = str_units, default = employee[0][6].split(', '), disabled = not checkbox_val)
+                except:
+                    unit = st.multiselect(label = 'Unit', options = str_units, disabled = not checkbox_val)
                 if (employee[0][6] != unit):
                     updateMaster = True
                 exp = st.text_input(label = 'Expirity date', value = employee[0][7], disabled = not checkbox_val)
@@ -530,23 +536,21 @@ if check_password():
 
 
                 ## Check if image is empty and show a placeholder
-                if (len(employee[0][11]) < 10):
-                    # Show placeholder
-                    if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder']):
-                        downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']],
-                                st.secrets['custom']['images_path'])
-                    st.image(st.secrets['custom']['placeholder'])
-
-                    # Set Image Session State to `No Image` placeholder
-                    st.session_state['image'] = load_file(st.secrets['custom']['placeholder'])
-
-
-                ## Show existing image
-                else:
+                try:
+                    # Show existing image
                     st.image(employee[0][11])
 
                     # Save Image for downloading to Image Session State
                     st.session_state['image'] = employee[0][11]
+
+                except:
+                    # Show placeholder
+                    if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder']):
+                        downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']], st.secrets['custom']['images_path'])
+                    st.image(st.secrets['custom']['placeholder'])
+
+                    # Set Image Session State to `No Image` placeholder
+                    st.session_state['image'] = load_file(st.secrets['custom']['placeholder'])
 
 
                 ## Image input
