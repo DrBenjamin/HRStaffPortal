@@ -139,7 +139,7 @@ def import_excel():
     data = None
     output = [[]]
     output2 = [[]]
-    uploaded_file = st.file_uploader("Choose an Excel document for data import", type = ['xls', 'xlsx', 'doc', 'docx'])
+    uploaded_file = st.file_uploader("Choose an Excel document for data import", type = ['xls', 'xlsx'])
     if uploaded_file is not None:
         # To read file as bytes:
         bytes_data = uploaded_file.getvalue()
