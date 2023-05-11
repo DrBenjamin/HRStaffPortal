@@ -139,6 +139,7 @@ def import_excel():
     data = None
     output = [[]]
     output2 = [[]]
+    output3 = [[]]
     uploaded_file = st.file_uploader("Choose an Excel document for data import", type = ['xls', 'xlsx'])
     if uploaded_file is not None:
         # To read file as bytes:
@@ -146,48 +147,53 @@ def import_excel():
         suffix = uploaded_file.name.split('.')[-1]
         
         # Write Excel to dataframe
+        dep = False
         try:
-            if suffix == 'xls' or suffix == 'xlsx':
-                data = pd.read_excel(io.BytesIO(bytes_data), sheet_name = 0)
-                for index, row in data.iterrows():
-                    if str(row[2]) != 'nan' and str(row[2]) != '':
-                        output.append([index, str(row[1]).strip()])
-                output = pd.DataFrame(output, columns = ['ID', 'Position'])
-                output = output.set_index('ID')
-                output = output.drop_duplicates(ignore_index = True)
-                output = output.drop(0, axis = 0)
-                output2 = pd.DataFrame('Nothing')
-            elif suffix == 'doc' or suffix == 'docx':
-                with open("temp." + suffix, "wb") as f:
-                    f.write(bytes_data)
-                document = Document('temp.' + suffix)
-                docx = [[cell.text.strip() for cell in row.cells] for row in document.tables[0].rows]
-                data = pd.DataFrame(docx)
-                out1 = []
-                out2 = []
-                empty_bool = False
-                for index, row in data.iterrows():
-                    if index == 0:
-                        out1.append(row[1].strip().title())
+            data = pd.read_excel(io.BytesIO(bytes_data), sheet_name = 0)
+
+            # Add Positions from Excel
+            for index, row in data.iterrows():
+                if str(row[2]) != 'nan' and str(row[2]) != '':
+                    output.append([index, str(row[1]).strip().title()])
+                
+                # Add Departments and Units from Excel
+                else:
+                    # Departments
+                    if dep == True:
+                        if str(row[1]) != 'nan':
+                            output2.append([index, str(row[1]).strip().title()])
+                        dep = False
+                    elif str(row[1]).strip() == 'A' or str(row[1]).strip() == 'B' or str(row[1]).strip() == 'C' or str(row[1]).strip() == 'D':
+                        dep = True
+
+                    # Units
                     else:
-                        if row[1] == '':
-                            empty_bool = True
-                            continue
-                        else:
-                            if empty_bool == True:
-                                empty_bool = False
-                                out1.append(row[1].strip().title())
-                            else:
-                                out2.append(row[1].strip().title())
-                output = pd.DataFrame(out1, columns = ['Department'])
-                output = output.drop_duplicates(ignore_index = True)
-                output.index = output.index + 1
-                output2 = pd.DataFrame(out2, columns = ['Unit'])
-                output2 = output2.drop_duplicates(ignore_index = True)
-                output2.index = output2.index + 1
+                        if str(row[1]) != 'nan':
+                            if str(row[1][:2]).strip().title() != 'A' and str(row[1][:2]).strip().title() != 'A)' and str(row[1][:2]).strip().title() != 'B' and str(row[1][:2]).strip().title() != 'B)' and str(row[1][:2]).strip().title() != 'C' and str(row[1][:2]).strip().title() != 'C)' and str(row[1][:2]).strip().title() != 'D' and str(row[1][:2]).strip().title() != 'D)' and str(row[1][:2]).strip().title() != 'E' and str(row[1][:2]).strip().title() != 'E)' and str(row[1][:2]).strip().title() != 'F' and str(row[1][:2]).strip().title() != 'F)' and str(row[1][:2]).strip().title() != 'G' and str(row[1][:2]).strip().title() != 'G)':
+                                output3.append([index, str(row[1]).strip().title()])
+                                print(str(row[1]).strip().title())
+
+            # Positions
+            output = pd.DataFrame(output, columns = ['ID', 'Position'])
+            output = output.set_index('ID')
+            output = output.drop_duplicates(ignore_index = True)
+            output = output.drop(0, axis = 0)
+
+            # Departments
+            output2 = pd.DataFrame(output2, columns = ['ID', 'Department'])
+            output2 = output2.set_index('ID')
+            output2 = output2.drop_duplicates(ignore_index = True)
+            output2 = output2.drop(0, axis = 0)
+
+            # Units
+            output3 = pd.DataFrame(output3, columns = ['ID', 'Unit'])
+            output3 = output3.set_index('ID')
+            output3 = output3.drop_duplicates(ignore_index = True)
+            output3 = output3.drop(0, axis = 0)
+
         except:
             print('No import data present')
-    return output, output2
+    return output, output2, output3
     
     
     
