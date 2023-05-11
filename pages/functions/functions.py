@@ -171,7 +171,6 @@ def import_excel():
                         if str(row[1]) != 'nan':
                             if str(row[1][:2]).strip().title() != 'A' and str(row[1][:2]).strip().title() != 'A)' and str(row[1][:2]).strip().title() != 'B' and str(row[1][:2]).strip().title() != 'B)' and str(row[1][:2]).strip().title() != 'C' and str(row[1][:2]).strip().title() != 'C)' and str(row[1][:2]).strip().title() != 'D' and str(row[1][:2]).strip().title() != 'D)' and str(row[1][:2]).strip().title() != 'E' and str(row[1][:2]).strip().title() != 'E)' and str(row[1][:2]).strip().title() != 'F' and str(row[1][:2]).strip().title() != 'F)' and str(row[1][:2]).strip().title() != 'G' and str(row[1][:2]).strip().title() != 'G)':
                                 output3.append([index, str(row[1]).strip().title()])
-                                print(str(row[1]).strip().title())
 
             # Positions
             output = pd.DataFrame(output, columns = ['ID', 'Position'])

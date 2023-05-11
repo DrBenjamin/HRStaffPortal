@@ -490,22 +490,9 @@ if check_password():
                 surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
                 if (employee[0][3] != surname):
                     updateMaster = True
-                if employee[0][4] == 'Clinician':
-                    job_index = 0
-                elif employee[0][4] == 'Nurse':
-                    job_index = 1
-                elif employee[0][4] == 'Guard':
-                    job_index = 2
-                elif employee[0][4] == 'Cleaner':
-                    job_index = 3
-                elif employee[0][4] == 'Driver':
-                    job_index = 4
-                elif employee[0][4] == 'HR':
-                    job_index = 5
-                elif employee[0][4] == 'Director':
-                    job_index = 6
-                else:
-                    job_index = 0
+                for pos in str_pos:
+                    if employee[0][4] == pos:
+                        job_index = str_pos.index(pos)
                 job = st.selectbox(label = 'Position', options = str_pos, index = job_index, disabled = not checkbox_val)
                 if (employee[0][4] != job):
                     updateMaster = True
@@ -1079,20 +1066,19 @@ if check_password():
         
         ## Data Import
         st.header('Data import')
-        st.info('You may want to import data about Positions (Designation) from an compatible Excel document.', icon = 'ℹ️')
+        st.info('You may want to import data about Positions, Departmens and Units from an compatible Excel document.', icon = 'ℹ️')
         
         # Import Excel data
         databank_pos, databank_dep, databank_unit = import_excel()
         
         # Show `Write changes to database` button (if there are changes)
         if len(databank_pos) > 1:
-            st.subheader('Preview')
-            st.write('Positions')
-            st.write(databank_pos)
-            st.write('Departments')
-            st.write(databank_dep)
-            st.write('Units')
-            st.write(databank_unit)
+            st.subheader('Preview Positions')
+            st.dataframe(databank_pos)
+            st.subheader('Preview Departments')
+            st.dataframe(databank_dep)
+            st.subheader('Preview Units')
+            st.dataframe(databank_unit)
 
             # Write to database
             if st.button('Write to Database'):
