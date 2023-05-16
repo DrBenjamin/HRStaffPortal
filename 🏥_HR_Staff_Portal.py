@@ -492,7 +492,10 @@ if check_password():
                 surname = st.text_input(label = 'Surname', value = employee[0][3], disabled = not checkbox_val)
                 if (employee[0][3] != surname):
                     updateMaster = True
-                job = st.selectbox(label = 'Position', options = str_pos, index = str_pos.index(employee[0][4]), disabled = not checkbox_val)
+                try:
+                    job = st.selectbox(label = 'Position', options = str_pos, index = str_pos.index(employee[0][4]), disabled = not checkbox_val)
+                except:
+                    job = st.selectbox(label = 'Position', options = str_pos, disabled = not checkbox_val)
                 if (employee[0][4] != job):
                     updateMaster = True
                 try:
