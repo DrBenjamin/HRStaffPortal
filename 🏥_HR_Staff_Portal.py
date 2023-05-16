@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 import cv2
 import mysql.connector
-import pymysql 
+import pymysql
 pymysql.install_as_MySQLdb()
 import platform
 from datetime import datetime, date
