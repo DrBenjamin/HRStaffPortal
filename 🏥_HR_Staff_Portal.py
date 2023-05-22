@@ -329,7 +329,7 @@ if check_password():
                                    captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside'],
                                    index = 0, return_value = 'index')
         if national_id == 1:
-            qrcode = qrcode_reader()
+            qrcode = st.text_input(label = 'National ID QR Code', value = '', max_chars = 222)
             if qrcode != None:
                 st.session_state['national_id_data'] = parse_national_id(qrcode)
     

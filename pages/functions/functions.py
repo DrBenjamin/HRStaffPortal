@@ -442,9 +442,11 @@ def generate_qrcode(data):
 
 
 
-### parse_national_id = Parsing National ID QR Code data to list
+### parse_national_id = Parsing National ID QR Code or ID Card QR Code data to list
 def parse_national_id(text):
     val = text.split('~')
+
+    # National ID
     if len(val) == 12:
         if len(val[6].split(', ')) > 1:
             fname, mname = val[6].split(', ')
@@ -465,11 +467,17 @@ def parse_national_id(text):
                      "OCT": 10, "NOV": 11, "DEC": 12}
         num_month = month_var[month.upper()]
         dob = year + "-" + month + "-" + day
-        result = {"first_name": fname, "middle_name": mname, "last_name": lname, "gender": gender, "nation_id": nat_id,
-                  "dob": dob}
+        result = {"first_name": fname, "middle_name": mname, "last_name": lname, "gender": gender, "nation_id": nat_id, "dob": dob}
 
-        # Return result
-        return result
+    # KCH ID Card   
+    else:
+        if len(val) == 9:
+            result = {"first_name": val[0], "middle_name": "", "last_name": val[1], "gender": "", "nation_id": "", "dob": ""}
+        else:
+            result = None
+            
+    # Return result
+    return result
 
 
 
