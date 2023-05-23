@@ -13,12 +13,12 @@ mysql-connector-python-rf
 extra_streamlit_components==0.1.56
 streamlit-scrollable-textbox
 streamlit_qrcode_scanner
+streamlit-drawable-canvas
 opencv-python-headless
 xlsxwriter
 openpyxl
 xlrd
 python-docx
-PyQt5
 openai
 deepl
 geocoder

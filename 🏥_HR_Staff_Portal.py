@@ -4,11 +4,12 @@
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
-import streamlit as st
 import extra_streamlit_components as stx
 import pandas as pd
 import numpy as np
+from PIL import Image
 import cv2
+from streamlit_drawable_canvas import st_canvas
 import mysql.connector
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -120,6 +121,8 @@ if ('image' not in st.session_state):
 ## National ID
 if ('national_id_data' not in st.session_state):
     st.session_state['national_id_data'] = None
+if ('signature' not in st.session_state):
+    st.session_state['signature'] = None
 
 
 
@@ -184,6 +187,22 @@ def pictureUploader(image, index):
 
 
 
+### Function: signatureUploader = uploads employee signatures
+def signatureUploader(image, index):
+    # Initialize connection
+    connection = mysql.connector.connect(**st.secrets["mysql"])
+    cursor = connection.cursor()
+
+    # SQL statement
+    sql_insert_blob_query = """ UPDATE IMAGEBASE SET SIGNATURE = %s WHERE ID = %s;"""
+
+    # Convert data into tuple format
+    insert_blob_tuple = (image, index)
+    result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
+    connection.commit()
+
+
+
 ### Function: onChange = If selectbox is used
 def onChange():
     st.session_state['run'] = True
@@ -198,9 +217,9 @@ def onChange():
 if check_password():
     ### Header
     header(title = 'HR Staff Portal', data_desc = 'employee data', expanded = st.session_state['header'])
-
-
-
+    
+    
+    
     ### Get data from the databank(s)
     # Open databank connection
     connection = st.experimental_connection(name = 'sql', type ='sql')
@@ -265,39 +284,6 @@ if check_password():
     str_units = []
     for unit in units:
         str_units.append(str(unit).replace("('", "").replace("',)", ""))
-        
-        
-
-    ### Google Sheet support
-    ## Open the spreadsheet and the first sheet
-    # Getting credentials
-    #client = google_sheet_credentials()
-
-    # Opening sheet
-    #sh = client.open_by_key(st.secrets['google']['pin_spreadsheet_id'])
-    #wks = sh.sheet1
-
-    # Read the worksheet and get a pandas dataframe
-    #try:
-        #data_google = wks.get_as_df()
-    #except Exception as e:
-        #print('Exception in read of Google Sheet ', e)
-
-    # Creating numpy array
-    #numb = np.array(databank_pin)
-
-    # Add readed data
-    #newrow = np.array([1, 2, 3)])
-    #numb = np.vstack((numb, newrow))
-
-    # Converting numby array to list
-    #numb = numb.tolist()
-
-    # Update the worksheet with the numpy array values, beginning at a specific cell
-    #try:
-        #wks.update_values(crange = 'A2', values = numb)
-    #except Exception as e:
-        #print('Exception in write of Google Sheet ', e)
 
 
 
@@ -322,16 +308,24 @@ if check_password():
             checkbox_training = st.checkbox(label = 'Confirm Training', value = checkbox_val, disabled = not checkbox_val)
     
     
-        ## QR Code reader for `National ID` to prefill `New Employee` form
+        ## Prefill with data from National ID and capturing Signature
         st.subheader('Choose type of input')
         st.info('You may want to scan a National ID for prefilling some data.', icon = 'ℹ️')
-        national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png'],
-                                   captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside'],
+        national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png', 'images/Signature.png'],
+                                   captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside', 'Draw your Signature'],
                                    index = 0, return_value = 'index')
+        
+        # National ID scanning
         if national_id == 1:
             qrcode = st.text_input(label = 'National ID QR Code', value = '', max_chars = 222)
             if qrcode != None:
                 st.session_state['national_id_data'] = parse_national_id(qrcode)
+
+        # Signature capturing
+        elif national_id == 2:
+            canvas_result = st_canvas(height = 256, width = 360, stroke_width = 3)
+            st.session_state['signature'] = cv2.imencode('.png', canvas_result.image_data)[1].tobytes()
+            st.image(st.session_state['signature'])
     
     
     
@@ -443,26 +437,25 @@ if check_password():
                 if submitted:
                     ## Writing to databank if data was entered
                     if (layout is not None and forename and surname and job and exp and emp_no and capri):
-                        ## Get latest ID from database
+                        # Get latest ID from database
                         id = lastID(url = '`idcard`.`IMAGEBASE`')
 
-
-                        ## Maybe it needs a break to prevent used `IDs`???
+                        # Maybe it needs a break to prevent used `IDs`???
                         query = "INSERT INTO `idcard`.`IMAGEBASE`(ID, Layout, Forename, Surname, Position, Department, Unit, Expiry_Date, Employee_Number, PIN, Cards_Printed) VALUES (%s, %s, '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s', %s);" % (id, layout, forename, surname, job, ', '.join(dep), ', '.join(unit), exp, emp_no, pin, capri)
                         run_query(query)
                         conn.commit()
                         st.session_state['success1'] = True
 
-
-                        ## Upload picture to database
+                        # Upload picture to database
                         pictureUploader(image, id)
 
+                        # Upload signature to database
+                        signatureUploader(st.session_state['signature'], id)
 
-                        ## Set query parameter
+                        # Set query parameter
                         st.experimental_set_query_params(eno = eno)
 
-
-                        ## Set `index` to refer to new `ID` position in database, so that reload opens new employee data
+                        # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
                         st.session_state['index'] = int(id)
                     else:
                         st.session_state['success1'] = False
@@ -473,8 +466,7 @@ if check_password():
             ## If data is already existent, show filled form
             else:
                 ## Get information of selected Employee
-                query = "SELECT ID, Layout, Forename, Surname, Position, Department, Unit, Expiry_Date, Employee_Number, PIN, Cards_Printed, Image FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" % (
-                    index)
+                query = "SELECT ID, Layout, Forename, Surname, Position, Department, Unit, Expiry_Date, Employee_Number, PIN, Cards_Printed, Image, Signature FROM `idcard`.`IMAGEBASE` WHERE ID = %s;" % (index)
                 employee = run_query(query)
 
 
@@ -525,6 +517,7 @@ if check_password():
 
 
                 ## Check if image is empty and show a placeholder
+                st.write('Image')
                 try:
                     # Show existing image
                     st.image(employee[0][11])
@@ -588,6 +581,23 @@ if check_password():
                     pictureUploader(image, index)
 
 
+                ## Show signature
+                st.write('Signature')
+                try:
+                    # Show existing signature
+                    st.image(employee[0][12])
+
+                    # Save Image for downloading to Image Session State
+                    st.session_state['signature'] = employee[0][12]
+
+                except:
+                    # Show signature placeholder
+                    st.image(st.secrets['custom']['placeholder_signature'])
+
+                    # Set Image Session State to `No Image` placeholder
+                    st.session_state['signature'] = load_file(st.secrets['custom']['placeholder_signature'])
+
+
                 ## Submit button for changes on employee master data
                 submitted = st.form_submit_button("Save changes on Master data")
                 if submitted:
@@ -600,6 +610,10 @@ if check_password():
                         query = "UPDATE `idcard`.`IMAGEBASE` SET Layout = %s, Forename = '%s', Surname = '%s', Position = '%s', Department = '%s', Unit = '%s', Expiry_Date = '%s', Employee_Number = '%s', PIN = '%s', Cards_Printed = %s WHERE ID = %s;" % (layout, forename, surname, job, ', '.join(dep), ', '.join(unit), exp, emp_no, pin, capri, index)
                         run_query(query)
                         conn.commit()
+
+                        # Upload signature to database
+                        signatureUploader(st.session_state['signature'], index)
+
                         st.session_state['success1'] = True
                     else:
                         st.session_state['success1'] = False
