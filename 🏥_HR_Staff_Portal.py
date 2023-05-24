@@ -325,7 +325,6 @@ if check_password():
         elif national_id == 2:
             canvas_result = st_canvas(height = 256, width = 360, stroke_width = 3)
             st.session_state['signature'] = cv2.imencode('.png', canvas_result.image_data)[1].tobytes()
-            st.image(st.session_state['signature'])
     
     
     
