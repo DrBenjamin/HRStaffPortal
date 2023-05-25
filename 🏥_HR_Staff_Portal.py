@@ -206,6 +206,7 @@ def signatureUploader(image, index):
 ### Function: onChange = If selectbox is used
 def onChange():
     st.session_state['run'] = True
+    st.session_state['signature'] = None
     # st.session_state['chosen_id'] = 1
     # st.session_state['national_id_data'] = None
 
@@ -311,7 +312,7 @@ if check_password():
         ## Prefill with data from National ID and capturing Signature
         st.subheader('Choose type of input')
         st.info('You may want to scan a National ID for prefilling some data.', icon = 'ℹ️')
-        national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png', 'images/Signature.png'],
+        national_id = image_select(label = 'Type of Input?', images = ['images/Keyboard.png', 'images/ID.png', 'images/placeholder_signature.png'],
                                    captions = ['Type in employee data manually', 'Scan the National ID QR Code on the backside', 'Draw your Signature'],
                                    index = 0, return_value = 'index')
         
@@ -324,7 +325,10 @@ if check_password():
         # Signature capturing
         elif national_id == 2:
             canvas_result = st_canvas(height = 256, width = 360, stroke_width = 3)
-            st.session_state['signature'] = cv2.imencode('.png', canvas_result.image_data)[1].tobytes()
+            try:
+                st.session_state['signature'] = cv2.imencode('.png', canvas_result.image_data)[1].tobytes()
+            except:
+                print('Wait for drawd signature')
     
     
     
@@ -584,10 +588,16 @@ if check_password():
                 st.write('Signature')
                 try:
                     # Show existing signature
-                    st.image(employee[0][12])
+                    try:
+                        st.image(employee[0][12])
 
-                    # Save Image for downloading to Image Session State
-                    st.session_state['signature'] = employee[0][12]
+                        # Save Image to Signature Session State
+                        st.session_state['signature'] = employee[0][12]
+
+                    # Show new draed Signature
+                    except:
+                        st.image(st.session_state['signature'])
+                        
 
                 except:
                     # Show signature placeholder
