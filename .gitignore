@@ -190,3 +190,8 @@ package-lock.json
 images/images.zip
 files/idcard_dump 2.sql
 .vscode/.settings.json.icloud
+files/.benbox_dump.sql.icloud
+files/.carfleet_dump.sql.icloud
+.gitignore
+files/carfleet_dump.sql
+.gitignore
