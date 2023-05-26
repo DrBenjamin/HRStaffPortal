@@ -324,7 +324,7 @@ if check_password():
 
         # Signature capturing
         elif national_id == 2:
-            canvas_result = st_canvas(height = 256, width = 360, stroke_width = 3)
+            canvas_result = st_canvas(height = 256, width = 360, stroke_color = "#161616", stroke_width = 5)
             try:
                 st.session_state['signature'] = cv2.imencode('.png', canvas_result.image_data)[1].tobytes()
             except:
@@ -430,8 +430,8 @@ if check_password():
                 # Set placeholder image, if no image data existend
                 else:
                     if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder']):
-                        downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']],
-                                st.secrets['custom']['images_path'])
+                        #downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']], st.secrets['custom']['images_path'])
+                        print('Images not downloaded')
                     image = load_file(st.secrets['custom']['placeholder'])
 
 
@@ -531,7 +531,8 @@ if check_password():
                 except:
                     # Show placeholder
                     if not os.path.exists(st.secrets['custom']['images_path'] + st.secrets['custom']['placeholder']):
-                        downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']], st.secrets['custom']['images_path'])
+                        #downzip(st.secrets['custom']['images_url'], [st.secrets['custom']['images_zip']], st.secrets['custom']['images_path'])
+                        print('Images not downloaded')
                     st.image(st.secrets['custom']['placeholder'])
 
                     # Set Image Session State to `No Image` placeholder
