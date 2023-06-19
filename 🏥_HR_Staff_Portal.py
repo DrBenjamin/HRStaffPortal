@@ -1144,19 +1144,19 @@ if check_password():
         
         # Show `IMAGEBASE` table data
         st.subheader('Employee data')
-        databank_edit = st.experimental_data_editor(databank, use_container_width = True)
+        databank_edit = st.data_editor(databank, use_container_width = True)
 
         # Show `EMPLOYEE` table data
         st.subheader('Extra employee data')
-        databank_employee_edit = st.experimental_data_editor(databank_employee, use_container_width = True)
+        databank_employee_edit = st.data_editor(databank_employee, use_container_width = True)
 
         # Show `TRAINING` table data
         st.subheader('Training data')
-        databank_training_edit = st.experimental_data_editor(databank_training, use_container_width = True)
+        databank_training_edit = st.data_editor(databank_training, use_container_width = True)
             
         # Show PIN data
         #st.subheader('PIN data')
-        #data_google_edit = st.experimental_data_editor(data_google, use_container_width = True)
+        #data_google_edit = st.data_editor(data_google, use_container_width = True)
 
 
         ## Export `Vehicles` dataframe to Excel Makro file
