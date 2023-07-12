@@ -1020,7 +1020,7 @@ if check_password():
             handbook_keyword4 = st.text_input(label = 'Keyword 4')
             handbook_keyword5 = st.text_input(label = 'Keyword 5')
             handbook_summary = st.text_input(label = 'Summary')
-            handbook_text = st.text_input(label = 'Text')
+            handbook_text = st.text_area(label = 'Text', height = 200, max_chars = 4000)
             handbook_text_headline = st.text_input(label = 'Headline')
             handbook_text_language = st.text_input(label = 'Language', value = 'en')
             handbook_hits = st.text_input(label = 'Hits', value = 0)
