@@ -88,9 +88,15 @@ if ('handbook_text' not in st.session_state):
     st.session_state['handbook_text'] = ''
 
 
-## Chapter state for handbook
+## Category & Chapter state for handbook
+if ('category' not in st.session_state):
+    st.session_state['category'] = 1
+if ('subcategory' not in st.session_state):
+    st.session_state['subcategory'] = 1
 if ('chapter' not in st.session_state):
     st.session_state['chapter'] = 1
+if ('handbook_type' not in st.session_state):
+    st.session_state['handbook_type'] = "`benbox`.`HANDBOOK_USER`"
 
 
 
@@ -138,16 +144,16 @@ def pictureUploader(image, index):
     
     
 ### Function: pictureUploader = uploads handbook images
-def videoUploader(index, description, video):
+def videoUploader(handbook, index, description, video):
     # Initialize connection
     connection = mysql.connector.connect(**st.secrets["mysql_benbox"])
     cursor = connection.cursor()
 
     # SQL statement
-    sql_insert_blob_query = """ INSERT INTO `benbox`.`HANDBOOK_VIDEO`(ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES (%s, %s, %s);"""
+    sql_insert_blob_query = """ INSERT INTO %s(ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES (%s, %s, %s);"""
 
     # Convert data into tuple format
-    insert_blob_tuple = (index, description, video)
+    insert_blob_tuple = (handbook, index, description, video)
     result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
     connection.commit()
 
@@ -310,7 +316,7 @@ with st.expander('FAQ', expanded = False):
 
 
 ### Chat-Bot Ben
-with st.expander(label = 'Chat-Bot Ben', expanded = True):
+with st.expander(label = 'Chat-Bot Ben', expanded = False):
     st.header('Chat-Bot Ben')
     st.write('You can ask Ben questions here.')
 
@@ -738,7 +744,8 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
     st.write('**:green[Videos]**')
     
     # Run query
-    query = "SELECT ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM `benbox`.`HANDBOOK_VIDEO`;"
+    video_url = st.session_state['handbook_type'][:-1] + "_VIDEO`"
+    query = "SELECT ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM %s;" %(video_url)
     rows = run_query(query)
     titels = []
     for row in rows:
@@ -761,17 +768,19 @@ with st.expander(label = 'Chat-Bot Ben', expanded = True):
 
 
 ### Handbook
-with st.expander(label = 'Handbook', expanded = False):
+with st.expander(label = 'Handbook', expanded = True):
     st.header('Handbook')
 
+    # Select Handbook
+    handbook_type = st.selectbox(label = 'Select Handbook', options = ['`benbox`.`HANDBOOK_USER`', '`benbox`.`HANDBOOK_ADMIN`'], index = 0)
+    st.session_state['handbook_type'] = handbook_type
 
     ## Docx export
     st.subheader('Document')
     st.write('Here you can export the handbooks as a Word document.')
-    handbook = st.selectbox(label = 'Choose Handbook', options = ['User handbook'], disabled = True)
     if st.button(label = 'Export handbook'):
         # Get handbook data to export from table `HANDBOOK_USER`
-        query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM benbox.HANDBOOK_USER AS han LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.HANDBOOK_CHAPTER_STRUCTURE AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.HANDBOOK_PARAGRAPH_STRUCTURE AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;"
+        query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM %s AS han LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.HANDBOOK_CHAPTER_STRUCTURE AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.HANDBOOK_PARAGRAPH_STRUCTURE AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;" %(st.session_state['handbook_type'])
         rows = run_query(query)
         
         databank_handbook = pd.DataFrame(
@@ -805,7 +814,8 @@ with st.expander(label = 'Handbook', expanded = False):
     ## Videos which are present in the database
     try:
         # Run query
-        query = "SELECT ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM `benbox`.`HANDBOOK_VIDEO`;"
+        video_url = st.session_state['handbook_type'][:-1] + "_VIDEO`"
+        query = "SELECT ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM %s;" %(video_url)
         rows = run_query(query)
 
         # Show videos
@@ -832,7 +842,8 @@ if check_password():
     ### Chapter and paragraph structures
     ## Get chapter structure
     # Run query
-    query = "SELECT ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT FROM benbox.HANDBOOK_CHAPTER_STRUCTURE;"
+    chapter_url = st.session_state['handbook_type'][:-1] + "_CHAPTER_STRUCTURE`"
+    query = "SELECT ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT FROM %s;" %(chapter_url)
     rows = run_query(query)
     databank_chapter = pd.DataFrame(
         columns = ['ID', 'HANDBOOK_CHAPTER', 'HANDBOOK_CHAPTER_DESCRIPTION', 'HANDBOOK_CHAPTER_TEXT'])
@@ -864,7 +875,7 @@ if check_password():
             st.subheader('New chapter entry')
 
             # Get latest ID from table
-            id = lastID(url = '`benbox`.`HANDBOOK_CHAPTER_STRUCTURE`')
+            id = lastID(url = chapter_url)
             st.text_input(label = 'ID', value = id, disabled = True)
 
             # Inputs
@@ -888,7 +899,8 @@ if check_password():
 
 
     ## Get paragraph structure
-    query = "SELECT ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT FROM benbox.HANDBOOK_PARAGRAPH_STRUCTURE;"
+    paragraph_url = st.session_state['handbook_type'][:-1] + "_PARAGRAPH_STRUCTURE`"
+    query = "SELECT ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT FROM %s;" %(paragraph_url)
     rows = run_query(query)
     databank_paragraph = pd.DataFrame(
         columns = ['ID', 'HANDBOOK_PARAGRAPH', 'HANDBOOK_PARAGRAPH_DESCRIPTION', 'HANDBOOK_PARAGRAPH_TEXT'])
@@ -926,7 +938,7 @@ if check_password():
             st.subheader('New paragraph entry')
 
             # Get latest ID from table
-            id = lastID(url = '`benbox`.`HANDBOOK_PARAGRAPH_STRUCTURE`')
+            id = lastID(url = paragraph_url)
             st.text_input(label = 'ID', value = id, disabled = True)
 
             # Inputs
@@ -978,11 +990,13 @@ if check_password():
         ## Category menu
         category = st.selectbox(label = 'Please choose the category of the handbook entry',
                                 options = range(len(categories)), format_func = lambda x: categories[x])
-
+        st.session_state['category'] = category
+    
 
         ## Sub-Category menu
         sub_category = st.selectbox(label = 'Please choose the sub-category of the handbook entry',
                                     options = range(len(sub_categories)), format_func = lambda x: sub_categories[x])
+        st.session_state['subcategory'] = sub_category
 
 
         ## Chapter menu
@@ -998,15 +1012,15 @@ if check_password():
 
         ## Handbook data entry
         with st.form('Input', clear_on_submit = True):
-            ## Input for new `HANDBOOK_USER` data
+            ## Input for new HANDBOOK data
             # Get latest ID from table
-            id = lastID(url = '`benbox`.`HANDBOOK_USER`')
+            id = lastID(url = handbook_type)
             handbook_id = generateID(id)
             st.text_input(label = 'ID', value = id, disabled = True)
             st.text_input(label = 'Handbook ID', value = handbook_id, disabled = True)
-            st.text_input(label = 'Category', value = categories[category], disabled = True)
-            st.text_input(label = 'Sub-Category', value = sub_categories[sub_category], disabled = True)
-            st.text_input(label = 'Chapter', value = chapters_combo[chapter], disabled = True)
+            st.text_input(label = 'Category', value = st.session_state['category'], disabled = True)
+            st.text_input(label = 'Sub-Category', value = st.session_state['subcategory'], disabled = True)
+            st.text_input(label = 'Chapter', value = st.session_state['chapter'], disabled = True)
             handbook_chapter = chapters[chapter]
             if paragraphs_combo is None or len(paragraphs_combo) == 0:
                 st.text_input(label = 'Paragraph', placeholder = 'Please add paragraph first!', disabled = True)
@@ -1047,9 +1061,9 @@ if check_password():
                 if (len(handbook_image_text) < 1):
                     handbook_image_text = 'Placeholder image.'
 
-                # Write entry to table `HANDBOOK_USER`
-                query = "INSERT INTO `benbox`.`HANDBOOK_USER`(ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_CHAPTER, HANDBOOK_PARAGRAPH, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_HEADLINE, HANDBOOK_TEXT_LANGUAGE, HANDBOOK_HITS, HANDBOOK_IMAGE_TEXT) VALUES (%s, '%s', '%s', '%s', %s, %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s');" % (
-                id, handbook_id, categories_id[category], sub_categories_id[sub_category], handbook_chapter,
+                # Write entry to table HANDBOOK
+                query = "INSERT INTO %s(ID, HANDBOOK_ID, CATEGORY_ID, CATEGORY_SUB_ID, HANDBOOK_CHAPTER, HANDBOOK_PARAGRAPH, HANDBOOK_KEYWORD1, HANDBOOK_KEYWORD2, HANDBOOK_KEYWORD3, HANDBOOK_KEYWORD4, HANDBOOK_KEYWORD5, HANDBOOK_SUMMARY, HANDBOOK_TEXT, HANDBOOK_TEXT_HEADLINE, HANDBOOK_TEXT_LANGUAGE, HANDBOOK_HITS, HANDBOOK_IMAGE_TEXT) VALUES (%s, '%s', '%s', '%s', %s, %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, '%s');" % (
+                handbook_type, id, handbook_id, categories_id[category], sub_categories_id[sub_category], handbook_chapter,
                 handbook_paragraph, handbook_keyword1, handbook_keyword2, handbook_keyword3, handbook_keyword4,
                 handbook_keyword5, handbook_summary, handbook_text, handbook_text_headline, handbook_text_language,
                 handbook_hits, handbook_image_text)
@@ -1076,8 +1090,8 @@ if check_password():
             # Upload to database
             pressed = st.button('Upload')
             if pressed:
-                video_id = lastID(url = '`benbox`.`HANDBOOK_VIDEO`')
-                videoUploader(index = video_id, description = handbook_video_text, video = handbook_video)
+                video_id = lastID(url = handbook_type)
+                videoUploader(handbook = handbook_type, index = video_id, description = handbook_video_text, video = handbook_video)
         
 
 
