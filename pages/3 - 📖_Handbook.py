@@ -6,6 +6,11 @@
 import streamlit as st
 import pandas as pd
 import mysql.connector
+import pymysql
+pymysql.install_as_MySQLdb()
+#import MySQLdb
+#from streamlit.connections import SQLConnection
+from sqlalchemy.sql import text
 import openai
 import geocoder
 from geopy.geocoders import Nominatim
@@ -144,18 +149,22 @@ def pictureUploader(image, index):
     
     
 ### Function: pictureUploader = uploads handbook images
-def videoUploader(handbook, index, description, video):
+def videoUploader(handbook, index, category, category_sub, description, video):
     # Initialize connection
-    connection = mysql.connector.connect(**st.secrets["mysql_benbox"])
-    cursor = connection.cursor()
+    connection = st.experimental_connection(name = 'sql', type ='sql')
+    with connection.session as session:
+        session.execute(text("INSERT INTO `benbox`.`HANDBOOK_ADMIN`(ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES ((:i), (:c), (:cs), (:d), (:v));"), {"h": handbook, "i": index, "c": category, "cs": category_sub, "d": description, "v": video})
+        session.commit()
+    #connection = mysql.connector.connect(**st.secrets["mysql_benbox"])
+    #cursor = connection.cursor()
 
     # SQL statement
-    sql_insert_blob_query = """ INSERT INTO %s(ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES (%s, %s, %s);"""
+    #sql_insert_blob_query = """INSERT INTO %s(ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES (%s, '%s', '%s', '%s', %s);"""
 
     # Convert data into tuple format
-    insert_blob_tuple = (handbook, index, description, video)
-    result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
-    connection.commit()
+    #insert_blob_tuple = (handbook, index, category, category_sub, description, video)
+    #result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
+    #connection.commit()
 
 
 
@@ -896,9 +905,7 @@ if check_password():
             submitted = st.form_submit_button("Submit")
             if submitted:
                 # Write entry to table `HANDBOOK_CHAPTER_STRUCTURE`
-                query = "INSERT INTO `benbox`.`HANDBOOK_CHAPTER_STRUCTURE`(ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT) VALUES (%s, '%s', '%s', '%s');" % (
-                id, handbook_chapter_structure_chapter, handbook_chapter_structure_chapter_desc,
-                handbook_chapter_structure_chapter_text)
+                query = "INSERT INTO `benbox`.`HANDBOOK_CHAPTER_STRUCTURE`(ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT) VALUES (%s, '%s', '%s', '%s');" % (id, handbook_chapter_structure_chapter, handbook_chapter_structure_chapter_desc, handbook_chapter_structure_chapter_text)
                 run_query(query)
                 conn.commit()
 
@@ -959,9 +966,7 @@ if check_password():
             submitted = st.form_submit_button("Submit")
             if submitted:
                 # Write entry to table `HANDBOOK_PARAGRAPH_STRUCTURE`
-                query = "INSERT INTO `benbox`.`HANDBOOK_PARAGRAPH_STRUCTURE`(ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT) VALUES (%s, '%s', '%s', '%s');" % (
-                id, handbook_paragraph_structure_paragraph, handbook_paragraph_structure_paragraph_desc,
-                handbook_paragraph_structure_paragraph_text)
+                query = "INSERT INTO `benbox`.`HANDBOOK_PARAGRAPH_STRUCTURE`(ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT) VALUES (%s, '%s', '%s', '%s');" % (id, handbook_paragraph_structure_paragraph, handbook_paragraph_structure_paragraph_desc, handbook_paragraph_structure_paragraph_text)
                 run_query(query)
                 conn.commit()
 
@@ -1087,7 +1092,9 @@ if check_password():
         
     ## Show handbook video upload in expander
     with st.expander(label = 'Handbook video upload', expanded = False):
-        # Handbook image upload
+        # Handbook video upload
+        st.title('Video upload')
+        st.write('Here you can upload a new handbook video.')
         uploaded_file = st.file_uploader(label = "Upload a video", type = 'mp4')
         if uploaded_file is not None:
             handbook_video = uploaded_file.getvalue()
@@ -1096,12 +1103,12 @@ if check_password():
             handbook_video_text = st.text_input(label = 'Video description')
         
             # Upload to database
-            pressed = st.button('Upload')
+            pressed = st.button('Upload video')
             if pressed:
-                video_id = lastID(url = handbook_type)
-                videoUploader(handbook = handbook_type, index = video_id, description = handbook_video_text, video = handbook_video)
-        
+                video_id = lastID(url = st.session_state['handbook_type'][:-1] + "_VIDEO`")
+                videoUploader(handbook = st.session_state['handbook_type'][:-1] + "_VIDEO`", index = video_id, category = '0001', category_sub = '0001', description = handbook_video_text, video = handbook_video)
 
+                
 
     ### Admin console
     if st.session_state['admin'] == True:
