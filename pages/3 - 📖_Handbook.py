@@ -315,9 +315,9 @@ with st.expander('FAQ', expanded = False):
 
 
 
-### Chat-Bot Ben
-with st.expander(label = 'Chat-Bot Ben', expanded = False):
-    st.header('Chat-Bot Ben')
+### Chat-Bot
+with st.expander(label = 'Chat-Bot', expanded = False):
+    st.header('Chat-Bot')
     st.write('You can ask Ben questions here.')
 
 
@@ -768,16 +768,17 @@ with st.expander(label = 'Chat-Bot Ben', expanded = False):
 
 
 ### Handbook
-with st.expander(label = 'Handbook', expanded = True):
-    st.header('Handbook')
+with st.expander(label = 'Documentation', expanded = True):
+    st.header('Documentation')
+    st.write('Here you can access the handbooks and the specification document.')
 
     # Select Handbook
-    handbook_type = st.selectbox(label = 'Select Handbook', options = ['`benbox`.`HANDBOOK_USER`', '`benbox`.`HANDBOOK_ADMIN`'], index = 0)
+    handbook_type = st.selectbox(label = 'Choose Handbook', options = ['`benbox`.`HANDBOOK_USER`', '`benbox`.`HANDBOOK_ADMIN`'], index = 0)
     st.session_state['handbook_type'] = handbook_type
 
     ## Docx export
-    st.subheader('Document')
-    st.write('Here you can export the handbooks as a Word document.')
+    st.subheader('Handbook')
+    st.write('Here you can export a handbook as a Word document.')
     if st.button(label = 'Export handbook'):
         # Get handbook data to export from table `HANDBOOK_USER`
         query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM %s AS han LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.HANDBOOK_CHAPTER_STRUCTURE AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.HANDBOOK_PARAGRAPH_STRUCTURE AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;" %(st.session_state['handbook_type'])
@@ -827,6 +828,7 @@ with st.expander(label = 'Handbook', expanded = True):
         print(e, ' No videos available!')
         
     # Show videos
+    st.write("Here you can watch and download the handbook's videos.")
     titel = st.selectbox(label = 'Choose Video', options = titels)
     for row in rows:
         if titel == row[1]:
@@ -834,6 +836,12 @@ with st.expander(label = 'Handbook', expanded = True):
             
             # Download Button
             st.download_button(label = 'Download video', data = row[2], file_name = 'Video.mp4', mime = "video/mp4")
+
+    
+    ## Specification document
+    st.subheader('Specification document')
+    st.write("Here you can download the specification document.")
+    st.download_button(label = 'Download specification document', data = open('files/HR_Staff_Portal_Specifications.docx', 'rb').read(), file_name = 'HR_Staff_Portal_Specifications.docx', mime = "application/docx")
 
 
 
