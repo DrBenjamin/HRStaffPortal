@@ -9,7 +9,7 @@ import mysql.connector
 import pymysql
 pymysql.install_as_MySQLdb()
 #import MySQLdb
-#from streamlit.connections import SQLConnection
+#bb   e"""   """from streamlit.connections import SQLConnection
 from sqlalchemy.sql import text
 import openai
 import geocoder
@@ -397,7 +397,7 @@ with st.expander(label = 'Chat-Bot', expanded = False):
                 ## Doing the requests to OpenAI for summarizing / keyword extracting the question
                 try:
                     # Creating summary of user question
-                    model = 'gpt-3.5-turbo' #model == 'gpt-4-0314'
+                    model = 'gpt-3.5-turbo' #model == 'gpt-4-0613', 'gpt-4' or 'gpt-3.5-turbo'
                     summary_question = 'A User asks in the category \"' + categories[
                         category] + '\" and the sub-category"' + sub_categories[
                                            sub_category] + '" about this question: \"' + user_question + '" Please summarise it to a statement in no more than three words.'
@@ -1233,12 +1233,12 @@ if check_password():
     ## Not admin user
     else:
         # Show info box
-        st.info(body = 'Please login as admin (sidebar on the left) to access the \"Admin console\"', icon = "ℹ️")
+        st.info(body = 'Login as admin (sidebar on the left) to access the \"Admin console\"', icon = "ℹ️")
 
 
 
 ### Not Logged in state (Landing page)
 else:
     ### Show `login` info box
-    st.info(body = 'Please login (sidebar on the left) to enter handbook data (strutures and paragragphs).',
+    st.info(body = 'Login (sidebar on the left) to enter handbook data (strutures and paragragphs).',
             icon = "ℹ️")
