@@ -262,7 +262,6 @@ def export_excel(sheet, column, columns, length, data,
 
         ## Saving changes
         workbook.close()
-        writer.save()
 
 
         ## Download Button

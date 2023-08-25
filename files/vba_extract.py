@@ -12,6 +12,7 @@ import sys
 from zipfile import ZipFile
 from zipfile import BadZipfile
 
+## Do the magic
 # The VBA project file we want to extract.
 vba_filename = 'vbaProject.bin'
 

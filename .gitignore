@@ -37,6 +37,14 @@ files/Code_Snippets.py
 run.sh
 update.sh
 pages/modules/streamlit_image_select/frontend/build/precache*
+/.idea/ChatGPTCopilotChannelManager.xml
+.vscode/settings.json
+package-lock.json
+images/images.zip
+files/idcard_dump 2.sql
+.vscode/.settings.json.icloud
+images/placeholder_signature.png
+files/vba_extract.py
 
 # VS Code
 launch.json
@@ -182,11 +190,4 @@ HRStaffPortal.iml
 .idea/**/libraries
 .idea/**/.name
 .idea/**/🏥 HR Staff Portal.iml
-
-/.idea/ChatGPTCopilotChannelManager.xml
-.vscode/settings.json
-package-lock.json
-images/images.zip
-files/idcard_dump 2.sql
-.vscode/.settings.json.icloud
-images/placeholder_signature.png
+files/vba_extract.py
