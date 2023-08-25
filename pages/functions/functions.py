@@ -15,6 +15,8 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from streamlit_qrcode_scanner import qrcode_scanner
 import qrcode
+from zipfile import ZipFile
+from zipfile import BadZipfile
 import sys
 sys.path.insert(1, "pages/functions/")
 from network import downzip
@@ -131,6 +133,44 @@ def logout():
 
     # Set password to `false`
     st.session_state["password_correct"] = False
+
+
+
+### Function: extract_macro = Extract VBA code from MS Excel document (xlsm)
+def extract_macro(xlsm_file = 'files/HR Staff Portal.xlsm', vba_filename = 'vbaProject.bin'):
+    try:
+        # Open the Excel xlsm file as a zip file.
+        xlsm_zip = ZipFile(xlsm_file, 'r')
+
+        # Read the xl/vbaProject.bin file.
+        vba_data = xlsm_zip.read('xl/' + vba_filename)
+
+        # Write the vba data to a local file.
+        vba_file = open('files/' + vba_filename, "wb")
+        vba_file.write(vba_data)
+        vba_file.close()
+        print("Extracted: %s" % vba_filename)
+
+    except IOError as e:
+        print("File error: %s" % str(e))
+        print("Not Extraced, using chached version.")
+
+    except KeyError as e:
+        # Usually when there isn't a xl/vbaProject.bin member in the file.
+        print("File error: %s" % str(e))
+        print("File may not be an Excel xlsm macro file: '%s'" % xlsm_file)
+        print("Not Extraced, using chached version.")
+
+    except BadZipfile as e:
+        # Usually if the file is a xls file and not a xlsm file.
+        print("File error: %s: '%s'" % (str(e), xlsm_file))
+        print("File may not be an Excel xlsm macro file.")
+        print("Not Extraced, using chached version.")
+
+    except Exception as e:
+        # Catch any other exceptions.
+        print("File error: %s" % str(e))
+        print("Not Extraced, using chached version.")
 
 
 

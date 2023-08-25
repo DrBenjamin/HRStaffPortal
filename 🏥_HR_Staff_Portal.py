@@ -28,6 +28,7 @@ from functions import landing_page
 from functions import rebuild_confirmation
 from functions import qrcode_reader
 from functions import parse_national_id
+from functions import extract_macro
 from network import google_sheet_credentials
 from network import downzip
 sys.path.insert(2, "pages/modules/")
@@ -1163,6 +1164,7 @@ if check_password():
         st.subheader('Data export to an Ecel document')
         st.info('You may want to export the database data.', icon = 'ℹ️')
         if st.button('Export Excel (Database)'):
+            extract_macro()
             export_excel('Employees', 'J',
                          [{'header': 'Layout'}, {'header': 'Forename'}, {'header': 'Surname'}, {'header': 'Position'}, {'header': 'Department'},
                           {'header': 'Unit'}, {'header': 'Expiry_Date'}, {'header': 'Employee_Number'}, {'header': 'PIN'}, {'header': 'Cards_Printed'}, ],
