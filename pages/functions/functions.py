@@ -431,9 +431,14 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
 
 
     ## Convert Word document to html
-    result = mammoth.convert_to_html(buffer)
-    with open("files/Help/Help.html", "w") as html_file:
-        html_file.write(result.value)
+    html_source = mammoth.convert_to_html(buffer).value.split("<p>User Handbook</p>")
+    i = 0
+    for page in html_source:
+        #result = mammoth.convert_to_html(page)
+        if i > 0:
+            with open("files/Help/" + str(i) + ".html", "w") as html_file:
+                html_file.write(page)
+        i += 1
     
 
     ## Download Button
