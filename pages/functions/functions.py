@@ -13,6 +13,7 @@ import openpyxl
 import xlrd
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+import mammoth
 from streamlit_qrcode_scanner import qrcode_scanner
 import qrcode
 from zipfile import ZipFile
@@ -429,9 +430,14 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
         os.remove("images/temp.png")
 
 
+    ## Convert Word document to html
+    result = mammoth.convert_to_html(buffer)
+    with open("files/Help/Help.html", "w") as html_file:
+        html_file.write(result.value)
+    
+
     ## Download Button
-    st.download_button(label = 'Download Word document', data = buffer, file_name = docx_file_name,
-                       mime = "application/vnd.openxmlformats")
+    st.download_button(label = 'Download Word document', data = buffer, file_name = docx_file_name, mime = "application/vnd.openxmlformats")
 
 
 
