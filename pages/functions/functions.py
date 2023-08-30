@@ -4,16 +4,20 @@
 ##### Please reach out to benjamin.gross@giz.de for any questions
 #### Loading needed Python libraries
 import streamlit as st
+import streamlit.components.v1 as components
 import platform
 import pandas as pd
 import io
 import os
+import re
+import subprocess
 import xlsxwriter
 import openpyxl
 import xlrd
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import mammoth
+import markdown
 from streamlit_qrcode_scanner import qrcode_scanner
 import qrcode
 from zipfile import ZipFile
@@ -430,15 +434,48 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
         os.remove("images/temp.png")
 
 
-    ## Convert Word document to html
-    html_source = mammoth.convert_to_html(buffer).value.split("<p>User Handbook</p>")
+    ## Converting Word document to html
+    docx_source = mammoth.convert_to_html(buffer).value.split("<p>User Handbook</p>")
     i = 0
-    for page in html_source:
+    for page in docx_source:
         #result = mammoth.convert_to_html(page)
         if i > 0:
             with open("files/Help/" + str(i) + ".html", "w") as html_file:
                 html_file.write(page)
         i += 1
+    
+
+    ## Converting Markdown documents to html
+    # CHANGELOG document
+    if os.path.exists("CHANGELOG.md"):
+        with open("CHANGELOG.md", "r", encoding = "utf8") as md_file:
+            md_source = md_file.read()
+        md_source = markdown.markdown(re.sub(r'[^\x00-\x7F]+|\x0c',' ', md_source))
+        with open("files/Help/Changelog.html", "w") as html_file:
+            html_file.write(md_source)
+    
+    # README document
+    if os.path.exists("README.md"):
+        with open("README.md", "r", encoding = "utf8") as md_file:
+            md_source = md_file.read()
+        md_source = markdown.markdown(re.sub(r'[^\x00-\x7F]+|\x0c',' ', md_source))
+        with open("files/Help/Readme.html", "w") as html_file:
+            html_file.write(md_source)
+
+
+    ## Converting LICENSE document (txt) to html
+    buffer_licence = io.BytesIO()
+    licence = Document()
+    if os.path.exists("LICENSE"):
+        with open("LICENSE", "r") as txt_file:
+            txt_source = txt_file.read()
+        txt_source = re.sub(r'[^\x00-\x7F]+|\x0c',' ', txt_source) # remove all non-XML-compatible characters
+        licence.add_paragraph(txt_source)
+        licence.save(buffer_licence)
+        txt_source = mammoth.convert_to_html(buffer_licence).value
+        with open("files/Help/License.html", "w") as html_file:
+            html_file.write(txt_source)
+    
     
 
     ## Download Button
@@ -599,6 +636,15 @@ def confirmed_query(confirmed):
 
 ### Function header = Shows header information 
 def header(title, data_desc, expanded = True):
+    # Keyboard interupt functions
+    def read_index_html():
+        with open("files/Help/F1.html") as f:
+            return f.read()
+
+    def f1_callback():
+        subprocess.Popen('HH files/Help/HRStaffPortal.chm::0.html', shell = False)
+
+    # Show header expander
     with st.expander("Header", expanded = expanded):
         ## Header information
         st.title(title)
@@ -607,8 +653,11 @@ def header(title, data_desc, expanded = True):
         st.subheader(st.secrets['custom']['facility_abbreviation'] + ' ' + data_desc)
         st.write('All data is stored in a local MySQL databank on a dedicated Server hosted at ' + st.secrets['custom'][
             'facility_abbreviation'] + '.')
-        st.write(
-            'The ' + title + ' is developed with Python (v' + platform.python_version() + ') and Streamlit (v' + st.__version__ + ').')
+        st.write('The ' + title + ' is developed with Python (v' + platform.python_version() + ') and Streamlit (v' + st.__version__ + ').')
+        txt, but = st.columns(2, gap = "small")
+        txt.write('You can directly access the help through pressing')
+        but.button("`F1`", on_click = f1_callback)
+        components.html(read_index_html(), height = 0, width = 0,)
 
 
 

@@ -27,3 +27,4 @@ qrcode
 pygsheets
 googledrivedownloader
 mammoth
+markdown

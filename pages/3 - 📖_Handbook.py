@@ -9,14 +9,14 @@ import mysql.connector
 import pymysql
 pymysql.install_as_MySQLdb()
 #import MySQLdb
-#bb   e"""   """from streamlit.connections import SQLConnection
+#from streamlit.connections import SQLConnection
 from sqlalchemy.sql import text
 import openai
 import geocoder
 from geopy.geocoders import Nominatim
+from datetime import date
 import os
 import sys
-from datetime import date
 sys.path.insert(1, "pages/functions/")
 from functions import header
 from functions import check_password
