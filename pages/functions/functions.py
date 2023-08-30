@@ -434,16 +434,23 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
         os.remove("images/temp.png")
 
 
-    ## Converting Word document to html
+    ## Converting Word documents to html
+    # Handbook document
     docx_source = mammoth.convert_to_html(buffer).value.split("<p>User Handbook</p>")
     i = 0
     for page in docx_source:
-        #result = mammoth.convert_to_html(page)
         if i > 0:
-            with open("files/Help/" + str(i) + ".html", "w") as html_file:
+            with open("files/Help/Documentation_" + str(i) + ".html", "w") as html_file:
                 html_file.write(page)
         i += 1
-    
+
+    # Specifications document
+    if os.path.exists("files/Help/Specifications.docx"):
+        with open("files/Help/Specifications.docx", "rb") as docx_file:
+            docx_source = mammoth.convert_to_html(docx_file).value
+        with open("files/Help/Specifications.html", "w") as html_file:
+            html_file.write(docx_source)
+
 
     ## Converting Markdown documents to html
     # CHANGELOG document
@@ -475,7 +482,6 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
         txt_source = mammoth.convert_to_html(buffer_licence).value
         with open("files/Help/License.html", "w") as html_file:
             html_file.write(txt_source)
-    
     
 
     ## Download Button
@@ -651,9 +657,7 @@ def header(title, data_desc, expanded = True):
         st.image(st.secrets['custom']['facility_image'])
         st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
         st.subheader(st.secrets['custom']['facility_abbreviation'] + ' ' + data_desc)
-        st.write('All data is stored in a local MySQL databank on a dedicated Server hosted at ' + st.secrets['custom'][
-            'facility_abbreviation'] + '.')
-        st.write('The ' + title + ' is developed with Python (v' + platform.python_version() + ') and Streamlit (v' + st.__version__ + ').')
+        st.write('The ' + title + ' is running on Python (v' + platform.python_version() + ') and Streamlit (v' + st.__version__ + ').')
         txt, but = st.columns(2, gap = "small")
         txt.write('You can directly access the help through pressing')
         but.button("`F1`", on_click = f1_callback)
@@ -663,16 +667,10 @@ def header(title, data_desc, expanded = True):
 
 ### Function: landing_page = Shows the landing page (not loged in state)
 def landing_page(page):
-    ## Title and information
-    header = 'Welcome to ' + page
-    st.title(header)
-    st.header(st.secrets['custom']['facility'] + ' (' + st.secrets['custom']['facility_abbreviation'] + ')')
     st.subheader('User Login')
     st.info(body = 'Please login (sidebar on the left) to access the ' + page, icon = "ℹ️")
 
-
-    ## Sub-pages menu
+    # Sub-pages menu
     st.subheader('Pages without login')
     st.write('You can access these pages without being logged in:')
     st.write("<a href='Handbook' target='_self'>Handbook</a>", unsafe_allow_html = True)
-    st.write("<a href='Changelog' target='_self'>Changelog</a>", unsafe_allow_html = True)

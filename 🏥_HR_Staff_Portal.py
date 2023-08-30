@@ -214,14 +214,14 @@ def onChange():
 
 
 
-#### Two versions of the page -> Landing page vs. HRStaffPortal
+### Main program
+### Header
+header(title = 'HR Staff Portal', data_desc = 'employee data', expanded = st.session_state['header'])
+
+
+
 ### Logged in state (HR Staff Portal)
 if check_password():
-    ### Header
-    header(title = 'HR Staff Portal', data_desc = 'employee data', expanded = st.session_state['header'])
-    
-    
-    
     ### Get data from the databank(s)
     # Open databank connection
     connection = st.experimental_connection(name = 'sql', type ='sql')
@@ -1176,7 +1176,6 @@ if check_password():
                           {'header': 'EMPLOYEMENT'}, ], int(len(databank_employee) + 1), databank_employee,
                          'Trainings', 'G', [{'header': 'EMPLOYEE_NO'}, {'header': 'WORKSHOP_ID'}, {'header': 'WORKSHOP_TITLE'}, {'header': 'WORKSHOP_DESCRIPTION'}, {'header': 'WORKSHOP_FACILITATOR'}, {'header': 'WORKSHOP_DATE'}, {'header': 'WORKSHOP_DURATION'}, ], int(len(databank_training) + 1), # type: ignore
                          databank_training) # type: ignore
-
 
 
 

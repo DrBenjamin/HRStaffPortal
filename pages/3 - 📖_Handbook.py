@@ -855,7 +855,7 @@ with st.expander(label = 'Documentation', expanded = True):
     ## Specification document
     st.subheader('Specification document')
     st.write("Here you can download the specification document.")
-    st.download_button(label = 'Download specification document', data = open('files/HR_Staff_Portal_Specifications.docx', 'rb').read(), file_name = 'HR_Staff_Portal_Specifications.docx', mime = "application/docx")
+    st.download_button(label = 'Download specification document', data = open('files/Help/Specifications.docx', 'rb').read(), file_name = 'Specifications.docx', mime = "application/docx")
 
 
 
@@ -1245,5 +1245,4 @@ if check_password():
 ### Not Logged in state (Landing page)
 else:
     ### Show `login` info box
-    st.info(body = 'Login (sidebar on the left) to enter handbook data (strutures and paragragphs).',
-            icon = "ℹ️")
+    st.info(body = 'Login (sidebar on the left) to enter handbook data (strutures and paragragphs).',icon = "ℹ️")

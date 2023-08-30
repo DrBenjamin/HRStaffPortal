@@ -84,13 +84,13 @@ def run_query(query):
 
 
 #### Main program
+### Header
+header(title = 'Statistics page', data_desc = 'employee statistic data', expanded = st.session_state['header'])
+
+
+
 ### Logged in state (Statistics)
 if check_password():
-    ### Header
-    header(title = 'Statistics page', data_desc = 'employee statistic data', expanded = st.session_state['header'])
-
-
-
     ### Statistics expander
     with st.expander(label = '', expanded = True):
         st.title('Statistics')

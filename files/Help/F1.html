@@ -1,0 +1,13 @@
+<script>
+const streamlitDoc = window.parent.document;
+const buttons = Array.from(streamlitDoc.querySelectorAll('.stButton > button'));
+const f1_button = buttons.find(el => el.innerText === 'F1');
+
+streamlitDoc.addEventListener('keydown', function(e) {
+    switch (e.key) {
+        case 'F1':
+            f1_button.click();
+            break;
+    }
+});
+</script>

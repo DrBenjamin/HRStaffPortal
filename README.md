@@ -35,11 +35,6 @@ cd HRStaffPortal
 python -m pip install -r requirements.txt
 ```
 
-Install the **Changelog converter** (Markdown to html) with **[Node.js](https://nodejs.org/en/download/)**:
-
-```cmd
-npm install --save-dev changelog-to-html
-```
 ##### Configuration of Streamlit config files
 
 First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the *theming* and some *Streamlit server behaviour* flags:
@@ -244,39 +239,7 @@ To update the source files to the newest version use the build-in *pull function
 git pull
 ```
 
-##### Update Changelog html files
-
-To convert `CHANGELOG.md` to html files use this command:
-
-```cmd
-npm exec changelog-to-html CHANGELOG.md
-```
-
-Copy these files to a local httpd service folder like **[Apache2](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04)** (e.g. `/var/www/html`) to show the *Github Changelog* in the app.
-
-Add these two lines in `etc/apache2/conf-enabled/security.conf` to allow *embedding* of the *Changelog page*:
-
-```conf
-Header set Access-Control-Allow-Origin "*"
-Header set X-Frame-Options "ALLOW-FROM *"
-```
-
-For enabling *ssl* in Apache (if you are using Streamlit in ssl mode) do enter these commands:
-
-```cmd
-sudo a2enmod ssl
-sudo a2enmod headers
-a2ensite default-ssl
-```
-
-You also need to change the virtual configuration of your local website (e.g. `/etc/apache2/sites-available/default-ssl.conf`) to your needs and add the created OpenSSL certificate and key.
-
-```conf
-SSLCertificateFile /Path-to-ssl-files/host.cert
-SSLCertificateKeyFile /Path-to-ssl-files/host.key
-```
-
-##### Execute Streamlit
+##### Execute the Streamlit Web App
 
 If you've installed all dependencies, configured the MySQL server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the *Terminal* of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
 
