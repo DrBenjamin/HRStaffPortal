@@ -101,7 +101,7 @@ if ('subcategory' not in st.session_state):
 if ('chapter' not in st.session_state):
     st.session_state['chapter'] = 1
 if ('handbook_type' not in st.session_state):
-    st.session_state['handbook_type'] = "`benbox`.`HANDBOOK_USER`"
+    st.session_state['handbook_type'] = "`benbox`.`handbook_user`"
 
 
 
@@ -153,7 +153,7 @@ def videoUploader(handbook, index, category, category_sub, description, video):
     # Initialize connection
     connection = st.experimental_connection(name = 'sql', type ='sql')
     with connection.session as session:
-        session.execute(text("INSERT INTO `benbox`.`HANDBOOK_ADMIN`(ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES ((:i), (:c), (:cs), (:d), (:v));"), {"h": handbook, "i": index, "c": category, "cs": category_sub, "d": description, "v": video})
+        session.execute(text("INSERT INTO `benbox`.`handbook_admin`(ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES ((:i), (:c), (:cs), (:d), (:v));"), {"h": handbook, "i": index, "c": category, "cs": category_sub, "d": description, "v": video})
         session.commit()
     #connection = mysql.connector.connect(**st.secrets["mysql_benbox"])
     #cursor = connection.cursor()
@@ -233,7 +233,7 @@ with st.expander('FAQ', expanded = False):
     st.write('Here you will find all frequently asked questions.')
 
     # Run query
-    query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.CATEGORIES;"
+    query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.categories;"
     rows = run_query(query)
 
     # Filling variables
@@ -293,7 +293,7 @@ with st.expander('FAQ', expanded = False):
 
 
         ## Get FAQ
-        query = "SELECT que.QUESTION_TEXT, ans.ANSWER_ID, ans.ANSWER_TEXT, ans.ANSWER_SCORE, ans.ANSWER_APPROVED, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID, faq.FAQ_DATE FROM benbox.FAQ AS faq LEFT JOIN benbox.QUESTIONS AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID LEFT JOIN benbox.ANSWERS AS ans ON faq.ANSWER_ID = ans.ANSWER_ID;"
+        query = "SELECT que.QUESTION_TEXT, ans.ANSWER_ID, ans.ANSWER_TEXT, ans.ANSWER_SCORE, ans.ANSWER_APPROVED, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID, faq.FAQ_DATE FROM benbox.faq AS faq LEFT JOIN benbox.questions AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN benbox.categories AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN benbox.categories AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID LEFT JOIN benbox.answers AS ans ON faq.ANSWER_ID = ans.ANSWER_ID;"
         faq = run_query(query)
 
 
@@ -351,7 +351,7 @@ with st.expander(label = 'Chat-Bot', expanded = False):
             ## Column 1
             with col1:
                 ## Get categories and sub-categories
-                query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.CATEGORIES;"
+                query = "SELECT CATEGORY_ID, CATEGORY_DESCRIPTION, CATEGORY_SUB_ID, CATEGORY_SUB_DESCRIPTION FROM benbox.categories;"
                 rows = run_query(query)
 
                 # Filling variables
@@ -453,14 +453,14 @@ with st.expander(label = 'Chat-Bot', expanded = False):
 
                     ## Writing responses to table `QUESTIONS` in database `benbox`
                     # Get latest ID from database
-                    id = lastID(url = '`benbox`.`QUESTIONS`')
+                    id = lastID(url = '`benbox`.`questions`')
 
                     # Pollute `QUESTION_ID`
                     question_id = generateID(id)
                     st.session_state['question_id'] = question_id
 
                     # Write question to table `QUESTIONS`
-                    query = "INSERT INTO `benbox`.`QUESTIONS`(ID, QUESTION_ID, CATEGORY_ID, CATEGORY_SUB_ID, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (
+                    query = "INSERT INTO `benbox`.`questions`(ID, QUESTION_ID, CATEGORY_ID, CATEGORY_SUB_ID, QUESTION_KEYWORD1, QUESTION_KEYWORD2, QUESTION_KEYWORD3, QUESTION_KEYWORD4, QUESTION_KEYWORD5, QUESTION_SUMMARY, QUESTION_TEXT, QUESTION_TEXT_LANGUAGE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (
                     id, question_id, categories_id[category], sub_categories_id[sub_category], keywords[0].replace("'", ""),
                     keywords[1].replace("'", ""), keywords[2].replace("'", ""), keywords[3].replace("'", ""), keywords[4].replace("'", ""), summary.replace("'", ""), user_question.replace("'", ""), lang[:2].lower())
                     run_query(query)
@@ -680,13 +680,13 @@ with st.expander(label = 'Chat-Bot', expanded = False):
             ## Write every answer to table `ANSWERS`
             if (st.session_state['answer_done'] == False):
                 # Get last ID from table
-                id = lastID(url = '`benbox`.`ANSWERS`')
+                id = lastID(url = '`benbox`.`answers`')
 
                 # Populate `ANSWER_ID`
                 st.session_state['answer_id'] = generateID(id = id)
 
                 # Writing the answer
-                query = "INSERT INTO `benbox`.`ANSWERS`(ID, ANSWER_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_TEXT, ANSWER_HANDBOOK_TEXT, ANSWER_SCORE, ANSWER_APPROVED, ANSWER_DATE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, 0, '%s');" % (
+                query = "INSERT INTO `benbox`.`answers`(ID, ANSWER_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_TEXT, ANSWER_HANDBOOK_TEXT, ANSWER_SCORE, ANSWER_APPROVED, ANSWER_DATE) VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, 0, '%s');" % (
                 id, st.session_state['answer_id'], st.session_state['question_id'], st.session_state['handbook_id'],
                 st.session_state['answer'], st.session_state['handbook_text'], st.session_state['answer_score'],
                 date.today())
@@ -710,10 +710,10 @@ with st.expander(label = 'Chat-Bot', expanded = False):
                         st.session_state['feedback'] = True
 
                         # Get latest ID from table
-                        id = lastID(url = '`benbox`.`FAQ`')
+                        id = lastID(url = '`benbox`.`faq`')
 
                         # Write question to table `FAQ`
-                        query = "INSERT INTO `benbox`.`FAQ`(ID, FAQ_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_ID, FAQ_HITS, FAQ_DATE) VALUES (%s, '%s', '%s', '%s', '%s', %s, '%s');" % (
+                        query = "INSERT INTO `benbox`.`faq`(ID, FAQ_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_ID, FAQ_HITS, FAQ_DATE) VALUES (%s, '%s', '%s', '%s', '%s', %s, '%s');" % (
                         id, generateID(id = id), st.session_state['question_id'], st.session_state['handbook_id'],
                         st.session_state['answer_id'], 0, date.today())
                         run_query(query)
@@ -753,7 +753,7 @@ with st.expander(label = 'Chat-Bot', expanded = False):
     st.write('**:green[Videos]**')
     
     # Run query
-    video_url = st.session_state['handbook_type'][:-1] + "_VIDEO`"
+    video_url = st.session_state['handbook_type'][:-1] + "_video`"
     query = "SELECT ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM %s;" %(video_url)
     rows = run_query(query)
     titels = []
@@ -782,7 +782,7 @@ with st.expander(label = 'Documentation', expanded = True):
     st.write('Here you can access the handbooks and the specification document.')
 
     # Select Handbook
-    handbook_type = st.selectbox(label = 'Choose Handbook', options = ['`benbox`.`HANDBOOK_USER`', '`benbox`.`HANDBOOK_ADMIN`'], index = 0)
+    handbook_type = st.selectbox(label = 'Choose Handbook', options = ['`benbox`.`handbook_user`', '`benbox`.`handbook_admin`'], index = 0)
     st.session_state['handbook_type'] = handbook_type
 
     ## Docx export
@@ -791,10 +791,10 @@ with st.expander(label = 'Documentation', expanded = True):
     
     # Get handbook data to export from table
     if st.button(label = 'Export handbook'):
-        if handbook_type == '`benbox`.`HANDBOOK_USER`':
-            query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM %s AS han LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.HANDBOOK_USER_CHAPTER_STRUCTURE AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.HANDBOOK_USER_PARAGRAPH_STRUCTURE AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;" %(st.session_state['handbook_type'])
-        elif handbook_type == '`benbox`.`HANDBOOK_ADMIN`':
-            query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM %s AS han LEFT JOIN benbox.CATEGORIES AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.CATEGORIES AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.HANDBOOK_ADMIN_CHAPTER_STRUCTURE AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.HANDBOOK_ADMIN_PARAGRAPH_STRUCTURE AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;" %(st.session_state['handbook_type'])
+        if handbook_type == '`benbox`.`handbook_user`':
+            query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM %s AS han LEFT JOIN benbox.categories AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.categories AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.handbook_user_chapter_structure AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.handbook_user_paragraph_structure AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;" %(st.session_state['handbook_type'])
+        elif handbook_type == '`benbox`.`handbook_admin`':
+            query = "SELECT han.ID, han.HANDBOOK_CHAPTER, str.HANDBOOK_CHAPTER_DESCRIPTION, str.HANDBOOK_CHAPTER_TEXT, han.HANDBOOK_PARAGRAPH, stp.HANDBOOK_PARAGRAPH_DESCRIPTION, stp.HANDBOOK_PARAGRAPH_TEXT, cat.CATEGORY_DESCRIPTION, sub.CATEGORY_SUB_DESCRIPTION, han.HANDBOOK_KEYWORD1, han.HANDBOOK_KEYWORD2, han.HANDBOOK_KEYWORD3, han.HANDBOOK_KEYWORD4, han.HANDBOOK_KEYWORD5, han.HANDBOOK_SUMMARY, han.HANDBOOK_TEXT, han.HANDBOOK_TEXT_HEADLINE, han.HANDBOOK_IMAGE_TEXT, han.HANDBOOK_IMAGE FROM %s AS han LEFT JOIN benbox.categories AS cat ON cat.CATEGORY_ID = han.CATEGORY_ID LEFT JOIN benbox.categories AS sub ON sub.CATEGORY_SUB_ID = han.CATEGORY_SUB_ID LEFT JOIN benbox.handbook_admin_chapter_structure AS str ON str.HANDBOOK_CHAPTER = han.HANDBOOK_CHAPTER LEFT JOIN benbox.handbook_admin_paragraph_structure AS stp ON stp.HANDBOOK_PARAGRAPH = han.HANDBOOK_PARAGRAPH;" %(st.session_state['handbook_type'])
             
         rows = run_query(query)
         
@@ -818,7 +818,7 @@ with st.expander(label = 'Documentation', expanded = True):
 
 
         ## Get FAQ
-        query = "SELECT que.QUESTION_TEXT, ans.ANSWER_TEXT, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID FROM `benbox`.`FAQ` AS faq LEFT JOIN `benbox`.`QUESTIONS` AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN `benbox`.`CATEGORIES` AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN `benbox`.`CATEGORIES` AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID LEFT JOIN `benbox`.`ANSWERS` AS ans ON faq.ANSWER_ID = ans.ANSWER_ID;"
+        query = "SELECT que.QUESTION_TEXT, ans.ANSWER_TEXT, cat.CATEGORY_DESCRIPTION, catsub.CATEGORY_SUB_DESCRIPTION, que.CATEGORY_ID, que.CATEGORY_SUB_ID FROM `benbox`.`faq` AS faq LEFT JOIN `benbox`.`questions` AS que ON que.QUESTION_ID = faq.QUESTION_ID LEFT JOIN `benbox`.`categories` AS cat ON cat.CATEGORY_ID = que.CATEGORY_ID LEFT JOIN `benbox`.`categories` AS catsub ON catsub.CATEGORY_SUB_ID = que.CATEGORY_SUB_ID LEFT JOIN `benbox`.`answers` AS ans ON faq.ANSWER_ID = ans.ANSWER_ID;"
         faq = run_query(query)
 
 
@@ -829,7 +829,7 @@ with st.expander(label = 'Documentation', expanded = True):
     ## Videos which are present in the database
     try:
         # Run query
-        video_url = st.session_state['handbook_type'][:-1] + "_VIDEO`"
+        video_url = st.session_state['handbook_type'][:-1] + "_video`"
         query = "SELECT ID, VIDEO_DESCRIPTION, VIDEO_DATA FROM %s;" %(video_url)
         rows = run_query(query)
 
@@ -864,7 +864,7 @@ if check_password():
     ### Chapter and paragraph structures
     ## Get chapter structure
     # Run query
-    chapter_url = st.session_state['handbook_type'][:-1] + "_CHAPTER_STRUCTURE`"
+    chapter_url = st.session_state['handbook_type'][:-1] + "_chapter_structure`"
     query = "SELECT ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT FROM %s;" %(chapter_url)
     rows = run_query(query)
     databank_chapter = pd.DataFrame(
@@ -910,7 +910,7 @@ if check_password():
             submitted = st.form_submit_button("Submit")
             if submitted:
                 # Write entry to table `HANDBOOK_CHAPTER_STRUCTURE`
-                query = "INSERT INTO `benbox`.`HANDBOOK_CHAPTER_STRUCTURE`(ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT) VALUES (%s, '%s', '%s', '%s');" % (id, handbook_chapter_structure_chapter, handbook_chapter_structure_chapter_desc, handbook_chapter_structure_chapter_text)
+                query = "INSERT INTO `benbox`.`handbook_chapter_structure`(ID, HANDBOOK_CHAPTER, HANDBOOK_CHAPTER_DESCRIPTION, HANDBOOK_CHAPTER_TEXT) VALUES (%s, '%s', '%s', '%s');" % (id, handbook_chapter_structure_chapter, handbook_chapter_structure_chapter_desc, handbook_chapter_structure_chapter_text)
                 run_query(query)
                 conn.commit()
 
@@ -919,7 +919,7 @@ if check_password():
 
 
     ## Get paragraph structure
-    paragraph_url = st.session_state['handbook_type'][:-1] + "_PARAGRAPH_STRUCTURE`"
+    paragraph_url = st.session_state['handbook_type'][:-1] + "_paragraph_structure`"
     query = "SELECT ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT FROM %s;" %(paragraph_url)
     rows = run_query(query)
     databank_paragraph = pd.DataFrame(
@@ -971,7 +971,7 @@ if check_password():
             submitted = st.form_submit_button("Submit")
             if submitted:
                 # Write entry to table `HANDBOOK_PARAGRAPH_STRUCTURE`
-                query = "INSERT INTO `benbox`.`HANDBOOK_PARAGRAPH_STRUCTURE`(ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT) VALUES (%s, '%s', '%s', '%s');" % (id, handbook_paragraph_structure_paragraph, handbook_paragraph_structure_paragraph_desc, handbook_paragraph_structure_paragraph_text)
+                query = "INSERT INTO `benbox`.`handbook_paragraph_structure`(ID, HANDBOOK_PARAGRAPH, HANDBOOK_PARAGRAPH_DESCRIPTION, HANDBOOK_PARAGRAPH_TEXT) VALUES (%s, '%s', '%s', '%s');" % (id, handbook_paragraph_structure_paragraph, handbook_paragraph_structure_paragraph_desc, handbook_paragraph_structure_paragraph_text)
                 run_query(query)
                 conn.commit()
 
@@ -1110,8 +1110,8 @@ if check_password():
             # Upload to database
             pressed = st.button('Upload video')
             if pressed:
-                video_id = lastID(url = st.session_state['handbook_type'][:-1] + "_VIDEO`")
-                videoUploader(handbook = st.session_state['handbook_type'][:-1] + "_VIDEO`", index = video_id, category = '0001', category_sub = '0001', description = handbook_video_text, video = handbook_video)
+                video_id = lastID(url = st.session_state['handbook_type'][:-1] + "_video`")
+                videoUploader(handbook = st.session_state['handbook_type'][:-1] + "_video`", index = video_id, category = '0001', category_sub = '0001', description = handbook_video_text, video = handbook_video)
 
                 
 
@@ -1136,7 +1136,7 @@ if check_password():
 
 
                 ## Get answers from table `benbox`.`ANSWERS`
-                query = "SELECT ans.ANSWER_ID, que.QUESTION_ID, ans.HANDBOOK_ID, que.QUESTION_TEXT, ans.ANSWER_TEXT, ans.ANSWER_HANDBOOK_TEXT, ans.ANSWER_SCORE, ans.ANSWER_APPROVED, ans.ANSWER_DATE FROM `benbox`.`ANSWERS` AS ans LEFT JOIN `benbox`.`QUESTIONS` AS que ON ans.QUESTION_ID = que.QUESTION_ID;"
+                query = "SELECT ans.ANSWER_ID, que.QUESTION_ID, ans.HANDBOOK_ID, que.QUESTION_TEXT, ans.ANSWER_TEXT, ans.ANSWER_HANDBOOK_TEXT, ans.ANSWER_SCORE, ans.ANSWER_APPROVED, ans.ANSWER_DATE FROM `benbox`.`answers` AS ans LEFT JOIN `benbox`.`questions` AS que ON ans.QUESTION_ID = que.QUESTION_ID;"
                 rows = run_query(query)
                 counter = 0
                 databank_ben = pd.DataFrame(
@@ -1199,7 +1199,7 @@ if check_password():
                         # Option to approve
                         if databank_ben.iloc[item - 1][7] == 0:
                             if st.button(label = 'Approve answer?'):
-                                query = "UPDATE `benbox`.`ANSWERS` SET ANSWER_APPROVED = 1 WHERE ANSWER_ID = '%s';" % (
+                                query = "UPDATE `benbox`.`answers` SET ANSWER_APPROVED = 1 WHERE ANSWER_ID = '%s';" % (
                                 databank_ben.iloc[item - 1][0])
                                 rows = run_query(query)
                                 conn.commit()
@@ -1213,16 +1213,16 @@ if check_password():
                         # Option to approve
                         if databank_ben.iloc[item - 1][7] == 0:
                             if st.button(label = 'Approve answer?'):
-                                query = "UPDATE `benbox`.`ANSWERS` SET ANSWER_APPROVED = 1 WHERE ANSWER_ID = '%s';" % (
+                                query = "UPDATE `benbox`.`answers` SET ANSWER_APPROVED = 1 WHERE ANSWER_ID = '%s';" % (
                                 databank_ben.iloc[item - 1][0])
                                 rows = run_query(query)
                                 conn.commit()
 
                                 # Get latest ID from table
-                                id = lastID(url = '`benbox`.`FAQ`')
+                                id = lastID(url = '`benbox`.`faq`')
 
                                 # Write question to table `FAQ`
-                                query = "INSERT INTO `benbox`.`FAQ`(ID, FAQ_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_ID, FAQ_HITS, FAQ_DATE) VALUES (%s, '%s', '%s', '%s', '%s', %s, '%s');" % (
+                                query = "INSERT INTO `benbox`.`faq`(ID, FAQ_ID, QUESTION_ID, HANDBOOK_ID, ANSWER_ID, FAQ_HITS, FAQ_DATE) VALUES (%s, '%s', '%s', '%s', '%s', %s, '%s');" % (
                                 id, generateID(id = id), databank_ben.iloc[item - 1][1], databank_ben.iloc[item - 1][2],
                                 databank_ben.iloc[item - 1][0], 0, date.today())
                                 run_query(query)

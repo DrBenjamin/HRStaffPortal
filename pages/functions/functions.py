@@ -485,6 +485,7 @@ def export_docx(data, faq, docx_file_name = 'Handbook.docx'):
     
 
     ## Download Button
+    st.toast('Your document is ready!', icon = '📃')
     st.download_button(label = 'Download Word document', data = buffer, file_name = docx_file_name, mime = "application/vnd.openxmlformats")
 
 

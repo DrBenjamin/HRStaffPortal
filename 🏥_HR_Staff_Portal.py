@@ -1160,7 +1160,7 @@ if check_password():
         #data_google_edit = st.data_editor(data_google, use_container_width = True)
 
 
-        ## Export `Vehicles` dataframe to Excel Makro file
+        ## Export dataframes to Excel Makro file
         st.subheader('Data export to an Ecel document')
         st.info('You may want to export the database data.', icon = 'ℹ️')
         if st.button('Export Excel (Database)'):
