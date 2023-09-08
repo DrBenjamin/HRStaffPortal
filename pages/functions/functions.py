@@ -88,8 +88,7 @@ def check_password():
         index = 1
     else:
         index = 0
-    header = st.sidebar.radio(label = 'Switch headers on or off', options = ('on', 'off'), index = index,
-                              horizontal = True)
+    header = st.sidebar.radio(label = 'Switch headers on or off', options = ('on', 'off'), index = index, horizontal = True)
     if header == 'on':
         st.session_state['header'] = True
     elif header == 'off':
@@ -649,7 +648,7 @@ def header(title, data_desc, expanded = True):
             return f.read()
 
     def f1_callback():
-        subprocess.Popen('HH files/Help/HRStaffPortal.chm::0.html', shell = False)
+        subprocess.Popen('HH files/Help/HRStaffPortal.chm::Documentation_0.html', shell = False)
 
     # Show header expander
     with st.expander("Header", expanded = expanded):
