@@ -26,10 +26,8 @@ from functions import import_excel
 from functions import load_file
 from functions import landing_page
 from functions import rebuild_confirmation
-from functions import qrcode_reader
 from functions import parse_national_id
 from functions import extract_macro
-from network import google_sheet_credentials
 from network import downzip
 sys.path.insert(2, "pages/modules/")
 from streamlit_image_select import image_select

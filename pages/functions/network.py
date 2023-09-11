@@ -114,25 +114,3 @@ def get_ip():
     ip_address = socket.gethostbyname(hostname)
 
     return ip_address
-
-
-
-### Function: google_sheet_credentials = Get Google Sheet API credentials
-@st.cache_resource
-def google_sheet_credentials():
-    ## Google Sheet API authorization
-    try:
-        GoogleDriveDownloader.download_file_from_google_drive(file_id = st.secrets['google']['credentials_file_id'],
-                                                          dest_path = './credentials.zip', unzip = True)
-        client = pygsheets.authorize(service_file = st.secrets['google']['credentials_file'])
-        if os.path.exists("credentials.zip"):
-            os.remove("credentials.zip")
-        if os.path.exists("google_credentials.json"):
-            os.remove("google_credentials.json")
-        if os.path.exists("__MACOSX"):
-            shutil.rmtree("__MACOSX")
-    except:
-        client = 'Exception'
-        
-    # Return client
-    return client
