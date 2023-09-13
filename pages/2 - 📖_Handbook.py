@@ -782,7 +782,13 @@ with st.expander(label = 'Documentation', expanded = True):
     st.write('Here you can access the handbooks and the specification document.')
 
     # Select Handbook
-    handbook_type = st.selectbox(label = 'Choose Handbook', options = ['`benbox`.`handbook_user`', '`benbox`.`handbook_admin`'], index = 0)
+    handbook_type = st.selectbox(label = 'Choose handbook', options = ['User handbook', 'Admin handbook'], index = 0)
+    if handbook_type == 'User handbook':
+        handbook_type = '`benbox`.`handbook_user`'
+    elif handbook_type == 'Admin handbook':
+        handbook_type = '`benbox`.`handbook_admin`'
+    else:
+        handbook_type = '`benbox`.`handbook_user`'
     st.session_state['handbook_type'] = handbook_type
 
     ## Docx export
