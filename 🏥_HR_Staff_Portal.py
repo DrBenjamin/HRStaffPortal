@@ -31,6 +31,8 @@ from functions import extract_macro
 from network import downzip
 sys.path.insert(2, "pages/modules/")
 from streamlit_image_select import image_select
+import warnings
+warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 
 
