@@ -129,7 +129,7 @@ if ('signature' not in st.session_state):
 
 
 #### All Functions used exclusively in HR Staff Portal
-### Function: run_query = Initial SQL Connection
+### Function: init_connection = Initial SQL Connection
 def init_connection():
     ## Initialize connection
     try:
