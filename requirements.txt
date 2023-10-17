@@ -3,7 +3,7 @@
 ##### Open-Source, hosted on https://github.com/DrBenjamin/HRStaffPortal
 ##### Please reach out to ben@benbox.org for any questions
 ### All needed libraries (and their versions)
-streamlit==1.26.0
+streamlit
 protobuf==3.20.3
 SQLAlchemy 
 mysqlclient
