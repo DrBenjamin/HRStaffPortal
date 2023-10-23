@@ -241,7 +241,7 @@ git pull
 
 ##### Execute the Streamlit Web App
 
-If you've installed all dependencies, configured the MySQL server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the *Terminal* of RStudio or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
+If you've installed all dependencies, configured the MySQL server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the *Terminal* of your IDE or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
 
 ```cmd
 python -m streamlit run 🏥_HR_Staff_Portal.py
