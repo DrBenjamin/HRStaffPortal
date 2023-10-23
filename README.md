@@ -197,17 +197,17 @@ key = "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 key = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xx"
 ```
 
-#### Create new project in RStudio
+#### Install and configure an IDE (Integrated Development Environment)
 
-Developement of the **HR Staff Portal** was done in RStudio, but you are free to choose whatever *IDE* which supports *Python* programming language and has a *Terminal* included.
+Developement of the **HR Staff Portal** mostly was done in **[VS Studio Code](https://code.visualstudio.com/download)**, but you are free to choose whatever *IDE* that supports the *Python* programming language and has a *Terminal* included (which makes lifee way easier).
 
-##### Working with RStudio on the project
+##### Working with VS Studio Code on the project
 
-In RStudio choose *File* - *New Project* and choose *Existing Directory*. This will create a new Project. Add the *git* in the *Version Control* tab under the *Project Options* in the right upper corner of RStudio. Now you can open the source code as a RStudio project anytime you are working on the source files and easily use the *git* functionality within the RStudio IDE.
+In VS Studio Code choose *File* - *New Window* and choose *Existing Directory*. This will create a new Project. Add the *git* in the *Version Control* tab under the *Project Options* in the right upper corner of RStudio. Now you can open the source code as a RStudio project anytime you are working on the source files and easily use the *git* functionality within the RStudio IDE.
 
-Alternatively you can directly download the sources of the project choosing *File* - *New Project* and *Version Control*. Select *Git* and enter the repository [URL](https://github.com/DrBenjamin/HRStaffPortal).
+Alternatively you can directly download the sources of the project choosing *File* - *New Project* and choose *Clone Git Repository*. Insert the repository URL: [https://github.com/DrBenjamin/HRStaffPortal](https://github.com/DrBenjamin/HRStaffPortal)
 
-Now you need to configure the Python environment under *Project Options* to set the **[Anaconda](https://anaconda.org/conda-forge/download)** / **[Miniconda Python](https://docs.conda.io/en/latest/miniconda.html)** which should be used.
+You need to configure the Python environment (bottom), choose your **[Anaconda](https://anaconda.org/conda-forge/download)** or **[Miniconda Python](https://docs.conda.io/en/latest/miniconda.html)** installation.
 
 ### Use of the HR Staff Portal and updates
 
