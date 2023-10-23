@@ -24,13 +24,13 @@ Install **[Streamlit & Python](https://docs.streamlit.io/library/get-started/ins
 
 Clone the *repository* of **HRStaffPortal** with following command:
 
-```cmd
+```bash
 git clone https://github.com/DrBenjamin/HRStaffPortal.git
 ```
 
 After that you need to install some *Python libraries*. To do so use the `requirements.txt` file with:
 
-```cmd
+```bash
 cd HRStaffPortal
 python -m pip install -r requirements.txt
 ```
@@ -39,7 +39,7 @@ python -m pip install -r requirements.txt
 
 First make a directory `.streamlit`. After that create the file `.streamlit/config.toml`. Here you define the *theming* and some *Streamlit server behaviour* flags:
 
-```python
+```toml
 [theme]
 primaryColor = "#F63366"
 backgroundColor = "#FFFFFF"
@@ -58,7 +58,7 @@ headless = true
 
 If you want a secure connection (https), you need to generate the **[OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)** certificate and the public key:
 
-```cmd
+```bash
 openssl genrsa 2048 > host.key
 chmod 400 host.key
 openssl req -new -x509 -nodes -sha256 -days 365 -key host.key -out host.cert
@@ -66,7 +66,7 @@ openssl req -new -x509 -nodes -sha256 -days 365 -key host.key -out host.cert
 
 Streamlit v1.20.0 brings secure connection, you just need to add these two lines to `.streamlit/config.toml`:
 
-```python
+```toml
 # Server certificate file for connecting via HTTPS. Must be set at the same time as "server.sslKeyFile"
 sslCertFile = "<path-to-file>/host.cert"
 
@@ -76,7 +76,7 @@ sslKeyFile = "<path-to-file>/host.key"
 
 Now create the file `.streamlit/secrets.toml` where you define some customisations and the *user / password* combinations:
 
-```python
+```toml
 ### Customization
 [custom]
 images_url = "https://example.url/images/"
@@ -119,7 +119,7 @@ admin = "xxxxxxxx"
 
 **MySQL Server** is needed to run **HR Staff Portal**. Please install **MySQL Community Server** on your system (**[Windows](https://dev.mysql.com/downloads/mysql/)**, **[Ubuntu Linux](https://dev.mysql.com/doc/refman/8.0/en/binary-installation.html)**) or on Raspberry Pi use **MariaDB**:
 
-```cmd
+```bash
 sudo apt-get install mariadb-server mariadb-client
 ```
 
@@ -129,7 +129,7 @@ Use **[MySQL Workbench](https://dev.mysql.com/downloads/workbench/)** to configu
 
 In the `.streamlit/secrets.toml` you define the MySQL server settings for the different modules (**HR Staff Portal** / **Car Fleet Management System** / **Handbook & Chat-Bot**):
 
-```python
+```toml
 ### MySQL configuration for HR Staff Portal
 [mysql]
 host = "127.0.0.1"
@@ -180,7 +180,7 @@ or use the database dump with sample data `files/idcard_dump.sql` and import the
 
 To run services (e.g. mail sending) further configuration in `.streamlit/secrets.toml` is needed:
 
-```python
+```toml
 ### Mail configuration
 [mail]
 user = "xyz@mail.com"
@@ -217,7 +217,7 @@ The **HR Staff Portal** software runs under the **[GNU General Public License v3
 
 The **HR Staff Portal** is running as an *Web Service* through the *Python Streamlit framework*. It will use the *port* `8501` if you are not changing it in `.streamlit/config.toml` in the `browser` section:
 
-```
+```toml
 [browser]
 # Server port binding
 serverPort = 8501
@@ -227,7 +227,7 @@ serverPort = 8501
 
 To clone a specific version of HR Staff Portal use this command:
 
-```cmd
+```bash
 git clone https://github.com/DrBenjamin/HRStaffPortal.git -b v0.1.1
 ```
 
@@ -235,7 +235,7 @@ git clone https://github.com/DrBenjamin/HRStaffPortal.git -b v0.1.1
 
 To update the source files to the newest version use the build-in *pull function* of git in RStudio (menu on the right upper side, choose git and press the green arrow which shows down). If you are using the app on a computer without a RStudio installation, just use this git command:
 
-```cmd
+```bash
 git pull
 ```
 
@@ -243,7 +243,7 @@ git pull
 
 If you've installed all dependencies, configured the MySQL server and edited the Streamlit app config files (`config.toml` / `secrets.toml`) to your setup, you can run the app locally within the *Terminal* of your IDE or any other terminal with access to Python and the Python libraries (e.g. a virtual environment) with this command:
 
-```cmd
+```bash
 python -m streamlit run 🏥_HR_Staff_Portal.py
 ```
 
@@ -257,7 +257,7 @@ The Software and its dependencies will be updated regularly, so make sure to alw
 
 To update to the latest version of the **Streamlit web app framework**, run the following command:
 
-```cmd
+```bash
 python -m pip install --upgrade streamlit
 ```
 
@@ -265,7 +265,7 @@ python -m pip install --upgrade streamlit
 
 To update all dependencies, use this command:
 
-```cmd
+```bash
 python -m pip install --upgrade -r requirements.txt
 ```
 
