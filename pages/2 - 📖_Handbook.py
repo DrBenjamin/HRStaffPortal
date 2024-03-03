@@ -151,7 +151,7 @@ def pictureUploader(image, index):
 ### Function: pictureUploader = uploads handbook images
 def videoUploader(handbook, index, category, category_sub, description, video):
     # Initialize connection
-    connection = st.experimental_connection(name = 'sql', type ='sql')
+    connection = st.connection(name = 'sql', type ='sql')
     with connection.session as session:
         session.execute(text("INSERT INTO `benbox`.`handbook_admin`(ID, CATEGORY_ID, CATEGORY_SUB_ID, VIDEO_DESCRIPTION, VIDEO_DATA) VALUES ((:i), (:c), (:cs), (:d), (:v));"), {"h": handbook, "i": index, "c": category, "cs": category_sub, "d": description, "v": video})
         session.commit()
@@ -662,7 +662,7 @@ with st.expander(label = 'Chat-Bot', expanded = False):
                 st.session_state['answer'] = ''
 
                 # Rerun
-                st.experimental_rerun()
+                st.rerun()
 
 
         ## Column 2
@@ -726,7 +726,7 @@ with st.expander(label = 'Chat-Bot', expanded = False):
                                   receiver = st.secrets['custom']['contact_admin'])
 
                         # Rerun
-                        st.experimental_rerun()
+                        st.rerun()
 
 
                 ## Clear form if negative feedback received
@@ -736,7 +736,7 @@ with st.expander(label = 'Chat-Bot', expanded = False):
                         st.session_state['feedback'] = True
 
                         # Rerun
-                        st.experimental_rerun()
+                        st.rerun()
 
                     else:
                         if (st.session_state['feedback'] == False):
@@ -921,7 +921,7 @@ if check_password():
                 conn.commit()
 
                 # Rerun
-                st.experimental_rerun()
+                st.rerun()
 
 
     ## Get paragraph structure
@@ -982,7 +982,7 @@ if check_password():
                 conn.commit()
 
                 # Rerun
-                st.experimental_rerun()
+                st.rerun()
 
 
     ## Get categories and sub-categories
@@ -1098,7 +1098,7 @@ if check_password():
                 pictureUploader(image = handbook_image, index = id)
 
                 # Rerun
-                st.experimental_rerun()
+                st.rerun()
         
         
     ## Show handbook video upload in expander
@@ -1209,7 +1209,7 @@ if check_password():
                                 databank_ben.iloc[item - 1][0])
                                 rows = run_query(query)
                                 conn.commit()
-                                st.experimental_rerun()
+                                st.rerun()
 
 
                     ## Not approved by user (not in FAQ)
@@ -1233,7 +1233,7 @@ if check_password():
                                 databank_ben.iloc[item - 1][0], 0, date.today())
                                 run_query(query)
                                 conn.commit()
-                                st.experimental_rerun()
+                                st.rerun()
 
 
             ## Tesing
