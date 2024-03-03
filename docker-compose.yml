@@ -27,8 +27,7 @@ services:
     networks:
       - network1
     volumes:
-      - ./files/idcard_dump.sql:/docker-entrypoint-initdb.d/init.sql
-      #- ./files/benbox_dump.sql:/docker-entrypoint-initdb.d/init_2.sql
+      - ./files/database_dump.sql:/docker-entrypoint-initdb.d/init.sql
 networks:
   network1:
     name: hrstaffportal_default

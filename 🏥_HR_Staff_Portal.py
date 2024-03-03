@@ -82,9 +82,11 @@ elif plt == "Darwin":
 ## Get param `EMPLOYE_NO`
 ## Query parameter
 try:
-    eno = [st.query_params.get_all("eno")[0]]
+    eno = {'eno': st.query_params.get_all("eno")}
+    if not eno['eno']:
+      eno = {'eno': ['123456']}
 except:
-    query_params = [123456]
+    eno = {'eno': ['123456']}
 
 
 ## Get params for trainings / workshops

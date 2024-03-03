@@ -1,0 +1,12 @@
+-- SQLBook: Markup
+Connection to `idcard` database
+-- SQLBook: Code
+# idcard data
+-- Active: 1709456880657@@192.168.178.32@3306@idcard
+SELECT * FROM idcard.IMAGEBASE;
+-- SQLBook: Markup
+Connection to `benbox` Database
+-- SQLBook: Code
+-- Active: 1709456880657@@192.168.178.32@3306@benbox
+# BenBox data
+SELECT * FROM benbox.answers;
