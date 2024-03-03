@@ -269,6 +269,18 @@ To update all dependencies, use this command:
 python -m pip install --upgrade -r requirements.txt
 ```
 
+#### Running in Docker
+
+To run the app in a docker environment, use the existing docker-compose.yml configuration.
+
+##### Creating container
+
+Run this command in the local app folder:
+
+```bash
+docker-compose build --no-cache && docker-compose --project-name hrstaffportal up -d && docker image prune -fa
+```
+
 ### Demo
 
 [![Open in Streamlit Cloud][share_badge]][share_link]

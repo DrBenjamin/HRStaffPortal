@@ -80,11 +80,7 @@ elif plt == "Darwin":
 
 #### Query parameters
 ## Get param `EMPLOYE_NO`
-## Query parameter
-try:
-    eno = [st.query_params.get_all("eno")[0]]
-except:
-    query_params = [123456]
+eno = st.experimental_get_query_params()
 
 
 ## Get params for trainings / workshops
@@ -228,7 +224,7 @@ header(title = 'HR Staff Portal', data_desc = 'employee data', expanded = st.ses
 if check_password():
     ### Get data from the databank(s)
     # Open databank connection
-    connection = st.connection(name = 'sql', type ='sql')
+    connection = st.experimental_connection(name = 'sql', type ='sql')
     conn = init_connection()
 
     # Get employee data
@@ -359,7 +355,7 @@ if check_password():
             ## If new employee just show empty form
             if (index == 0):
                 ## Set query parameter
-                st.query_params['eno'] = "xxxxxx"
+                st.experimental_set_query_params(eno = "xxxxxx")
 
 
                 ## New employee data input
@@ -461,14 +457,14 @@ if check_password():
                         signatureUploader(st.session_state['signature'], id)
 
                         # Set query parameter
-                        st.query_params["eno"] = eno
+                        st.experimental_set_query_params(eno = eno)
 
                         # Set `index` to refer to new `ID` position in database, so that reload opens new employee data
                         st.session_state['index'] = int(id)
                     else:
                         st.session_state['success1'] = False
 
-                    st.rerun()
+                    st.experimental_rerun()
 
 
             ## If data is already existent, show filled form
@@ -636,7 +632,7 @@ if check_password():
 
                     ## Set Session State to 2nd run and reloading to get actual data
                     st.session_state['run'] = False
-                    st.rerun()
+                    st.experimental_rerun()
 
 
                 ## Warning or Success messages after reloading
@@ -675,7 +671,7 @@ if check_password():
 
 
                 ## Set query parameter
-                st.query_params["eno"] = TRAINING[0][7]
+                st.experimental_set_query_params(eno = TRAINING[0][7])
 
 
                 ## Check if training data is already there for an Employee and show it
@@ -813,7 +809,7 @@ if check_password():
                         conn.commit()
 
                         # Reload to refresh values
-                        st.rerun()
+                        st.experimental_rerun()
 
 
 
@@ -1049,7 +1045,7 @@ if check_password():
 
                     ## Set Session State to 2nd run and reloading to get actual data
                     st.session_state['run'] = False
-                    st.rerun()
+                    st.experimental_rerun()
 
 
                 ## Show Driver data
@@ -1139,7 +1135,7 @@ if check_password():
                     query = "INSERT INTO `idcard`.`UNITS`(ID, UNIT) VALUES (%s, '%s');" % (index, row['Unit'])
                     run_query(query)
                     conn.commit()
-                st.rerun()
+                st.experimental_rerun()
         
         
         ## Data review and editing
