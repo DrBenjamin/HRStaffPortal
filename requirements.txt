@@ -15,7 +15,7 @@ streamlit-scrollable-textbox
 streamlit_qrcode_scanner
 streamlit-drawable-canvas
 opencv-python-headless
-xlsxwriter
+xlsxwriter==3.0.1
 openpyxl
 xlrd
 python-docx

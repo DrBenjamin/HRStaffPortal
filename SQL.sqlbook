@@ -2,7 +2,7 @@
 Connection to `idcard` database
 -- SQLBook: Code
 # idcard data
--- Active: 1709456880657@@192.168.178.32@3306@idcard
+-- Active: 1709656197469@@0.0.0.0@3306
 SELECT * FROM idcard.IMAGEBASE;
 -- SQLBook: Markup
 Connection to `benbox` Database
